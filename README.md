@@ -38,24 +38,19 @@ import (
 
 	"github.com/stainless-sdks/reductoai-go"
 	"github.com/stainless-sdks/reductoai-go/option"
-	"github.com/stainless-sdks/reductoai-go/shared"
 )
 
 func main() {
 	client := reductoai.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("REDUCTO_API_KEY")
 	)
-	splitResponse, err := client.Split.Run(context.TODO(), reductoai.SplitRunParams{
-		DocumentURL: reductoai.F("document_url"),
-		SplitDescription: reductoai.F([]shared.SplitCategoryParam{{
-			Description: reductoai.F("description"),
-			Name:        reductoai.F("name"),
-		}}),
+	parseResponse, err := client.Parse.Run(context.TODO(), reductoai.ParseRunParams{
+		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
 	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", splitResponse.Result)
+	fmt.Printf("%+v\n", parseResponse.JobID)
 }
 
 ```

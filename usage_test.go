@@ -10,7 +10,6 @@ import (
 	"github.com/stainless-sdks/reductoai-go"
 	"github.com/stainless-sdks/reductoai-go/internal/testutil"
 	"github.com/stainless-sdks/reductoai-go/option"
-	"github.com/stainless-sdks/reductoai-go/shared"
 )
 
 func TestUsage(t *testing.T) {
@@ -25,15 +24,11 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	splitResponse, err := client.Split.Run(context.TODO(), reductoai.SplitRunParams{
-		DocumentURL: reductoai.F("document_url"),
-		SplitDescription: reductoai.F([]shared.SplitCategoryParam{{
-			Description: reductoai.F("description"),
-			Name:        reductoai.F("name"),
-		}}),
+	parseResponse, err := client.Parse.Run(context.TODO(), reductoai.ParseRunParams{
+		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
 	})
 	if err != nil {
 		t.Error(err)
 	}
-	t.Logf("%+v\n", splitResponse.Result)
+	t.Logf("%+v\n", parseResponse.JobID)
 }
