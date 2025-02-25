@@ -13,7 +13,7 @@ It is generated with [Stainless](https://www.stainlessapi.com/).
 
 ```go
 import (
-	"github.com/reductoai/reducto-go-sdk" // imported as reductoai
+	"github.com/reductoai/reducto-go-sdk" // imported as reducto
 )
 ```
 
@@ -49,11 +49,11 @@ import (
 )
 
 func main() {
-	client := reductoai.NewClient(
+	client := reducto.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("REDUCTO_API_KEY")
 	)
-	parseResponse, err := client.Parse.Run(context.TODO(), reductoai.ParseRunParams{
-		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
+	parseResponse, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
+		DocumentURL: reducto.F("https://pdfobject.com/pdf/sample.pdf"),
 	})
 	if err != nil {
 		panic(err.Error())
@@ -77,18 +77,18 @@ To send a null, use `Null[T]()`, and to send a nonconforming value, use `Raw[T](
 
 ```go
 params := FooParams{
-	Name: reductoai.F("hello"),
+	Name: reducto.F("hello"),
 
 	// Explicitly send `"description": null`
-	Description: reductoai.Null[string](),
+	Description: reducto.Null[string](),
 
-	Point: reductoai.F(reductoai.Point{
-		X: reductoai.Int(0),
-		Y: reductoai.Int(1),
+	Point: reducto.F(reducto.Point{
+		X: reducto.Int(0),
+		Y: reducto.Int(1),
 
 		// In cases where the API specifies a given type,
 		// but you want to send something else, use `Raw`:
-		Z: reductoai.Raw[int64](0.01), // sends a float
+		Z: reducto.Raw[int64](0.01), // sends a float
 	}),
 }
 ```
@@ -142,7 +142,7 @@ This library uses the functional options pattern. Functions defined in the
 requests. For example:
 
 ```go
-client := reductoai.NewClient(
+client := reducto.NewClient(
 	// Adds a header to every request made by the client
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
@@ -169,18 +169,18 @@ with additional helper methods like `.GetNextPage()`, e.g.:
 ### Errors
 
 When the API returns a non-success status code, we return an error with type
-`*reductoai.Error`. This contains the `StatusCode`, `*http.Request`, and
+`*reducto.Error`. This contains the `StatusCode`, `*http.Request`, and
 `*http.Response` values of the request, as well as the JSON of the error body
 (much like other response objects in the SDK).
 
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Parse.Run(context.TODO(), reductoai.ParseRunParams{
-	DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
+_, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
+	DocumentURL: reducto.F("https://pdfobject.com/pdf/sample.pdf"),
 })
 if err != nil {
-	var apierr *reductoai.Error
+	var apierr *reducto.Error
 	if errors.As(err, &apierr) {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
@@ -205,8 +205,8 @@ ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
 client.Parse.Run(
 	ctx,
-	reductoai.ParseRunParams{
-		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
+	reducto.ParseRunParams{
+		DocumentURL: reducto.F("https://pdfobject.com/pdf/sample.pdf"),
 	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
@@ -223,24 +223,24 @@ The file name and content-type can be customized by implementing `Name() string`
 string` on the run-time type of `io.Reader`. Note that `os.File` implements `Name() string`, so a
 file returned by `os.Open` will be sent with the file name on disk.
 
-We also provide a helper `reductoai.FileParam(reader io.Reader, filename string, contentType string)`
+We also provide a helper `reducto.FileParam(reader io.Reader, filename string, contentType string)`
 which can be used to wrap any `io.Reader` with the appropriate file name and content type.
 
 ```go
 // A file from the file system
 file, err := os.Open("/path/to/file")
-reductoai.UploadParams{
-	File: reductoai.F[io.Reader](file),
+reducto.UploadParams{
+	File: reducto.F[io.Reader](file),
 }
 
 // A file from a string
-reductoai.UploadParams{
-	File: reductoai.F[io.Reader](strings.NewReader("my file contents")),
+reducto.UploadParams{
+	File: reducto.F[io.Reader](strings.NewReader("my file contents")),
 }
 
 // With a custom filename and contentType
-reductoai.UploadParams{
-	File: reductoai.FileParam(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
+reducto.UploadParams{
+	File: reducto.FileParam(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
 }
 ```
 
@@ -254,15 +254,15 @@ You can use the `WithMaxRetries` option to configure or disable this:
 
 ```go
 // Configure the default for all requests:
-client := reductoai.NewClient(
+client := reducto.NewClient(
 	option.WithMaxRetries(0), // default is 2
 )
 
 // Override per-request:
 client.Parse.Run(
 	context.TODO(),
-	reductoai.ParseRunParams{
-		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
+	reducto.ParseRunParams{
+		DocumentURL: reducto.F("https://pdfobject.com/pdf/sample.pdf"),
 	},
 	option.WithMaxRetries(5),
 )
@@ -278,8 +278,8 @@ you need to examine response headers, status codes, or other details.
 var response *http.Response
 parseResponse, err := client.Parse.Run(
 	context.TODO(),
-	reductoai.ParseRunParams{
-		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
+	reducto.ParseRunParams{
+		DocumentURL: reducto.F("https://pdfobject.com/pdf/sample.pdf"),
 	},
 	option.WithResponseInto(&response),
 )
@@ -325,9 +325,9 @@ or the `option.WithJSONSet()` methods.
 
 ```go
 params := FooNewParams{
-    ID:   reductoai.F("id_xxxx"),
-    Data: reductoai.F(FooNewParamsData{
-        FirstName: reductoai.F("John"),
+    ID:   reducto.F("id_xxxx"),
+    Data: reducto.F(FooNewParamsData{
+        FirstName: reducto.F("John"),
     }),
 }
 client.Foo.New(context.Background(), params, option.WithJSONSet("data.last_name", "Doe"))
@@ -362,7 +362,7 @@ func Logger(req *http.Request, next option.MiddlewareNext) (res *http.Response, 
     return res, err
 }
 
-client := reductoai.NewClient(
+client := reducto.NewClient(
 	option.WithMiddleware(Logger),
 )
 ```

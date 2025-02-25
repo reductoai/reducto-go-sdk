@@ -1,4 +1,4 @@
-package reductoai
+package reducto
 
 import (
 	"github.com/reductoai/reducto-go-sdk/internal/param"

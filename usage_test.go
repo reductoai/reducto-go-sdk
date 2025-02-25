@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package reductoai_test
+package reducto_test
 
 import (
 	"context"
@@ -20,12 +20,12 @@ func TestUsage(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := reductoai.NewClient(
+	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	parseResponse, err := client.Parse.Run(context.TODO(), reductoai.ParseRunParams{
-		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
+	parseResponse, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
+		DocumentURL: reducto.F("https://pdfobject.com/pdf/sample.pdf"),
 	})
 	if err != nil {
 		t.Error(err)
