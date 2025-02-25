@@ -8,10 +8,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/reductoai-go"
-	"github.com/stainless-sdks/reductoai-go/internal/testutil"
-	"github.com/stainless-sdks/reductoai-go/option"
-	"github.com/stainless-sdks/reductoai-go/shared"
+	"github.com/reductoai/reducto-go-sdk"
+	"github.com/reductoai/reducto-go-sdk/internal/testutil"
+	"github.com/reductoai/reducto-go-sdk/option"
+	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 func TestParseRunWithOptionalParams(t *testing.T) {

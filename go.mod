@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/reductoai-go
+module github.com/reductoai/reducto-go-sdk
 
 go 1.21
 

@@ -8,9 +8,9 @@ import (
 	"mime/multipart"
 	"net/url"
 
-	"github.com/stainless-sdks/reductoai-go/internal/apiform"
-	"github.com/stainless-sdks/reductoai-go/internal/apiquery"
-	"github.com/stainless-sdks/reductoai-go/internal/param"
+	"github.com/reductoai/reducto-go-sdk/internal/apiform"
+	"github.com/reductoai/reducto-go-sdk/internal/apiquery"
+	"github.com/reductoai/reducto-go-sdk/internal/param"
 )
 
 type APIVersionResponse = interface{}

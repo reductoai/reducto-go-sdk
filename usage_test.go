@@ -7,9 +7,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/reductoai-go"
-	"github.com/stainless-sdks/reductoai-go/internal/testutil"
-	"github.com/stainless-sdks/reductoai-go/option"
+	"github.com/reductoai/reducto-go-sdk"
+	"github.com/reductoai/reducto-go-sdk/internal/testutil"
+	"github.com/reductoai/reducto-go-sdk/option"
 )
 
 func TestUsage(t *testing.T) {
