@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package reductoai_test
+package reducto_test
 
 import (
 	"context"
@@ -22,13 +22,13 @@ func TestWebhookRun(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := reductoai.NewClient(
+	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Webhook.Run(context.TODO())
 	if err != nil {
-		var apierr *reductoai.Error
+		var apierr *reducto.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
