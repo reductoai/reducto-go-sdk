@@ -9,6 +9,7 @@ import (
 
 	"github.com/stainless-sdks/reductoai-go/internal/requestconfig"
 	"github.com/stainless-sdks/reductoai-go/option"
+	"github.com/stainless-sdks/reductoai-go/shared"
 )
 
 // Client creates a struct with services and top level methods that help with
@@ -123,7 +124,7 @@ func (r *Client) APIVersion(ctx context.Context, opts ...option.RequestOption) (
 }
 
 // Upload
-func (r *Client) Upload(ctx context.Context, params UploadParams, opts ...option.RequestOption) (res *UploadResponse, err error) {
+func (r *Client) Upload(ctx context.Context, params UploadParams, opts ...option.RequestOption) (res *shared.Upload, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "upload"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)

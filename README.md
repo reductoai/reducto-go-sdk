@@ -144,7 +144,7 @@ client := reductoai.NewClient(
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-client.Split.Run(context.TODO(), ...,
+client.Parse.Run(context.TODO(), ...,
 	// Override the header
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
 	// Add an undocumented field to the request body, using sjson syntax
@@ -173,12 +173,8 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Split.Run(context.TODO(), reductoai.SplitRunParams{
-	DocumentURL: reductoai.F("document_url"),
-	SplitDescription: reductoai.F([]shared.SplitCategoryParam{{
-		Description: reductoai.F("description"),
-		Name:        reductoai.F("name"),
-	}}),
+_, err := client.Parse.Run(context.TODO(), reductoai.ParseRunParams{
+	DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
 })
 if err != nil {
 	var apierr *reductoai.Error
@@ -186,7 +182,7 @@ if err != nil {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
 	}
-	panic(err.Error()) // GET "/split": 400 Bad Request { ... }
+	panic(err.Error()) // GET "/parse": 400 Bad Request { ... }
 }
 ```
 
@@ -204,14 +200,10 @@ To set a per-retry timeout, use `option.WithRequestTimeout()`.
 // This sets the timeout for the request, including all the retries.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
-client.Split.Run(
+client.Parse.Run(
 	ctx,
-	reductoai.SplitRunParams{
-		DocumentURL: reductoai.F("document_url"),
-		SplitDescription: reductoai.F([]shared.SplitCategoryParam{{
-			Description: reductoai.F("description"),
-			Name:        reductoai.F("name"),
-		}}),
+	reductoai.ParseRunParams{
+		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
 	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
@@ -264,14 +256,10 @@ client := reductoai.NewClient(
 )
 
 // Override per-request:
-client.Split.Run(
+client.Parse.Run(
 	context.TODO(),
-	reductoai.SplitRunParams{
-		DocumentURL: reductoai.F("document_url"),
-		SplitDescription: reductoai.F([]shared.SplitCategoryParam{{
-			Description: reductoai.F("description"),
-			Name:        reductoai.F("name"),
-		}}),
+	reductoai.ParseRunParams{
+		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
 	},
 	option.WithMaxRetries(5),
 )
@@ -285,21 +273,17 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-splitResponse, err := client.Split.Run(
+parseResponse, err := client.Parse.Run(
 	context.TODO(),
-	reductoai.SplitRunParams{
-		DocumentURL: reductoai.F("document_url"),
-		SplitDescription: reductoai.F([]shared.SplitCategoryParam{{
-			Description: reductoai.F("description"),
-			Name:        reductoai.F("name"),
-		}}),
+	reductoai.ParseRunParams{
+		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
 	},
 	option.WithResponseInto(&response),
 )
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", splitResponse)
+fmt.Printf("%+v\n", parseResponse)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)

@@ -9,34 +9,11 @@ import (
 	"net/url"
 
 	"github.com/stainless-sdks/reductoai-go/internal/apiform"
-	"github.com/stainless-sdks/reductoai-go/internal/apijson"
 	"github.com/stainless-sdks/reductoai-go/internal/apiquery"
 	"github.com/stainless-sdks/reductoai-go/internal/param"
 )
 
 type APIVersionResponse = interface{}
-
-type UploadResponse struct {
-	FileID       string             `json:"file_id,required"`
-	PresignedURL string             `json:"presigned_url,nullable"`
-	JSON         uploadResponseJSON `json:"-"`
-}
-
-// uploadResponseJSON contains the JSON metadata for the struct [UploadResponse]
-type uploadResponseJSON struct {
-	FileID       apijson.Field
-	PresignedURL apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *UploadResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r uploadResponseJSON) RawJSON() string {
-	return r.raw
-}
 
 type UploadParams struct {
 	Extension param.Field[string]    `query:"extension"`

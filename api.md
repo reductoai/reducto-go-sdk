@@ -15,18 +15,18 @@
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go/shared#ParseResponse">ParseResponse</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go/shared#ParseUsage">ParseUsage</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go/shared#SplitResponse">SplitResponse</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go/shared#Upload">Upload</a>
 
 # reductoai
 
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go">reductoai</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go#APIVersionResponse">APIVersionResponse</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go">reductoai</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go#UploadResponse">UploadResponse</a>
 
 Methods:
 
 - <code title="get /version">client.<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go#ReductoaiService.APIVersion">APIVersion</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go">reductoai</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go#APIVersionResponse">APIVersionResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="post /upload">client.<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go#ReductoaiService.Upload">Upload</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go">reductoai</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go#UploadParams">UploadParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go">reductoai</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go#UploadResponse">UploadResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /upload">client.<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go#ReductoaiService.Upload">Upload</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go">reductoai</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go#UploadParams">UploadParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/reductoai-go/shared#Upload">Upload</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Job
 
