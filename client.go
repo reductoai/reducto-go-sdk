@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/stainless-sdks/reductoai-go/internal/requestconfig"
-	"github.com/stainless-sdks/reductoai-go/option"
-	"github.com/stainless-sdks/reductoai-go/shared"
+	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
+	"github.com/reductoai/reducto-go-sdk/option"
+	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 // Client creates a struct with services and top level methods that help with

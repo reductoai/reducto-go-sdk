@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/reductoai-go"
-	"github.com/stainless-sdks/reductoai-go/internal"
-	"github.com/stainless-sdks/reductoai-go/option"
+	"github.com/reductoai/reducto-go-sdk"
+	"github.com/reductoai/reducto-go-sdk/internal"
+	"github.com/reductoai/reducto-go-sdk/option"
 )
 
 type closureTransport struct {
