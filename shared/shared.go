@@ -5,8 +5,8 @@ package shared
 import (
 	"reflect"
 
-	"github.com/stainless-sdks/reductoai-go/internal/apijson"
-	"github.com/stainless-sdks/reductoai-go/internal/param"
+	"github.com/reductoai/reducto-go-sdk/internal/apijson"
+	"github.com/reductoai/reducto-go-sdk/internal/param"
 	"github.com/tidwall/gjson"
 )
 

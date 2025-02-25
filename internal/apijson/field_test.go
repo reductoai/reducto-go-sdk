@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/reductoai-go/internal/param"
+	"github.com/reductoai/reducto-go-sdk/internal/param"
 )
 
 type Struct struct {

@@ -9,10 +9,10 @@ import (
 	"net/http"
 	"reflect"
 
-	"github.com/stainless-sdks/reductoai-go/internal/apijson"
-	"github.com/stainless-sdks/reductoai-go/internal/requestconfig"
-	"github.com/stainless-sdks/reductoai-go/option"
-	"github.com/stainless-sdks/reductoai-go/shared"
+	"github.com/reductoai/reducto-go-sdk/internal/apijson"
+	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
+	"github.com/reductoai/reducto-go-sdk/option"
+	"github.com/reductoai/reducto-go-sdk/shared"
 	"github.com/tidwall/gjson"
 )
 

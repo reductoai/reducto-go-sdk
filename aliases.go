@@ -3,8 +3,8 @@
 package reductoai
 
 import (
-	"github.com/stainless-sdks/reductoai-go/internal/apierror"
-	"github.com/stainless-sdks/reductoai-go/shared"
+	"github.com/reductoai/reducto-go-sdk/internal/apierror"
+	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 type Error = apierror.Error

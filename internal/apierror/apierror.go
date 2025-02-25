@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/stainless-sdks/reductoai-go/internal/apijson"
+	"github.com/reductoai/reducto-go-sdk/internal/apijson"
 )
 
 // Error represents an error that originates from the API, i.e. when a request is

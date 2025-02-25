@@ -13,7 +13,7 @@ import (
 
 	"github.com/tidwall/sjson"
 
-	"github.com/stainless-sdks/reductoai-go/internal/param"
+	"github.com/reductoai/reducto-go-sdk/internal/param"
 )
 
 var encoders sync.Map // map[encoderEntry]encoderFunc
