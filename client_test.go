@@ -13,7 +13,6 @@ import (
 	"github.com/stainless-sdks/reductoai-go"
 	"github.com/stainless-sdks/reductoai-go/internal"
 	"github.com/stainless-sdks/reductoai-go/option"
-	"github.com/stainless-sdks/reductoai-go/shared"
 )
 
 type closureTransport struct {
@@ -38,12 +37,8 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Split.Run(context.Background(), reductoai.SplitRunParams{
-		DocumentURL: reductoai.F("document_url"),
-		SplitDescription: reductoai.F([]shared.SplitCategoryParam{{
-			Description: reductoai.F("description"),
-			Name:        reductoai.F("name"),
-		}}),
+	client.Parse.Run(context.Background(), reductoai.ParseRunParams{
+		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
 	})
 	if userAgent != fmt.Sprintf("Reducto/Go %s", internal.PackageVersion) {
 		t.Errorf("Expected User-Agent to be correct, but got: %#v", userAgent)
@@ -67,12 +62,8 @@ func TestRetryAfter(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Split.Run(context.Background(), reductoai.SplitRunParams{
-		DocumentURL: reductoai.F("document_url"),
-		SplitDescription: reductoai.F([]shared.SplitCategoryParam{{
-			Description: reductoai.F("description"),
-			Name:        reductoai.F("name"),
-		}}),
+	_, err := client.Parse.Run(context.Background(), reductoai.ParseRunParams{
+		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -107,12 +98,8 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeaderDel("X-Stainless-Retry-Count"),
 	)
-	_, err := client.Split.Run(context.Background(), reductoai.SplitRunParams{
-		DocumentURL: reductoai.F("document_url"),
-		SplitDescription: reductoai.F([]shared.SplitCategoryParam{{
-			Description: reductoai.F("description"),
-			Name:        reductoai.F("name"),
-		}}),
+	_, err := client.Parse.Run(context.Background(), reductoai.ParseRunParams{
+		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -142,12 +129,8 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeader("X-Stainless-Retry-Count", "42"),
 	)
-	_, err := client.Split.Run(context.Background(), reductoai.SplitRunParams{
-		DocumentURL: reductoai.F("document_url"),
-		SplitDescription: reductoai.F([]shared.SplitCategoryParam{{
-			Description: reductoai.F("description"),
-			Name:        reductoai.F("name"),
-		}}),
+	_, err := client.Parse.Run(context.Background(), reductoai.ParseRunParams{
+		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -176,12 +159,8 @@ func TestRetryAfterMs(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Split.Run(context.Background(), reductoai.SplitRunParams{
-		DocumentURL: reductoai.F("document_url"),
-		SplitDescription: reductoai.F([]shared.SplitCategoryParam{{
-			Description: reductoai.F("description"),
-			Name:        reductoai.F("name"),
-		}}),
+	_, err := client.Parse.Run(context.Background(), reductoai.ParseRunParams{
+		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -204,12 +183,8 @@ func TestContextCancel(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
-	_, err := client.Split.Run(cancelCtx, reductoai.SplitRunParams{
-		DocumentURL: reductoai.F("document_url"),
-		SplitDescription: reductoai.F([]shared.SplitCategoryParam{{
-			Description: reductoai.F("description"),
-			Name:        reductoai.F("name"),
-		}}),
+	_, err := client.Parse.Run(cancelCtx, reductoai.ParseRunParams{
+		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -229,12 +204,8 @@ func TestContextCancelDelay(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
-	_, err := client.Split.Run(cancelCtx, reductoai.SplitRunParams{
-		DocumentURL: reductoai.F("document_url"),
-		SplitDescription: reductoai.F([]shared.SplitCategoryParam{{
-			Description: reductoai.F("description"),
-			Name:        reductoai.F("name"),
-		}}),
+	_, err := client.Parse.Run(cancelCtx, reductoai.ParseRunParams{
+		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
 	})
 	if err == nil {
 		t.Error("expected there to be a cancel error")
@@ -260,12 +231,8 @@ func TestContextDeadline(t *testing.T) {
 				},
 			}),
 		)
-		_, err := client.Split.Run(deadlineCtx, reductoai.SplitRunParams{
-			DocumentURL: reductoai.F("document_url"),
-			SplitDescription: reductoai.F([]shared.SplitCategoryParam{{
-				Description: reductoai.F("description"),
-				Name:        reductoai.F("name"),
-			}}),
+		_, err := client.Parse.Run(deadlineCtx, reductoai.ParseRunParams{
+			DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
 		})
 		if err == nil {
 			t.Error("expected there to be a deadline error")

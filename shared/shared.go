@@ -897,6 +897,28 @@ func (r splitResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+type Upload struct {
+	FileID       string     `json:"file_id,required"`
+	PresignedURL string     `json:"presigned_url,nullable"`
+	JSON         uploadJSON `json:"-"`
+}
+
+// uploadJSON contains the JSON metadata for the struct [Upload]
+type uploadJSON struct {
+	FileID       apijson.Field
+	PresignedURL apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
+}
+
+func (r *Upload) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r uploadJSON) RawJSON() string {
+	return r.raw
+}
+
 type WebhookConfigNewParam struct {
 	// A list of Svix channels the message will be delivered down, omit to send to all
 	// channels.
