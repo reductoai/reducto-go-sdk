@@ -28,7 +28,7 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Extract.Run(context.TODO(), reducto.ExtractRunParams{
-		DocumentURL: reducto.F("document_url"),
+		DocumentURL: reducto.F[reducto.ExtractRunParamsDocumentURLUnion](shared.UnionString("string")),
 		Schema:      reducto.F[any](map[string]interface{}{}),
 		AdvancedOptions: reducto.F(shared.AdvancedProcessingOptionsParam{
 			AddPageMarkers:     reducto.F(true),
@@ -115,7 +115,7 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Extract.RunJob(context.TODO(), reducto.ExtractRunJobParams{
-		DocumentURL: reducto.F("document_url"),
+		DocumentURL: reducto.F[reducto.ExtractRunJobParamsDocumentURLUnion](shared.UnionString("string")),
 		Schema:      reducto.F[any](map[string]interface{}{}),
 		AdvancedOptions: reducto.F(shared.AdvancedProcessingOptionsParam{
 			AddPageMarkers:     reducto.F(true),

@@ -28,7 +28,7 @@ func TestSplitRunWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Split.Run(context.TODO(), reducto.SplitRunParams{
-		DocumentURL: reducto.F("document_url"),
+		DocumentURL: reducto.F[reducto.SplitRunParamsDocumentURLUnion](shared.UnionString("string")),
 		SplitDescription: reducto.F([]shared.SplitCategoryParam{{
 			Description:  reducto.F("description"),
 			Name:         reducto.F("name"),
@@ -112,7 +112,7 @@ func TestSplitRunJobWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Split.RunJob(context.TODO(), reducto.SplitRunJobParams{
-		DocumentURL: reducto.F("document_url"),
+		DocumentURL: reducto.F[reducto.SplitRunJobParamsDocumentURLUnion](shared.UnionString("string")),
 		SplitDescription: reducto.F([]shared.SplitCategoryParam{{
 			Description:  reducto.F("description"),
 			Name:         reducto.F("name"),
