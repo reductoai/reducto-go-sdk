@@ -28,69 +28,71 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Extract.Run(context.TODO(), reducto.ExtractRunParams{
-		DocumentURL: reducto.F[reducto.ExtractRunParamsDocumentURLUnion](shared.UnionString("string")),
-		Schema:      reducto.F[any](map[string]interface{}{}),
-		AdvancedOptions: reducto.F(shared.AdvancedProcessingOptionsParam{
-			AddPageMarkers:     reducto.F(true),
-			ContinueHierarchy:  reducto.F(true),
-			DocumentPassword:   reducto.F("document_password"),
-			ForceFileExtension: reducto.F("force_file_extension"),
-			KeepLineBreaks:     reducto.F(true),
-			LargeTableChunking: reducto.F(shared.AdvancedProcessingOptionsLargeTableChunkingParam{
-				Enabled: reducto.F(true),
-				Size:    reducto.F(int64(0)),
+		ExtractConfig: reducto.ExtractConfigParam{
+			DocumentURL: reducto.F[reducto.ExtractConfigDocumentURLUnionParam](shared.UnionString("string")),
+			Schema:      reducto.F[any](map[string]interface{}{}),
+			AdvancedOptions: reducto.F(shared.AdvancedProcessingOptionsParam{
+				AddPageMarkers:     reducto.F(true),
+				ContinueHierarchy:  reducto.F(true),
+				DocumentPassword:   reducto.F("document_password"),
+				ForceFileExtension: reducto.F("force_file_extension"),
+				KeepLineBreaks:     reducto.F(true),
+				LargeTableChunking: reducto.F(shared.AdvancedProcessingOptionsLargeTableChunkingParam{
+					Enabled: reducto.F(true),
+					Size:    reducto.F(int64(0)),
+				}),
+				MergeTables: reducto.F(true),
+				OcrSystem:   reducto.F(shared.AdvancedProcessingOptionsOcrSystemHighres),
+				PageRange: reducto.F[shared.AdvancedProcessingOptionsPageRangeUnionParam](shared.PageRangeParam{
+					End:   reducto.F(int64(0)),
+					Start: reducto.F(int64(0)),
+				}),
+				RemoveTextFormatting:       reducto.F(true),
+				ReturnOcrData:              reducto.F(true),
+				SpreadsheetTableClustering: reducto.F(shared.AdvancedProcessingOptionsSpreadsheetTableClusteringDefault),
+				TableOutputFormat:          reducto.F(shared.AdvancedProcessingOptionsTableOutputFormatHTML),
 			}),
-			MergeTables: reducto.F(true),
-			OcrSystem:   reducto.F(shared.AdvancedProcessingOptionsOcrSystemHighres),
-			PageRange: reducto.F[shared.AdvancedProcessingOptionsPageRangeUnionParam](shared.PageRangeParam{
-				End:   reducto.F(int64(0)),
-				Start: reducto.F(int64(0)),
+			ArrayExtract: reducto.F(shared.ArrayExtractConfigParam{
+				Enabled:                     reducto.F(true),
+				Mode:                        reducto.F(shared.ArrayExtractConfigModeAuto),
+				PagesPerSegment:             reducto.F(int64(0)),
+				StreamingExtractItemDensity: reducto.F(int64(0)),
 			}),
-			RemoveTextFormatting:       reducto.F(true),
-			ReturnOcrData:              reducto.F(true),
-			SpreadsheetTableClustering: reducto.F(shared.AdvancedProcessingOptionsSpreadsheetTableClusteringDefault),
-			TableOutputFormat:          reducto.F(shared.AdvancedProcessingOptionsTableOutputFormatHTML),
-		}),
-		ArrayExtract: reducto.F(shared.ArrayExtractConfigParam{
-			Enabled:                     reducto.F(true),
-			Mode:                        reducto.F(shared.ArrayExtractConfigModeAuto),
-			PagesPerSegment:             reducto.F(int64(0)),
-			StreamingExtractItemDensity: reducto.F(int64(0)),
-		}),
-		ExperimentalOptions: reducto.F(shared.ExperimentalProcessingOptionsParam{
-			DangerFilterWideBoxes: reducto.F(true),
-			EnableCheckboxes:      reducto.F(true),
-			EnableEquations:       reducto.F(true),
-			EnableScripts:         reducto.F(true),
-			EnableUnderlines:      reducto.F(true),
-			Enrich: reducto.F(shared.ExperimentalProcessingOptionsEnrichParam{
-				Enabled: reducto.F(true),
-				Prompt:  reducto.F("prompt"),
+			ExperimentalOptions: reducto.F(shared.ExperimentalProcessingOptionsParam{
+				DangerFilterWideBoxes: reducto.F(true),
+				EnableCheckboxes:      reducto.F(true),
+				EnableEquations:       reducto.F(true),
+				EnableScripts:         reducto.F(true),
+				EnableUnderlines:      reducto.F(true),
+				Enrich: reducto.F(shared.ExperimentalProcessingOptionsEnrichParam{
+					Enabled: reducto.F(true),
+					Prompt:  reducto.F("prompt"),
+				}),
+				NativeOfficeConversion: reducto.F(true),
+				ReturnFigureImages:     reducto.F(true),
+				RotatePages:            reducto.F(true),
 			}),
-			NativeOfficeConversion: reducto.F(true),
-			ReturnFigureImages:     reducto.F(true),
-			RotatePages:            reducto.F(true),
-		}),
-		GenerateCitations: reducto.F(true),
-		Options: reducto.F(shared.BaseProcessingOptionsParam{
-			Chunking: reducto.F(shared.BaseProcessingOptionsChunkingParam{
-				ChunkMode: reducto.F(shared.BaseProcessingOptionsChunkingChunkModeVariable),
-				ChunkSize: reducto.F(int64(0)),
+			GenerateCitations: reducto.F(true),
+			Options: reducto.F(shared.BaseProcessingOptionsParam{
+				Chunking: reducto.F(shared.BaseProcessingOptionsChunkingParam{
+					ChunkMode: reducto.F(shared.BaseProcessingOptionsChunkingChunkModeVariable),
+					ChunkSize: reducto.F(int64(0)),
+				}),
+				ExtractionMode: reducto.F(shared.BaseProcessingOptionsExtractionModeOcr),
+				FigureSummary: reducto.F(shared.BaseProcessingOptionsFigureSummaryParam{
+					Enabled:  reducto.F(true),
+					Override: reducto.F(true),
+					Prompt:   reducto.F("prompt"),
+				}),
+				FilterBlocks:   reducto.F([]shared.BaseProcessingOptionsFilterBlock{shared.BaseProcessingOptionsFilterBlockHeader}),
+				ForceURLResult: reducto.F(true),
+				TableSummary: reducto.F(shared.BaseProcessingOptionsTableSummaryParam{
+					Enabled: reducto.F(true),
+					Prompt:  reducto.F("prompt"),
+				}),
 			}),
-			ExtractionMode: reducto.F(shared.BaseProcessingOptionsExtractionModeOcr),
-			FigureSummary: reducto.F(shared.BaseProcessingOptionsFigureSummaryParam{
-				Enabled:  reducto.F(true),
-				Override: reducto.F(true),
-				Prompt:   reducto.F("prompt"),
-			}),
-			FilterBlocks:   reducto.F([]shared.BaseProcessingOptionsFilterBlock{shared.BaseProcessingOptionsFilterBlockHeader}),
-			ForceURLResult: reducto.F(true),
-			TableSummary: reducto.F(shared.BaseProcessingOptionsTableSummaryParam{
-				Enabled: reducto.F(true),
-				Prompt:  reducto.F("prompt"),
-			}),
-		}),
-		SystemPrompt: reducto.F("system_prompt"),
+			SystemPrompt: reducto.F("system_prompt"),
+		},
 	})
 	if err != nil {
 		var apierr *reducto.Error

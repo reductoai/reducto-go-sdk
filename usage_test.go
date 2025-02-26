@@ -26,7 +26,9 @@ func TestUsage(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	parseResponse, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
-		DocumentURL: reducto.F[reducto.ParseRunParamsDocumentURLUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),
+		ParseConfig: reducto.ParseConfigParam{
+			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
+		},
 	})
 	if err != nil {
 		t.Error(err)
