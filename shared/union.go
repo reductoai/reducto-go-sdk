@@ -6,7 +6,7 @@ type UnionString string
 
 func (UnionString) ImplementsSplitRunParamsDocumentURLUnion()      {}
 func (UnionString) ImplementsSplitRunJobParamsDocumentURLUnion()   {}
-func (UnionString) ImplementsParseRunParamsDocumentURLUnion()      {}
+func (UnionString) ImplementsParseConfigDocumentURLUnionParam()    {}
 func (UnionString) ImplementsParseRunJobParamsDocumentURLUnion()   {}
-func (UnionString) ImplementsExtractRunParamsDocumentURLUnion()    {}
+func (UnionString) ImplementsExtractConfigDocumentURLUnionParam()  {}
 func (UnionString) ImplementsExtractRunJobParamsDocumentURLUnion() {}

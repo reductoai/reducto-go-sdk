@@ -932,11 +932,11 @@ func (r UploadParam) ImplementsSplitRunParamsDocumentURLUnion() {}
 
 func (r UploadParam) ImplementsSplitRunJobParamsDocumentURLUnion() {}
 
-func (r UploadParam) ImplementsParseRunParamsDocumentURLUnion() {}
+func (r UploadParam) ImplementsParseConfigDocumentURLUnionParam() {}
 
 func (r UploadParam) ImplementsParseRunJobParamsDocumentURLUnion() {}
 
-func (r UploadParam) ImplementsExtractRunParamsDocumentURLUnion() {}
+func (r UploadParam) ImplementsExtractConfigDocumentURLUnionParam() {}
 
 func (r UploadParam) ImplementsExtractRunJobParamsDocumentURLUnion() {}
 

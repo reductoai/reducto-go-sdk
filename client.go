@@ -22,6 +22,7 @@ type Client struct {
 	Parse   *ParseService
 	Extract *ExtractService
 	Webhook *WebhookService
+	Config  *ConfigService
 }
 
 // NewClient generates a new client with the default option read from the
@@ -42,6 +43,7 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.Parse = NewParseService(opts...)
 	r.Extract = NewExtractService(opts...)
 	r.Webhook = NewWebhookService(opts...)
+	r.Config = NewConfigService(opts...)
 
 	return
 }

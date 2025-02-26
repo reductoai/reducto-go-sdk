@@ -70,41 +70,11 @@ func (r extractRunJobResponseJSON) RawJSON() string {
 }
 
 type ExtractRunParams struct {
-	// The URL of the document to be processed. You can provide one of the following:
-	//
-	//  1. A publicly available URL
-	//  2. A presigned S3 URL
-	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-	//     uploading a document
-	DocumentURL param.Field[ExtractRunParamsDocumentURLUnion] `json:"document_url,required"`
-	// The JSON schema to use for extraction.
-	Schema          param.Field[interface{}]                           `json:"schema,required"`
-	AdvancedOptions param.Field[shared.AdvancedProcessingOptionsParam] `json:"advanced_options"`
-	// The configuration options for array extract
-	ArrayExtract        param.Field[shared.ArrayExtractConfigParam]            `json:"array_extract"`
-	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
-	// If citations should be generated for the extracted content.
-	GenerateCitations param.Field[bool]                              `json:"generate_citations"`
-	Options           param.Field[shared.BaseProcessingOptionsParam] `json:"options"`
-	// A system prompt to use for the extraction. This is a general prompt that is
-	// applied to the entire document before any other prompts.
-	SystemPrompt param.Field[string] `json:"system_prompt"`
+	ExtractConfig ExtractConfigParam `json:"extract_config,required"`
 }
 
 func (r ExtractRunParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The URL of the document to be processed. You can provide one of the following:
-//
-//  1. A publicly available URL
-//  2. A presigned S3 URL
-//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-//     uploading a document
-//
-// Satisfied by [shared.UnionString], [shared.UploadParam].
-type ExtractRunParamsDocumentURLUnion interface {
-	ImplementsExtractRunParamsDocumentURLUnion()
+	return apijson.MarshalRoot(r.ExtractConfig)
 }
 
 type ExtractRunJobParams struct {

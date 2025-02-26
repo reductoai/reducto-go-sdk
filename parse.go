@@ -70,32 +70,11 @@ func (r parseRunJobResponseJSON) RawJSON() string {
 }
 
 type ParseRunParams struct {
-	// The URL of the document to be processed. You can provide one of the following:
-	//
-	//  1. A publicly available URL
-	//  2. A presigned S3 URL
-	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-	//     uploading a document
-	DocumentURL         param.Field[ParseRunParamsDocumentURLUnion]            `json:"document_url,required"`
-	AdvancedOptions     param.Field[shared.AdvancedProcessingOptionsParam]     `json:"advanced_options"`
-	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
-	Options             param.Field[shared.BaseProcessingOptionsParam]         `json:"options"`
+	ParseConfig ParseConfigParam `json:"parse_config,required"`
 }
 
 func (r ParseRunParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The URL of the document to be processed. You can provide one of the following:
-//
-//  1. A publicly available URL
-//  2. A presigned S3 URL
-//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-//     uploading a document
-//
-// Satisfied by [shared.UnionString], [shared.UploadParam].
-type ParseRunParamsDocumentURLUnion interface {
-	ImplementsParseRunParamsDocumentURLUnion()
+	return apijson.MarshalRoot(r.ParseConfig)
 }
 
 type ParseRunJobParams struct {
