@@ -329,6 +329,9 @@ type SplitResponseResult = shared.SplitResponseResult
 type Upload = shared.Upload
 
 // This is an alias to an internal type.
+type UploadParam = shared.UploadParam
+
+// This is an alias to an internal type.
 type WebhookConfigNewParam = shared.WebhookConfigNewParam
 
 // The mode to use for webhook delivery. Defaults to 'disabled'. We recommend using

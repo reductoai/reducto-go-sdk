@@ -76,7 +76,7 @@ type ExtractRunParams struct {
 	//  2. A presigned S3 URL
 	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 	//     uploading a document
-	DocumentURL param.Field[string] `json:"document_url,required"`
+	DocumentURL param.Field[ExtractRunParamsDocumentURLUnion] `json:"document_url,required"`
 	// The JSON schema to use for extraction.
 	Schema          param.Field[interface{}]                           `json:"schema,required"`
 	AdvancedOptions param.Field[shared.AdvancedProcessingOptionsParam] `json:"advanced_options"`
@@ -95,6 +95,18 @@ func (r ExtractRunParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+// The URL of the document to be processed. You can provide one of the following:
+//
+//  1. A publicly available URL
+//  2. A presigned S3 URL
+//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
+//     uploading a document
+//
+// Satisfied by [shared.UnionString], [shared.UploadParam].
+type ExtractRunParamsDocumentURLUnion interface {
+	ImplementsExtractRunParamsDocumentURLUnion()
+}
+
 type ExtractRunJobParams struct {
 	// The URL of the document to be processed. You can provide one of the following:
 	//
@@ -102,7 +114,7 @@ type ExtractRunJobParams struct {
 	//  2. A presigned S3 URL
 	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 	//     uploading a document
-	DocumentURL param.Field[string] `json:"document_url,required"`
+	DocumentURL param.Field[ExtractRunJobParamsDocumentURLUnion] `json:"document_url,required"`
 	// The JSON schema to use for extraction.
 	Schema          param.Field[interface{}]                           `json:"schema,required"`
 	AdvancedOptions param.Field[shared.AdvancedProcessingOptionsParam] `json:"advanced_options"`
@@ -124,4 +136,16 @@ type ExtractRunJobParams struct {
 
 func (r ExtractRunJobParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// The URL of the document to be processed. You can provide one of the following:
+//
+//  1. A publicly available URL
+//  2. A presigned S3 URL
+//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
+//     uploading a document
+//
+// Satisfied by [shared.UnionString], [shared.UploadParam].
+type ExtractRunJobParamsDocumentURLUnion interface {
+	ImplementsExtractRunJobParamsDocumentURLUnion()
 }

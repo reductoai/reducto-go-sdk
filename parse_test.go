@@ -28,7 +28,7 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
-		DocumentURL: reducto.F("document_url"),
+		DocumentURL: reducto.F[reducto.ParseRunParamsDocumentURLUnion](shared.UnionString("string")),
 		AdvancedOptions: reducto.F(shared.AdvancedProcessingOptionsParam{
 			AddPageMarkers:     reducto.F(true),
 			ContinueHierarchy:  reducto.F(true),
@@ -106,7 +106,7 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Parse.RunJob(context.TODO(), reducto.ParseRunJobParams{
-		DocumentURL: reducto.F("document_url"),
+		DocumentURL: reducto.F[reducto.ParseRunJobParamsDocumentURLUnion](shared.UnionString("string")),
 		AdvancedOptions: reducto.F(shared.AdvancedProcessingOptionsParam{
 			AddPageMarkers:     reducto.F(true),
 			ContinueHierarchy:  reducto.F(true),

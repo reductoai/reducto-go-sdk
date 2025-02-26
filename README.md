@@ -46,6 +46,7 @@ import (
 
 	"github.com/reductoai/reducto-go-sdk"
 	"github.com/reductoai/reducto-go-sdk/option"
+	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 func main() {
@@ -53,7 +54,7 @@ func main() {
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("REDUCTO_API_KEY")
 	)
 	parseResponse, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
-		DocumentURL: reducto.F("https://pdfobject.com/pdf/sample.pdf"),
+		DocumentURL: reducto.F[reducto.ParseRunParamsDocumentURLUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),
 	})
 	if err != nil {
 		panic(err.Error())
@@ -177,7 +178,7 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
 _, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
-	DocumentURL: reducto.F("https://pdfobject.com/pdf/sample.pdf"),
+	DocumentURL: reducto.F[reducto.ParseRunParamsDocumentURLUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),
 })
 if err != nil {
 	var apierr *reducto.Error
@@ -206,7 +207,7 @@ defer cancel()
 client.Parse.Run(
 	ctx,
 	reducto.ParseRunParams{
-		DocumentURL: reducto.F("https://pdfobject.com/pdf/sample.pdf"),
+		DocumentURL: reducto.F[reducto.ParseRunParamsDocumentURLUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),
 	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
@@ -262,7 +263,7 @@ client := reducto.NewClient(
 client.Parse.Run(
 	context.TODO(),
 	reducto.ParseRunParams{
-		DocumentURL: reducto.F("https://pdfobject.com/pdf/sample.pdf"),
+		DocumentURL: reducto.F[reducto.ParseRunParamsDocumentURLUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),
 	},
 	option.WithMaxRetries(5),
 )
@@ -279,7 +280,7 @@ var response *http.Response
 parseResponse, err := client.Parse.Run(
 	context.TODO(),
 	reducto.ParseRunParams{
-		DocumentURL: reducto.F("https://pdfobject.com/pdf/sample.pdf"),
+		DocumentURL: reducto.F[reducto.ParseRunParamsDocumentURLUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),
 	},
 	option.WithResponseInto(&response),
 )
