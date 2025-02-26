@@ -10,6 +10,7 @@ import (
 	"github.com/reductoai/reducto-go-sdk"
 	"github.com/reductoai/reducto-go-sdk/internal/testutil"
 	"github.com/reductoai/reducto-go-sdk/option"
+	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 func TestUsage(t *testing.T) {
@@ -25,7 +26,7 @@ func TestUsage(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	parseResponse, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
-		DocumentURL: reducto.F("https://pdfobject.com/pdf/sample.pdf"),
+		DocumentURL: reducto.F[reducto.ParseRunParamsDocumentURLUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),
 	})
 	if err != nil {
 		t.Error(err)

@@ -76,7 +76,7 @@ type ParseRunParams struct {
 	//  2. A presigned S3 URL
 	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 	//     uploading a document
-	DocumentURL         param.Field[string]                                    `json:"document_url,required"`
+	DocumentURL         param.Field[ParseRunParamsDocumentURLUnion]            `json:"document_url,required"`
 	AdvancedOptions     param.Field[shared.AdvancedProcessingOptionsParam]     `json:"advanced_options"`
 	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
 	Options             param.Field[shared.BaseProcessingOptionsParam]         `json:"options"`
@@ -86,6 +86,18 @@ func (r ParseRunParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+// The URL of the document to be processed. You can provide one of the following:
+//
+//  1. A publicly available URL
+//  2. A presigned S3 URL
+//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
+//     uploading a document
+//
+// Satisfied by [shared.UnionString], [shared.UploadParam].
+type ParseRunParamsDocumentURLUnion interface {
+	ImplementsParseRunParamsDocumentURLUnion()
+}
+
 type ParseRunJobParams struct {
 	// The URL of the document to be processed. You can provide one of the following:
 	//
@@ -93,7 +105,7 @@ type ParseRunJobParams struct {
 	//  2. A presigned S3 URL
 	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 	//     uploading a document
-	DocumentURL         param.Field[string]                                    `json:"document_url,required"`
+	DocumentURL         param.Field[ParseRunJobParamsDocumentURLUnion]         `json:"document_url,required"`
 	AdvancedOptions     param.Field[shared.AdvancedProcessingOptionsParam]     `json:"advanced_options"`
 	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
 	Options             param.Field[shared.BaseProcessingOptionsParam]         `json:"options"`
@@ -106,4 +118,16 @@ type ParseRunJobParams struct {
 
 func (r ParseRunJobParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// The URL of the document to be processed. You can provide one of the following:
+//
+//  1. A publicly available URL
+//  2. A presigned S3 URL
+//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
+//     uploading a document
+//
+// Satisfied by [shared.UnionString], [shared.UploadParam].
+type ParseRunJobParamsDocumentURLUnion interface {
+	ImplementsParseRunJobParamsDocumentURLUnion()
 }

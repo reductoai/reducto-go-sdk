@@ -76,7 +76,7 @@ type SplitRunParams struct {
 	//  2. A presigned S3 URL
 	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 	//     uploading a document
-	DocumentURL param.Field[string] `json:"document_url,required"`
+	DocumentURL param.Field[SplitRunParamsDocumentURLUnion] `json:"document_url,required"`
 	// The configuration options for processing the document.
 	SplitDescription    param.Field[[]shared.SplitCategoryParam]               `json:"split_description,required"`
 	AdvancedOptions     param.Field[shared.AdvancedProcessingOptionsParam]     `json:"advanced_options"`
@@ -90,6 +90,18 @@ func (r SplitRunParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+// The URL of the document to be processed. You can provide one of the following:
+//
+//  1. A publicly available URL
+//  2. A presigned S3 URL
+//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
+//     uploading a document
+//
+// Satisfied by [shared.UnionString], [shared.UploadParam].
+type SplitRunParamsDocumentURLUnion interface {
+	ImplementsSplitRunParamsDocumentURLUnion()
+}
+
 type SplitRunJobParams struct {
 	// The URL of the document to be processed. You can provide one of the following:
 	//
@@ -97,7 +109,7 @@ type SplitRunJobParams struct {
 	//  2. A presigned S3 URL
 	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 	//     uploading a document
-	DocumentURL param.Field[string] `json:"document_url,required"`
+	DocumentURL param.Field[SplitRunJobParamsDocumentURLUnion] `json:"document_url,required"`
 	// The configuration options for processing the document.
 	SplitDescription    param.Field[[]shared.SplitCategoryParam]               `json:"split_description,required"`
 	AdvancedOptions     param.Field[shared.AdvancedProcessingOptionsParam]     `json:"advanced_options"`
@@ -114,4 +126,16 @@ type SplitRunJobParams struct {
 
 func (r SplitRunJobParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// The URL of the document to be processed. You can provide one of the following:
+//
+//  1. A publicly available URL
+//  2. A presigned S3 URL
+//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
+//     uploading a document
+//
+// Satisfied by [shared.UnionString], [shared.UploadParam].
+type SplitRunJobParamsDocumentURLUnion interface {
+	ImplementsSplitRunJobParamsDocumentURLUnion()
 }

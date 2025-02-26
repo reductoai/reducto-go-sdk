@@ -6,6 +6,7 @@
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared">shared</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared#ExperimentalProcessingOptionsParam">ExperimentalProcessingOptionsParam</a>
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared">shared</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared#PageRangeParam">PageRangeParam</a>
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared">shared</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared#SplitCategoryParam">SplitCategoryParam</a>
+- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared">shared</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared#UploadParam">UploadParam</a>
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared">shared</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared#WebhookConfigNewParam">WebhookConfigNewParam</a>
 
 # Shared Response Types
