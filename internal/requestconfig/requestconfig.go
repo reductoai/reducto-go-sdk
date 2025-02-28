@@ -17,10 +17,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stainless-sdks/reductoai-go/internal"
-	"github.com/stainless-sdks/reductoai-go/internal/apierror"
-	"github.com/stainless-sdks/reductoai-go/internal/apiform"
-	"github.com/stainless-sdks/reductoai-go/internal/apiquery"
+	"github.com/reductoai/reducto-go-sdk/internal"
+	"github.com/reductoai/reducto-go-sdk/internal/apierror"
+	"github.com/reductoai/reducto-go-sdk/internal/apiform"
+	"github.com/reductoai/reducto-go-sdk/internal/apiquery"
 )
 
 func getDefaultHeaders() map[string]string {

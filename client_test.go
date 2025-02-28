@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package reductoai_test
+package reducto_test
 
 import (
 	"context"
@@ -10,9 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/reductoai-go"
-	"github.com/stainless-sdks/reductoai-go/internal"
-	"github.com/stainless-sdks/reductoai-go/option"
+	"github.com/reductoai/reducto-go-sdk"
+	"github.com/reductoai/reducto-go-sdk/internal"
+	"github.com/reductoai/reducto-go-sdk/option"
+	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 type closureTransport struct {
@@ -25,7 +26,7 @@ func (t *closureTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 
 func TestUserAgentHeader(t *testing.T) {
 	var userAgent string
-	client := reductoai.NewClient(
+	client := reducto.NewClient(
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -37,8 +38,10 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Parse.Run(context.Background(), reductoai.ParseRunParams{
-		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
+	client.Parse.Run(context.Background(), reducto.ParseRunParams{
+		ParseConfig: reducto.ParseConfigParam{
+			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
+		},
 	})
 	if userAgent != fmt.Sprintf("Reducto/Go %s", internal.PackageVersion) {
 		t.Errorf("Expected User-Agent to be correct, but got: %#v", userAgent)
@@ -47,7 +50,7 @@ func TestUserAgentHeader(t *testing.T) {
 
 func TestRetryAfter(t *testing.T) {
 	retryCountHeaders := make([]string, 0)
-	client := reductoai.NewClient(
+	client := reducto.NewClient(
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -62,8 +65,10 @@ func TestRetryAfter(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Parse.Run(context.Background(), reductoai.ParseRunParams{
-		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
+	_, err := client.Parse.Run(context.Background(), reducto.ParseRunParams{
+		ParseConfig: reducto.ParseConfigParam{
+			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
+		},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -82,7 +87,7 @@ func TestRetryAfter(t *testing.T) {
 
 func TestDeleteRetryCountHeader(t *testing.T) {
 	retryCountHeaders := make([]string, 0)
-	client := reductoai.NewClient(
+	client := reducto.NewClient(
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -98,8 +103,10 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeaderDel("X-Stainless-Retry-Count"),
 	)
-	_, err := client.Parse.Run(context.Background(), reductoai.ParseRunParams{
-		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
+	_, err := client.Parse.Run(context.Background(), reducto.ParseRunParams{
+		ParseConfig: reducto.ParseConfigParam{
+			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
+		},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -113,7 +120,7 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 
 func TestOverwriteRetryCountHeader(t *testing.T) {
 	retryCountHeaders := make([]string, 0)
-	client := reductoai.NewClient(
+	client := reducto.NewClient(
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -129,8 +136,10 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeader("X-Stainless-Retry-Count", "42"),
 	)
-	_, err := client.Parse.Run(context.Background(), reductoai.ParseRunParams{
-		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
+	_, err := client.Parse.Run(context.Background(), reducto.ParseRunParams{
+		ParseConfig: reducto.ParseConfigParam{
+			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
+		},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -144,7 +153,7 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 
 func TestRetryAfterMs(t *testing.T) {
 	attempts := 0
-	client := reductoai.NewClient(
+	client := reducto.NewClient(
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -159,8 +168,10 @@ func TestRetryAfterMs(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Parse.Run(context.Background(), reductoai.ParseRunParams{
-		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
+	_, err := client.Parse.Run(context.Background(), reducto.ParseRunParams{
+		ParseConfig: reducto.ParseConfigParam{
+			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
+		},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -171,7 +182,7 @@ func TestRetryAfterMs(t *testing.T) {
 }
 
 func TestContextCancel(t *testing.T) {
-	client := reductoai.NewClient(
+	client := reducto.NewClient(
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -183,8 +194,10 @@ func TestContextCancel(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
-	_, err := client.Parse.Run(cancelCtx, reductoai.ParseRunParams{
-		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
+	_, err := client.Parse.Run(cancelCtx, reducto.ParseRunParams{
+		ParseConfig: reducto.ParseConfigParam{
+			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
+		},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -192,7 +205,7 @@ func TestContextCancel(t *testing.T) {
 }
 
 func TestContextCancelDelay(t *testing.T) {
-	client := reductoai.NewClient(
+	client := reducto.NewClient(
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
 				fn: func(req *http.Request) (*http.Response, error) {
@@ -204,8 +217,10 @@ func TestContextCancelDelay(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
-	_, err := client.Parse.Run(cancelCtx, reductoai.ParseRunParams{
-		DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
+	_, err := client.Parse.Run(cancelCtx, reducto.ParseRunParams{
+		ParseConfig: reducto.ParseConfigParam{
+			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
+		},
 	})
 	if err == nil {
 		t.Error("expected there to be a cancel error")
@@ -221,7 +236,7 @@ func TestContextDeadline(t *testing.T) {
 	defer cancel()
 
 	go func() {
-		client := reductoai.NewClient(
+		client := reducto.NewClient(
 			option.WithHTTPClient(&http.Client{
 				Transport: &closureTransport{
 					fn: func(req *http.Request) (*http.Response, error) {
@@ -231,8 +246,10 @@ func TestContextDeadline(t *testing.T) {
 				},
 			}),
 		)
-		_, err := client.Parse.Run(deadlineCtx, reductoai.ParseRunParams{
-			DocumentURL: reductoai.F("https://pdfobject.com/pdf/sample.pdf"),
+		_, err := client.Parse.Run(deadlineCtx, reducto.ParseRunParams{
+			ParseConfig: reducto.ParseConfigParam{
+				DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
+			},
 		})
 		if err == nil {
 			t.Error("expected there to be a deadline error")

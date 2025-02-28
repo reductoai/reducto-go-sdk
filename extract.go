@@ -1,16 +1,16 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package reductoai
+package reducto
 
 import (
 	"context"
 	"net/http"
 
-	"github.com/stainless-sdks/reductoai-go/internal/apijson"
-	"github.com/stainless-sdks/reductoai-go/internal/param"
-	"github.com/stainless-sdks/reductoai-go/internal/requestconfig"
-	"github.com/stainless-sdks/reductoai-go/option"
-	"github.com/stainless-sdks/reductoai-go/shared"
+	"github.com/reductoai/reducto-go-sdk/internal/apijson"
+	"github.com/reductoai/reducto-go-sdk/internal/param"
+	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
+	"github.com/reductoai/reducto-go-sdk/option"
+	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 // ExtractService contains methods and other services that help with interacting
@@ -70,29 +70,11 @@ func (r extractRunJobResponseJSON) RawJSON() string {
 }
 
 type ExtractRunParams struct {
-	// The URL of the document to be processed. You can provide one of the following:
-	//
-	//  1. A publicly available URL
-	//  2. A presigned S3 URL
-	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-	//     uploading a document
-	DocumentURL param.Field[string] `json:"document_url,required"`
-	// The JSON schema to use for extraction.
-	Schema          param.Field[interface{}]                           `json:"schema,required"`
-	AdvancedOptions param.Field[shared.AdvancedProcessingOptionsParam] `json:"advanced_options"`
-	// The configuration options for array extract
-	ArrayExtract        param.Field[shared.ArrayExtractConfigParam]            `json:"array_extract"`
-	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
-	// If citations should be generated for the extracted content.
-	GenerateCitations param.Field[bool]                              `json:"generate_citations"`
-	Options           param.Field[shared.BaseProcessingOptionsParam] `json:"options"`
-	// A system prompt to use for the extraction. This is a general prompt that is
-	// applied to the entire document before any other prompts.
-	SystemPrompt param.Field[string] `json:"system_prompt"`
+	ExtractConfig ExtractConfigParam `json:"extract_config,required"`
 }
 
 func (r ExtractRunParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.ExtractConfig)
 }
 
 type ExtractRunJobParams struct {
@@ -102,7 +84,8 @@ type ExtractRunJobParams struct {
 	//  2. A presigned S3 URL
 	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 	//     uploading a document
-	DocumentURL param.Field[string] `json:"document_url,required"`
+	//  4. A job_id (jobid://) or a list of job_ids (jobid://)
+	DocumentURL param.Field[ExtractRunJobParamsDocumentURLUnion] `json:"document_url,required"`
 	// The JSON schema to use for extraction.
 	Schema          param.Field[interface{}]                           `json:"schema,required"`
 	AdvancedOptions param.Field[shared.AdvancedProcessingOptionsParam] `json:"advanced_options"`
@@ -125,3 +108,21 @@ type ExtractRunJobParams struct {
 func (r ExtractRunJobParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
+
+// The URL of the document to be processed. You can provide one of the following:
+//
+//  1. A publicly available URL
+//  2. A presigned S3 URL
+//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
+//     uploading a document
+//  4. A job_id (jobid://) or a list of job_ids (jobid://)
+//
+// Satisfied by [shared.UnionString], [ExtractRunJobParamsDocumentURLArray],
+// [shared.UploadParam].
+type ExtractRunJobParamsDocumentURLUnion interface {
+	ImplementsExtractRunJobParamsDocumentURLUnion()
+}
+
+type ExtractRunJobParamsDocumentURLArray []string
+
+func (r ExtractRunJobParamsDocumentURLArray) ImplementsExtractRunJobParamsDocumentURLUnion() {}

@@ -1,10 +1,10 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package reductoai
+package reducto
 
 import (
-	"github.com/stainless-sdks/reductoai-go/internal/apierror"
-	"github.com/stainless-sdks/reductoai-go/shared"
+	"github.com/reductoai/reducto-go-sdk/internal/apierror"
+	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 type Error = apierror.Error
@@ -327,6 +327,9 @@ type SplitResponseResult = shared.SplitResponseResult
 
 // This is an alias to an internal type.
 type Upload = shared.Upload
+
+// This is an alias to an internal type.
+type UploadParam = shared.UploadParam
 
 // This is an alias to an internal type.
 type WebhookConfigNewParam = shared.WebhookConfigNewParam

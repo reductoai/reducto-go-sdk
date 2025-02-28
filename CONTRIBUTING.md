@@ -41,7 +41,7 @@ To use a local version of this library from source in another project, edit the 
 directive. This can be done through the CLI with the following:
 
 ```sh
-$ go mod edit -replace github.com/stainless-sdks/reductoai-go=/path/to/reductoai-go
+$ go mod edit -replace github.com/reductoai/reducto-go-sdk=/path/to/reducto-go-sdk
 ```
 
 ## Running tests

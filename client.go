@@ -1,15 +1,15 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package reductoai
+package reducto
 
 import (
 	"context"
 	"net/http"
 	"os"
 
-	"github.com/stainless-sdks/reductoai-go/internal/requestconfig"
-	"github.com/stainless-sdks/reductoai-go/option"
-	"github.com/stainless-sdks/reductoai-go/shared"
+	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
+	"github.com/reductoai/reducto-go-sdk/option"
+	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 // Client creates a struct with services and top level methods that help with
@@ -22,6 +22,7 @@ type Client struct {
 	Parse   *ParseService
 	Extract *ExtractService
 	Webhook *WebhookService
+	Config  *ConfigService
 }
 
 // NewClient generates a new client with the default option read from the
@@ -42,6 +43,7 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.Parse = NewParseService(opts...)
 	r.Extract = NewExtractService(opts...)
 	r.Webhook = NewWebhookService(opts...)
+	r.Config = NewConfigService(opts...)
 
 	return
 }

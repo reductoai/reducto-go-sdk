@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package reductoai_test
+package reducto_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/reductoai-go"
-	"github.com/stainless-sdks/reductoai-go/internal/testutil"
-	"github.com/stainless-sdks/reductoai-go/option"
+	"github.com/reductoai/reducto-go-sdk"
+	"github.com/reductoai/reducto-go-sdk/internal/testutil"
+	"github.com/reductoai/reducto-go-sdk/option"
 )
 
 func TestJobCancel(t *testing.T) {
@@ -22,13 +22,13 @@ func TestJobCancel(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := reductoai.NewClient(
+	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Job.Cancel(context.TODO(), "job_id")
 	if err != nil {
-		var apierr *reductoai.Error
+		var apierr *reducto.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -45,13 +45,13 @@ func TestJobGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := reductoai.NewClient(
+	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Job.Get(context.TODO(), "job_id")
 	if err != nil {
-		var apierr *reductoai.Error
+		var apierr *reducto.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package reductoai_test
+package reducto_test
 
 import (
 	"bytes"
@@ -10,12 +10,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/reductoai-go"
-	"github.com/stainless-sdks/reductoai-go/internal/testutil"
-	"github.com/stainless-sdks/reductoai-go/option"
+	"github.com/reductoai/reducto-go-sdk"
+	"github.com/reductoai/reducto-go-sdk/internal/testutil"
+	"github.com/reductoai/reducto-go-sdk/option"
 )
 
-func TestReductoaiAPIVersion(t *testing.T) {
+func TestReductoAPIVersion(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -24,13 +24,13 @@ func TestReductoaiAPIVersion(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := reductoai.NewClient(
+	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.APIVersion(context.TODO())
 	if err != nil {
-		var apierr *reductoai.Error
+		var apierr *reducto.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -38,7 +38,7 @@ func TestReductoaiAPIVersion(t *testing.T) {
 	}
 }
 
-func TestReductoaiUploadWithOptionalParams(t *testing.T) {
+func TestReductoUploadWithOptionalParams(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -47,16 +47,16 @@ func TestReductoaiUploadWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := reductoai.NewClient(
+	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Upload(context.TODO(), reductoai.UploadParams{
-		Extension: reductoai.F("extension"),
-		File:      reductoai.F(io.Reader(bytes.NewBuffer([]byte("some file contents")))),
+	_, err := client.Upload(context.TODO(), reducto.UploadParams{
+		Extension: reducto.F("extension"),
+		File:      reducto.F(io.Reader(bytes.NewBuffer([]byte("some file contents")))),
 	})
 	if err != nil {
-		var apierr *reductoai.Error
+		var apierr *reducto.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

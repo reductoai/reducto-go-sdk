@@ -5,8 +5,8 @@ package shared
 import (
 	"reflect"
 
-	"github.com/stainless-sdks/reductoai-go/internal/apijson"
-	"github.com/stainless-sdks/reductoai-go/internal/param"
+	"github.com/reductoai/reducto-go-sdk/internal/apijson"
+	"github.com/reductoai/reducto-go-sdk/internal/param"
 	"github.com/tidwall/gjson"
 )
 
@@ -918,6 +918,27 @@ func (r *Upload) UnmarshalJSON(data []byte) (err error) {
 func (r uploadJSON) RawJSON() string {
 	return r.raw
 }
+
+type UploadParam struct {
+	FileID       param.Field[string] `json:"file_id,required"`
+	PresignedURL param.Field[string] `json:"presigned_url"`
+}
+
+func (r UploadParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r UploadParam) ImplementsSplitRunParamsDocumentURLUnion() {}
+
+func (r UploadParam) ImplementsSplitRunJobParamsDocumentURLUnion() {}
+
+func (r UploadParam) ImplementsParseConfigDocumentURLUnionParam() {}
+
+func (r UploadParam) ImplementsParseRunJobParamsDocumentURLUnion() {}
+
+func (r UploadParam) ImplementsExtractConfigDocumentURLUnionParam() {}
+
+func (r UploadParam) ImplementsExtractRunJobParamsDocumentURLUnion() {}
 
 type WebhookConfigNewParam struct {
 	// A list of Svix channels the message will be delivered down, omit to send to all
