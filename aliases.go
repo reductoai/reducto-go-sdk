@@ -184,6 +184,18 @@ const BaseProcessingOptionsFilterBlockComment = shared.BaseProcessingOptionsFilt
 // This is an alias to an internal value.
 const BaseProcessingOptionsFilterBlockDiscard = shared.BaseProcessingOptionsFilterBlockDiscard
 
+// The mode to use for OCR. If agentic is enabled, at a small cost table OCR will
+// be automatically edited.
+//
+// This is an alias to an internal type.
+type BaseProcessingOptionsOcrMode = shared.BaseProcessingOptionsOcrMode
+
+// This is an alias to an internal value.
+const BaseProcessingOptionsOcrModeStandard = shared.BaseProcessingOptionsOcrModeStandard
+
+// This is an alias to an internal value.
+const BaseProcessingOptionsOcrModeAgentic = shared.BaseProcessingOptionsOcrModeAgentic
+
 // The configuration options for table summarization.
 //
 // This is an alias to an internal type.
