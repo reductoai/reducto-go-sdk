@@ -78,6 +78,7 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 				}),
 				FilterBlocks:   reducto.F([]shared.BaseProcessingOptionsFilterBlock{shared.BaseProcessingOptionsFilterBlockHeader}),
 				ForceURLResult: reducto.F(true),
+				OcrMode:        reducto.F(shared.BaseProcessingOptionsOcrModeStandard),
 				TableSummary: reducto.F(shared.BaseProcessingOptionsTableSummaryParam{
 					Enabled: reducto.F(true),
 					Prompt:  reducto.F("prompt"),
@@ -157,6 +158,7 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 			}),
 			FilterBlocks:   reducto.F([]shared.BaseProcessingOptionsFilterBlock{shared.BaseProcessingOptionsFilterBlockHeader}),
 			ForceURLResult: reducto.F(true),
+			OcrMode:        reducto.F(shared.BaseProcessingOptionsOcrModeStandard),
 			TableSummary: reducto.F(shared.BaseProcessingOptionsTableSummaryParam{
 				Enabled: reducto.F(true),
 				Prompt:  reducto.F("prompt"),
