@@ -182,6 +182,9 @@ type BaseProcessingOptionsParam struct {
 	// Force the result to be returned in URL form (by default only used for very large
 	// responses).
 	ForceURLResult param.Field[bool] `json:"force_url_result"`
+	// The mode to use for OCR. If agentic is enabled, at a small cost table OCR will
+	// be automatically edited.
+	OcrMode param.Field[BaseProcessingOptionsOcrMode] `json:"ocr_mode"`
 	// The configuration options for table summarization.
 	TableSummary param.Field[BaseProcessingOptionsTableSummaryParam] `json:"table_summary"`
 }
@@ -276,6 +279,23 @@ const (
 func (r BaseProcessingOptionsFilterBlock) IsKnown() bool {
 	switch r {
 	case BaseProcessingOptionsFilterBlockHeader, BaseProcessingOptionsFilterBlockFooter, BaseProcessingOptionsFilterBlockTitle, BaseProcessingOptionsFilterBlockSectionHeader, BaseProcessingOptionsFilterBlockPageNumber, BaseProcessingOptionsFilterBlockListItem, BaseProcessingOptionsFilterBlockFigure, BaseProcessingOptionsFilterBlockTable, BaseProcessingOptionsFilterBlockKeyValue, BaseProcessingOptionsFilterBlockText, BaseProcessingOptionsFilterBlockComment, BaseProcessingOptionsFilterBlockDiscard:
+		return true
+	}
+	return false
+}
+
+// The mode to use for OCR. If agentic is enabled, at a small cost table OCR will
+// be automatically edited.
+type BaseProcessingOptionsOcrMode string
+
+const (
+	BaseProcessingOptionsOcrModeStandard BaseProcessingOptionsOcrMode = "standard"
+	BaseProcessingOptionsOcrModeAgentic  BaseProcessingOptionsOcrMode = "agentic"
+)
+
+func (r BaseProcessingOptionsOcrMode) IsKnown() bool {
+	switch r {
+	case BaseProcessingOptionsOcrModeStandard, BaseProcessingOptionsOcrModeAgentic:
 		return true
 	}
 	return false
