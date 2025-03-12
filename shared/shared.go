@@ -369,6 +369,8 @@ type ExperimentalProcessingOptionsParam struct {
 	NativeOfficeConversion param.Field[bool] `json:"native_office_conversion"`
 	// If figure images should be returned in the result. Defaults to False.
 	ReturnFigureImages param.Field[bool] `json:"return_figure_images"`
+	// If table images should be returned in the result. Defaults to False.
+	ReturnTableImages param.Field[bool] `json:"return_table_images"`
 	// Use an orientation model to detect and rotate pages as needed, defaults to True
 	RotatePages param.Field[bool] `json:"rotate_pages"`
 }
