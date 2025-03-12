@@ -63,6 +63,7 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 				}),
 				NativeOfficeConversion: reducto.F(true),
 				ReturnFigureImages:     reducto.F(true),
+				ReturnTableImages:      reducto.F(true),
 				RotatePages:            reducto.F(true),
 			}),
 			Options: reducto.F(shared.BaseProcessingOptionsParam{
@@ -143,6 +144,7 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 			}),
 			NativeOfficeConversion: reducto.F(true),
 			ReturnFigureImages:     reducto.F(true),
+			ReturnTableImages:      reducto.F(true),
 			RotatePages:            reducto.F(true),
 		}),
 		Options: reducto.F(shared.BaseProcessingOptionsParam{
