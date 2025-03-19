@@ -106,7 +106,8 @@ type BaseProcessingOptionsParam = shared.BaseProcessingOptionsParam
 type BaseProcessingOptionsChunkingParam = shared.BaseProcessingOptionsChunkingParam
 
 // The mode to use for chunking. Section chunks according to sections in the
-// document. Page chunks according to pages. Disabled returns a single chunk.
+// document. Page chunks according to pages. Page sections chunks according to both
+// pages and sections. Disabled returns a single chunk.
 //
 // This is an alias to an internal type.
 type BaseProcessingOptionsChunkingChunkMode = shared.BaseProcessingOptionsChunkingChunkMode
@@ -125,6 +126,9 @@ const BaseProcessingOptionsChunkingChunkModeBlock = shared.BaseProcessingOptions
 
 // This is an alias to an internal value.
 const BaseProcessingOptionsChunkingChunkModeDisabled = shared.BaseProcessingOptionsChunkingChunkModeDisabled
+
+// This is an alias to an internal value.
+const BaseProcessingOptionsChunkingChunkModePageSections = shared.BaseProcessingOptionsChunkingChunkModePageSections
 
 // The mode to use for extraction.
 //
