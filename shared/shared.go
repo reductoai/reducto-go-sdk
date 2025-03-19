@@ -196,7 +196,8 @@ func (r BaseProcessingOptionsParam) MarshalJSON() (data []byte, err error) {
 // The configuration options for chunking.
 type BaseProcessingOptionsChunkingParam struct {
 	// The mode to use for chunking. Section chunks according to sections in the
-	// document. Page chunks according to pages. Disabled returns a single chunk.
+	// document. Page chunks according to pages. Page sections chunks according to both
+	// pages and sections. Disabled returns a single chunk.
 	ChunkMode param.Field[BaseProcessingOptionsChunkingChunkMode] `json:"chunk_mode"`
 	// The approximate size of chunks (in characters) that the document will be split
 	// into. Defaults to None, in which case the chunk size is variable between 250 -
@@ -209,20 +210,22 @@ func (r BaseProcessingOptionsChunkingParam) MarshalJSON() (data []byte, err erro
 }
 
 // The mode to use for chunking. Section chunks according to sections in the
-// document. Page chunks according to pages. Disabled returns a single chunk.
+// document. Page chunks according to pages. Page sections chunks according to both
+// pages and sections. Disabled returns a single chunk.
 type BaseProcessingOptionsChunkingChunkMode string
 
 const (
-	BaseProcessingOptionsChunkingChunkModeVariable BaseProcessingOptionsChunkingChunkMode = "variable"
-	BaseProcessingOptionsChunkingChunkModeSection  BaseProcessingOptionsChunkingChunkMode = "section"
-	BaseProcessingOptionsChunkingChunkModePage     BaseProcessingOptionsChunkingChunkMode = "page"
-	BaseProcessingOptionsChunkingChunkModeBlock    BaseProcessingOptionsChunkingChunkMode = "block"
-	BaseProcessingOptionsChunkingChunkModeDisabled BaseProcessingOptionsChunkingChunkMode = "disabled"
+	BaseProcessingOptionsChunkingChunkModeVariable     BaseProcessingOptionsChunkingChunkMode = "variable"
+	BaseProcessingOptionsChunkingChunkModeSection      BaseProcessingOptionsChunkingChunkMode = "section"
+	BaseProcessingOptionsChunkingChunkModePage         BaseProcessingOptionsChunkingChunkMode = "page"
+	BaseProcessingOptionsChunkingChunkModeBlock        BaseProcessingOptionsChunkingChunkMode = "block"
+	BaseProcessingOptionsChunkingChunkModeDisabled     BaseProcessingOptionsChunkingChunkMode = "disabled"
+	BaseProcessingOptionsChunkingChunkModePageSections BaseProcessingOptionsChunkingChunkMode = "page_sections"
 )
 
 func (r BaseProcessingOptionsChunkingChunkMode) IsKnown() bool {
 	switch r {
-	case BaseProcessingOptionsChunkingChunkModeVariable, BaseProcessingOptionsChunkingChunkModeSection, BaseProcessingOptionsChunkingChunkModePage, BaseProcessingOptionsChunkingChunkModeBlock, BaseProcessingOptionsChunkingChunkModeDisabled:
+	case BaseProcessingOptionsChunkingChunkModeVariable, BaseProcessingOptionsChunkingChunkModeSection, BaseProcessingOptionsChunkingChunkModePage, BaseProcessingOptionsChunkingChunkModeBlock, BaseProcessingOptionsChunkingChunkModeDisabled, BaseProcessingOptionsChunkingChunkModePageSections:
 		return true
 	}
 	return false
