@@ -216,6 +216,17 @@ type ExperimentalProcessingOptionsParam = shared.ExperimentalProcessingOptionsPa
 // This is an alias to an internal type.
 type ExperimentalProcessingOptionsEnrichParam = shared.ExperimentalProcessingOptionsEnrichParam
 
+// The mode to use for enrichment. Defaults to standard
+//
+// This is an alias to an internal type.
+type ExperimentalProcessingOptionsEnrichMode = shared.ExperimentalProcessingOptionsEnrichMode
+
+// This is an alias to an internal value.
+const ExperimentalProcessingOptionsEnrichModeStandard = shared.ExperimentalProcessingOptionsEnrichModeStandard
+
+// This is an alias to an internal value.
+const ExperimentalProcessingOptionsEnrichModePage = shared.ExperimentalProcessingOptionsEnrichModePage
+
 // This is an alias to an internal type.
 type ExtractResponse = shared.ExtractResponse
 
