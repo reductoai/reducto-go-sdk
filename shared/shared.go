@@ -388,12 +388,30 @@ type ExperimentalProcessingOptionsEnrichParam struct {
 	// extracted content. Note: enabling enrich requires tables be outputted in
 	// markdown format. Defaults to False.
 	Enabled param.Field[bool] `json:"enabled"`
+	// The mode to use for enrichment. Defaults to standard
+	Mode param.Field[ExperimentalProcessingOptionsEnrichMode] `json:"mode"`
 	// Add information to the prompt for enrichment.
 	Prompt param.Field[string] `json:"prompt"`
 }
 
 func (r ExperimentalProcessingOptionsEnrichParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// The mode to use for enrichment. Defaults to standard
+type ExperimentalProcessingOptionsEnrichMode string
+
+const (
+	ExperimentalProcessingOptionsEnrichModeStandard ExperimentalProcessingOptionsEnrichMode = "standard"
+	ExperimentalProcessingOptionsEnrichModePage     ExperimentalProcessingOptionsEnrichMode = "page"
+)
+
+func (r ExperimentalProcessingOptionsEnrichMode) IsKnown() bool {
+	switch r {
+	case ExperimentalProcessingOptionsEnrichModeStandard, ExperimentalProcessingOptionsEnrichModePage:
+		return true
+	}
+	return false
 }
 
 type ExtractResponse struct {

@@ -59,6 +59,7 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 				EnableUnderlines:      reducto.F(true),
 				Enrich: reducto.F(shared.ExperimentalProcessingOptionsEnrichParam{
 					Enabled: reducto.F(true),
+					Mode:    reducto.F(shared.ExperimentalProcessingOptionsEnrichModeStandard),
 					Prompt:  reducto.F("prompt"),
 				}),
 				NativeOfficeConversion: reducto.F(true),
@@ -140,6 +141,7 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 			EnableUnderlines:      reducto.F(true),
 			Enrich: reducto.F(shared.ExperimentalProcessingOptionsEnrichParam{
 				Enabled: reducto.F(true),
+				Mode:    reducto.F(shared.ExperimentalProcessingOptionsEnrichModeStandard),
 				Prompt:  reducto.F("prompt"),
 			}),
 			NativeOfficeConversion: reducto.F(true),
