@@ -101,8 +101,10 @@ type ExtractRunJobParams struct {
 	Priority param.Field[bool] `json:"priority"`
 	// A system prompt to use for the extraction. This is a general prompt that is
 	// applied to the entire document before any other prompts.
-	SystemPrompt param.Field[string]                       `json:"system_prompt"`
-	Webhook      param.Field[shared.WebhookConfigNewParam] `json:"webhook"`
+	SystemPrompt param.Field[string] `json:"system_prompt"`
+	// If chunking should be used for the extraction. Defaults to False.
+	UseChunking param.Field[bool]                         `json:"use_chunking"`
+	Webhook     param.Field[shared.WebhookConfigNewParam] `json:"webhook"`
 }
 
 func (r ExtractRunJobParams) MarshalJSON() (data []byte, err error) {
