@@ -49,6 +49,8 @@ type ExtractConfigParam struct {
 	// A system prompt to use for the extraction. This is a general prompt that is
 	// applied to the entire document before any other prompts.
 	SystemPrompt param.Field[string] `json:"system_prompt"`
+	// If chunking should be used for the extraction. Defaults to False.
+	UseChunking param.Field[bool] `json:"use_chunking"`
 }
 
 func (r ExtractConfigParam) MarshalJSON() (data []byte, err error) {
