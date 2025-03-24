@@ -211,6 +211,15 @@ type BoundingBox = shared.BoundingBox
 // This is an alias to an internal type.
 type ExperimentalProcessingOptionsParam = shared.ExperimentalProcessingOptionsParam
 
+// This is an alias to an internal type.
+type ExperimentalProcessingOptionsCustomFormat = shared.ExperimentalProcessingOptionsCustomFormat
+
+// This is an alias to an internal value.
+const ExperimentalProcessingOptionsCustomFormatAml = shared.ExperimentalProcessingOptionsCustomFormatAml
+
+// This is an alias to an internal value.
+const ExperimentalProcessingOptionsCustomFormatAIUsage = shared.ExperimentalProcessingOptionsCustomFormatAIUsage
+
 // The configuration options for enrichment.
 //
 // This is an alias to an internal type.
