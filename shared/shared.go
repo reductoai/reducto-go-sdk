@@ -125,11 +125,12 @@ const (
 	AdvancedProcessingOptionsTableOutputFormatJsonbbox AdvancedProcessingOptionsTableOutputFormat = "jsonbbox"
 	AdvancedProcessingOptionsTableOutputFormatDynamic  AdvancedProcessingOptionsTableOutputFormat = "dynamic"
 	AdvancedProcessingOptionsTableOutputFormatAIJson   AdvancedProcessingOptionsTableOutputFormat = "ai_json"
+	AdvancedProcessingOptionsTableOutputFormatCsv      AdvancedProcessingOptionsTableOutputFormat = "csv"
 )
 
 func (r AdvancedProcessingOptionsTableOutputFormat) IsKnown() bool {
 	switch r {
-	case AdvancedProcessingOptionsTableOutputFormatHTML, AdvancedProcessingOptionsTableOutputFormatJson, AdvancedProcessingOptionsTableOutputFormatMd, AdvancedProcessingOptionsTableOutputFormatJsonbbox, AdvancedProcessingOptionsTableOutputFormatDynamic, AdvancedProcessingOptionsTableOutputFormatAIJson:
+	case AdvancedProcessingOptionsTableOutputFormatHTML, AdvancedProcessingOptionsTableOutputFormatJson, AdvancedProcessingOptionsTableOutputFormatMd, AdvancedProcessingOptionsTableOutputFormatJsonbbox, AdvancedProcessingOptionsTableOutputFormatDynamic, AdvancedProcessingOptionsTableOutputFormatAIJson, AdvancedProcessingOptionsTableOutputFormatCsv:
 		return true
 	}
 	return false
@@ -374,7 +375,7 @@ type ExperimentalProcessingOptionsParam struct {
 	ReturnFigureImages param.Field[bool] `json:"return_figure_images"`
 	// If table images should be returned in the result. Defaults to False.
 	ReturnTableImages param.Field[bool] `json:"return_table_images"`
-	// Use an orientation model to detect and rotate pages as needed, defaults to False
+	// Use an orientation model to detect and rotate pages as needed, defaults to True
 	RotatePages param.Field[bool] `json:"rotate_pages"`
 }
 
