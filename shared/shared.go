@@ -14,8 +14,6 @@ type AdvancedProcessingOptionsParam struct {
 	// If True, add page markers to the output (e.g. [[PAGE 1 BEGINS HERE]] and
 	// [[PAGE 1 ENDS HERE]] added as blocks to the content). Defaults to False.
 	AddPageMarkers param.Field[bool] `json:"add_page_markers"`
-	// The name of the bucket to use for the document.
-	BucketName param.Field[string] `json:"bucket_name"`
 	// A flag to indicate if the hierarchy of the document should be continued from
 	// chunk to chunk.
 	ContinueHierarchy param.Field[bool] `json:"continue_hierarchy"`
@@ -25,8 +23,6 @@ type AdvancedProcessingOptionsParam struct {
 	ForceFileExtension param.Field[string] `json:"force_file_extension"`
 	// If line breaks should be preserved in the text.
 	KeepLineBreaks param.Field[bool] `json:"keep_line_breaks"`
-	// The AWS KMS key to use for the document.
-	KmsArn param.Field[string] `json:"kms_arn"`
 	// The configuration options for large table chunking (currently only supported on
 	// spreadsheet and CSV files).
 	LargeTableChunking param.Field[AdvancedProcessingOptionsLargeTableChunkingParam] `json:"large_table_chunking"`
@@ -354,7 +350,6 @@ func (r boundingBoxJSON) RawJSON() string {
 }
 
 type ExperimentalProcessingOptionsParam struct {
-	CustomFormat param.Field[ExperimentalProcessingOptionsCustomFormat] `json:"custom_format"`
 	// You probably shouldn't use this. If True, filter out boxes with width greater
 	// than 50% of the document width. Defaults to False. You probably don't want to
 	// use this.
@@ -386,21 +381,6 @@ type ExperimentalProcessingOptionsParam struct {
 
 func (r ExperimentalProcessingOptionsParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type ExperimentalProcessingOptionsCustomFormat string
-
-const (
-	ExperimentalProcessingOptionsCustomFormatAml     ExperimentalProcessingOptionsCustomFormat = "aml"
-	ExperimentalProcessingOptionsCustomFormatAIUsage ExperimentalProcessingOptionsCustomFormat = "ai_usage"
-)
-
-func (r ExperimentalProcessingOptionsCustomFormat) IsKnown() bool {
-	switch r {
-	case ExperimentalProcessingOptionsCustomFormatAml, ExperimentalProcessingOptionsCustomFormatAIUsage:
-		return true
-	}
-	return false
 }
 
 // The configuration options for enrichment.
