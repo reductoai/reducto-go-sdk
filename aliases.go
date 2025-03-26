@@ -77,6 +77,9 @@ const AdvancedProcessingOptionsTableOutputFormatDynamic = shared.AdvancedProcess
 // This is an alias to an internal value.
 const AdvancedProcessingOptionsTableOutputFormatAIJson = shared.AdvancedProcessingOptionsTableOutputFormatAIJson
 
+// This is an alias to an internal value.
+const AdvancedProcessingOptionsTableOutputFormatCsv = shared.AdvancedProcessingOptionsTableOutputFormatCsv
+
 // This is an alias to an internal type.
 type ArrayExtractConfigParam = shared.ArrayExtractConfigParam
 
