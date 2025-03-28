@@ -32,12 +32,10 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
 			AdvancedOptions: reducto.F(shared.AdvancedProcessingOptionsParam{
 				AddPageMarkers:     reducto.F(true),
-				BucketName:         reducto.F("bucket_name"),
 				ContinueHierarchy:  reducto.F(true),
 				DocumentPassword:   reducto.F("document_password"),
 				ForceFileExtension: reducto.F("force_file_extension"),
 				KeepLineBreaks:     reducto.F(true),
-				KmsArn:             reducto.F("kms_arn"),
 				LargeTableChunking: reducto.F(shared.AdvancedProcessingOptionsLargeTableChunkingParam{
 					Enabled: reducto.F(true),
 					Size:    reducto.F(int64(0)),
@@ -54,7 +52,6 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 				TableOutputFormat:          reducto.F(shared.AdvancedProcessingOptionsTableOutputFormatHTML),
 			}),
 			ExperimentalOptions: reducto.F(shared.ExperimentalProcessingOptionsParam{
-				CustomFormat:          reducto.F(shared.ExperimentalProcessingOptionsCustomFormatAIUsage),
 				DangerFilterWideBoxes: reducto.F(true),
 				EnableCheckboxes:      reducto.F(true),
 				EnableEquations:       reducto.F(true),
@@ -90,7 +87,6 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 				}),
 			}),
 		},
-		UserID: reducto.F("user-id"),
 	})
 	if err != nil {
 		var apierr *reducto.Error
@@ -118,12 +114,10 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 		DocumentURL: reducto.F[reducto.ParseRunJobParamsDocumentURLUnion](shared.UnionString("string")),
 		AdvancedOptions: reducto.F(shared.AdvancedProcessingOptionsParam{
 			AddPageMarkers:     reducto.F(true),
-			BucketName:         reducto.F("bucket_name"),
 			ContinueHierarchy:  reducto.F(true),
 			DocumentPassword:   reducto.F("document_password"),
 			ForceFileExtension: reducto.F("force_file_extension"),
 			KeepLineBreaks:     reducto.F(true),
-			KmsArn:             reducto.F("kms_arn"),
 			LargeTableChunking: reducto.F(shared.AdvancedProcessingOptionsLargeTableChunkingParam{
 				Enabled: reducto.F(true),
 				Size:    reducto.F(int64(0)),
@@ -140,7 +134,6 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 			TableOutputFormat:          reducto.F(shared.AdvancedProcessingOptionsTableOutputFormatHTML),
 		}),
 		ExperimentalOptions: reducto.F(shared.ExperimentalProcessingOptionsParam{
-			CustomFormat:          reducto.F(shared.ExperimentalProcessingOptionsCustomFormatAIUsage),
 			DangerFilterWideBoxes: reducto.F(true),
 			EnableCheckboxes:      reducto.F(true),
 			EnableEquations:       reducto.F(true),
@@ -182,7 +175,6 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 			Mode:     reducto.F(shared.WebhookConfigNewModeDisabled),
 			URL:      reducto.F("url"),
 		}),
-		UserID: reducto.F("user-id"),
 	})
 	if err != nil {
 		var apierr *reducto.Error
