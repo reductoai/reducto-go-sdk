@@ -34,6 +34,7 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 				AddPageMarkers:     reducto.F(true),
 				ContinueHierarchy:  reducto.F(true),
 				DocumentPassword:   reducto.F("document_password"),
+				FilterLineNumbers:  reducto.F(true),
 				ForceFileExtension: reducto.F("force_file_extension"),
 				KeepLineBreaks:     reducto.F(true),
 				LargeTableChunking: reducto.F(shared.AdvancedProcessingOptionsLargeTableChunkingParam{
@@ -117,6 +118,7 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 			AddPageMarkers:     reducto.F(true),
 			ContinueHierarchy:  reducto.F(true),
 			DocumentPassword:   reducto.F("document_password"),
+			FilterLineNumbers:  reducto.F(true),
 			ForceFileExtension: reducto.F("force_file_extension"),
 			KeepLineBreaks:     reducto.F(true),
 			LargeTableChunking: reducto.F(shared.AdvancedProcessingOptionsLargeTableChunkingParam{

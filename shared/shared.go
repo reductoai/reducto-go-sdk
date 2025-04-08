@@ -19,6 +19,8 @@ type AdvancedProcessingOptionsParam struct {
 	ContinueHierarchy param.Field[bool] `json:"continue_hierarchy"`
 	// Password to decrypt password-protected documents.
 	DocumentPassword param.Field[string] `json:"document_password"`
+	// If True, filter out line numbers from the output. Defaults to False.
+	FilterLineNumbers param.Field[bool] `json:"filter_line_numbers"`
 	// Force the URL to be downloaded as a specific file extension (e.g. .png).
 	ForceFileExtension param.Field[string] `json:"force_file_extension"`
 	// If line breaks should be preserved in the text.
