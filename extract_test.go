@@ -33,11 +33,13 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 			Schema:      reducto.F[any](map[string]interface{}{}),
 			AdvancedOptions: reducto.F(shared.AdvancedProcessingOptionsParam{
 				AddPageMarkers:     reducto.F(true),
+				BucketName:         reducto.F("bucket_name"),
 				ContinueHierarchy:  reducto.F(true),
 				DocumentPassword:   reducto.F("document_password"),
 				FilterLineNumbers:  reducto.F(true),
 				ForceFileExtension: reducto.F("force_file_extension"),
 				KeepLineBreaks:     reducto.F(true),
+				KmsArn:             reducto.F("kms_arn"),
 				LargeTableChunking: reducto.F(shared.AdvancedProcessingOptionsLargeTableChunkingParam{
 					Enabled: reducto.F(true),
 					Size:    reducto.F(int64(0)),
@@ -60,6 +62,7 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 				StreamingExtractItemDensity: reducto.F(int64(0)),
 			}),
 			ExperimentalOptions: reducto.F(shared.ExperimentalProcessingOptionsParam{
+				CustomFormat:          reducto.F(shared.ExperimentalProcessingOptionsCustomFormatAml),
 				DangerFilterWideBoxes: reducto.F(true),
 				EnableCheckboxes:      reducto.F(true),
 				EnableEquations:       reducto.F(true),
@@ -70,6 +73,7 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 					Mode:    reducto.F(shared.ExperimentalProcessingOptionsEnrichModeStandard),
 					Prompt:  reducto.F("prompt"),
 				}),
+				ExtraMetadata:          reducto.F[any](map[string]interface{}{}),
 				NativeOfficeConversion: reducto.F(true),
 				ReturnFigureImages:     reducto.F(true),
 				ReturnTableImages:      reducto.F(true),
@@ -99,6 +103,7 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 			SystemPrompt: reducto.F("system_prompt"),
 			UseChunking:  reducto.F(true),
 		},
+		UserID: reducto.F("user-id"),
 	})
 	if err != nil {
 		var apierr *reducto.Error
@@ -127,11 +132,13 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 		Schema:      reducto.F[any](map[string]interface{}{}),
 		AdvancedOptions: reducto.F(shared.AdvancedProcessingOptionsParam{
 			AddPageMarkers:     reducto.F(true),
+			BucketName:         reducto.F("bucket_name"),
 			ContinueHierarchy:  reducto.F(true),
 			DocumentPassword:   reducto.F("document_password"),
 			FilterLineNumbers:  reducto.F(true),
 			ForceFileExtension: reducto.F("force_file_extension"),
 			KeepLineBreaks:     reducto.F(true),
+			KmsArn:             reducto.F("kms_arn"),
 			LargeTableChunking: reducto.F(shared.AdvancedProcessingOptionsLargeTableChunkingParam{
 				Enabled: reducto.F(true),
 				Size:    reducto.F(int64(0)),
@@ -154,6 +161,7 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 			StreamingExtractItemDensity: reducto.F(int64(0)),
 		}),
 		ExperimentalOptions: reducto.F(shared.ExperimentalProcessingOptionsParam{
+			CustomFormat:          reducto.F(shared.ExperimentalProcessingOptionsCustomFormatAml),
 			DangerFilterWideBoxes: reducto.F(true),
 			EnableCheckboxes:      reducto.F(true),
 			EnableEquations:       reducto.F(true),
@@ -164,6 +172,7 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 				Mode:    reducto.F(shared.ExperimentalProcessingOptionsEnrichModeStandard),
 				Prompt:  reducto.F("prompt"),
 			}),
+			ExtraMetadata:          reducto.F[any](map[string]interface{}{}),
 			NativeOfficeConversion: reducto.F(true),
 			ReturnFigureImages:     reducto.F(true),
 			ReturnTableImages:      reducto.F(true),
@@ -198,6 +207,7 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 			Mode:     reducto.F(shared.WebhookConfigNewModeDisabled),
 			URL:      reducto.F("url"),
 		}),
+		UserID: reducto.F("user-id"),
 	})
 	if err != nil {
 		var apierr *reducto.Error
