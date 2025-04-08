@@ -46,6 +46,10 @@ type ExtractConfigParam struct {
 	// If citations should be generated for the extracted content.
 	GenerateCitations param.Field[bool]                              `json:"generate_citations"`
 	Options           param.Field[shared.BaseProcessingOptionsParam] `json:"options"`
+	// If True, attempts to process the job with priority if the user has priority
+	// processing budget available; by default, sync jobs are prioritized above async
+	// jobs.
+	Priority param.Field[bool] `json:"priority"`
 	// A system prompt to use for the extraction. This is a general prompt that is
 	// applied to the entire document before any other prompts.
 	SystemPrompt param.Field[string] `json:"system_prompt"`
@@ -86,6 +90,10 @@ type ParseConfigParam struct {
 	AdvancedOptions     param.Field[shared.AdvancedProcessingOptionsParam]     `json:"advanced_options"`
 	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
 	Options             param.Field[shared.BaseProcessingOptionsParam]         `json:"options"`
+	// If True, attempts to process the job with priority if the user has priority
+	// processing budget available; by default, sync jobs are prioritized above async
+	// jobs.
+	Priority param.Field[bool] `json:"priority"`
 }
 
 func (r ParseConfigParam) MarshalJSON() (data []byte, err error) {

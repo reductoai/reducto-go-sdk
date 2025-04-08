@@ -82,6 +82,10 @@ type SplitRunParams struct {
 	AdvancedOptions     param.Field[shared.AdvancedProcessingOptionsParam]     `json:"advanced_options"`
 	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
 	Options             param.Field[shared.BaseProcessingOptionsParam]         `json:"options"`
+	// If True, attempts to process the job with priority if the user has priority
+	// processing budget available; by default, sync jobs are prioritized above async
+	// jobs.
+	Priority param.Field[bool] `json:"priority"`
 	// The rules for splitting the document.
 	SplitRules param.Field[string] `json:"split_rules"`
 }

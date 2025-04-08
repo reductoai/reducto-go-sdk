@@ -90,6 +90,7 @@ func TestSplitRunWithOptionalParams(t *testing.T) {
 				Prompt:  reducto.F("prompt"),
 			}),
 		}),
+		Priority:   reducto.F(true),
 		SplitRules: reducto.F("split_rules"),
 	})
 	if err != nil {

@@ -94,6 +94,7 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 					Prompt:  reducto.F("prompt"),
 				}),
 			}),
+			Priority:     reducto.F(true),
 			SystemPrompt: reducto.F("system_prompt"),
 			UseChunking:  reducto.F(true),
 		},
