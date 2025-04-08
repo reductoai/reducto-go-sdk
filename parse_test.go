@@ -86,6 +86,7 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 					Prompt:  reducto.F("prompt"),
 				}),
 			}),
+			Priority: reducto.F(true),
 		},
 	})
 	if err != nil {
