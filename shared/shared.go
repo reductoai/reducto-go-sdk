@@ -376,7 +376,8 @@ type ExperimentalProcessingOptionsParam struct {
 	// If table images should be returned in the result. Defaults to False.
 	ReturnTableImages param.Field[bool] `json:"return_table_images"`
 	// Use an orientation model to detect and rotate pages as needed, defaults to True
-	RotatePages param.Field[bool] `json:"rotate_pages"`
+	RotatePages param.Field[bool]      `json:"rotate_pages"`
+	ExtraFields map[string]interface{} `json:"-,extras"`
 }
 
 func (r ExperimentalProcessingOptionsParam) MarshalJSON() (data []byte, err error) {
