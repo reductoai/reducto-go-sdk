@@ -36,11 +36,13 @@ func TestSplitRunWithOptionalParams(t *testing.T) {
 		}}),
 		AdvancedOptions: reducto.F(shared.AdvancedProcessingOptionsParam{
 			AddPageMarkers:     reducto.F(true),
+			BucketName:         reducto.F("bucket_name"),
 			ContinueHierarchy:  reducto.F(true),
 			DocumentPassword:   reducto.F("document_password"),
 			FilterLineNumbers:  reducto.F(true),
 			ForceFileExtension: reducto.F("force_file_extension"),
 			KeepLineBreaks:     reducto.F(true),
+			KmsArn:             reducto.F("kms_arn"),
 			LargeTableChunking: reducto.F(shared.AdvancedProcessingOptionsLargeTableChunkingParam{
 				Enabled: reducto.F(true),
 				Size:    reducto.F(int64(0)),
@@ -57,6 +59,7 @@ func TestSplitRunWithOptionalParams(t *testing.T) {
 			TableOutputFormat:          reducto.F(shared.AdvancedProcessingOptionsTableOutputFormatHTML),
 		}),
 		ExperimentalOptions: reducto.F(shared.ExperimentalProcessingOptionsParam{
+			CustomFormat:          reducto.F(shared.ExperimentalProcessingOptionsCustomFormatAml),
 			DangerFilterWideBoxes: reducto.F(true),
 			EnableCheckboxes:      reducto.F(true),
 			EnableEquations:       reducto.F(true),
@@ -67,6 +70,7 @@ func TestSplitRunWithOptionalParams(t *testing.T) {
 				Mode:    reducto.F(shared.ExperimentalProcessingOptionsEnrichModeStandard),
 				Prompt:  reducto.F("prompt"),
 			}),
+			ExtraMetadata:          reducto.F[any](map[string]interface{}{}),
 			NativeOfficeConversion: reducto.F(true),
 			ReturnFigureImages:     reducto.F(true),
 			ReturnTableImages:      reducto.F(true),
@@ -125,11 +129,13 @@ func TestSplitRunJobWithOptionalParams(t *testing.T) {
 		}}),
 		AdvancedOptions: reducto.F(shared.AdvancedProcessingOptionsParam{
 			AddPageMarkers:     reducto.F(true),
+			BucketName:         reducto.F("bucket_name"),
 			ContinueHierarchy:  reducto.F(true),
 			DocumentPassword:   reducto.F("document_password"),
 			FilterLineNumbers:  reducto.F(true),
 			ForceFileExtension: reducto.F("force_file_extension"),
 			KeepLineBreaks:     reducto.F(true),
+			KmsArn:             reducto.F("kms_arn"),
 			LargeTableChunking: reducto.F(shared.AdvancedProcessingOptionsLargeTableChunkingParam{
 				Enabled: reducto.F(true),
 				Size:    reducto.F(int64(0)),
@@ -146,6 +152,7 @@ func TestSplitRunJobWithOptionalParams(t *testing.T) {
 			TableOutputFormat:          reducto.F(shared.AdvancedProcessingOptionsTableOutputFormatHTML),
 		}),
 		ExperimentalOptions: reducto.F(shared.ExperimentalProcessingOptionsParam{
+			CustomFormat:          reducto.F(shared.ExperimentalProcessingOptionsCustomFormatAml),
 			DangerFilterWideBoxes: reducto.F(true),
 			EnableCheckboxes:      reducto.F(true),
 			EnableEquations:       reducto.F(true),
@@ -156,6 +163,7 @@ func TestSplitRunJobWithOptionalParams(t *testing.T) {
 				Mode:    reducto.F(shared.ExperimentalProcessingOptionsEnrichModeStandard),
 				Prompt:  reducto.F("prompt"),
 			}),
+			ExtraMetadata:          reducto.F[any](map[string]interface{}{}),
 			NativeOfficeConversion: reducto.F(true),
 			ReturnFigureImages:     reducto.F(true),
 			ReturnTableImages:      reducto.F(true),

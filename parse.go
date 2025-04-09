@@ -4,6 +4,7 @@ package reducto
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/reductoai/reducto-go-sdk/internal/apijson"
@@ -33,18 +34,24 @@ func NewParseService(opts ...option.RequestOption) (r *ParseService) {
 }
 
 // Parse
-func (r *ParseService) Run(ctx context.Context, body ParseRunParams, opts ...option.RequestOption) (res *shared.ParseResponse, err error) {
+func (r *ParseService) Run(ctx context.Context, params ParseRunParams, opts ...option.RequestOption) (res *shared.ParseResponse, err error) {
+	if params.UserID.Present {
+		opts = append(opts, option.WithHeader("user-id", fmt.Sprintf("%s", params.UserID)))
+	}
 	opts = append(r.Options[:], opts...)
 	path := "parse"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Async Parse
-func (r *ParseService) RunJob(ctx context.Context, body ParseRunJobParams, opts ...option.RequestOption) (res *ParseRunJobResponse, err error) {
+func (r *ParseService) RunJob(ctx context.Context, params ParseRunJobParams, opts ...option.RequestOption) (res *ParseRunJobResponse, err error) {
+	if params.UserID.Present {
+		opts = append(opts, option.WithHeader("user-id", fmt.Sprintf("%s", params.UserID)))
+	}
 	opts = append(r.Options[:], opts...)
 	path := "parse_async"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
@@ -70,7 +77,8 @@ func (r parseRunJobResponseJSON) RawJSON() string {
 }
 
 type ParseRunParams struct {
-	ParseConfig ParseConfigParam `json:"parse_config,required"`
+	ParseConfig ParseConfigParam    `json:"parse_config,required"`
+	UserID      param.Field[string] `header:"user-id"`
 }
 
 func (r ParseRunParams) MarshalJSON() (data []byte, err error) {
@@ -93,6 +101,7 @@ type ParseRunJobParams struct {
 	// jobs.
 	Priority param.Field[bool]                         `json:"priority"`
 	Webhook  param.Field[shared.WebhookConfigNewParam] `json:"webhook"`
+	UserID   param.Field[string]                       `header:"user-id"`
 }
 
 func (r ParseRunJobParams) MarshalJSON() (data []byte, err error) {
