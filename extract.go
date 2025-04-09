@@ -4,6 +4,7 @@ package reducto
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/reductoai/reducto-go-sdk/internal/apijson"
@@ -33,18 +34,24 @@ func NewExtractService(opts ...option.RequestOption) (r *ExtractService) {
 }
 
 // Extract
-func (r *ExtractService) Run(ctx context.Context, body ExtractRunParams, opts ...option.RequestOption) (res *shared.ExtractResponse, err error) {
+func (r *ExtractService) Run(ctx context.Context, params ExtractRunParams, opts ...option.RequestOption) (res *shared.ExtractResponse, err error) {
+	if params.UserID.Present {
+		opts = append(opts, option.WithHeader("user-id", fmt.Sprintf("%s", params.UserID)))
+	}
 	opts = append(r.Options[:], opts...)
 	path := "extract"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
 // Extract Async
-func (r *ExtractService) RunJob(ctx context.Context, body ExtractRunJobParams, opts ...option.RequestOption) (res *ExtractRunJobResponse, err error) {
+func (r *ExtractService) RunJob(ctx context.Context, params ExtractRunJobParams, opts ...option.RequestOption) (res *ExtractRunJobResponse, err error) {
+	if params.UserID.Present {
+		opts = append(opts, option.WithHeader("user-id", fmt.Sprintf("%s", params.UserID)))
+	}
 	opts = append(r.Options[:], opts...)
 	path := "extract_async"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
@@ -70,7 +77,8 @@ func (r extractRunJobResponseJSON) RawJSON() string {
 }
 
 type ExtractRunParams struct {
-	ExtractConfig ExtractConfigParam `json:"extract_config,required"`
+	ExtractConfig ExtractConfigParam  `json:"extract_config,required"`
+	UserID        param.Field[string] `header:"user-id"`
 }
 
 func (r ExtractRunParams) MarshalJSON() (data []byte, err error) {
@@ -105,6 +113,7 @@ type ExtractRunJobParams struct {
 	// If chunking should be used for the extraction. Defaults to False.
 	UseChunking param.Field[bool]                         `json:"use_chunking"`
 	Webhook     param.Field[shared.WebhookConfigNewParam] `json:"webhook"`
+	UserID      param.Field[string]                       `header:"user-id"`
 }
 
 func (r ExtractRunJobParams) MarshalJSON() (data []byte, err error) {
