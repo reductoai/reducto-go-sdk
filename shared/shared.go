@@ -365,9 +365,6 @@ type ExperimentalProcessingOptionsParam struct {
 	// Add <sub> tag around subscripts and <sup> tag around superscripts, defaults to
 	// False
 	EnableScripts param.Field[bool] `json:"enable_scripts"`
-	// Add <u> tag around text that's underlined and surround strikethroughs and
-	// underlines with <change> tags, defaults to False
-	EnableUnderlines param.Field[bool] `json:"enable_underlines"`
 	// The configuration options for enrichment.
 	Enrich param.Field[ExperimentalProcessingOptionsEnrichParam] `json:"enrich"`
 	// Instead of using LibreOffice, when enabled, this flag uses a Windows VM to

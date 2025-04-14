@@ -61,7 +61,6 @@ func TestSplitRunWithOptionalParams(t *testing.T) {
 			EnableCheckboxes:      reducto.F(true),
 			EnableEquations:       reducto.F(true),
 			EnableScripts:         reducto.F(true),
-			EnableUnderlines:      reducto.F(true),
 			Enrich: reducto.F(shared.ExperimentalProcessingOptionsEnrichParam{
 				Enabled: reducto.F(true),
 				Mode:    reducto.F(shared.ExperimentalProcessingOptionsEnrichModeStandard),
@@ -150,7 +149,6 @@ func TestSplitRunJobWithOptionalParams(t *testing.T) {
 			EnableCheckboxes:      reducto.F(true),
 			EnableEquations:       reducto.F(true),
 			EnableScripts:         reducto.F(true),
-			EnableUnderlines:      reducto.F(true),
 			Enrich: reducto.F(shared.ExperimentalProcessingOptionsEnrichParam{
 				Enabled: reducto.F(true),
 				Mode:    reducto.F(shared.ExperimentalProcessingOptionsEnrichModeStandard),
