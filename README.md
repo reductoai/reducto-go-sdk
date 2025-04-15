@@ -2,8 +2,8 @@
 
 <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk"><img src="https://pkg.go.dev/badge/github.com/reductoai/reducto-go-sdk.svg" alt="Go Reference"></a>
 
-The Reducto Go library provides convenient access to [the Reducto REST
-API](https://docs.reductoai.com) from applications written in Go. The full API of this library can be found in [api.md](api.md).
+The Reducto Go library provides convenient access to the [Reducto REST API](https://docs.reductoai.com)
+from applications written in Go.
 
 It is generated with [Stainless](https://www.stainless.com/).
 
