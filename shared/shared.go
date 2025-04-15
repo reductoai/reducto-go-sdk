@@ -405,11 +405,12 @@ type ExperimentalProcessingOptionsEnrichMode string
 const (
 	ExperimentalProcessingOptionsEnrichModeStandard ExperimentalProcessingOptionsEnrichMode = "standard"
 	ExperimentalProcessingOptionsEnrichModePage     ExperimentalProcessingOptionsEnrichMode = "page"
+	ExperimentalProcessingOptionsEnrichModeTable    ExperimentalProcessingOptionsEnrichMode = "table"
 )
 
 func (r ExperimentalProcessingOptionsEnrichMode) IsKnown() bool {
 	switch r {
-	case ExperimentalProcessingOptionsEnrichModeStandard, ExperimentalProcessingOptionsEnrichModePage:
+	case ExperimentalProcessingOptionsEnrichModeStandard, ExperimentalProcessingOptionsEnrichModePage, ExperimentalProcessingOptionsEnrichModeTable:
 		return true
 	}
 	return false
