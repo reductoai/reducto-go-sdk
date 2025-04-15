@@ -230,6 +230,9 @@ const ExperimentalProcessingOptionsEnrichModeStandard = shared.ExperimentalProce
 // This is an alias to an internal value.
 const ExperimentalProcessingOptionsEnrichModePage = shared.ExperimentalProcessingOptionsEnrichModePage
 
+// This is an alias to an internal value.
+const ExperimentalProcessingOptionsEnrichModeTable = shared.ExperimentalProcessingOptionsEnrichModeTable
+
 // This is an alias to an internal type.
 type ExtractResponse = shared.ExtractResponse
 
