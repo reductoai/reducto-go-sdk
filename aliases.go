@@ -188,9 +188,6 @@ const BaseProcessingOptionsFilterBlockText = shared.BaseProcessingOptionsFilterB
 // This is an alias to an internal value.
 const BaseProcessingOptionsFilterBlockComment = shared.BaseProcessingOptionsFilterBlockComment
 
-// This is an alias to an internal value.
-const BaseProcessingOptionsFilterBlockDiscard = shared.BaseProcessingOptionsFilterBlockDiscard
-
 // The mode to use for OCR. If agentic is enabled, at a small cost table OCR will
 // be automatically edited.
 //
@@ -300,9 +297,6 @@ const ParseResponseResultFullResultChunksBlocksTypeText = shared.ParseResponseRe
 
 // This is an alias to an internal value.
 const ParseResponseResultFullResultChunksBlocksTypeComment = shared.ParseResponseResultFullResultChunksBlocksTypeComment
-
-// This is an alias to an internal value.
-const ParseResponseResultFullResultChunksBlocksTypeDiscard = shared.ParseResponseResultFullResultChunksBlocksTypeDiscard
 
 // type = 'full'
 //

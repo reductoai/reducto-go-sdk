@@ -36,6 +36,8 @@ type AdvancedProcessingOptionsParam struct {
 	OcrSystem param.Field[AdvancedProcessingOptionsOcrSystem] `json:"ocr_system"`
 	// The page range to process. By default, the entire document is processed.
 	PageRange param.Field[AdvancedProcessingOptionsPageRangeUnionParam] `json:"page_range"`
+	// If True, pull in PDF comments from the document. Defaults to False.
+	ReadComments param.Field[bool] `json:"read_comments"`
 	// If True, remove text formatting from the output (e.g. hyphens for list items).
 	// Defaults to False.
 	RemoveTextFormatting param.Field[bool] `json:"remove_text_formatting"`
@@ -279,12 +281,11 @@ const (
 	BaseProcessingOptionsFilterBlockKeyValue      BaseProcessingOptionsFilterBlock = "Key Value"
 	BaseProcessingOptionsFilterBlockText          BaseProcessingOptionsFilterBlock = "Text"
 	BaseProcessingOptionsFilterBlockComment       BaseProcessingOptionsFilterBlock = "Comment"
-	BaseProcessingOptionsFilterBlockDiscard       BaseProcessingOptionsFilterBlock = "Discard"
 )
 
 func (r BaseProcessingOptionsFilterBlock) IsKnown() bool {
 	switch r {
-	case BaseProcessingOptionsFilterBlockHeader, BaseProcessingOptionsFilterBlockFooter, BaseProcessingOptionsFilterBlockTitle, BaseProcessingOptionsFilterBlockSectionHeader, BaseProcessingOptionsFilterBlockPageNumber, BaseProcessingOptionsFilterBlockListItem, BaseProcessingOptionsFilterBlockFigure, BaseProcessingOptionsFilterBlockTable, BaseProcessingOptionsFilterBlockKeyValue, BaseProcessingOptionsFilterBlockText, BaseProcessingOptionsFilterBlockComment, BaseProcessingOptionsFilterBlockDiscard:
+	case BaseProcessingOptionsFilterBlockHeader, BaseProcessingOptionsFilterBlockFooter, BaseProcessingOptionsFilterBlockTitle, BaseProcessingOptionsFilterBlockSectionHeader, BaseProcessingOptionsFilterBlockPageNumber, BaseProcessingOptionsFilterBlockListItem, BaseProcessingOptionsFilterBlockFigure, BaseProcessingOptionsFilterBlockTable, BaseProcessingOptionsFilterBlockKeyValue, BaseProcessingOptionsFilterBlockText, BaseProcessingOptionsFilterBlockComment:
 		return true
 	}
 	return false
@@ -709,12 +710,11 @@ const (
 	ParseResponseResultFullResultChunksBlocksTypeKeyValue      ParseResponseResultFullResultChunksBlocksType = "Key Value"
 	ParseResponseResultFullResultChunksBlocksTypeText          ParseResponseResultFullResultChunksBlocksType = "Text"
 	ParseResponseResultFullResultChunksBlocksTypeComment       ParseResponseResultFullResultChunksBlocksType = "Comment"
-	ParseResponseResultFullResultChunksBlocksTypeDiscard       ParseResponseResultFullResultChunksBlocksType = "Discard"
 )
 
 func (r ParseResponseResultFullResultChunksBlocksType) IsKnown() bool {
 	switch r {
-	case ParseResponseResultFullResultChunksBlocksTypeHeader, ParseResponseResultFullResultChunksBlocksTypeFooter, ParseResponseResultFullResultChunksBlocksTypeTitle, ParseResponseResultFullResultChunksBlocksTypeSectionHeader, ParseResponseResultFullResultChunksBlocksTypePageNumber, ParseResponseResultFullResultChunksBlocksTypeListItem, ParseResponseResultFullResultChunksBlocksTypeFigure, ParseResponseResultFullResultChunksBlocksTypeTable, ParseResponseResultFullResultChunksBlocksTypeKeyValue, ParseResponseResultFullResultChunksBlocksTypeText, ParseResponseResultFullResultChunksBlocksTypeComment, ParseResponseResultFullResultChunksBlocksTypeDiscard:
+	case ParseResponseResultFullResultChunksBlocksTypeHeader, ParseResponseResultFullResultChunksBlocksTypeFooter, ParseResponseResultFullResultChunksBlocksTypeTitle, ParseResponseResultFullResultChunksBlocksTypeSectionHeader, ParseResponseResultFullResultChunksBlocksTypePageNumber, ParseResponseResultFullResultChunksBlocksTypeListItem, ParseResponseResultFullResultChunksBlocksTypeFigure, ParseResponseResultFullResultChunksBlocksTypeTable, ParseResponseResultFullResultChunksBlocksTypeKeyValue, ParseResponseResultFullResultChunksBlocksTypeText, ParseResponseResultFullResultChunksBlocksTypeComment:
 		return true
 	}
 	return false
