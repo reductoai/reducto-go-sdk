@@ -328,7 +328,7 @@ type BoundingBox struct {
 	Top   float64 `json:"top,required"`
 	Width float64 `json:"width,required"`
 	// The page number in the original document of the bounding box (1-indexed).
-	OriginalPage int64           `json:"original_page,nullable"`
+	OriginalPage int64           `json:"original_page"`
 	JSON         boundingBoxJSON `json:"-"`
 }
 
