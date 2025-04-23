@@ -33,7 +33,8 @@ const AdvancedProcessingOptionsOcrSystemMultilingual = shared.AdvancedProcessing
 // This is an alias to an internal value.
 const AdvancedProcessingOptionsOcrSystemCombined = shared.AdvancedProcessingOptionsOcrSystemCombined
 
-// The page range to process. By default, the entire document is processed.
+// The page range to process (1-indexed). By default, the entire document is
+// processed.
 //
 // This is an alias to an internal type.
 type AdvancedProcessingOptionsPageRangeUnionParam = shared.AdvancedProcessingOptionsPageRangeUnionParam
@@ -41,8 +42,8 @@ type AdvancedProcessingOptionsPageRangeUnionParam = shared.AdvancedProcessingOpt
 // This is an alias to an internal type.
 type AdvancedProcessingOptionsPageRangeArrayParam = shared.AdvancedProcessingOptionsPageRangeArrayParam
 
-// On a spreadsheet, the algorithm that is used to split up sheets into multiple
-// tables.
+// In a spreadsheet with different tables inside, we enable splitting up the tables
+// by default. Disabling will register as one large table.
 //
 // This is an alias to an internal type.
 type AdvancedProcessingOptionsSpreadsheetTableClustering = shared.AdvancedProcessingOptionsSpreadsheetTableClustering
@@ -103,14 +104,16 @@ const ArrayExtractConfigModeNoOverlap = shared.ArrayExtractConfigModeNoOverlap
 // This is an alias to an internal type.
 type BaseProcessingOptionsParam = shared.BaseProcessingOptionsParam
 
-// The configuration options for chunking.
+// The configuration options for chunking. Chunking is commonly used for RAG
+// usecases.
 //
 // This is an alias to an internal type.
 type BaseProcessingOptionsChunkingParam = shared.BaseProcessingOptionsChunkingParam
 
-// The mode to use for chunking. Section chunks according to sections in the
-// document. Page chunks according to pages. Page sections chunks according to both
-// pages and sections. Disabled returns a single chunk.
+// Choose how to partition chunks. Variable mode chunks by character length and
+// visual context. Section mode chunks by section headers. Page mode chunks
+// according to pages. Page sections mode chunks first by page, then by sections
+// within each page. Disabled returns one single chunk.
 //
 // This is an alias to an internal type.
 type BaseProcessingOptionsChunkingChunkMode = shared.BaseProcessingOptionsChunkingChunkMode
@@ -133,7 +136,8 @@ const BaseProcessingOptionsChunkingChunkModeDisabled = shared.BaseProcessingOpti
 // This is an alias to an internal value.
 const BaseProcessingOptionsChunkingChunkModePageSections = shared.BaseProcessingOptionsChunkingChunkModePageSections
 
-// The mode to use for extraction.
+// The mode to use for extraction. Metadata/hybrid are only recommended with high
+// quality metadata embeddings.
 //
 // This is an alias to an internal type.
 type BaseProcessingOptionsExtractionMode = shared.BaseProcessingOptionsExtractionMode
@@ -188,8 +192,8 @@ const BaseProcessingOptionsFilterBlockText = shared.BaseProcessingOptionsFilterB
 // This is an alias to an internal value.
 const BaseProcessingOptionsFilterBlockComment = shared.BaseProcessingOptionsFilterBlockComment
 
-// The mode to use for OCR. If agentic is enabled, at a small cost table OCR will
-// be automatically edited.
+// The mode to use for OCR. Agentic mode adds an extra pass, correcting any
+// table/text mistakes at a small cost.
 //
 // This is an alias to an internal type.
 type BaseProcessingOptionsOcrMode = shared.BaseProcessingOptionsOcrMode
@@ -229,6 +233,17 @@ const ExperimentalProcessingOptionsEnrichModePage = shared.ExperimentalProcessin
 
 // This is an alias to an internal value.
 const ExperimentalProcessingOptionsEnrichModeTable = shared.ExperimentalProcessingOptionsEnrichModeTable
+
+// The layout model to use for the document. This will be deprecated in the future.
+//
+// This is an alias to an internal type.
+type ExperimentalProcessingOptionsLayoutModel = shared.ExperimentalProcessingOptionsLayoutModel
+
+// This is an alias to an internal value.
+const ExperimentalProcessingOptionsLayoutModelDefault = shared.ExperimentalProcessingOptionsLayoutModelDefault
+
+// This is an alias to an internal value.
+const ExperimentalProcessingOptionsLayoutModelBeta = shared.ExperimentalProcessingOptionsLayoutModelBeta
 
 // This is an alias to an internal type.
 type ExtractResponse = shared.ExtractResponse
