@@ -76,8 +76,6 @@ type SplitRunParams struct {
 	//  2. A presigned S3 URL
 	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 	//     uploading a document
-	//  4. A job_id (jobid://) or a list of job_ids (jobid://) obtained from a previous
-	//     /parse endpoint
 	DocumentURL param.Field[SplitRunParamsDocumentURLUnion] `json:"document_url,required"`
 	// The configuration options for processing the document.
 	SplitDescription    param.Field[[]shared.SplitCategoryParam]               `json:"split_description,required"`
@@ -88,7 +86,7 @@ type SplitRunParams struct {
 	// processing budget available; by default, sync jobs are prioritized above async
 	// jobs.
 	Priority param.Field[bool] `json:"priority"`
-	// The prompt that describes rules for splitting the document.
+	// The rules for splitting the document.
 	SplitRules param.Field[string] `json:"split_rules"`
 }
 
@@ -102,18 +100,11 @@ func (r SplitRunParams) MarshalJSON() (data []byte, err error) {
 //  2. A presigned S3 URL
 //  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 //     uploading a document
-//  4. A job_id (jobid://) or a list of job_ids (jobid://) obtained from a previous
-//     /parse endpoint
 //
-// Satisfied by [shared.UnionString], [SplitRunParamsDocumentURLArray],
-// [shared.UploadParam].
+// Satisfied by [shared.UnionString], [shared.UploadParam].
 type SplitRunParamsDocumentURLUnion interface {
 	ImplementsSplitRunParamsDocumentURLUnion()
 }
-
-type SplitRunParamsDocumentURLArray []string
-
-func (r SplitRunParamsDocumentURLArray) ImplementsSplitRunParamsDocumentURLUnion() {}
 
 type SplitRunJobParams struct {
 	// The URL of the document to be processed. You can provide one of the following:
@@ -122,8 +113,6 @@ type SplitRunJobParams struct {
 	//  2. A presigned S3 URL
 	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 	//     uploading a document
-	//  4. A job_id (jobid://) or a list of job_ids (jobid://) obtained from a previous
-	//     /parse endpoint
 	DocumentURL param.Field[SplitRunJobParamsDocumentURLUnion] `json:"document_url,required"`
 	// The configuration options for processing the document.
 	SplitDescription    param.Field[[]shared.SplitCategoryParam]               `json:"split_description,required"`
@@ -134,7 +123,7 @@ type SplitRunJobParams struct {
 	// processing budget available; by default, sync jobs are prioritized above async
 	// jobs.
 	Priority param.Field[bool] `json:"priority"`
-	// The prompt that describes rules for splitting the document.
+	// The rules for splitting the document.
 	SplitRules param.Field[string]                       `json:"split_rules"`
 	Webhook    param.Field[shared.WebhookConfigNewParam] `json:"webhook"`
 }
@@ -149,15 +138,8 @@ func (r SplitRunJobParams) MarshalJSON() (data []byte, err error) {
 //  2. A presigned S3 URL
 //  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 //     uploading a document
-//  4. A job_id (jobid://) or a list of job_ids (jobid://) obtained from a previous
-//     /parse endpoint
 //
-// Satisfied by [shared.UnionString], [SplitRunJobParamsDocumentURLArray],
-// [shared.UploadParam].
+// Satisfied by [shared.UnionString], [shared.UploadParam].
 type SplitRunJobParamsDocumentURLUnion interface {
 	ImplementsSplitRunJobParamsDocumentURLUnion()
 }
-
-type SplitRunJobParamsDocumentURLArray []string
-
-func (r SplitRunJobParamsDocumentURLArray) ImplementsSplitRunJobParamsDocumentURLUnion() {}

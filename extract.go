@@ -84,8 +84,7 @@ type ExtractRunJobParams struct {
 	//  2. A presigned S3 URL
 	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 	//     uploading a document
-	//  4. A job_id (jobid://) or a list of job_ids (jobid://) obtained from a previous
-	//     /parse endpoint
+	//  4. A job_id (jobid://) or a list of job_ids (jobid://)
 	DocumentURL param.Field[ExtractRunJobParamsDocumentURLUnion] `json:"document_url,required"`
 	// The JSON schema to use for extraction.
 	Schema          param.Field[interface{}]                           `json:"schema,required"`
@@ -118,8 +117,7 @@ func (r ExtractRunJobParams) MarshalJSON() (data []byte, err error) {
 //  2. A presigned S3 URL
 //  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 //     uploading a document
-//  4. A job_id (jobid://) or a list of job_ids (jobid://) obtained from a previous
-//     /parse endpoint
+//  4. A job_id (jobid://) or a list of job_ids (jobid://)
 //
 // Satisfied by [shared.UnionString], [ExtractRunJobParamsDocumentURLArray],
 // [shared.UploadParam].
