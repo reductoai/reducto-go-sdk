@@ -29,12 +29,13 @@ type AdvancedProcessingOptionsParam struct {
 	// spreadsheet and CSV files).
 	LargeTableChunking param.Field[AdvancedProcessingOptionsLargeTableChunkingParam] `json:"large_table_chunking"`
 	// A flag to indicate if consecutive tables with the same number of columns should
-	// be merged.
+	// be merged across breaks and spaces.
 	MergeTables param.Field[bool] `json:"merge_tables"`
 	// The OCR system to use. Highres is recommended for documents with English
 	// characters.
 	OcrSystem param.Field[AdvancedProcessingOptionsOcrSystem] `json:"ocr_system"`
-	// The page range to process. By default, the entire document is processed.
+	// The page range to process (1-indexed). By default, the entire document is
+	// processed.
 	PageRange param.Field[AdvancedProcessingOptionsPageRangeUnionParam] `json:"page_range"`
 	// If True, pull in PDF comments from the document. Defaults to False.
 	ReadComments param.Field[bool] `json:"read_comments"`
@@ -43,8 +44,8 @@ type AdvancedProcessingOptionsParam struct {
 	RemoveTextFormatting param.Field[bool] `json:"remove_text_formatting"`
 	// If True, return OCR data in the result. Defaults to False.
 	ReturnOcrData param.Field[bool] `json:"return_ocr_data"`
-	// On a spreadsheet, the algorithm that is used to split up sheets into multiple
-	// tables.
+	// In a spreadsheet with different tables inside, we enable splitting up the tables
+	// by default. Disabling will register as one large table.
 	SpreadsheetTableClustering param.Field[AdvancedProcessingOptionsSpreadsheetTableClustering] `json:"spreadsheet_table_clustering"`
 	// The mode to use for table output. Dynamic returns md for simpler tables and html
 	// for more complex tables.
@@ -88,7 +89,8 @@ func (r AdvancedProcessingOptionsOcrSystem) IsKnown() bool {
 	return false
 }
 
-// The page range to process. By default, the entire document is processed.
+// The page range to process (1-indexed). By default, the entire document is
+// processed.
 //
 // Satisfied by [shared.PageRangeParam],
 // [shared.AdvancedProcessingOptionsPageRangeArrayParam].
@@ -101,8 +103,8 @@ type AdvancedProcessingOptionsPageRangeArrayParam []PageRangeParam
 func (r AdvancedProcessingOptionsPageRangeArrayParam) ImplementsAdvancedProcessingOptionsPageRangeUnionParam() {
 }
 
-// On a spreadsheet, the algorithm that is used to split up sheets into multiple
-// tables.
+// In a spreadsheet with different tables inside, we enable splitting up the tables
+// by default. Disabling will register as one large table.
 type AdvancedProcessingOptionsSpreadsheetTableClustering string
 
 const (
@@ -176,19 +178,22 @@ func (r ArrayExtractConfigMode) IsKnown() bool {
 }
 
 type BaseProcessingOptionsParam struct {
-	// The configuration options for chunking.
+	// The configuration options for chunking. Chunking is commonly used for RAG
+	// usecases.
 	Chunking param.Field[BaseProcessingOptionsChunkingParam] `json:"chunking"`
-	// The mode to use for extraction.
+	// The mode to use for extraction. Metadata/hybrid are only recommended with high
+	// quality metadata embeddings.
 	ExtractionMode param.Field[BaseProcessingOptionsExtractionMode] `json:"extraction_mode"`
 	// The configuration options for figure summarization.
 	FigureSummary param.Field[BaseProcessingOptionsFigureSummaryParam] `json:"figure_summary"`
-	// A list of block types to filter from chunk content.
+	// A list of block types to filter from chunk content. By default, Header, Footer,
+	// Page Number, and Comment blocks are filtered out.
 	FilterBlocks param.Field[[]BaseProcessingOptionsFilterBlock] `json:"filter_blocks"`
 	// Force the result to be returned in URL form (by default only used for very large
 	// responses).
 	ForceURLResult param.Field[bool] `json:"force_url_result"`
-	// The mode to use for OCR. If agentic is enabled, at a small cost table OCR will
-	// be automatically edited.
+	// The mode to use for OCR. Agentic mode adds an extra pass, correcting any
+	// table/text mistakes at a small cost.
 	OcrMode param.Field[BaseProcessingOptionsOcrMode] `json:"ocr_mode"`
 	// The configuration options for table summarization.
 	TableSummary param.Field[BaseProcessingOptionsTableSummaryParam] `json:"table_summary"`
@@ -198,11 +203,13 @@ func (r BaseProcessingOptionsParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The configuration options for chunking.
+// The configuration options for chunking. Chunking is commonly used for RAG
+// usecases.
 type BaseProcessingOptionsChunkingParam struct {
-	// The mode to use for chunking. Section chunks according to sections in the
-	// document. Page chunks according to pages. Page sections chunks according to both
-	// pages and sections. Disabled returns a single chunk.
+	// Choose how to partition chunks. Variable mode chunks by character length and
+	// visual context. Section mode chunks by section headers. Page mode chunks
+	// according to pages. Page sections mode chunks first by page, then by sections
+	// within each page. Disabled returns one single chunk.
 	ChunkMode param.Field[BaseProcessingOptionsChunkingChunkMode] `json:"chunk_mode"`
 	// The approximate size of chunks (in characters) that the document will be split
 	// into. Defaults to None, in which case the chunk size is variable between 250 -
@@ -214,9 +221,10 @@ func (r BaseProcessingOptionsChunkingParam) MarshalJSON() (data []byte, err erro
 	return apijson.MarshalRoot(r)
 }
 
-// The mode to use for chunking. Section chunks according to sections in the
-// document. Page chunks according to pages. Page sections chunks according to both
-// pages and sections. Disabled returns a single chunk.
+// Choose how to partition chunks. Variable mode chunks by character length and
+// visual context. Section mode chunks by section headers. Page mode chunks
+// according to pages. Page sections mode chunks first by page, then by sections
+// within each page. Disabled returns one single chunk.
 type BaseProcessingOptionsChunkingChunkMode string
 
 const (
@@ -236,7 +244,8 @@ func (r BaseProcessingOptionsChunkingChunkMode) IsKnown() bool {
 	return false
 }
 
-// The mode to use for extraction.
+// The mode to use for extraction. Metadata/hybrid are only recommended with high
+// quality metadata embeddings.
 type BaseProcessingOptionsExtractionMode string
 
 const (
@@ -259,7 +268,9 @@ type BaseProcessingOptionsFigureSummaryParam struct {
 	Enabled param.Field[bool] `json:"enabled"`
 	// If the figure summary prompt should override our default prompt.
 	Override param.Field[bool] `json:"override"`
-	// Add information to the prompt for figure summarization.
+	// Add information to the prompt for figure summarization. Note any visual cues
+	// that should be incorporated. Example: 'When provided a diagram, extract all of
+	// the figure content verbatim.'
 	Prompt param.Field[string] `json:"prompt"`
 }
 
@@ -291,8 +302,8 @@ func (r BaseProcessingOptionsFilterBlock) IsKnown() bool {
 	return false
 }
 
-// The mode to use for OCR. If agentic is enabled, at a small cost table OCR will
-// be automatically edited.
+// The mode to use for OCR. Agentic mode adds an extra pass, correcting any
+// table/text mistakes at a small cost.
 type BaseProcessingOptionsOcrMode string
 
 const (
@@ -368,6 +379,8 @@ type ExperimentalProcessingOptionsParam struct {
 	EnableScripts param.Field[bool] `json:"enable_scripts"`
 	// The configuration options for enrichment.
 	Enrich param.Field[ExperimentalProcessingOptionsEnrichParam] `json:"enrich"`
+	// The layout model to use for the document. This will be deprecated in the future.
+	LayoutModel param.Field[ExperimentalProcessingOptionsLayoutModel] `json:"layout_model"`
 	// Instead of using LibreOffice, when enabled, this flag uses a Windows VM to
 	// convert files. This is slower but more accurate.
 	NativeOfficeConversion param.Field[bool] `json:"native_office_conversion"`
@@ -412,6 +425,22 @@ const (
 func (r ExperimentalProcessingOptionsEnrichMode) IsKnown() bool {
 	switch r {
 	case ExperimentalProcessingOptionsEnrichModeStandard, ExperimentalProcessingOptionsEnrichModePage, ExperimentalProcessingOptionsEnrichModeTable:
+		return true
+	}
+	return false
+}
+
+// The layout model to use for the document. This will be deprecated in the future.
+type ExperimentalProcessingOptionsLayoutModel string
+
+const (
+	ExperimentalProcessingOptionsLayoutModelDefault ExperimentalProcessingOptionsLayoutModel = "default"
+	ExperimentalProcessingOptionsLayoutModelBeta    ExperimentalProcessingOptionsLayoutModel = "beta"
+)
+
+func (r ExperimentalProcessingOptionsLayoutModel) IsKnown() bool {
+	switch r {
+	case ExperimentalProcessingOptionsLayoutModelDefault, ExperimentalProcessingOptionsLayoutModelBeta:
 		return true
 	}
 	return false
