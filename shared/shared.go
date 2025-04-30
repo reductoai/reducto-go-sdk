@@ -700,6 +700,9 @@ type ParseResponseResultFullResultChunksBlock struct {
 	Content string `json:"content,required"`
 	// The type of block extracted from the document.
 	Type ParseResponseResultFullResultChunksBlocksType `json:"type,required"`
+	// The confidence for the block. It is either low or high and takes into account
+	// factors like OCR and table structure
+	Confidence string `json:"confidence,nullable"`
 	// (Experimental) The URL of the image associated with the block.
 	ImageURL string                                       `json:"image_url,nullable"`
 	JSON     parseResponseResultFullResultChunksBlockJSON `json:"-"`
@@ -711,6 +714,7 @@ type parseResponseResultFullResultChunksBlockJSON struct {
 	Bbox        apijson.Field
 	Content     apijson.Field
 	Type        apijson.Field
+	Confidence  apijson.Field
 	ImageURL    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
