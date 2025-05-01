@@ -52,6 +52,7 @@ import (
 func main() {
 	client := reducto.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("REDUCTO_API_KEY")
+		option.WithEnvironmentEu(),      // or option.WithEnvironmentProduction() | option.WithEnvironmentAu(); defaults to option.WithEnvironmentProduction()
 	)
 	parseResponse, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
 		ParseConfig: reducto.ParseConfigParam{

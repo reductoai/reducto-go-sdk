@@ -266,6 +266,20 @@ func WithEnvironmentProduction() RequestOption {
 	return WithBaseURL("https://platform.reducto.ai/")
 }
 
+// WithEnvironmentEu returns a RequestOption that sets the current
+// environment to be the "eu" environment. An environment specifies which base URL
+// to use by default.
+func WithEnvironmentEu() RequestOption {
+	return WithBaseURL("https://eu.platform.reducto.ai/")
+}
+
+// WithEnvironmentAu returns a RequestOption that sets the current
+// environment to be the "au" environment. An environment specifies which base URL
+// to use by default.
+func WithEnvironmentAu() RequestOption {
+	return WithBaseURL("https://au.platform.reducto.ai/")
+}
+
 // WithAPIKey returns a RequestOption that sets the client setting "api_key".
 func WithAPIKey(value string) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
