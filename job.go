@@ -105,32 +105,34 @@ func (r JobGetResponseStatus) IsKnown() bool {
 }
 
 type JobGetResponseResult struct {
-	// This field can have the runtime type of [shared.ParseResponseResult],
-	// [[]interface{}], [shared.SplitResponseResult].
-	Result interface{} `json:"result,required"`
-	// This field can have the runtime type of [shared.ParseUsage],
-	// [shared.ExtractResponseUsage].
-	Usage interface{} `json:"usage,required"`
 	// This field can have the runtime type of [[]interface{}].
-	Citations interface{} `json:"citations"`
+	Citations   interface{} `json:"citations"`
+	DocumentURL string      `json:"document_url"`
 	// The duration of the parse request in seconds.
 	Duration float64 `json:"duration"`
 	JobID    string  `json:"job_id"`
 	// The storage URL of the converted PDF file.
-	PdfURL string                   `json:"pdf_url,nullable"`
-	JSON   jobGetResponseResultJSON `json:"-"`
-	union  JobGetResponseResultUnion
+	PdfURL string `json:"pdf_url,nullable"`
+	// This field can have the runtime type of [shared.ParseResponseResult],
+	// [[]interface{}], [shared.SplitResponseResult].
+	Result interface{} `json:"result"`
+	// This field can have the runtime type of [shared.ParseUsage],
+	// [shared.ExtractResponseUsage].
+	Usage interface{}              `json:"usage"`
+	JSON  jobGetResponseResultJSON `json:"-"`
+	union JobGetResponseResultUnion
 }
 
 // jobGetResponseResultJSON contains the JSON metadata for the struct
 // [JobGetResponseResult]
 type jobGetResponseResultJSON struct {
-	Result      apijson.Field
-	Usage       apijson.Field
 	Citations   apijson.Field
+	DocumentURL apijson.Field
 	Duration    apijson.Field
 	JobID       apijson.Field
 	PdfURL      apijson.Field
+	Result      apijson.Field
+	Usage       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -152,13 +154,14 @@ func (r *JobGetResponseResult) UnmarshalJSON(data []byte) (err error) {
 // the specific types for more type safety.
 //
 // Possible runtime types of the union are [shared.ParseResponse],
-// [shared.ExtractResponse], [shared.SplitResponse].
+// [shared.ExtractResponse], [shared.SplitResponse],
+// [JobGetResponseResultEditResponse].
 func (r JobGetResponseResult) AsUnion() JobGetResponseResultUnion {
 	return r.union
 }
 
-// Union satisfied by [shared.ParseResponse], [shared.ExtractResponse] or
-// [shared.SplitResponse].
+// Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
+// [shared.SplitResponse] or [JobGetResponseResultEditResponse].
 type JobGetResponseResultUnion interface {
 	ImplementsJobGetResponseResult()
 }
@@ -179,5 +182,32 @@ func init() {
 			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(shared.SplitResponse{}),
 		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(JobGetResponseResultEditResponse{}),
+		},
 	)
 }
+
+type JobGetResponseResultEditResponse struct {
+	DocumentURL string                               `json:"document_url,required"`
+	JSON        jobGetResponseResultEditResponseJSON `json:"-"`
+}
+
+// jobGetResponseResultEditResponseJSON contains the JSON metadata for the struct
+// [JobGetResponseResultEditResponse]
+type jobGetResponseResultEditResponseJSON struct {
+	DocumentURL apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseResultEditResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseResultEditResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r JobGetResponseResultEditResponse) ImplementsJobGetResponseResult() {}
