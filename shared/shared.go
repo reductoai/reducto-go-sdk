@@ -597,8 +597,8 @@ func (r *ParseResponseResult) UnmarshalJSON(data []byte) (err error) {
 // AsUnion returns a [ParseResponseResultUnion] interface which you can cast to the
 // specific types for more type safety.
 //
-// Possible runtime types of the union are [shared.ParseResponseResultFullResult],
-// [shared.ParseResponseResultURLResult].
+// Possible runtime types of the union are [ParseResponseResultFullResult],
+// [ParseResponseResultURLResult].
 func (r ParseResponseResult) AsUnion() ParseResponseResultUnion {
 	return r.union
 }
@@ -609,8 +609,8 @@ func (r ParseResponseResult) AsUnion() ParseResponseResultUnion {
 // as a presigned URL in the URL response. You should handle this in your
 // application.
 //
-// Union satisfied by [shared.ParseResponseResultFullResult] or
-// [shared.ParseResponseResultURLResult].
+// Union satisfied by [ParseResponseResultFullResult] or
+// [ParseResponseResultURLResult].
 type ParseResponseResultUnion interface {
 	implementsParseResponseResult()
 }
