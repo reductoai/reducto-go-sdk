@@ -93,6 +93,7 @@ func (r AdvancedProcessingOptionsOcrSystem) IsKnown() bool {
 // processed.
 //
 // Satisfied by [shared.PageRangeParam],
+// [shared.AdvancedProcessingOptionsPageRangeArrayParam],
 // [shared.AdvancedProcessingOptionsPageRangeArrayParam].
 type AdvancedProcessingOptionsPageRangeUnionParam interface {
 	ImplementsAdvancedProcessingOptionsPageRangeUnionParam()
