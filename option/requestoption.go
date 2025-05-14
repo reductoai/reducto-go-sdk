@@ -262,21 +262,21 @@ func WithRequestTimeout(dur time.Duration) RequestOption {
 // environment to be the "production" environment. An environment specifies which base URL
 // to use by default.
 func WithEnvironmentProduction() RequestOption {
-	return WithBaseURL("https://platform.reducto.ai/")
+	return requestconfig.WithDefaultBaseURL("https://platform.reducto.ai/")
 }
 
 // WithEnvironmentEu returns a RequestOption that sets the current
 // environment to be the "eu" environment. An environment specifies which base URL
 // to use by default.
 func WithEnvironmentEu() RequestOption {
-	return WithBaseURL("https://eu.platform.reducto.ai/")
+	return requestconfig.WithDefaultBaseURL("https://eu.platform.reducto.ai/")
 }
 
 // WithEnvironmentAu returns a RequestOption that sets the current
 // environment to be the "au" environment. An environment specifies which base URL
 // to use by default.
 func WithEnvironmentAu() RequestOption {
-	return WithBaseURL("https://au.platform.reducto.ai/")
+	return requestconfig.WithDefaultBaseURL("https://au.platform.reducto.ai/")
 }
 
 // WithAPIKey returns a RequestOption that sets the client setting "api_key".
