@@ -187,8 +187,8 @@ type BaseProcessingOptionsParam struct {
 	ExtractionMode param.Field[BaseProcessingOptionsExtractionMode] `json:"extraction_mode"`
 	// The configuration options for figure summarization.
 	FigureSummary param.Field[BaseProcessingOptionsFigureSummaryParam] `json:"figure_summary"`
-	// A list of block types to filter from chunk content. By default, Header, Footer,
-	// Page Number, and Comment blocks are filtered out.
+	// A list of block types to filter from chunk content. Pass blocks to filter them
+	// from content. By default, no blocks are filtered.
 	FilterBlocks param.Field[[]BaseProcessingOptionsFilterBlock] `json:"filter_blocks"`
 	// Force the result to be returned in URL form (by default only used for very large
 	// responses).
