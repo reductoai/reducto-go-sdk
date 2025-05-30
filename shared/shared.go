@@ -37,6 +37,8 @@ type AdvancedProcessingOptionsParam struct {
 	// The page range to process (1-indexed). By default, the entire document is
 	// processed.
 	PageRange param.Field[AdvancedProcessingOptionsPageRangeUnionParam] `json:"page_range"`
+	// If True, persist the results indefinitely. Defaults to False.
+	PersistResults param.Field[bool] `json:"persist_results"`
 	// If True, pull in PDF comments from the document. Defaults to False.
 	ReadComments param.Field[bool] `json:"read_comments"`
 	// If True, remove text formatting from the output (e.g. hyphens for list items).
