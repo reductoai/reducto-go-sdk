@@ -31,12 +31,13 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 		ParseConfig: reducto.ParseConfigParam{
 			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
 			AdvancedOptions: reducto.F(shared.AdvancedProcessingOptionsParam{
-				AddPageMarkers:     reducto.F(true),
-				ContinueHierarchy:  reducto.F(true),
-				DocumentPassword:   reducto.F("document_password"),
-				FilterLineNumbers:  reducto.F(true),
-				ForceFileExtension: reducto.F("force_file_extension"),
-				KeepLineBreaks:     reducto.F(true),
+				AddPageMarkers:       reducto.F(true),
+				ContinueHierarchy:    reducto.F(true),
+				DocumentPassword:     reducto.F("document_password"),
+				EnableChangeTracking: reducto.F(true),
+				FilterLineNumbers:    reducto.F(true),
+				ForceFileExtension:   reducto.F("force_file_extension"),
+				KeepLineBreaks:       reducto.F(true),
 				LargeTableChunking: reducto.F(shared.AdvancedProcessingOptionsLargeTableChunkingParam{
 					Enabled: reducto.F(true),
 					Size:    reducto.F(int64(0)),
@@ -117,12 +118,13 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 	_, err := client.Parse.RunJob(context.TODO(), reducto.ParseRunJobParams{
 		DocumentURL: reducto.F[reducto.ParseRunJobParamsDocumentURLUnion](shared.UnionString("string")),
 		AdvancedOptions: reducto.F(shared.AdvancedProcessingOptionsParam{
-			AddPageMarkers:     reducto.F(true),
-			ContinueHierarchy:  reducto.F(true),
-			DocumentPassword:   reducto.F("document_password"),
-			FilterLineNumbers:  reducto.F(true),
-			ForceFileExtension: reducto.F("force_file_extension"),
-			KeepLineBreaks:     reducto.F(true),
+			AddPageMarkers:       reducto.F(true),
+			ContinueHierarchy:    reducto.F(true),
+			DocumentPassword:     reducto.F("document_password"),
+			EnableChangeTracking: reducto.F(true),
+			FilterLineNumbers:    reducto.F(true),
+			ForceFileExtension:   reducto.F("force_file_extension"),
+			KeepLineBreaks:       reducto.F(true),
 			LargeTableChunking: reducto.F(shared.AdvancedProcessingOptionsLargeTableChunkingParam{
 				Enabled: reducto.F(true),
 				Size:    reducto.F(int64(0)),

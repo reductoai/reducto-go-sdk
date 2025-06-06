@@ -19,6 +19,10 @@ type AdvancedProcessingOptionsParam struct {
 	ContinueHierarchy param.Field[bool] `json:"continue_hierarchy"`
 	// Password to decrypt password-protected documents.
 	DocumentPassword param.Field[string] `json:"document_password"`
+	// Add <u> tags around underlined text, <s> tags around strikethrough text, and
+	// <change> tags to surround both underlines and strikethroughs for change
+	// detection. Defaults to False.
+	EnableChangeTracking param.Field[bool] `json:"enable_change_tracking"`
 	// If True, filter out line numbers from the output. Defaults to False.
 	FilterLineNumbers param.Field[bool] `json:"filter_line_numbers"`
 	// Force the URL to be downloaded as a specific file extension (e.g. .png).
