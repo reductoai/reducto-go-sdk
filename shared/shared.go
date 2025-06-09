@@ -23,6 +23,10 @@ type AdvancedProcessingOptionsParam struct {
 	// <change> tags to surround both underlines and strikethroughs for change
 	// detection. Defaults to False.
 	EnableChangeTracking param.Field[bool] `json:"enable_change_tracking"`
+	// Skip hidden rows and cols in Excel files. Defaults to False.
+	ExcludeHiddenRowsCols param.Field[bool] `json:"exclude_hidden_rows_cols"`
+	// Skip hidden sheets in Excel files. Defaults to False.
+	ExcludeHiddenSheets param.Field[bool] `json:"exclude_hidden_sheets"`
 	// If True, filter out line numbers from the output. Defaults to False.
 	FilterLineNumbers param.Field[bool] `json:"filter_line_numbers"`
 	// Force the URL to be downloaded as a specific file extension (e.g. .png).
