@@ -489,6 +489,7 @@ func (r ExtractResponse) ImplementsJobGetResponseResult() {}
 type ExtractResponseUsage struct {
 	NumFields int64                    `json:"num_fields,required"`
 	NumPages  int64                    `json:"num_pages,required"`
+	Credits   float64                  `json:"credits,nullable"`
 	JSON      extractResponseUsageJSON `json:"-"`
 }
 
@@ -497,6 +498,7 @@ type ExtractResponseUsage struct {
 type extractResponseUsageJSON struct {
 	NumFields   apijson.Field
 	NumPages    apijson.Field
+	Credits     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -909,12 +911,14 @@ func (r ParseResponseResultType) IsKnown() bool {
 
 type ParseUsage struct {
 	NumPages int64          `json:"num_pages,required"`
+	Credits  float64        `json:"credits,nullable"`
 	JSON     parseUsageJSON `json:"-"`
 }
 
 // parseUsageJSON contains the JSON metadata for the struct [ParseUsage]
 type parseUsageJSON struct {
 	NumPages    apijson.Field
+	Credits     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
