@@ -399,6 +399,9 @@ type ExperimentalProcessingOptionsParam struct {
 	ReturnFigureImages param.Field[bool] `json:"return_figure_images"`
 	// If table images should be returned in the result. Defaults to False.
 	ReturnTableImages param.Field[bool] `json:"return_table_images"`
+	// Use an orientation model to detect and rotate figures as needed, defaults to
+	// False
+	RotateFigures param.Field[bool] `json:"rotate_figures"`
 	// Use an orientation model to detect and rotate pages as needed, defaults to True
 	RotatePages param.Field[bool]      `json:"rotate_pages"`
 	ExtraFields map[string]interface{} `json:"-,extras"`
@@ -970,7 +973,8 @@ func (r SplitResponse) ImplementsJobGetResponseResult() {}
 // The extracted response in your provided schema. This is a list of dictionaries.
 // If disbale_chunking is True (default), then it will be a list of length one.
 type SplitResponseResult struct {
-	SectionMapping map[string][]int64      `json:"section_mapping,required"`
+	SectionMapping map[string][]int64      `json:"section_mapping,required,nullable"`
+	Splits         []interface{}           `json:"splits,required"`
 	JSON           splitResponseResultJSON `json:"-"`
 }
 
@@ -978,6 +982,7 @@ type SplitResponseResult struct {
 // [SplitResponseResult]
 type splitResponseResultJSON struct {
 	SectionMapping apijson.Field
+	Splits         apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
