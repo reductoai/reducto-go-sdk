@@ -464,7 +464,7 @@ type ExtractResponse struct {
 	// The citations corresponding to the extracted response.
 	Citations []interface{} `json:"citations,required,nullable"`
 	// The extracted response in your provided schema. This is a list of dictionaries.
-	// If disbale_chunking is True (default), then it will be a list of length one.
+	// If disable_chunking is True (default), then it will be a list of length one.
 	Result []interface{}        `json:"result,required"`
 	Usage  ExtractResponseUsage `json:"usage,required"`
 	JSON   extractResponseJSON  `json:"-"`
@@ -945,8 +945,7 @@ func (r SplitCategoryParam) MarshalJSON() (data []byte, err error) {
 }
 
 type SplitResponse struct {
-	// The extracted response in your provided schema. This is a list of dictionaries.
-	// If disbale_chunking is True (default), then it will be a list of length one.
+	// The split result.
 	Result SplitResponseResult `json:"result,required"`
 	Usage  ParseUsage          `json:"usage,required"`
 	JSON   splitResponseJSON   `json:"-"`
@@ -970,8 +969,7 @@ func (r splitResponseJSON) RawJSON() string {
 
 func (r SplitResponse) ImplementsJobGetResponseResult() {}
 
-// The extracted response in your provided schema. This is a list of dictionaries.
-// If disbale_chunking is True (default), then it will be a list of length one.
+// The split result.
 type SplitResponseResult struct {
 	SectionMapping map[string][]int64      `json:"section_mapping,required,nullable"`
 	Splits         []interface{}           `json:"splits,required"`

@@ -361,8 +361,7 @@ type SplitCategoryParam = shared.SplitCategoryParam
 // This is an alias to an internal type.
 type SplitResponse = shared.SplitResponse
 
-// The extracted response in your provided schema. This is a list of dictionaries.
-// If disbale_chunking is True (default), then it will be a list of length one.
+// The split result.
 //
 // This is an alias to an internal type.
 type SplitResponseResult = shared.SplitResponseResult
