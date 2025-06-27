@@ -45,8 +45,11 @@ type ExtractConfigParam struct {
 	ArrayExtract        param.Field[shared.ArrayExtractConfigParam]            `json:"array_extract"`
 	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
 	// If citations should be generated for the extracted content.
-	GenerateCitations param.Field[bool]                              `json:"generate_citations"`
-	Options           param.Field[shared.BaseProcessingOptionsParam] `json:"options"`
+	GenerateCitations param.Field[bool] `json:"generate_citations"`
+	// If images should be passed directly for extractions. Can only be enabled for
+	// documents with less than 10 pages. Defaults to False.
+	IncludeImages param.Field[bool]                              `json:"include_images"`
+	Options       param.Field[shared.BaseProcessingOptionsParam] `json:"options"`
 	// If True, attempts to process the job with priority if the user has priority
 	// processing budget available; by default, sync jobs are prioritized above async
 	// jobs.

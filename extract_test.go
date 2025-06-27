@@ -83,6 +83,7 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 				RotatePages:            reducto.F(true),
 			}),
 			GenerateCitations: reducto.F(true),
+			IncludeImages:     reducto.F(true),
 			Options: reducto.F(shared.BaseProcessingOptionsParam{
 				Chunking: reducto.F(shared.BaseProcessingOptionsChunkingParam{
 					ChunkMode: reducto.F(shared.BaseProcessingOptionsChunkingChunkModeVariable),
@@ -184,6 +185,7 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 			RotatePages:            reducto.F(true),
 		}),
 		GenerateCitations: reducto.F(true),
+		IncludeImages:     reducto.F(true),
 		Options: reducto.F(shared.BaseProcessingOptionsParam{
 			Chunking: reducto.F(shared.BaseProcessingOptionsChunkingParam{
 				ChunkMode: reducto.F(shared.BaseProcessingOptionsChunkingChunkModeVariable),
