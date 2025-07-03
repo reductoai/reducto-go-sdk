@@ -367,6 +367,30 @@ type SplitResponse = shared.SplitResponse
 type SplitResponseResult = shared.SplitResponseResult
 
 // This is an alias to an internal type.
+type SplitResponseResultSplit = shared.SplitResponseResultSplit
+
+// This is an alias to an internal type.
+type SplitResponseResultSplitsConf = shared.SplitResponseResultSplitsConf
+
+// This is an alias to an internal value.
+const SplitResponseResultSplitsConfHigh = shared.SplitResponseResultSplitsConfHigh
+
+// This is an alias to an internal value.
+const SplitResponseResultSplitsConfLow = shared.SplitResponseResultSplitsConfLow
+
+// This is an alias to an internal type.
+type SplitResponseResultSplitsPartition = shared.SplitResponseResultSplitsPartition
+
+// This is an alias to an internal type.
+type SplitResponseResultSplitsPartitionsConf = shared.SplitResponseResultSplitsPartitionsConf
+
+// This is an alias to an internal value.
+const SplitResponseResultSplitsPartitionsConfHigh = shared.SplitResponseResultSplitsPartitionsConfHigh
+
+// This is an alias to an internal value.
+const SplitResponseResultSplitsPartitionsConfLow = shared.SplitResponseResultSplitsPartitionsConfLow
+
+// This is an alias to an internal type.
 type Upload = shared.Upload
 
 // This is an alias to an internal type.
