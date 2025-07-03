@@ -974,9 +974,9 @@ func (r SplitResponse) ImplementsJobGetResponseResult() {}
 
 // The split result.
 type SplitResponseResult struct {
-	SectionMapping map[string][]int64      `json:"section_mapping,required,nullable"`
-	Splits         []interface{}           `json:"splits,required"`
-	JSON           splitResponseResultJSON `json:"-"`
+	SectionMapping map[string][]int64         `json:"section_mapping,required,nullable"`
+	Splits         []SplitResponseResultSplit `json:"splits,required"`
+	JSON           splitResponseResultJSON    `json:"-"`
 }
 
 // splitResponseResultJSON contains the JSON metadata for the struct
@@ -994,6 +994,88 @@ func (r *SplitResponseResult) UnmarshalJSON(data []byte) (err error) {
 
 func (r splitResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+type SplitResponseResultSplit struct {
+	Name       string                               `json:"name,required"`
+	Pages      []int64                              `json:"pages,required"`
+	Conf       SplitResponseResultSplitsConf        `json:"conf"`
+	Partitions []SplitResponseResultSplitsPartition `json:"partitions,nullable"`
+	JSON       splitResponseResultSplitJSON         `json:"-"`
+}
+
+// splitResponseResultSplitJSON contains the JSON metadata for the struct
+// [SplitResponseResultSplit]
+type splitResponseResultSplitJSON struct {
+	Name        apijson.Field
+	Pages       apijson.Field
+	Conf        apijson.Field
+	Partitions  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SplitResponseResultSplit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r splitResponseResultSplitJSON) RawJSON() string {
+	return r.raw
+}
+
+type SplitResponseResultSplitsConf string
+
+const (
+	SplitResponseResultSplitsConfHigh SplitResponseResultSplitsConf = "high"
+	SplitResponseResultSplitsConfLow  SplitResponseResultSplitsConf = "low"
+)
+
+func (r SplitResponseResultSplitsConf) IsKnown() bool {
+	switch r {
+	case SplitResponseResultSplitsConfHigh, SplitResponseResultSplitsConfLow:
+		return true
+	}
+	return false
+}
+
+type SplitResponseResultSplitsPartition struct {
+	Name  string                                  `json:"name,required"`
+	Pages []int64                                 `json:"pages,required"`
+	Conf  SplitResponseResultSplitsPartitionsConf `json:"conf"`
+	JSON  splitResponseResultSplitsPartitionJSON  `json:"-"`
+}
+
+// splitResponseResultSplitsPartitionJSON contains the JSON metadata for the struct
+// [SplitResponseResultSplitsPartition]
+type splitResponseResultSplitsPartitionJSON struct {
+	Name        apijson.Field
+	Pages       apijson.Field
+	Conf        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SplitResponseResultSplitsPartition) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r splitResponseResultSplitsPartitionJSON) RawJSON() string {
+	return r.raw
+}
+
+type SplitResponseResultSplitsPartitionsConf string
+
+const (
+	SplitResponseResultSplitsPartitionsConfHigh SplitResponseResultSplitsPartitionsConf = "high"
+	SplitResponseResultSplitsPartitionsConfLow  SplitResponseResultSplitsPartitionsConf = "low"
+)
+
+func (r SplitResponseResultSplitsPartitionsConf) IsKnown() bool {
+	switch r {
+	case SplitResponseResultSplitsPartitionsConfHigh, SplitResponseResultSplitsPartitionsConfLow:
+		return true
+	}
+	return false
 }
 
 type Upload struct {
