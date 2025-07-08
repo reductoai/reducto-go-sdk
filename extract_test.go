@@ -103,9 +103,10 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 					Prompt:  reducto.F("prompt"),
 				}),
 			}),
-			Priority:     reducto.F(true),
-			SystemPrompt: reducto.F("system_prompt"),
-			UseChunking:  reducto.F(true),
+			Priority:         reducto.F(true),
+			SpreadsheetAgent: reducto.F(true),
+			SystemPrompt:     reducto.F("system_prompt"),
+			UseChunking:      reducto.F(true),
 		},
 	})
 	if err != nil {
@@ -205,9 +206,10 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 				Prompt:  reducto.F("prompt"),
 			}),
 		}),
-		Priority:     reducto.F(true),
-		SystemPrompt: reducto.F("system_prompt"),
-		UseChunking:  reducto.F(true),
+		Priority:         reducto.F(true),
+		SpreadsheetAgent: reducto.F(true),
+		SystemPrompt:     reducto.F("system_prompt"),
+		UseChunking:      reducto.F(true),
 		Webhook: reducto.F(shared.WebhookConfigNewParam{
 			Channels: reducto.F([]string{"string"}),
 			Metadata: reducto.F[any](map[string]interface{}{}),

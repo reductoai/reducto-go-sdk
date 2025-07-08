@@ -103,6 +103,8 @@ type ExtractRunJobParams struct {
 	// processing budget available; by default, sync jobs are prioritized above async
 	// jobs.
 	Priority param.Field[bool] `json:"priority"`
+	// If spreadsheet agent should be used for extraction.
+	SpreadsheetAgent param.Field[bool] `json:"spreadsheet_agent"`
 	// A system prompt to use for the extraction. This is a general prompt that is
 	// applied to the entire document before any other prompts.
 	SystemPrompt param.Field[string] `json:"system_prompt"`
