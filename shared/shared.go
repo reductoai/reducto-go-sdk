@@ -811,9 +811,11 @@ func (r parseResponseResultFullResultOcrJSON) RawJSON() string {
 }
 
 type ParseResponseResultFullResultOcrLine struct {
-	Bbox BoundingBox                              `json:"bbox,required"`
-	Text string                                   `json:"text,required"`
-	JSON parseResponseResultFullResultOcrLineJSON `json:"-"`
+	Bbox BoundingBox `json:"bbox,required"`
+	Text string      `json:"text,required"`
+	// OCR confidence score between 0 and 1, where 1 indicates highest confidence
+	Confidence float64                                  `json:"confidence,nullable"`
+	JSON       parseResponseResultFullResultOcrLineJSON `json:"-"`
 }
 
 // parseResponseResultFullResultOcrLineJSON contains the JSON metadata for the
@@ -821,6 +823,7 @@ type ParseResponseResultFullResultOcrLine struct {
 type parseResponseResultFullResultOcrLineJSON struct {
 	Bbox        apijson.Field
 	Text        apijson.Field
+	Confidence  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -834,9 +837,11 @@ func (r parseResponseResultFullResultOcrLineJSON) RawJSON() string {
 }
 
 type ParseResponseResultFullResultOcrWord struct {
-	Bbox BoundingBox                              `json:"bbox,required"`
-	Text string                                   `json:"text,required"`
-	JSON parseResponseResultFullResultOcrWordJSON `json:"-"`
+	Bbox BoundingBox `json:"bbox,required"`
+	Text string      `json:"text,required"`
+	// OCR confidence score between 0 and 1, where 1 indicates highest confidence
+	Confidence float64                                  `json:"confidence,nullable"`
+	JSON       parseResponseResultFullResultOcrWordJSON `json:"-"`
 }
 
 // parseResponseResultFullResultOcrWordJSON contains the JSON metadata for the
@@ -844,6 +849,7 @@ type ParseResponseResultFullResultOcrWord struct {
 type parseResponseResultFullResultOcrWordJSON struct {
 	Bbox        apijson.Field
 	Text        apijson.Field
+	Confidence  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
