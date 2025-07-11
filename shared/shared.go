@@ -19,9 +19,8 @@ type AdvancedProcessingOptionsParam struct {
 	ContinueHierarchy param.Field[bool] `json:"continue_hierarchy"`
 	// Password to decrypt password-protected documents.
 	DocumentPassword param.Field[string] `json:"document_password"`
-	// Add <u> tags around underlined text, <s> tags around strikethrough text, and
-	// <change> tags to surround both underlines and strikethroughs for change
-	// detection. Defaults to False.
+	// Enables model-based detection of underlines and strikethroughs, adding <u>/<s>
+	// tags to OCR text. Works with any extraction mode. Defaults to False.
 	EnableChangeTracking param.Field[bool] `json:"enable_change_tracking"`
 	// Skip hidden rows and cols in Excel files. Defaults to False.
 	ExcludeHiddenRowsCols param.Field[bool] `json:"exclude_hidden_rows_cols"`
