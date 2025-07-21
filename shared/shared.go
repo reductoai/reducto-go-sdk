@@ -1126,6 +1126,10 @@ func (r UploadParam) ImplementsExtractConfigDocumentURLUnionParam() {}
 
 func (r UploadParam) ImplementsExtractRunJobParamsDocumentURLUnion() {}
 
+func (r UploadParam) ImplementsEditRunParamsDocumentURLUnion() {}
+
+func (r UploadParam) ImplementsEditRunJobParamsDocumentURLUnion() {}
+
 type WebhookConfigNewParam struct {
 	// A list of Svix channels the message will be delivered down, omit to send to all
 	// channels.
