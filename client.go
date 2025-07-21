@@ -21,6 +21,7 @@ type Client struct {
 	Split   *SplitService
 	Parse   *ParseService
 	Extract *ExtractService
+	Edit    *EditService
 	Webhook *WebhookService
 	Config  *ConfigService
 }
@@ -51,6 +52,7 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.Split = NewSplitService(opts...)
 	r.Parse = NewParseService(opts...)
 	r.Extract = NewExtractService(opts...)
+	r.Edit = NewEditService(opts...)
 	r.Webhook = NewWebhookService(opts...)
 	r.Config = NewConfigService(opts...)
 
