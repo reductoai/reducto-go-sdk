@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"time"
 
 	"github.com/reductoai/reducto-go-sdk/internal/apijson"
 	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
@@ -62,15 +63,91 @@ func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.Reque
 type JobCancelResponse = interface{}
 
 type JobGetResponse struct {
-	Status   JobGetResponseStatus `json:"status,required"`
-	Progress float64              `json:"progress,nullable"`
-	Reason   string               `json:"reason,nullable"`
-	Result   JobGetResponseResult `json:"result,nullable"`
-	JSON     jobGetResponseJSON   `json:"-"`
+	Status    JobGetResponseStatus `json:"status,required"`
+	CreatedAt time.Time            `json:"created_at,nullable" format:"date-time"`
+	Duration  float64              `json:"duration,nullable"`
+	NumPages  int64                `json:"num_pages,nullable"`
+	Progress  float64              `json:"progress,nullable"`
+	Reason    string               `json:"reason,nullable"`
+	// This field can have the runtime type of [JobGetResponseAsyncJobResponseResult],
+	// [JobGetResponseEnhancedAsyncJobResponseResult].
+	Result interface{} `json:"result"`
+	// This field can have the runtime type of [interface{}].
+	Source interface{}        `json:"source"`
+	Type   JobGetResponseType `json:"type,nullable"`
+	JSON   jobGetResponseJSON `json:"-"`
+	union  JobGetResponseUnion
 }
 
 // jobGetResponseJSON contains the JSON metadata for the struct [JobGetResponse]
 type jobGetResponseJSON struct {
+	Status      apijson.Field
+	CreatedAt   apijson.Field
+	Duration    apijson.Field
+	NumPages    apijson.Field
+	Progress    apijson.Field
+	Reason      apijson.Field
+	Result      apijson.Field
+	Source      apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r jobGetResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *JobGetResponse) UnmarshalJSON(data []byte) (err error) {
+	*r = JobGetResponse{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [JobGetResponseUnion] interface which you can cast to the
+// specific types for more type safety.
+//
+// Possible runtime types of the union are [JobGetResponseAsyncJobResponse],
+// [JobGetResponseEnhancedAsyncJobResponse].
+func (r JobGetResponse) AsUnion() JobGetResponseUnion {
+	return r.union
+}
+
+// Union satisfied by [JobGetResponseAsyncJobResponse] or
+// [JobGetResponseEnhancedAsyncJobResponse].
+type JobGetResponseUnion interface {
+	implementsJobGetResponse()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*JobGetResponseUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(JobGetResponseAsyncJobResponse{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(JobGetResponseEnhancedAsyncJobResponse{}),
+		},
+	)
+}
+
+type JobGetResponseAsyncJobResponse struct {
+	Status   JobGetResponseAsyncJobResponseStatus `json:"status,required"`
+	Progress float64                              `json:"progress,nullable"`
+	Reason   string                               `json:"reason,nullable"`
+	Result   JobGetResponseAsyncJobResponseResult `json:"result,nullable"`
+	JSON     jobGetResponseAsyncJobResponseJSON   `json:"-"`
+}
+
+// jobGetResponseAsyncJobResponseJSON contains the JSON metadata for the struct
+// [JobGetResponseAsyncJobResponse]
+type jobGetResponseAsyncJobResponseJSON struct {
 	Status      apijson.Field
 	Progress    apijson.Field
 	Reason      apijson.Field
@@ -79,12 +156,324 @@ type jobGetResponseJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *JobGetResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *JobGetResponseAsyncJobResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r jobGetResponseJSON) RawJSON() string {
+func (r jobGetResponseAsyncJobResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+func (r JobGetResponseAsyncJobResponse) implementsJobGetResponse() {}
+
+type JobGetResponseAsyncJobResponseStatus string
+
+const (
+	JobGetResponseAsyncJobResponseStatusPending   JobGetResponseAsyncJobResponseStatus = "Pending"
+	JobGetResponseAsyncJobResponseStatusCompleted JobGetResponseAsyncJobResponseStatus = "Completed"
+	JobGetResponseAsyncJobResponseStatusFailed    JobGetResponseAsyncJobResponseStatus = "Failed"
+	JobGetResponseAsyncJobResponseStatusIdle      JobGetResponseAsyncJobResponseStatus = "Idle"
+)
+
+func (r JobGetResponseAsyncJobResponseStatus) IsKnown() bool {
+	switch r {
+	case JobGetResponseAsyncJobResponseStatusPending, JobGetResponseAsyncJobResponseStatusCompleted, JobGetResponseAsyncJobResponseStatusFailed, JobGetResponseAsyncJobResponseStatusIdle:
+		return true
+	}
+	return false
+}
+
+type JobGetResponseAsyncJobResponseResult struct {
+	// This field can have the runtime type of [[]interface{}].
+	Citations   interface{} `json:"citations"`
+	DocumentURL string      `json:"document_url"`
+	// The duration of the parse request in seconds.
+	Duration float64 `json:"duration"`
+	JobID    string  `json:"job_id"`
+	// The storage URL of the converted PDF file.
+	PdfURL string `json:"pdf_url,nullable"`
+	// This field can have the runtime type of [shared.ParseResponseResult],
+	// [[]interface{}], [shared.SplitResponseResult].
+	Result interface{} `json:"result"`
+	// This field can have the runtime type of [shared.ParseUsage],
+	// [shared.ExtractResponseUsage].
+	Usage interface{}                              `json:"usage"`
+	JSON  jobGetResponseAsyncJobResponseResultJSON `json:"-"`
+	union JobGetResponseAsyncJobResponseResultUnion
+}
+
+// jobGetResponseAsyncJobResponseResultJSON contains the JSON metadata for the
+// struct [JobGetResponseAsyncJobResponseResult]
+type jobGetResponseAsyncJobResponseResultJSON struct {
+	Citations   apijson.Field
+	DocumentURL apijson.Field
+	Duration    apijson.Field
+	JobID       apijson.Field
+	PdfURL      apijson.Field
+	Result      apijson.Field
+	Usage       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r jobGetResponseAsyncJobResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *JobGetResponseAsyncJobResponseResult) UnmarshalJSON(data []byte) (err error) {
+	*r = JobGetResponseAsyncJobResponseResult{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [JobGetResponseAsyncJobResponseResultUnion] interface which
+// you can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are [shared.ParseResponse],
+// [shared.ExtractResponse], [shared.SplitResponse],
+// [JobGetResponseAsyncJobResponseResultEditResponse].
+func (r JobGetResponseAsyncJobResponseResult) AsUnion() JobGetResponseAsyncJobResponseResultUnion {
+	return r.union
+}
+
+// Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
+// [shared.SplitResponse] or [JobGetResponseAsyncJobResponseResultEditResponse].
+type JobGetResponseAsyncJobResponseResultUnion interface {
+	ImplementsJobGetResponseAsyncJobResponseResult()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*JobGetResponseAsyncJobResponseResultUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(shared.ParseResponse{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(shared.ExtractResponse{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(shared.SplitResponse{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(JobGetResponseAsyncJobResponseResultEditResponse{}),
+		},
+	)
+}
+
+type JobGetResponseAsyncJobResponseResultEditResponse struct {
+	DocumentURL string                                               `json:"document_url,required"`
+	JSON        jobGetResponseAsyncJobResponseResultEditResponseJSON `json:"-"`
+}
+
+// jobGetResponseAsyncJobResponseResultEditResponseJSON contains the JSON metadata
+// for the struct [JobGetResponseAsyncJobResponseResultEditResponse]
+type jobGetResponseAsyncJobResponseResultEditResponseJSON struct {
+	DocumentURL apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseAsyncJobResponseResultEditResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseAsyncJobResponseResultEditResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r JobGetResponseAsyncJobResponseResultEditResponse) ImplementsJobGetResponseAsyncJobResponseResult() {
+}
+
+type JobGetResponseEnhancedAsyncJobResponse struct {
+	Status    JobGetResponseEnhancedAsyncJobResponseStatus `json:"status,required"`
+	CreatedAt time.Time                                    `json:"created_at,nullable" format:"date-time"`
+	Duration  float64                                      `json:"duration,nullable"`
+	NumPages  int64                                        `json:"num_pages,nullable"`
+	Progress  float64                                      `json:"progress,nullable"`
+	Reason    string                                       `json:"reason,nullable"`
+	Result    JobGetResponseEnhancedAsyncJobResponseResult `json:"result,nullable"`
+	Source    interface{}                                  `json:"source"`
+	Type      JobGetResponseEnhancedAsyncJobResponseType   `json:"type,nullable"`
+	JSON      jobGetResponseEnhancedAsyncJobResponseJSON   `json:"-"`
+}
+
+// jobGetResponseEnhancedAsyncJobResponseJSON contains the JSON metadata for the
+// struct [JobGetResponseEnhancedAsyncJobResponse]
+type jobGetResponseEnhancedAsyncJobResponseJSON struct {
+	Status      apijson.Field
+	CreatedAt   apijson.Field
+	Duration    apijson.Field
+	NumPages    apijson.Field
+	Progress    apijson.Field
+	Reason      apijson.Field
+	Result      apijson.Field
+	Source      apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseEnhancedAsyncJobResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseEnhancedAsyncJobResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r JobGetResponseEnhancedAsyncJobResponse) implementsJobGetResponse() {}
+
+type JobGetResponseEnhancedAsyncJobResponseStatus string
+
+const (
+	JobGetResponseEnhancedAsyncJobResponseStatusPending   JobGetResponseEnhancedAsyncJobResponseStatus = "Pending"
+	JobGetResponseEnhancedAsyncJobResponseStatusCompleted JobGetResponseEnhancedAsyncJobResponseStatus = "Completed"
+	JobGetResponseEnhancedAsyncJobResponseStatusFailed    JobGetResponseEnhancedAsyncJobResponseStatus = "Failed"
+	JobGetResponseEnhancedAsyncJobResponseStatusIdle      JobGetResponseEnhancedAsyncJobResponseStatus = "Idle"
+)
+
+func (r JobGetResponseEnhancedAsyncJobResponseStatus) IsKnown() bool {
+	switch r {
+	case JobGetResponseEnhancedAsyncJobResponseStatusPending, JobGetResponseEnhancedAsyncJobResponseStatusCompleted, JobGetResponseEnhancedAsyncJobResponseStatusFailed, JobGetResponseEnhancedAsyncJobResponseStatusIdle:
+		return true
+	}
+	return false
+}
+
+type JobGetResponseEnhancedAsyncJobResponseResult struct {
+	// This field can have the runtime type of [[]interface{}].
+	Citations   interface{} `json:"citations"`
+	DocumentURL string      `json:"document_url"`
+	// The duration of the parse request in seconds.
+	Duration float64 `json:"duration"`
+	JobID    string  `json:"job_id"`
+	// The storage URL of the converted PDF file.
+	PdfURL string `json:"pdf_url,nullable"`
+	// This field can have the runtime type of [shared.ParseResponseResult],
+	// [[]interface{}], [shared.SplitResponseResult].
+	Result interface{} `json:"result"`
+	// This field can have the runtime type of [shared.ParseUsage],
+	// [shared.ExtractResponseUsage].
+	Usage interface{}                                      `json:"usage"`
+	JSON  jobGetResponseEnhancedAsyncJobResponseResultJSON `json:"-"`
+	union JobGetResponseEnhancedAsyncJobResponseResultUnion
+}
+
+// jobGetResponseEnhancedAsyncJobResponseResultJSON contains the JSON metadata for
+// the struct [JobGetResponseEnhancedAsyncJobResponseResult]
+type jobGetResponseEnhancedAsyncJobResponseResultJSON struct {
+	Citations   apijson.Field
+	DocumentURL apijson.Field
+	Duration    apijson.Field
+	JobID       apijson.Field
+	PdfURL      apijson.Field
+	Result      apijson.Field
+	Usage       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r jobGetResponseEnhancedAsyncJobResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *JobGetResponseEnhancedAsyncJobResponseResult) UnmarshalJSON(data []byte) (err error) {
+	*r = JobGetResponseEnhancedAsyncJobResponseResult{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [JobGetResponseEnhancedAsyncJobResponseResultUnion] interface
+// which you can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are [shared.ParseResponse],
+// [shared.ExtractResponse], [shared.SplitResponse],
+// [JobGetResponseEnhancedAsyncJobResponseResultEditResponse].
+func (r JobGetResponseEnhancedAsyncJobResponseResult) AsUnion() JobGetResponseEnhancedAsyncJobResponseResultUnion {
+	return r.union
+}
+
+// Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
+// [shared.SplitResponse] or
+// [JobGetResponseEnhancedAsyncJobResponseResultEditResponse].
+type JobGetResponseEnhancedAsyncJobResponseResultUnion interface {
+	ImplementsJobGetResponseEnhancedAsyncJobResponseResult()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*JobGetResponseEnhancedAsyncJobResponseResultUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(shared.ParseResponse{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(shared.ExtractResponse{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(shared.SplitResponse{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(JobGetResponseEnhancedAsyncJobResponseResultEditResponse{}),
+		},
+	)
+}
+
+type JobGetResponseEnhancedAsyncJobResponseResultEditResponse struct {
+	DocumentURL string                                                       `json:"document_url,required"`
+	JSON        jobGetResponseEnhancedAsyncJobResponseResultEditResponseJSON `json:"-"`
+}
+
+// jobGetResponseEnhancedAsyncJobResponseResultEditResponseJSON contains the JSON
+// metadata for the struct
+// [JobGetResponseEnhancedAsyncJobResponseResultEditResponse]
+type jobGetResponseEnhancedAsyncJobResponseResultEditResponseJSON struct {
+	DocumentURL apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseEnhancedAsyncJobResponseResultEditResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseEnhancedAsyncJobResponseResultEditResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r JobGetResponseEnhancedAsyncJobResponseResultEditResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {
+}
+
+type JobGetResponseEnhancedAsyncJobResponseType string
+
+const (
+	JobGetResponseEnhancedAsyncJobResponseTypeParse   JobGetResponseEnhancedAsyncJobResponseType = "Parse"
+	JobGetResponseEnhancedAsyncJobResponseTypeExtract JobGetResponseEnhancedAsyncJobResponseType = "Extract"
+	JobGetResponseEnhancedAsyncJobResponseTypeSplit   JobGetResponseEnhancedAsyncJobResponseType = "Split"
+	JobGetResponseEnhancedAsyncJobResponseTypeEdit    JobGetResponseEnhancedAsyncJobResponseType = "Edit"
+)
+
+func (r JobGetResponseEnhancedAsyncJobResponseType) IsKnown() bool {
+	switch r {
+	case JobGetResponseEnhancedAsyncJobResponseTypeParse, JobGetResponseEnhancedAsyncJobResponseTypeExtract, JobGetResponseEnhancedAsyncJobResponseTypeSplit, JobGetResponseEnhancedAsyncJobResponseTypeEdit:
+		return true
+	}
+	return false
 }
 
 type JobGetResponseStatus string
@@ -104,110 +493,19 @@ func (r JobGetResponseStatus) IsKnown() bool {
 	return false
 }
 
-type JobGetResponseResult struct {
-	// This field can have the runtime type of [[]interface{}].
-	Citations   interface{} `json:"citations"`
-	DocumentURL string      `json:"document_url"`
-	// The duration of the parse request in seconds.
-	Duration float64 `json:"duration"`
-	JobID    string  `json:"job_id"`
-	// The storage URL of the converted PDF file.
-	PdfURL string `json:"pdf_url,nullable"`
-	// This field can have the runtime type of [shared.ParseResponseResult],
-	// [[]interface{}], [shared.SplitResponseResult].
-	Result interface{} `json:"result"`
-	// This field can have the runtime type of [shared.ParseUsage],
-	// [shared.ExtractResponseUsage].
-	Usage interface{}              `json:"usage"`
-	JSON  jobGetResponseResultJSON `json:"-"`
-	union JobGetResponseResultUnion
-}
+type JobGetResponseType string
 
-// jobGetResponseResultJSON contains the JSON metadata for the struct
-// [JobGetResponseResult]
-type jobGetResponseResultJSON struct {
-	Citations   apijson.Field
-	DocumentURL apijson.Field
-	Duration    apijson.Field
-	JobID       apijson.Field
-	PdfURL      apijson.Field
-	Result      apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
+const (
+	JobGetResponseTypeParse   JobGetResponseType = "Parse"
+	JobGetResponseTypeExtract JobGetResponseType = "Extract"
+	JobGetResponseTypeSplit   JobGetResponseType = "Split"
+	JobGetResponseTypeEdit    JobGetResponseType = "Edit"
+)
 
-func (r jobGetResponseResultJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *JobGetResponseResult) UnmarshalJSON(data []byte) (err error) {
-	*r = JobGetResponseResult{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
+func (r JobGetResponseType) IsKnown() bool {
+	switch r {
+	case JobGetResponseTypeParse, JobGetResponseTypeExtract, JobGetResponseTypeSplit, JobGetResponseTypeEdit:
+		return true
 	}
-	return apijson.Port(r.union, &r)
+	return false
 }
-
-// AsUnion returns a [JobGetResponseResultUnion] interface which you can cast to
-// the specific types for more type safety.
-//
-// Possible runtime types of the union are [shared.ParseResponse],
-// [shared.ExtractResponse], [shared.SplitResponse],
-// [JobGetResponseResultEditResponse].
-func (r JobGetResponseResult) AsUnion() JobGetResponseResultUnion {
-	return r.union
-}
-
-// Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
-// [shared.SplitResponse] or [JobGetResponseResultEditResponse].
-type JobGetResponseResultUnion interface {
-	ImplementsJobGetResponseResult()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*JobGetResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.ParseResponse{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.ExtractResponse{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.SplitResponse{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(JobGetResponseResultEditResponse{}),
-		},
-	)
-}
-
-type JobGetResponseResultEditResponse struct {
-	DocumentURL string                               `json:"document_url,required"`
-	JSON        jobGetResponseResultEditResponseJSON `json:"-"`
-}
-
-// jobGetResponseResultEditResponseJSON contains the JSON metadata for the struct
-// [JobGetResponseResultEditResponse]
-type jobGetResponseResultEditResponseJSON struct {
-	DocumentURL apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *JobGetResponseResultEditResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r jobGetResponseResultEditResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r JobGetResponseResultEditResponse) ImplementsJobGetResponseResult() {}

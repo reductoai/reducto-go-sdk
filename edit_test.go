@@ -34,7 +34,6 @@ func TestEditRunWithOptionalParams(t *testing.T) {
 			Color: reducto.F("#e1cb97"),
 		}),
 		Priority: reducto.F(true),
-		Snippets: reducto.F([]string{"string"}),
 	})
 	if err != nil {
 		var apierr *reducto.Error
@@ -65,7 +64,6 @@ func TestEditRunJobWithOptionalParams(t *testing.T) {
 			Color: reducto.F("#e1cb97"),
 		}),
 		Priority: reducto.F(true),
-		Snippets: reducto.F([]string{"string"}),
 		Webhook: reducto.F(shared.WebhookConfigNewParam{
 			Channels: reducto.F([]string{"string"}),
 			Metadata: reducto.F[any](map[string]interface{}{}),
