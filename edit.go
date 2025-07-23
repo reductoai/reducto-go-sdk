@@ -104,8 +104,6 @@ type EditRunParams struct {
 	// processing budget available; by default, sync jobs are prioritized above async
 	// jobs.
 	Priority param.Field[bool] `json:"priority"`
-	// List of text snippets that can be reused throughout the document.
-	Snippets param.Field[[]string] `json:"snippets"`
 }
 
 func (r EditRunParams) MarshalJSON() (data []byte, err error) {
@@ -147,9 +145,7 @@ type EditRunJobParams struct {
 	// If True, attempts to process the job with priority if the user has priority
 	// processing budget available; by default, sync jobs are prioritized above async
 	// jobs.
-	Priority param.Field[bool] `json:"priority"`
-	// List of text snippets that can be reused throughout the document.
-	Snippets param.Field[[]string]                     `json:"snippets"`
+	Priority param.Field[bool]                         `json:"priority"`
 	Webhook  param.Field[shared.WebhookConfigNewParam] `json:"webhook"`
 }
 

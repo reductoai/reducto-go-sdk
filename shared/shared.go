@@ -489,7 +489,9 @@ func (r extractResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r ExtractResponse) ImplementsJobGetResponseResult() {}
+func (r ExtractResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+
+func (r ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
 
 type ExtractResponseUsage struct {
 	NumFields int64                    `json:"num_fields,required"`
@@ -564,7 +566,9 @@ func (r parseResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r ParseResponse) ImplementsJobGetResponseResult() {}
+func (r ParseResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+
+func (r ParseResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
 
 // The response from the document processing service. Note that there can be two
 // types of responses, Full Result and URL Result. This is due to limitations on
@@ -975,7 +979,9 @@ func (r splitResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r SplitResponse) ImplementsJobGetResponseResult() {}
+func (r SplitResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+
+func (r SplitResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
 
 // The split result.
 type SplitResponseResult struct {
