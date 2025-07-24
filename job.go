@@ -68,6 +68,7 @@ type JobGetResponse struct {
 	Duration  float64              `json:"duration,nullable"`
 	NumPages  int64                `json:"num_pages,nullable"`
 	Progress  float64              `json:"progress,nullable"`
+	RawConfig string               `json:"raw_config,nullable"`
 	Reason    string               `json:"reason,nullable"`
 	// This field can have the runtime type of [JobGetResponseAsyncJobResponseResult],
 	// [JobGetResponseEnhancedAsyncJobResponseResult].
@@ -86,6 +87,7 @@ type jobGetResponseJSON struct {
 	Duration    apijson.Field
 	NumPages    apijson.Field
 	Progress    apijson.Field
+	RawConfig   apijson.Field
 	Reason      apijson.Field
 	Result      apijson.Field
 	Source      apijson.Field
@@ -301,6 +303,7 @@ type JobGetResponseEnhancedAsyncJobResponse struct {
 	Duration  float64                                      `json:"duration,nullable"`
 	NumPages  int64                                        `json:"num_pages,nullable"`
 	Progress  float64                                      `json:"progress,nullable"`
+	RawConfig string                                       `json:"raw_config,nullable"`
 	Reason    string                                       `json:"reason,nullable"`
 	Result    JobGetResponseEnhancedAsyncJobResponseResult `json:"result,nullable"`
 	Source    interface{}                                  `json:"source"`
@@ -316,6 +319,7 @@ type jobGetResponseEnhancedAsyncJobResponseJSON struct {
 	Duration    apijson.Field
 	NumPages    apijson.Field
 	Progress    apijson.Field
+	RawConfig   apijson.Field
 	Reason      apijson.Field
 	Result      apijson.Field
 	Source      apijson.Field
