@@ -469,7 +469,9 @@ type ExtractResponse struct {
 	// If disable_chunking is True (default), then it will be a list of length one.
 	Result []interface{}        `json:"result,required"`
 	Usage  ExtractResponseUsage `json:"usage,required"`
-	JSON   extractResponseJSON  `json:"-"`
+	// The link to the studio pipeline for the document.
+	StudioLink string              `json:"studio_link,nullable"`
+	JSON       extractResponseJSON `json:"-"`
 }
 
 // extractResponseJSON contains the JSON metadata for the struct [ExtractResponse]
@@ -477,6 +479,7 @@ type extractResponseJSON struct {
 	Citations   apijson.Field
 	Result      apijson.Field
 	Usage       apijson.Field
+	StudioLink  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -543,8 +546,10 @@ type ParseResponse struct {
 	Result ParseResponseResult `json:"result,required"`
 	Usage  ParseUsage          `json:"usage,required"`
 	// The storage URL of the converted PDF file.
-	PdfURL string            `json:"pdf_url,nullable"`
-	JSON   parseResponseJSON `json:"-"`
+	PdfURL string `json:"pdf_url,nullable"`
+	// The link to the studio pipeline for the document.
+	StudioLink string            `json:"studio_link,nullable"`
+	JSON       parseResponseJSON `json:"-"`
 }
 
 // parseResponseJSON contains the JSON metadata for the struct [ParseResponse]
@@ -554,6 +559,7 @@ type parseResponseJSON struct {
 	Result      apijson.Field
 	Usage       apijson.Field
 	PdfURL      apijson.Field
+	StudioLink  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
