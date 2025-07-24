@@ -195,6 +195,8 @@ type JobGetResponseAsyncJobResponseResult struct {
 	// This field can have the runtime type of [shared.ParseResponseResult],
 	// [[]interface{}], [shared.SplitResponseResult].
 	Result interface{} `json:"result"`
+	// The link to the studio pipeline for the document.
+	StudioLink string `json:"studio_link,nullable"`
 	// This field can have the runtime type of [shared.ParseUsage],
 	// [shared.ExtractResponseUsage].
 	Usage interface{}                              `json:"usage"`
@@ -211,6 +213,7 @@ type jobGetResponseAsyncJobResponseResultJSON struct {
 	JobID       apijson.Field
 	PdfURL      apijson.Field
 	Result      apijson.Field
+	StudioLink  apijson.Field
 	Usage       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -360,6 +363,8 @@ type JobGetResponseEnhancedAsyncJobResponseResult struct {
 	// This field can have the runtime type of [shared.ParseResponseResult],
 	// [[]interface{}], [shared.SplitResponseResult].
 	Result interface{} `json:"result"`
+	// The link to the studio pipeline for the document.
+	StudioLink string `json:"studio_link,nullable"`
 	// This field can have the runtime type of [shared.ParseUsage],
 	// [shared.ExtractResponseUsage].
 	Usage interface{}                                      `json:"usage"`
@@ -376,6 +381,7 @@ type jobGetResponseEnhancedAsyncJobResponseResultJSON struct {
 	JobID       apijson.Field
 	PdfURL      apijson.Field
 	Result      apijson.Field
+	StudioLink  apijson.Field
 	Usage       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
