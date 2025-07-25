@@ -30,6 +30,9 @@ type AdvancedProcessingOptionsParam struct {
 	FilterLineNumbers param.Field[bool] `json:"filter_line_numbers"`
 	// Force the URL to be downloaded as a specific file extension (e.g. .png).
 	ForceFileExtension param.Field[string] `json:"force_file_extension"`
+	// If True, preserve Excel cell colours in the extracted spreadsheet text using
+	// LaTeX colour commands.
+	IncludeColorInformation param.Field[bool] `json:"include_color_information"`
 	// If line breaks should be preserved in the text.
 	KeepLineBreaks param.Field[bool] `json:"keep_line_breaks"`
 	// The configuration options for large table chunking (currently only supported on
