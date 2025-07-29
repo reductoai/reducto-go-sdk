@@ -49,13 +49,15 @@ func (r *EditService) RunJob(ctx context.Context, body EditRunJobParams, opts ..
 }
 
 type EditRunResponse struct {
-	DocumentURL string              `json:"document_url,required"`
-	JSON        editRunResponseJSON `json:"-"`
+	DocumentURL string                      `json:"document_url,required"`
+	FormSchema  []EditRunResponseFormSchema `json:"form_schema,nullable"`
+	JSON        editRunResponseJSON         `json:"-"`
 }
 
 // editRunResponseJSON contains the JSON metadata for the struct [EditRunResponse]
 type editRunResponseJSON struct {
 	DocumentURL apijson.Field
+	FormSchema  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -66,6 +68,48 @@ func (r *EditRunResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r editRunResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type EditRunResponseFormSchema struct {
+	Bbox        shared.BoundingBox            `json:"bbox,required"`
+	Description string                        `json:"description,required"`
+	Type        EditRunResponseFormSchemaType `json:"type,required"`
+	JSON        editRunResponseFormSchemaJSON `json:"-"`
+}
+
+// editRunResponseFormSchemaJSON contains the JSON metadata for the struct
+// [EditRunResponseFormSchema]
+type editRunResponseFormSchemaJSON struct {
+	Bbox        apijson.Field
+	Description apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *EditRunResponseFormSchema) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r editRunResponseFormSchemaJSON) RawJSON() string {
+	return r.raw
+}
+
+type EditRunResponseFormSchemaType string
+
+const (
+	EditRunResponseFormSchemaTypeText     EditRunResponseFormSchemaType = "text"
+	EditRunResponseFormSchemaTypeCheckbox EditRunResponseFormSchemaType = "checkbox"
+	EditRunResponseFormSchemaTypeDropdown EditRunResponseFormSchemaType = "dropdown"
+	EditRunResponseFormSchemaTypeBarcode  EditRunResponseFormSchemaType = "barcode"
+)
+
+func (r EditRunResponseFormSchemaType) IsKnown() bool {
+	switch r {
+	case EditRunResponseFormSchemaTypeText, EditRunResponseFormSchemaTypeCheckbox, EditRunResponseFormSchemaTypeDropdown, EditRunResponseFormSchemaTypeBarcode:
+		return true
+	}
+	return false
 }
 
 type EditRunJobResponse struct {
@@ -100,6 +144,9 @@ type EditRunParams struct {
 	// The instructions for the edit.
 	EditInstructions param.Field[string]                   `json:"edit_instructions,required"`
 	EditOptions      param.Field[EditRunParamsEditOptions] `json:"edit_options"`
+	// Form schema for PDF forms. List of widgets with their types, descriptions, and
+	// bounding boxes. Only works for PDFs.
+	FormSchema param.Field[[]EditRunParamsFormSchema] `json:"form_schema"`
 	// If True, attempts to process the job with priority if the user has priority
 	// processing budget available; by default, sync jobs are prioritized above async
 	// jobs.
@@ -131,6 +178,37 @@ func (r EditRunParamsEditOptions) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+type EditRunParamsFormSchema struct {
+	// Bounding box coordinates of the widget
+	Bbox param.Field[shared.BoundingBoxParam] `json:"bbox,required"`
+	// Description of the widget extracted from the document
+	Description param.Field[string] `json:"description,required"`
+	// Type of the form widget
+	Type param.Field[EditRunParamsFormSchemaType] `json:"type,required"`
+}
+
+func (r EditRunParamsFormSchema) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Type of the form widget
+type EditRunParamsFormSchemaType string
+
+const (
+	EditRunParamsFormSchemaTypeText     EditRunParamsFormSchemaType = "text"
+	EditRunParamsFormSchemaTypeCheckbox EditRunParamsFormSchemaType = "checkbox"
+	EditRunParamsFormSchemaTypeDropdown EditRunParamsFormSchemaType = "dropdown"
+	EditRunParamsFormSchemaTypeBarcode  EditRunParamsFormSchemaType = "barcode"
+)
+
+func (r EditRunParamsFormSchemaType) IsKnown() bool {
+	switch r {
+	case EditRunParamsFormSchemaTypeText, EditRunParamsFormSchemaTypeCheckbox, EditRunParamsFormSchemaTypeDropdown, EditRunParamsFormSchemaTypeBarcode:
+		return true
+	}
+	return false
+}
+
 type EditRunJobParams struct {
 	// The URL of the document to be processed. You can provide one of the following:
 	//
@@ -142,6 +220,9 @@ type EditRunJobParams struct {
 	// The instructions for the edit.
 	EditInstructions param.Field[string]                      `json:"edit_instructions,required"`
 	EditOptions      param.Field[EditRunJobParamsEditOptions] `json:"edit_options"`
+	// Form schema for PDF forms. List of widgets with their types, descriptions, and
+	// bounding boxes. Only works for PDFs.
+	FormSchema param.Field[[]EditRunJobParamsFormSchema] `json:"form_schema"`
 	// If True, attempts to process the job with priority if the user has priority
 	// processing budget available; by default, sync jobs are prioritized above async
 	// jobs.
@@ -172,4 +253,35 @@ type EditRunJobParamsEditOptions struct {
 
 func (r EditRunJobParamsEditOptions) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type EditRunJobParamsFormSchema struct {
+	// Bounding box coordinates of the widget
+	Bbox param.Field[shared.BoundingBoxParam] `json:"bbox,required"`
+	// Description of the widget extracted from the document
+	Description param.Field[string] `json:"description,required"`
+	// Type of the form widget
+	Type param.Field[EditRunJobParamsFormSchemaType] `json:"type,required"`
+}
+
+func (r EditRunJobParamsFormSchema) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Type of the form widget
+type EditRunJobParamsFormSchemaType string
+
+const (
+	EditRunJobParamsFormSchemaTypeText     EditRunJobParamsFormSchemaType = "text"
+	EditRunJobParamsFormSchemaTypeCheckbox EditRunJobParamsFormSchemaType = "checkbox"
+	EditRunJobParamsFormSchemaTypeDropdown EditRunJobParamsFormSchemaType = "dropdown"
+	EditRunJobParamsFormSchemaTypeBarcode  EditRunJobParamsFormSchemaType = "barcode"
+)
+
+func (r EditRunJobParamsFormSchemaType) IsKnown() bool {
+	switch r {
+	case EditRunJobParamsFormSchemaTypeText, EditRunJobParamsFormSchemaTypeCheckbox, EditRunJobParamsFormSchemaTypeDropdown, EditRunJobParamsFormSchemaTypeBarcode:
+		return true
+	}
+	return false
 }

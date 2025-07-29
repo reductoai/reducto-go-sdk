@@ -33,6 +33,18 @@ func TestEditRunWithOptionalParams(t *testing.T) {
 		EditOptions: reducto.F(reducto.EditRunParamsEditOptions{
 			Color: reducto.F("#e1cb97"),
 		}),
+		FormSchema: reducto.F([]reducto.EditRunParamsFormSchema{{
+			Bbox: reducto.F(shared.BoundingBoxParam{
+				Height:       reducto.F(0.000000),
+				Left:         reducto.F(0.000000),
+				Page:         reducto.F(int64(0)),
+				Top:          reducto.F(0.000000),
+				Width:        reducto.F(0.000000),
+				OriginalPage: reducto.F(int64(0)),
+			}),
+			Description: reducto.F("description"),
+			Type:        reducto.F(reducto.EditRunParamsFormSchemaTypeText),
+		}}),
 		Priority: reducto.F(true),
 	})
 	if err != nil {
@@ -63,6 +75,18 @@ func TestEditRunJobWithOptionalParams(t *testing.T) {
 		EditOptions: reducto.F(reducto.EditRunJobParamsEditOptions{
 			Color: reducto.F("#e1cb97"),
 		}),
+		FormSchema: reducto.F([]reducto.EditRunJobParamsFormSchema{{
+			Bbox: reducto.F(shared.BoundingBoxParam{
+				Height:       reducto.F(0.000000),
+				Left:         reducto.F(0.000000),
+				Page:         reducto.F(int64(0)),
+				Top:          reducto.F(0.000000),
+				Width:        reducto.F(0.000000),
+				OriginalPage: reducto.F(int64(0)),
+			}),
+			Description: reducto.F("description"),
+			Type:        reducto.F(reducto.EditRunJobParamsFormSchemaTypeText),
+		}}),
 		Priority: reducto.F(true),
 		Webhook: reducto.F(shared.WebhookConfigNewParam{
 			Channels: reducto.F([]string{"string"}),

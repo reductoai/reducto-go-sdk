@@ -213,6 +213,9 @@ type BaseProcessingOptionsTableSummaryParam = shared.BaseProcessingOptionsTableS
 type BoundingBox = shared.BoundingBox
 
 // This is an alias to an internal type.
+type BoundingBoxParam = shared.BoundingBoxParam
+
+// This is an alias to an internal type.
 type ExperimentalProcessingOptionsParam = shared.ExperimentalProcessingOptionsParam
 
 // The configuration options for enrichment.
