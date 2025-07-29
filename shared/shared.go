@@ -376,6 +376,21 @@ func (r boundingBoxJSON) RawJSON() string {
 	return r.raw
 }
 
+type BoundingBoxParam struct {
+	Height param.Field[float64] `json:"height,required"`
+	Left   param.Field[float64] `json:"left,required"`
+	// The page number of the bounding box (1-indexed).
+	Page  param.Field[int64]   `json:"page,required"`
+	Top   param.Field[float64] `json:"top,required"`
+	Width param.Field[float64] `json:"width,required"`
+	// The page number in the original document of the bounding box (1-indexed).
+	OriginalPage param.Field[int64] `json:"original_page"`
+}
+
+func (r BoundingBoxParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type ExperimentalProcessingOptionsParam struct {
 	// You probably shouldn't use this. If True, filter out boxes with width greater
 	// than 50% of the document width. Defaults to False. You probably don't want to

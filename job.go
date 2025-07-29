@@ -191,7 +191,10 @@ type JobGetResponseAsyncJobResponseResult struct {
 	DocumentURL string      `json:"document_url"`
 	// The duration of the parse request in seconds.
 	Duration float64 `json:"duration"`
-	JobID    string  `json:"job_id"`
+	// This field can have the runtime type of
+	// [[]JobGetResponseAsyncJobResponseResultEditResponseFormSchema].
+	FormSchema interface{} `json:"form_schema"`
+	JobID      string      `json:"job_id"`
 	// The storage URL of the converted PDF file.
 	PdfURL string `json:"pdf_url,nullable"`
 	// This field can have the runtime type of [shared.ParseResponseResult],
@@ -212,6 +215,7 @@ type jobGetResponseAsyncJobResponseResultJSON struct {
 	Citations   apijson.Field
 	DocumentURL apijson.Field
 	Duration    apijson.Field
+	FormSchema  apijson.Field
 	JobID       apijson.Field
 	PdfURL      apijson.Field
 	Result      apijson.Field
@@ -274,14 +278,16 @@ func init() {
 }
 
 type JobGetResponseAsyncJobResponseResultEditResponse struct {
-	DocumentURL string                                               `json:"document_url,required"`
-	JSON        jobGetResponseAsyncJobResponseResultEditResponseJSON `json:"-"`
+	DocumentURL string                                                       `json:"document_url,required"`
+	FormSchema  []JobGetResponseAsyncJobResponseResultEditResponseFormSchema `json:"form_schema,nullable"`
+	JSON        jobGetResponseAsyncJobResponseResultEditResponseJSON         `json:"-"`
 }
 
 // jobGetResponseAsyncJobResponseResultEditResponseJSON contains the JSON metadata
 // for the struct [JobGetResponseAsyncJobResponseResultEditResponse]
 type jobGetResponseAsyncJobResponseResultEditResponseJSON struct {
 	DocumentURL apijson.Field
+	FormSchema  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -295,6 +301,49 @@ func (r jobGetResponseAsyncJobResponseResultEditResponseJSON) RawJSON() string {
 }
 
 func (r JobGetResponseAsyncJobResponseResultEditResponse) ImplementsJobGetResponseAsyncJobResponseResult() {
+}
+
+type JobGetResponseAsyncJobResponseResultEditResponseFormSchema struct {
+	Bbox        shared.BoundingBox                                             `json:"bbox,required"`
+	Description string                                                         `json:"description,required"`
+	Type        JobGetResponseAsyncJobResponseResultEditResponseFormSchemaType `json:"type,required"`
+	JSON        jobGetResponseAsyncJobResponseResultEditResponseFormSchemaJSON `json:"-"`
+}
+
+// jobGetResponseAsyncJobResponseResultEditResponseFormSchemaJSON contains the JSON
+// metadata for the struct
+// [JobGetResponseAsyncJobResponseResultEditResponseFormSchema]
+type jobGetResponseAsyncJobResponseResultEditResponseFormSchemaJSON struct {
+	Bbox        apijson.Field
+	Description apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseAsyncJobResponseResultEditResponseFormSchema) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseAsyncJobResponseResultEditResponseFormSchemaJSON) RawJSON() string {
+	return r.raw
+}
+
+type JobGetResponseAsyncJobResponseResultEditResponseFormSchemaType string
+
+const (
+	JobGetResponseAsyncJobResponseResultEditResponseFormSchemaTypeText     JobGetResponseAsyncJobResponseResultEditResponseFormSchemaType = "text"
+	JobGetResponseAsyncJobResponseResultEditResponseFormSchemaTypeCheckbox JobGetResponseAsyncJobResponseResultEditResponseFormSchemaType = "checkbox"
+	JobGetResponseAsyncJobResponseResultEditResponseFormSchemaTypeDropdown JobGetResponseAsyncJobResponseResultEditResponseFormSchemaType = "dropdown"
+	JobGetResponseAsyncJobResponseResultEditResponseFormSchemaTypeBarcode  JobGetResponseAsyncJobResponseResultEditResponseFormSchemaType = "barcode"
+)
+
+func (r JobGetResponseAsyncJobResponseResultEditResponseFormSchemaType) IsKnown() bool {
+	switch r {
+	case JobGetResponseAsyncJobResponseResultEditResponseFormSchemaTypeText, JobGetResponseAsyncJobResponseResultEditResponseFormSchemaTypeCheckbox, JobGetResponseAsyncJobResponseResultEditResponseFormSchemaTypeDropdown, JobGetResponseAsyncJobResponseResultEditResponseFormSchemaTypeBarcode:
+		return true
+	}
+	return false
 }
 
 type JobGetResponseEnhancedAsyncJobResponse struct {
@@ -361,7 +410,10 @@ type JobGetResponseEnhancedAsyncJobResponseResult struct {
 	DocumentURL string      `json:"document_url"`
 	// The duration of the parse request in seconds.
 	Duration float64 `json:"duration"`
-	JobID    string  `json:"job_id"`
+	// This field can have the runtime type of
+	// [[]JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchema].
+	FormSchema interface{} `json:"form_schema"`
+	JobID      string      `json:"job_id"`
 	// The storage URL of the converted PDF file.
 	PdfURL string `json:"pdf_url,nullable"`
 	// This field can have the runtime type of [shared.ParseResponseResult],
@@ -382,6 +434,7 @@ type jobGetResponseEnhancedAsyncJobResponseResultJSON struct {
 	Citations   apijson.Field
 	DocumentURL apijson.Field
 	Duration    apijson.Field
+	FormSchema  apijson.Field
 	JobID       apijson.Field
 	PdfURL      apijson.Field
 	Result      apijson.Field
@@ -445,8 +498,9 @@ func init() {
 }
 
 type JobGetResponseEnhancedAsyncJobResponseResultEditResponse struct {
-	DocumentURL string                                                       `json:"document_url,required"`
-	JSON        jobGetResponseEnhancedAsyncJobResponseResultEditResponseJSON `json:"-"`
+	DocumentURL string                                                               `json:"document_url,required"`
+	FormSchema  []JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchema `json:"form_schema,nullable"`
+	JSON        jobGetResponseEnhancedAsyncJobResponseResultEditResponseJSON         `json:"-"`
 }
 
 // jobGetResponseEnhancedAsyncJobResponseResultEditResponseJSON contains the JSON
@@ -454,6 +508,7 @@ type JobGetResponseEnhancedAsyncJobResponseResultEditResponse struct {
 // [JobGetResponseEnhancedAsyncJobResponseResultEditResponse]
 type jobGetResponseEnhancedAsyncJobResponseResultEditResponseJSON struct {
 	DocumentURL apijson.Field
+	FormSchema  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -467,6 +522,49 @@ func (r jobGetResponseEnhancedAsyncJobResponseResultEditResponseJSON) RawJSON() 
 }
 
 func (r JobGetResponseEnhancedAsyncJobResponseResultEditResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {
+}
+
+type JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchema struct {
+	Bbox        shared.BoundingBox                                                     `json:"bbox,required"`
+	Description string                                                                 `json:"description,required"`
+	Type        JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaType `json:"type,required"`
+	JSON        jobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaJSON `json:"-"`
+}
+
+// jobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaJSON contains
+// the JSON metadata for the struct
+// [JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchema]
+type jobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaJSON struct {
+	Bbox        apijson.Field
+	Description apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchema) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaJSON) RawJSON() string {
+	return r.raw
+}
+
+type JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaType string
+
+const (
+	JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaTypeText     JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaType = "text"
+	JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaTypeCheckbox JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaType = "checkbox"
+	JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaTypeDropdown JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaType = "dropdown"
+	JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaTypeBarcode  JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaType = "barcode"
+)
+
+func (r JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaType) IsKnown() bool {
+	switch r {
+	case JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaTypeText, JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaTypeCheckbox, JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaTypeDropdown, JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaTypeBarcode:
+		return true
+	}
+	return false
 }
 
 type JobGetResponseEnhancedAsyncJobResponseType string
