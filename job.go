@@ -74,10 +74,11 @@ type JobGetResponse struct {
 	// [JobGetResponseEnhancedAsyncJobResponseResult].
 	Result interface{} `json:"result"`
 	// This field can have the runtime type of [interface{}].
-	Source interface{}        `json:"source"`
-	Type   JobGetResponseType `json:"type,nullable"`
-	JSON   jobGetResponseJSON `json:"-"`
-	union  JobGetResponseUnion
+	Source     interface{}        `json:"source"`
+	TotalPages int64              `json:"total_pages,nullable"`
+	Type       JobGetResponseType `json:"type,nullable"`
+	JSON       jobGetResponseJSON `json:"-"`
+	union      JobGetResponseUnion
 }
 
 // jobGetResponseJSON contains the JSON metadata for the struct [JobGetResponse]
@@ -91,6 +92,7 @@ type jobGetResponseJSON struct {
 	Reason      apijson.Field
 	Result      apijson.Field
 	Source      apijson.Field
+	TotalPages  apijson.Field
 	Type        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -347,17 +349,18 @@ func (r JobGetResponseAsyncJobResponseResultEditResponseFormSchemaType) IsKnown(
 }
 
 type JobGetResponseEnhancedAsyncJobResponse struct {
-	Status    JobGetResponseEnhancedAsyncJobResponseStatus `json:"status,required"`
-	CreatedAt time.Time                                    `json:"created_at,nullable" format:"date-time"`
-	Duration  float64                                      `json:"duration,nullable"`
-	NumPages  int64                                        `json:"num_pages,nullable"`
-	Progress  float64                                      `json:"progress,nullable"`
-	RawConfig string                                       `json:"raw_config,nullable"`
-	Reason    string                                       `json:"reason,nullable"`
-	Result    JobGetResponseEnhancedAsyncJobResponseResult `json:"result,nullable"`
-	Source    interface{}                                  `json:"source"`
-	Type      JobGetResponseEnhancedAsyncJobResponseType   `json:"type,nullable"`
-	JSON      jobGetResponseEnhancedAsyncJobResponseJSON   `json:"-"`
+	Status     JobGetResponseEnhancedAsyncJobResponseStatus `json:"status,required"`
+	CreatedAt  time.Time                                    `json:"created_at,nullable" format:"date-time"`
+	Duration   float64                                      `json:"duration,nullable"`
+	NumPages   int64                                        `json:"num_pages,nullable"`
+	Progress   float64                                      `json:"progress,nullable"`
+	RawConfig  string                                       `json:"raw_config,nullable"`
+	Reason     string                                       `json:"reason,nullable"`
+	Result     JobGetResponseEnhancedAsyncJobResponseResult `json:"result,nullable"`
+	Source     interface{}                                  `json:"source"`
+	TotalPages int64                                        `json:"total_pages,nullable"`
+	Type       JobGetResponseEnhancedAsyncJobResponseType   `json:"type,nullable"`
+	JSON       jobGetResponseEnhancedAsyncJobResponseJSON   `json:"-"`
 }
 
 // jobGetResponseEnhancedAsyncJobResponseJSON contains the JSON metadata for the
@@ -372,6 +375,7 @@ type jobGetResponseEnhancedAsyncJobResponseJSON struct {
 	Reason      apijson.Field
 	Result      apijson.Field
 	Source      apijson.Field
+	TotalPages  apijson.Field
 	Type        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
