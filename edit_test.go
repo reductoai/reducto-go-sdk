@@ -31,7 +31,8 @@ func TestEditRunWithOptionalParams(t *testing.T) {
 		DocumentURL:      reducto.F[reducto.EditRunParamsDocumentURLUnion](shared.UnionString("string")),
 		EditInstructions: reducto.F("edit_instructions"),
 		EditOptions: reducto.F(reducto.EditRunParamsEditOptions{
-			Color: reducto.F("#e1cb97"),
+			Color:                 reducto.F("#e1cb97"),
+			LlmProviderPreference: reducto.F(reducto.EditRunParamsEditOptionsLlmProviderPreferenceOpenAI),
 		}),
 		FormSchema: reducto.F([]reducto.EditRunParamsFormSchema{{
 			Bbox: reducto.F(shared.BoundingBoxParam{
@@ -73,7 +74,8 @@ func TestEditRunJobWithOptionalParams(t *testing.T) {
 		DocumentURL:      reducto.F[reducto.EditRunJobParamsDocumentURLUnion](shared.UnionString("string")),
 		EditInstructions: reducto.F("edit_instructions"),
 		EditOptions: reducto.F(reducto.EditRunJobParamsEditOptions{
-			Color: reducto.F("#e1cb97"),
+			Color:                 reducto.F("#e1cb97"),
+			LlmProviderPreference: reducto.F(reducto.EditRunJobParamsEditOptionsLlmProviderPreferenceOpenAI),
 		}),
 		FormSchema: reducto.F([]reducto.EditRunJobParamsFormSchema{{
 			Bbox: reducto.F(shared.BoundingBoxParam{
