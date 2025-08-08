@@ -171,11 +171,28 @@ type EditRunParamsDocumentURLUnion interface {
 
 type EditRunParamsEditOptions struct {
 	// The color to use for edits, in hex format.
-	Color param.Field[string] `json:"color"`
+	Color                 param.Field[string]                                        `json:"color"`
+	LlmProviderPreference param.Field[EditRunParamsEditOptionsLlmProviderPreference] `json:"llm_provider_preference"`
 }
 
 func (r EditRunParamsEditOptions) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type EditRunParamsEditOptionsLlmProviderPreference string
+
+const (
+	EditRunParamsEditOptionsLlmProviderPreferenceOpenAI    EditRunParamsEditOptionsLlmProviderPreference = "openai"
+	EditRunParamsEditOptionsLlmProviderPreferenceAnthropic EditRunParamsEditOptionsLlmProviderPreference = "anthropic"
+	EditRunParamsEditOptionsLlmProviderPreferenceGemini    EditRunParamsEditOptionsLlmProviderPreference = "gemini"
+)
+
+func (r EditRunParamsEditOptionsLlmProviderPreference) IsKnown() bool {
+	switch r {
+	case EditRunParamsEditOptionsLlmProviderPreferenceOpenAI, EditRunParamsEditOptionsLlmProviderPreferenceAnthropic, EditRunParamsEditOptionsLlmProviderPreferenceGemini:
+		return true
+	}
+	return false
 }
 
 type EditRunParamsFormSchema struct {
@@ -248,11 +265,28 @@ type EditRunJobParamsDocumentURLUnion interface {
 
 type EditRunJobParamsEditOptions struct {
 	// The color to use for edits, in hex format.
-	Color param.Field[string] `json:"color"`
+	Color                 param.Field[string]                                           `json:"color"`
+	LlmProviderPreference param.Field[EditRunJobParamsEditOptionsLlmProviderPreference] `json:"llm_provider_preference"`
 }
 
 func (r EditRunJobParamsEditOptions) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type EditRunJobParamsEditOptionsLlmProviderPreference string
+
+const (
+	EditRunJobParamsEditOptionsLlmProviderPreferenceOpenAI    EditRunJobParamsEditOptionsLlmProviderPreference = "openai"
+	EditRunJobParamsEditOptionsLlmProviderPreferenceAnthropic EditRunJobParamsEditOptionsLlmProviderPreference = "anthropic"
+	EditRunJobParamsEditOptionsLlmProviderPreferenceGemini    EditRunJobParamsEditOptionsLlmProviderPreference = "gemini"
+)
+
+func (r EditRunJobParamsEditOptionsLlmProviderPreference) IsKnown() bool {
+	switch r {
+	case EditRunJobParamsEditOptionsLlmProviderPreferenceOpenAI, EditRunJobParamsEditOptionsLlmProviderPreferenceAnthropic, EditRunJobParamsEditOptionsLlmProviderPreferenceGemini:
+		return true
+	}
+	return false
 }
 
 type EditRunJobParamsFormSchema struct {
