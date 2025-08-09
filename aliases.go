@@ -19,7 +19,7 @@ type AdvancedProcessingOptionsParam = shared.AdvancedProcessingOptionsParam
 type AdvancedProcessingOptionsLargeTableChunkingParam = shared.AdvancedProcessingOptionsLargeTableChunkingParam
 
 // The OCR system to use. Highres is recommended for documents with English
-// characters.
+// characters. Legacy uses an alternative OCR backend.
 //
 // This is an alias to an internal type.
 type AdvancedProcessingOptionsOcrSystem = shared.AdvancedProcessingOptionsOcrSystem
@@ -32,6 +32,9 @@ const AdvancedProcessingOptionsOcrSystemMultilingual = shared.AdvancedProcessing
 
 // This is an alias to an internal value.
 const AdvancedProcessingOptionsOcrSystemCombined = shared.AdvancedProcessingOptionsOcrSystemCombined
+
+// This is an alias to an internal value.
+const AdvancedProcessingOptionsOcrSystemLegacy = shared.AdvancedProcessingOptionsOcrSystemLegacy
 
 // The page range to process (1-indexed). By default, the entire document is
 // processed.
