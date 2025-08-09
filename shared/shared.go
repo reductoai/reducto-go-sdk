@@ -42,7 +42,7 @@ type AdvancedProcessingOptionsParam struct {
 	// be merged across breaks and spaces.
 	MergeTables param.Field[bool] `json:"merge_tables"`
 	// The OCR system to use. Highres is recommended for documents with English
-	// characters.
+	// characters. Legacy uses an alternative OCR backend.
 	OcrSystem param.Field[AdvancedProcessingOptionsOcrSystem] `json:"ocr_system"`
 	// The page range to process (1-indexed). By default, the entire document is
 	// processed.
@@ -84,18 +84,19 @@ func (r AdvancedProcessingOptionsLargeTableChunkingParam) MarshalJSON() (data []
 }
 
 // The OCR system to use. Highres is recommended for documents with English
-// characters.
+// characters. Legacy uses an alternative OCR backend.
 type AdvancedProcessingOptionsOcrSystem string
 
 const (
 	AdvancedProcessingOptionsOcrSystemHighres      AdvancedProcessingOptionsOcrSystem = "highres"
 	AdvancedProcessingOptionsOcrSystemMultilingual AdvancedProcessingOptionsOcrSystem = "multilingual"
 	AdvancedProcessingOptionsOcrSystemCombined     AdvancedProcessingOptionsOcrSystem = "combined"
+	AdvancedProcessingOptionsOcrSystemLegacy       AdvancedProcessingOptionsOcrSystem = "legacy"
 )
 
 func (r AdvancedProcessingOptionsOcrSystem) IsKnown() bool {
 	switch r {
-	case AdvancedProcessingOptionsOcrSystemHighres, AdvancedProcessingOptionsOcrSystemMultilingual, AdvancedProcessingOptionsOcrSystemCombined:
+	case AdvancedProcessingOptionsOcrSystemHighres, AdvancedProcessingOptionsOcrSystemMultilingual, AdvancedProcessingOptionsOcrSystemCombined, AdvancedProcessingOptionsOcrSystemLegacy:
 		return true
 	}
 	return false
