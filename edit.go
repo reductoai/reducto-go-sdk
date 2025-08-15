@@ -74,7 +74,10 @@ type EditRunResponseFormSchema struct {
 	Bbox        shared.BoundingBox            `json:"bbox,required"`
 	Description string                        `json:"description,required"`
 	Type        EditRunResponseFormSchemaType `json:"type,required"`
-	JSON        editRunResponseFormSchemaJSON `json:"-"`
+	// If True (default), the system will attempt to fill this widget. If False, the
+	// widget will be created but intentionally left unfilled.
+	Fill bool                          `json:"fill"`
+	JSON editRunResponseFormSchemaJSON `json:"-"`
 }
 
 // editRunResponseFormSchemaJSON contains the JSON metadata for the struct
@@ -83,6 +86,7 @@ type editRunResponseFormSchemaJSON struct {
 	Bbox        apijson.Field
 	Description apijson.Field
 	Type        apijson.Field
+	Fill        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -202,6 +206,9 @@ type EditRunParamsFormSchema struct {
 	Description param.Field[string] `json:"description,required"`
 	// Type of the form widget
 	Type param.Field[EditRunParamsFormSchemaType] `json:"type,required"`
+	// If True (default), the system will attempt to fill this widget. If False, the
+	// widget will be created but intentionally left unfilled.
+	Fill param.Field[bool] `json:"fill"`
 }
 
 func (r EditRunParamsFormSchema) MarshalJSON() (data []byte, err error) {
@@ -296,6 +303,9 @@ type EditRunJobParamsFormSchema struct {
 	Description param.Field[string] `json:"description,required"`
 	// Type of the form widget
 	Type param.Field[EditRunJobParamsFormSchemaType] `json:"type,required"`
+	// If True (default), the system will attempt to fill this widget. If False, the
+	// widget will be created but intentionally left unfilled.
+	Fill param.Field[bool] `json:"fill"`
 }
 
 func (r EditRunJobParamsFormSchema) MarshalJSON() (data []byte, err error) {
