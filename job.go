@@ -309,7 +309,10 @@ type JobGetResponseAsyncJobResponseResultEditResponseFormSchema struct {
 	Bbox        shared.BoundingBox                                             `json:"bbox,required"`
 	Description string                                                         `json:"description,required"`
 	Type        JobGetResponseAsyncJobResponseResultEditResponseFormSchemaType `json:"type,required"`
-	JSON        jobGetResponseAsyncJobResponseResultEditResponseFormSchemaJSON `json:"-"`
+	// If True (default), the system will attempt to fill this widget. If False, the
+	// widget will be created but intentionally left unfilled.
+	Fill bool                                                           `json:"fill"`
+	JSON jobGetResponseAsyncJobResponseResultEditResponseFormSchemaJSON `json:"-"`
 }
 
 // jobGetResponseAsyncJobResponseResultEditResponseFormSchemaJSON contains the JSON
@@ -319,6 +322,7 @@ type jobGetResponseAsyncJobResponseResultEditResponseFormSchemaJSON struct {
 	Bbox        apijson.Field
 	Description apijson.Field
 	Type        apijson.Field
+	Fill        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -532,7 +536,10 @@ type JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchema struct {
 	Bbox        shared.BoundingBox                                                     `json:"bbox,required"`
 	Description string                                                                 `json:"description,required"`
 	Type        JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaType `json:"type,required"`
-	JSON        jobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaJSON `json:"-"`
+	// If True (default), the system will attempt to fill this widget. If False, the
+	// widget will be created but intentionally left unfilled.
+	Fill bool                                                                   `json:"fill"`
+	JSON jobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaJSON `json:"-"`
 }
 
 // jobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaJSON contains
@@ -542,6 +549,7 @@ type jobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaJSON stru
 	Bbox        apijson.Field
 	Description apijson.Field
 	Type        apijson.Field
+	Fill        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }

@@ -33,6 +33,9 @@ type AdvancedProcessingOptionsParam struct {
 	// If True, preserve Excel cell colours in the extracted spreadsheet text using
 	// LaTeX colour commands.
 	IncludeColorInformation param.Field[bool] `json:"include_color_information"`
+	// If True, preserve formula information in spreadsheet cells by wrapping text with
+	// LaTeX formula commands during parsing.
+	IncludeFormulaInformation param.Field[bool] `json:"include_formula_information"`
 	// If line breaks should be preserved in the text.
 	KeepLineBreaks param.Field[bool] `json:"keep_line_breaks"`
 	// The configuration options for large table chunking (currently only supported on
