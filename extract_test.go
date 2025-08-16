@@ -66,6 +66,9 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 				PagesPerSegment:             reducto.F(int64(0)),
 				StreamingExtractItemDensity: reducto.F(int64(0)),
 			}),
+			CitationsOptions: reducto.F(reducto.ExtractConfigCitationsOptionsParam{
+				NumericalConfidence: reducto.F(true),
+			}),
 			ExperimentalOptions: reducto.F(shared.ExperimentalProcessingOptionsParam{
 				DangerFilterWideBoxes: reducto.F(true),
 				EmbedTextMetadataPdf:  reducto.F(true),
@@ -84,8 +87,9 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 				RotateFigures:          reducto.F(true),
 				RotatePages:            reducto.F(true),
 			}),
-			GenerateCitations: reducto.F(true),
-			IncludeImages:     reducto.F(true),
+			ExperimentalTableCitations: reducto.F(true),
+			GenerateCitations:          reducto.F(true),
+			IncludeImages:              reducto.F(true),
 			Options: reducto.F(shared.BaseProcessingOptionsParam{
 				Chunking: reducto.F(shared.BaseProcessingOptionsChunkingParam{
 					ChunkMode: reducto.F(shared.BaseProcessingOptionsChunkingChunkModeVariable),
@@ -171,6 +175,9 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 			PagesPerSegment:             reducto.F(int64(0)),
 			StreamingExtractItemDensity: reducto.F(int64(0)),
 		}),
+		CitationsOptions: reducto.F(reducto.ExtractRunJobParamsCitationsOptions{
+			NumericalConfidence: reducto.F(true),
+		}),
 		ExperimentalOptions: reducto.F(shared.ExperimentalProcessingOptionsParam{
 			DangerFilterWideBoxes: reducto.F(true),
 			EmbedTextMetadataPdf:  reducto.F(true),
@@ -189,8 +196,9 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 			RotateFigures:          reducto.F(true),
 			RotatePages:            reducto.F(true),
 		}),
-		GenerateCitations: reducto.F(true),
-		IncludeImages:     reducto.F(true),
+		ExperimentalTableCitations: reducto.F(true),
+		GenerateCitations:          reducto.F(true),
+		IncludeImages:              reducto.F(true),
 		Options: reducto.F(shared.BaseProcessingOptionsParam{
 			Chunking: reducto.F(shared.BaseProcessingOptionsChunkingParam{
 				ChunkMode: reducto.F(shared.BaseProcessingOptionsChunkingChunkModeVariable),

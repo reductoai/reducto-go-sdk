@@ -754,20 +754,24 @@ type ParseResponseResultFullResultChunksBlock struct {
 	// factors like OCR and table structure
 	Confidence string `json:"confidence,nullable"`
 	// (Experimental) The URL of the image associated with the block.
-	ImageURL string                                       `json:"image_url,nullable"`
-	JSON     parseResponseResultFullResultChunksBlockJSON `json:"-"`
+	ImageURL string `json:"image_url,nullable"`
+	// Numeric confidence score based on logprobs and OCR confidence (when
+	// numeric_confidence_scores is enabled)
+	LogprobsConfidence float64                                      `json:"logprobs_confidence,nullable"`
+	JSON               parseResponseResultFullResultChunksBlockJSON `json:"-"`
 }
 
 // parseResponseResultFullResultChunksBlockJSON contains the JSON metadata for the
 // struct [ParseResponseResultFullResultChunksBlock]
 type parseResponseResultFullResultChunksBlockJSON struct {
-	Bbox        apijson.Field
-	Content     apijson.Field
-	Type        apijson.Field
-	Confidence  apijson.Field
-	ImageURL    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Bbox               apijson.Field
+	Content            apijson.Field
+	Type               apijson.Field
+	Confidence         apijson.Field
+	ImageURL           apijson.Field
+	LogprobsConfidence apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
 }
 
 func (r *ParseResponseResultFullResultChunksBlock) UnmarshalJSON(data []byte) (err error) {
