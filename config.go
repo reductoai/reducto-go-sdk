@@ -42,8 +42,12 @@ type ExtractConfigParam struct {
 	Schema          param.Field[interface{}]                           `json:"schema,required"`
 	AdvancedOptions param.Field[shared.AdvancedProcessingOptionsParam] `json:"advanced_options"`
 	// The configuration options for array extract
-	ArrayExtract        param.Field[shared.ArrayExtractConfigParam]            `json:"array_extract"`
+	ArrayExtract param.Field[shared.ArrayExtractConfigParam] `json:"array_extract"`
+	// The configuration options for citations.
+	CitationsOptions    param.Field[ExtractConfigCitationsOptionsParam]        `json:"citations_options"`
 	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
+	// If table citations should be generated for the extracted content.
+	ExperimentalTableCitations param.Field[bool] `json:"experimental_table_citations"`
 	// If citations should be generated for the extracted content.
 	GenerateCitations param.Field[bool] `json:"generate_citations"`
 	// If images should be passed directly for extractions. Can only be enabled for
@@ -85,6 +89,16 @@ type ExtractConfigDocumentURLUnionParam interface {
 type ExtractConfigDocumentURLArrayParam []string
 
 func (r ExtractConfigDocumentURLArrayParam) ImplementsExtractConfigDocumentURLUnionParam() {}
+
+// The configuration options for citations.
+type ExtractConfigCitationsOptionsParam struct {
+	// If True, enable numeric citation confidence scores. Defaults to False.
+	NumericalConfidence param.Field[bool] `json:"numerical_confidence"`
+}
+
+func (r ExtractConfigCitationsOptionsParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
 
 type ParseConfigParam struct {
 	// The URL of the document to be processed. You can provide one of the following:
