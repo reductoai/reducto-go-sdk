@@ -753,12 +753,12 @@ type ParseResponseResultFullResultChunksBlock struct {
 	// The confidence for the block. It is either low or high and takes into account
 	// factors like OCR and table structure
 	Confidence string `json:"confidence,nullable"`
+	// Granular confidence scores for the block. It is a dictionary of confidence
+	// scores for the block.
+	GranularConfidence map[string]float64 `json:"granular_confidence,nullable"`
 	// (Experimental) The URL of the image associated with the block.
-	ImageURL string `json:"image_url,nullable"`
-	// Numeric confidence score based on logprobs and OCR confidence (when
-	// numeric_confidence_scores is enabled)
-	LogprobsConfidence float64                                      `json:"logprobs_confidence,nullable"`
-	JSON               parseResponseResultFullResultChunksBlockJSON `json:"-"`
+	ImageURL string                                       `json:"image_url,nullable"`
+	JSON     parseResponseResultFullResultChunksBlockJSON `json:"-"`
 }
 
 // parseResponseResultFullResultChunksBlockJSON contains the JSON metadata for the
@@ -768,8 +768,8 @@ type parseResponseResultFullResultChunksBlockJSON struct {
 	Content            apijson.Field
 	Type               apijson.Field
 	Confidence         apijson.Field
+	GranularConfidence apijson.Field
 	ImageURL           apijson.Field
-	LogprobsConfidence apijson.Field
 	raw                string
 	ExtraFields        map[string]apijson.Field
 }
