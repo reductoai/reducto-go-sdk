@@ -33,7 +33,7 @@ func NewEditService(opts ...option.RequestOption) (r *EditService) {
 }
 
 // Edit
-func (r *EditService) Run(ctx context.Context, body EditRunParams, opts ...option.RequestOption) (res *EditRunResponse, err error) {
+func (r *EditService) Run(ctx context.Context, body EditRunParams, opts ...option.RequestOption) (res *shared.EditResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "edit"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -46,74 +46,6 @@ func (r *EditService) RunJob(ctx context.Context, body EditRunJobParams, opts ..
 	path := "edit_async"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
-}
-
-type EditRunResponse struct {
-	DocumentURL string                      `json:"document_url,required"`
-	FormSchema  []EditRunResponseFormSchema `json:"form_schema,nullable"`
-	JSON        editRunResponseJSON         `json:"-"`
-}
-
-// editRunResponseJSON contains the JSON metadata for the struct [EditRunResponse]
-type editRunResponseJSON struct {
-	DocumentURL apijson.Field
-	FormSchema  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *EditRunResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r editRunResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type EditRunResponseFormSchema struct {
-	Bbox        shared.BoundingBox            `json:"bbox,required"`
-	Description string                        `json:"description,required"`
-	Type        EditRunResponseFormSchemaType `json:"type,required"`
-	// If True (default), the system will attempt to fill this widget. If False, the
-	// widget will be created but intentionally left unfilled.
-	Fill bool                          `json:"fill"`
-	JSON editRunResponseFormSchemaJSON `json:"-"`
-}
-
-// editRunResponseFormSchemaJSON contains the JSON metadata for the struct
-// [EditRunResponseFormSchema]
-type editRunResponseFormSchemaJSON struct {
-	Bbox        apijson.Field
-	Description apijson.Field
-	Type        apijson.Field
-	Fill        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *EditRunResponseFormSchema) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r editRunResponseFormSchemaJSON) RawJSON() string {
-	return r.raw
-}
-
-type EditRunResponseFormSchemaType string
-
-const (
-	EditRunResponseFormSchemaTypeText     EditRunResponseFormSchemaType = "text"
-	EditRunResponseFormSchemaTypeCheckbox EditRunResponseFormSchemaType = "checkbox"
-	EditRunResponseFormSchemaTypeDropdown EditRunResponseFormSchemaType = "dropdown"
-	EditRunResponseFormSchemaTypeBarcode  EditRunResponseFormSchemaType = "barcode"
-)
-
-func (r EditRunResponseFormSchemaType) IsKnown() bool {
-	switch r {
-	case EditRunResponseFormSchemaTypeText, EditRunResponseFormSchemaTypeCheckbox, EditRunResponseFormSchemaTypeDropdown, EditRunResponseFormSchemaTypeBarcode:
-		return true
-	}
-	return false
 }
 
 type EditRunJobResponse struct {
