@@ -219,6 +219,27 @@ type BoundingBox = shared.BoundingBox
 type BoundingBoxParam = shared.BoundingBoxParam
 
 // This is an alias to an internal type.
+type EditResponse = shared.EditResponse
+
+// This is an alias to an internal type.
+type EditResponseFormSchema = shared.EditResponseFormSchema
+
+// This is an alias to an internal type.
+type EditResponseFormSchemaType = shared.EditResponseFormSchemaType
+
+// This is an alias to an internal value.
+const EditResponseFormSchemaTypeText = shared.EditResponseFormSchemaTypeText
+
+// This is an alias to an internal value.
+const EditResponseFormSchemaTypeCheckbox = shared.EditResponseFormSchemaTypeCheckbox
+
+// This is an alias to an internal value.
+const EditResponseFormSchemaTypeDropdown = shared.EditResponseFormSchemaTypeDropdown
+
+// This is an alias to an internal value.
+const EditResponseFormSchemaTypeBarcode = shared.EditResponseFormSchemaTypeBarcode
+
+// This is an alias to an internal type.
 type ExperimentalProcessingOptionsParam = shared.ExperimentalProcessingOptionsParam
 
 // The configuration options for enrichment.

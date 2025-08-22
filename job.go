@@ -193,8 +193,7 @@ type JobGetResponseAsyncJobResponseResult struct {
 	DocumentURL string      `json:"document_url"`
 	// The duration of the parse request in seconds.
 	Duration float64 `json:"duration"`
-	// This field can have the runtime type of
-	// [[]JobGetResponseAsyncJobResponseResultEditResponseFormSchema].
+	// This field can have the runtime type of [[]shared.EditResponseFormSchema].
 	FormSchema interface{} `json:"form_schema"`
 	JobID      string      `json:"job_id"`
 	// The storage URL of the converted PDF file.
@@ -244,14 +243,13 @@ func (r *JobGetResponseAsyncJobResponseResult) UnmarshalJSON(data []byte) (err e
 // you can cast to the specific types for more type safety.
 //
 // Possible runtime types of the union are [shared.ParseResponse],
-// [shared.ExtractResponse], [shared.SplitResponse],
-// [JobGetResponseAsyncJobResponseResultEditResponse].
+// [shared.ExtractResponse], [shared.SplitResponse], [shared.EditResponse].
 func (r JobGetResponseAsyncJobResponseResult) AsUnion() JobGetResponseAsyncJobResponseResultUnion {
 	return r.union
 }
 
 // Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
-// [shared.SplitResponse] or [JobGetResponseAsyncJobResponseResultEditResponse].
+// [shared.SplitResponse] or [shared.EditResponse].
 type JobGetResponseAsyncJobResponseResultUnion interface {
 	ImplementsJobGetResponseAsyncJobResponseResult()
 }
@@ -274,82 +272,9 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(JobGetResponseAsyncJobResponseResultEditResponse{}),
+			Type:       reflect.TypeOf(shared.EditResponse{}),
 		},
 	)
-}
-
-type JobGetResponseAsyncJobResponseResultEditResponse struct {
-	DocumentURL string                                                       `json:"document_url,required"`
-	FormSchema  []JobGetResponseAsyncJobResponseResultEditResponseFormSchema `json:"form_schema,nullable"`
-	JSON        jobGetResponseAsyncJobResponseResultEditResponseJSON         `json:"-"`
-}
-
-// jobGetResponseAsyncJobResponseResultEditResponseJSON contains the JSON metadata
-// for the struct [JobGetResponseAsyncJobResponseResultEditResponse]
-type jobGetResponseAsyncJobResponseResultEditResponseJSON struct {
-	DocumentURL apijson.Field
-	FormSchema  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *JobGetResponseAsyncJobResponseResultEditResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r jobGetResponseAsyncJobResponseResultEditResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r JobGetResponseAsyncJobResponseResultEditResponse) ImplementsJobGetResponseAsyncJobResponseResult() {
-}
-
-type JobGetResponseAsyncJobResponseResultEditResponseFormSchema struct {
-	Bbox        shared.BoundingBox                                             `json:"bbox,required"`
-	Description string                                                         `json:"description,required"`
-	Type        JobGetResponseAsyncJobResponseResultEditResponseFormSchemaType `json:"type,required"`
-	// If True (default), the system will attempt to fill this widget. If False, the
-	// widget will be created but intentionally left unfilled.
-	Fill bool                                                           `json:"fill"`
-	JSON jobGetResponseAsyncJobResponseResultEditResponseFormSchemaJSON `json:"-"`
-}
-
-// jobGetResponseAsyncJobResponseResultEditResponseFormSchemaJSON contains the JSON
-// metadata for the struct
-// [JobGetResponseAsyncJobResponseResultEditResponseFormSchema]
-type jobGetResponseAsyncJobResponseResultEditResponseFormSchemaJSON struct {
-	Bbox        apijson.Field
-	Description apijson.Field
-	Type        apijson.Field
-	Fill        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *JobGetResponseAsyncJobResponseResultEditResponseFormSchema) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r jobGetResponseAsyncJobResponseResultEditResponseFormSchemaJSON) RawJSON() string {
-	return r.raw
-}
-
-type JobGetResponseAsyncJobResponseResultEditResponseFormSchemaType string
-
-const (
-	JobGetResponseAsyncJobResponseResultEditResponseFormSchemaTypeText     JobGetResponseAsyncJobResponseResultEditResponseFormSchemaType = "text"
-	JobGetResponseAsyncJobResponseResultEditResponseFormSchemaTypeCheckbox JobGetResponseAsyncJobResponseResultEditResponseFormSchemaType = "checkbox"
-	JobGetResponseAsyncJobResponseResultEditResponseFormSchemaTypeDropdown JobGetResponseAsyncJobResponseResultEditResponseFormSchemaType = "dropdown"
-	JobGetResponseAsyncJobResponseResultEditResponseFormSchemaTypeBarcode  JobGetResponseAsyncJobResponseResultEditResponseFormSchemaType = "barcode"
-)
-
-func (r JobGetResponseAsyncJobResponseResultEditResponseFormSchemaType) IsKnown() bool {
-	switch r {
-	case JobGetResponseAsyncJobResponseResultEditResponseFormSchemaTypeText, JobGetResponseAsyncJobResponseResultEditResponseFormSchemaTypeCheckbox, JobGetResponseAsyncJobResponseResultEditResponseFormSchemaTypeDropdown, JobGetResponseAsyncJobResponseResultEditResponseFormSchemaTypeBarcode:
-		return true
-	}
-	return false
 }
 
 type JobGetResponseEnhancedAsyncJobResponse struct {
@@ -418,8 +343,7 @@ type JobGetResponseEnhancedAsyncJobResponseResult struct {
 	DocumentURL string      `json:"document_url"`
 	// The duration of the parse request in seconds.
 	Duration float64 `json:"duration"`
-	// This field can have the runtime type of
-	// [[]JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchema].
+	// This field can have the runtime type of [[]shared.EditResponseFormSchema].
 	FormSchema interface{} `json:"form_schema"`
 	JobID      string      `json:"job_id"`
 	// The storage URL of the converted PDF file.
@@ -469,15 +393,13 @@ func (r *JobGetResponseEnhancedAsyncJobResponseResult) UnmarshalJSON(data []byte
 // which you can cast to the specific types for more type safety.
 //
 // Possible runtime types of the union are [shared.ParseResponse],
-// [shared.ExtractResponse], [shared.SplitResponse],
-// [JobGetResponseEnhancedAsyncJobResponseResultEditResponse].
+// [shared.ExtractResponse], [shared.SplitResponse], [shared.EditResponse].
 func (r JobGetResponseEnhancedAsyncJobResponseResult) AsUnion() JobGetResponseEnhancedAsyncJobResponseResultUnion {
 	return r.union
 }
 
 // Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
-// [shared.SplitResponse] or
-// [JobGetResponseEnhancedAsyncJobResponseResultEditResponse].
+// [shared.SplitResponse] or [shared.EditResponse].
 type JobGetResponseEnhancedAsyncJobResponseResultUnion interface {
 	ImplementsJobGetResponseEnhancedAsyncJobResponseResult()
 }
@@ -500,83 +422,9 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(JobGetResponseEnhancedAsyncJobResponseResultEditResponse{}),
+			Type:       reflect.TypeOf(shared.EditResponse{}),
 		},
 	)
-}
-
-type JobGetResponseEnhancedAsyncJobResponseResultEditResponse struct {
-	DocumentURL string                                                               `json:"document_url,required"`
-	FormSchema  []JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchema `json:"form_schema,nullable"`
-	JSON        jobGetResponseEnhancedAsyncJobResponseResultEditResponseJSON         `json:"-"`
-}
-
-// jobGetResponseEnhancedAsyncJobResponseResultEditResponseJSON contains the JSON
-// metadata for the struct
-// [JobGetResponseEnhancedAsyncJobResponseResultEditResponse]
-type jobGetResponseEnhancedAsyncJobResponseResultEditResponseJSON struct {
-	DocumentURL apijson.Field
-	FormSchema  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *JobGetResponseEnhancedAsyncJobResponseResultEditResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r jobGetResponseEnhancedAsyncJobResponseResultEditResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r JobGetResponseEnhancedAsyncJobResponseResultEditResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {
-}
-
-type JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchema struct {
-	Bbox        shared.BoundingBox                                                     `json:"bbox,required"`
-	Description string                                                                 `json:"description,required"`
-	Type        JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaType `json:"type,required"`
-	// If True (default), the system will attempt to fill this widget. If False, the
-	// widget will be created but intentionally left unfilled.
-	Fill bool                                                                   `json:"fill"`
-	JSON jobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaJSON `json:"-"`
-}
-
-// jobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaJSON contains
-// the JSON metadata for the struct
-// [JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchema]
-type jobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaJSON struct {
-	Bbox        apijson.Field
-	Description apijson.Field
-	Type        apijson.Field
-	Fill        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchema) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r jobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaJSON) RawJSON() string {
-	return r.raw
-}
-
-type JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaType string
-
-const (
-	JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaTypeText     JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaType = "text"
-	JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaTypeCheckbox JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaType = "checkbox"
-	JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaTypeDropdown JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaType = "dropdown"
-	JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaTypeBarcode  JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaType = "barcode"
-)
-
-func (r JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaType) IsKnown() bool {
-	switch r {
-	case JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaTypeText, JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaTypeCheckbox, JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaTypeDropdown, JobGetResponseEnhancedAsyncJobResponseResultEditResponseFormSchemaTypeBarcode:
-		return true
-	}
-	return false
 }
 
 type JobGetResponseEnhancedAsyncJobResponseType string

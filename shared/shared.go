@@ -395,6 +395,78 @@ func (r BoundingBoxParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+type EditResponse struct {
+	DocumentURL string                   `json:"document_url,required"`
+	FormSchema  []EditResponseFormSchema `json:"form_schema,nullable"`
+	JSON        editResponseJSON         `json:"-"`
+}
+
+// editResponseJSON contains the JSON metadata for the struct [EditResponse]
+type editResponseJSON struct {
+	DocumentURL apijson.Field
+	FormSchema  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *EditResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r editResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r EditResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+
+func (r EditResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+
+type EditResponseFormSchema struct {
+	Bbox        BoundingBox                `json:"bbox,required"`
+	Description string                     `json:"description,required"`
+	Type        EditResponseFormSchemaType `json:"type,required"`
+	// If True (default), the system will attempt to fill this widget. If False, the
+	// widget will be created but intentionally left unfilled.
+	Fill bool                       `json:"fill"`
+	JSON editResponseFormSchemaJSON `json:"-"`
+}
+
+// editResponseFormSchemaJSON contains the JSON metadata for the struct
+// [EditResponseFormSchema]
+type editResponseFormSchemaJSON struct {
+	Bbox        apijson.Field
+	Description apijson.Field
+	Type        apijson.Field
+	Fill        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *EditResponseFormSchema) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r editResponseFormSchemaJSON) RawJSON() string {
+	return r.raw
+}
+
+type EditResponseFormSchemaType string
+
+const (
+	EditResponseFormSchemaTypeText     EditResponseFormSchemaType = "text"
+	EditResponseFormSchemaTypeCheckbox EditResponseFormSchemaType = "checkbox"
+	EditResponseFormSchemaTypeDropdown EditResponseFormSchemaType = "dropdown"
+	EditResponseFormSchemaTypeBarcode  EditResponseFormSchemaType = "barcode"
+)
+
+func (r EditResponseFormSchemaType) IsKnown() bool {
+	switch r {
+	case EditResponseFormSchemaTypeText, EditResponseFormSchemaTypeCheckbox, EditResponseFormSchemaTypeDropdown, EditResponseFormSchemaTypeBarcode:
+		return true
+	}
+	return false
+}
+
 type ExperimentalProcessingOptionsParam struct {
 	// You probably shouldn't use this. If True, filter out boxes with width greater
 	// than 50% of the document width. Defaults to False. You probably don't want to
