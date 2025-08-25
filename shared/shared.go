@@ -60,7 +60,8 @@ type AdvancedProcessingOptionsParam struct {
 	// If True, return OCR data in the result. Defaults to False.
 	ReturnOcrData param.Field[bool] `json:"return_ocr_data"`
 	// In a spreadsheet with different tables inside, we enable splitting up the tables
-	// by default. Disabling will register as one large table.
+	// by default. Intelligent mode applies more powerful models for superior accuracy,
+	// at 5× the default per-cell rate. Disabling will register as one large table.
 	SpreadsheetTableClustering param.Field[AdvancedProcessingOptionsSpreadsheetTableClustering] `json:"spreadsheet_table_clustering"`
 	// The mode to use for table output. Dynamic returns md for simpler tables and html
 	// for more complex tables.
@@ -121,17 +122,19 @@ func (r AdvancedProcessingOptionsPageRangeArrayParam) ImplementsAdvancedProcessi
 }
 
 // In a spreadsheet with different tables inside, we enable splitting up the tables
-// by default. Disabling will register as one large table.
+// by default. Intelligent mode applies more powerful models for superior accuracy,
+// at 5× the default per-cell rate. Disabling will register as one large table.
 type AdvancedProcessingOptionsSpreadsheetTableClustering string
 
 const (
-	AdvancedProcessingOptionsSpreadsheetTableClusteringDefault  AdvancedProcessingOptionsSpreadsheetTableClustering = "default"
-	AdvancedProcessingOptionsSpreadsheetTableClusteringDisabled AdvancedProcessingOptionsSpreadsheetTableClustering = "disabled"
+	AdvancedProcessingOptionsSpreadsheetTableClusteringDefault     AdvancedProcessingOptionsSpreadsheetTableClustering = "default"
+	AdvancedProcessingOptionsSpreadsheetTableClusteringDisabled    AdvancedProcessingOptionsSpreadsheetTableClustering = "disabled"
+	AdvancedProcessingOptionsSpreadsheetTableClusteringIntelligent AdvancedProcessingOptionsSpreadsheetTableClustering = "intelligent"
 )
 
 func (r AdvancedProcessingOptionsSpreadsheetTableClustering) IsKnown() bool {
 	switch r {
-	case AdvancedProcessingOptionsSpreadsheetTableClusteringDefault, AdvancedProcessingOptionsSpreadsheetTableClusteringDisabled:
+	case AdvancedProcessingOptionsSpreadsheetTableClusteringDefault, AdvancedProcessingOptionsSpreadsheetTableClusteringDisabled, AdvancedProcessingOptionsSpreadsheetTableClusteringIntelligent:
 		return true
 	}
 	return false
