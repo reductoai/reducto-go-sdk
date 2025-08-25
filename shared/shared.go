@@ -954,6 +954,8 @@ func (r parseResponseResultFullResultOcrJSON) RawJSON() string {
 type ParseResponseResultFullResultOcrLine struct {
 	Bbox BoundingBox `json:"bbox,required"`
 	Text string      `json:"text,required"`
+	// The index of the chunk that the line belongs to.
+	ChunkIndex int64 `json:"chunk_index,nullable"`
 	// OCR confidence score between 0 and 1, where 1 indicates highest confidence
 	Confidence float64                                  `json:"confidence,nullable"`
 	JSON       parseResponseResultFullResultOcrLineJSON `json:"-"`
@@ -964,6 +966,7 @@ type ParseResponseResultFullResultOcrLine struct {
 type parseResponseResultFullResultOcrLineJSON struct {
 	Bbox        apijson.Field
 	Text        apijson.Field
+	ChunkIndex  apijson.Field
 	Confidence  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -980,6 +983,8 @@ func (r parseResponseResultFullResultOcrLineJSON) RawJSON() string {
 type ParseResponseResultFullResultOcrWord struct {
 	Bbox BoundingBox `json:"bbox,required"`
 	Text string      `json:"text,required"`
+	// The index of the chunk that the word belongs to.
+	ChunkIndex int64 `json:"chunk_index,nullable"`
 	// OCR confidence score between 0 and 1, where 1 indicates highest confidence
 	Confidence float64                                  `json:"confidence,nullable"`
 	JSON       parseResponseResultFullResultOcrWordJSON `json:"-"`
@@ -990,6 +995,7 @@ type ParseResponseResultFullResultOcrWord struct {
 type parseResponseResultFullResultOcrWordJSON struct {
 	Bbox        apijson.Field
 	Text        apijson.Field
+	ChunkIndex  apijson.Field
 	Confidence  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
