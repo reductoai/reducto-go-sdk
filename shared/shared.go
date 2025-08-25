@@ -494,6 +494,9 @@ type ExperimentalProcessingOptionsParam struct {
 	// Instead of using LibreOffice, when enabled, this flag uses a Windows VM to
 	// convert files. This is slower but more accurate.
 	NativeOfficeConversion param.Field[bool] `json:"native_office_conversion"`
+	// If True, enable numeric parse confidence scores in granular_confidence
+	// dictionary. Defaults to False.
+	NumericalParseConfidence param.Field[bool] `json:"numerical_parse_confidence"`
 	// If figure images should be returned in the result. Defaults to False.
 	ReturnFigureImages param.Field[bool] `json:"return_figure_images"`
 	// If table images should be returned in the result. Defaults to False.
@@ -829,8 +832,9 @@ type ParseResponseResultFullResultChunksBlock struct {
 	// factors like OCR and table structure
 	Confidence string `json:"confidence,nullable"`
 	// Granular confidence scores for the block. It is a dictionary of confidence
-	// scores for the block.
-	GranularConfidence map[string]float64 `json:"granular_confidence,nullable"`
+	// scores for the block. The confidence scores will not be None if the user has
+	// enabled numeric confidence scores.
+	GranularConfidence ParseResponseResultFullResultChunksBlocksGranularConfidence `json:"granular_confidence,nullable"`
 	// (Experimental) The URL of the image associated with the block.
 	ImageURL string                                       `json:"image_url,nullable"`
 	JSON     parseResponseResultFullResultChunksBlockJSON `json:"-"`
@@ -880,6 +884,33 @@ func (r ParseResponseResultFullResultChunksBlocksType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+// Granular confidence scores for the block. It is a dictionary of confidence
+// scores for the block. The confidence scores will not be None if the user has
+// enabled numeric confidence scores.
+type ParseResponseResultFullResultChunksBlocksGranularConfidence struct {
+	ExtractConfidence float64                                                         `json:"extract_confidence,nullable"`
+	ParseConfidence   float64                                                         `json:"parse_confidence,nullable"`
+	JSON              parseResponseResultFullResultChunksBlocksGranularConfidenceJSON `json:"-"`
+}
+
+// parseResponseResultFullResultChunksBlocksGranularConfidenceJSON contains the
+// JSON metadata for the struct
+// [ParseResponseResultFullResultChunksBlocksGranularConfidence]
+type parseResponseResultFullResultChunksBlocksGranularConfidenceJSON struct {
+	ExtractConfidence apijson.Field
+	ParseConfidence   apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
+}
+
+func (r *ParseResponseResultFullResultChunksBlocksGranularConfidence) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r parseResponseResultFullResultChunksBlocksGranularConfidenceJSON) RawJSON() string {
+	return r.raw
 }
 
 // type = 'full'
