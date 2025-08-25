@@ -46,7 +46,8 @@ type AdvancedProcessingOptionsPageRangeUnionParam = shared.AdvancedProcessingOpt
 type AdvancedProcessingOptionsPageRangeArrayParam = shared.AdvancedProcessingOptionsPageRangeArrayParam
 
 // In a spreadsheet with different tables inside, we enable splitting up the tables
-// by default. Disabling will register as one large table.
+// by default. Intelligent mode applies more powerful models for superior accuracy,
+// at 5× the default per-cell rate. Disabling will register as one large table.
 //
 // This is an alias to an internal type.
 type AdvancedProcessingOptionsSpreadsheetTableClustering = shared.AdvancedProcessingOptionsSpreadsheetTableClustering
@@ -56,6 +57,9 @@ const AdvancedProcessingOptionsSpreadsheetTableClusteringDefault = shared.Advanc
 
 // This is an alias to an internal value.
 const AdvancedProcessingOptionsSpreadsheetTableClusteringDisabled = shared.AdvancedProcessingOptionsSpreadsheetTableClusteringDisabled
+
+// This is an alias to an internal value.
+const AdvancedProcessingOptionsSpreadsheetTableClusteringIntelligent = shared.AdvancedProcessingOptionsSpreadsheetTableClusteringIntelligent
 
 // The mode to use for table output. Dynamic returns md for simpler tables and html
 // for more complex tables.
