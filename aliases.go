@@ -344,6 +344,13 @@ const ParseResponseResultFullResultChunksBlocksTypeText = shared.ParseResponseRe
 // This is an alias to an internal value.
 const ParseResponseResultFullResultChunksBlocksTypeComment = shared.ParseResponseResultFullResultChunksBlocksTypeComment
 
+// Granular confidence scores for the block. It is a dictionary of confidence
+// scores for the block. The confidence scores will not be None if the user has
+// enabled numeric confidence scores.
+//
+// This is an alias to an internal type.
+type ParseResponseResultFullResultChunksBlocksGranularConfidence = shared.ParseResponseResultFullResultChunksBlocksGranularConfidence
+
 // type = 'full'
 //
 // This is an alias to an internal type.
