@@ -22,6 +22,9 @@ type AdvancedProcessingOptionsParam struct {
 	// Enables model-based detection of underlines and strikethroughs, adding <u>/<s>
 	// tags to OCR text. Works with any extraction mode. Defaults to False.
 	EnableChangeTracking param.Field[bool] `json:"enable_change_tracking"`
+	// If True, enable highlight detection. Highlighted text will be surrounded by
+	// <mark> tags in the output. Defaults to False.
+	EnableHighlightDetection param.Field[bool] `json:"enable_highlight_detection"`
 	// Skip hidden rows and cols in Excel files. Defaults to False.
 	ExcludeHiddenRowsCols param.Field[bool] `json:"exclude_hidden_rows_cols"`
 	// Skip hidden sheets in Excel files. Defaults to False.
