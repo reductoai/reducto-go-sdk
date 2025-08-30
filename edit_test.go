@@ -46,6 +46,7 @@ func TestEditRunWithOptionalParams(t *testing.T) {
 			Description: reducto.F("description"),
 			Type:        reducto.F(reducto.EditRunParamsFormSchemaTypeText),
 			Fill:        reducto.F(true),
+			Value:       reducto.F("value"),
 		}}),
 		Priority: reducto.F(true),
 	})
@@ -90,6 +91,7 @@ func TestEditRunJobWithOptionalParams(t *testing.T) {
 			Description: reducto.F("description"),
 			Type:        reducto.F(reducto.EditRunJobParamsFormSchemaTypeText),
 			Fill:        reducto.F(true),
+			Value:       reducto.F("value"),
 		}}),
 		Priority: reducto.F(true),
 		Webhook: reducto.F(shared.WebhookConfigNewParam{

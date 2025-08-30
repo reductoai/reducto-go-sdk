@@ -141,6 +141,9 @@ type EditRunParamsFormSchema struct {
 	// If True (default), the system will attempt to fill this widget. If False, the
 	// widget will be created but intentionally left unfilled.
 	Fill param.Field[bool] `json:"fill"`
+	// If provided, this value will be used directly instead of attempting to
+	// intelligently determine the field value.
+	Value param.Field[string] `json:"value"`
 }
 
 func (r EditRunParamsFormSchema) MarshalJSON() (data []byte, err error) {
@@ -238,6 +241,9 @@ type EditRunJobParamsFormSchema struct {
 	// If True (default), the system will attempt to fill this widget. If False, the
 	// widget will be created but intentionally left unfilled.
 	Fill param.Field[bool] `json:"fill"`
+	// If provided, this value will be used directly instead of attempting to
+	// intelligently determine the field value.
+	Value param.Field[string] `json:"value"`
 }
 
 func (r EditRunJobParamsFormSchema) MarshalJSON() (data []byte, err error) {
