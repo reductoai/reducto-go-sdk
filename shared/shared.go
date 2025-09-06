@@ -315,11 +315,12 @@ const (
 	BaseProcessingOptionsFilterBlockKeyValue      BaseProcessingOptionsFilterBlock = "Key Value"
 	BaseProcessingOptionsFilterBlockText          BaseProcessingOptionsFilterBlock = "Text"
 	BaseProcessingOptionsFilterBlockComment       BaseProcessingOptionsFilterBlock = "Comment"
+	BaseProcessingOptionsFilterBlockSignature     BaseProcessingOptionsFilterBlock = "Signature"
 )
 
 func (r BaseProcessingOptionsFilterBlock) IsKnown() bool {
 	switch r {
-	case BaseProcessingOptionsFilterBlockHeader, BaseProcessingOptionsFilterBlockFooter, BaseProcessingOptionsFilterBlockTitle, BaseProcessingOptionsFilterBlockSectionHeader, BaseProcessingOptionsFilterBlockPageNumber, BaseProcessingOptionsFilterBlockListItem, BaseProcessingOptionsFilterBlockFigure, BaseProcessingOptionsFilterBlockTable, BaseProcessingOptionsFilterBlockKeyValue, BaseProcessingOptionsFilterBlockText, BaseProcessingOptionsFilterBlockComment:
+	case BaseProcessingOptionsFilterBlockHeader, BaseProcessingOptionsFilterBlockFooter, BaseProcessingOptionsFilterBlockTitle, BaseProcessingOptionsFilterBlockSectionHeader, BaseProcessingOptionsFilterBlockPageNumber, BaseProcessingOptionsFilterBlockListItem, BaseProcessingOptionsFilterBlockFigure, BaseProcessingOptionsFilterBlockTable, BaseProcessingOptionsFilterBlockKeyValue, BaseProcessingOptionsFilterBlockText, BaseProcessingOptionsFilterBlockComment, BaseProcessingOptionsFilterBlockSignature:
 		return true
 	}
 	return false
@@ -508,8 +509,10 @@ type ExperimentalProcessingOptionsParam struct {
 	// False
 	RotateFigures param.Field[bool] `json:"rotate_figures"`
 	// Use an orientation model to detect and rotate pages as needed, defaults to True
-	RotatePages param.Field[bool]      `json:"rotate_pages"`
-	ExtraFields map[string]interface{} `json:"-,extras"`
+	RotatePages param.Field[bool] `json:"rotate_pages"`
+	// A user specified timeout, defaults to None
+	UserSpecifiedTimeoutSeconds param.Field[float64]   `json:"user_specified_timeout_seconds"`
+	ExtraFields                 map[string]interface{} `json:"-,extras"`
 }
 
 func (r ExperimentalProcessingOptionsParam) MarshalJSON() (data []byte, err error) {
@@ -879,11 +882,12 @@ const (
 	ParseResponseResultFullResultChunksBlocksTypeKeyValue      ParseResponseResultFullResultChunksBlocksType = "Key Value"
 	ParseResponseResultFullResultChunksBlocksTypeText          ParseResponseResultFullResultChunksBlocksType = "Text"
 	ParseResponseResultFullResultChunksBlocksTypeComment       ParseResponseResultFullResultChunksBlocksType = "Comment"
+	ParseResponseResultFullResultChunksBlocksTypeSignature     ParseResponseResultFullResultChunksBlocksType = "Signature"
 )
 
 func (r ParseResponseResultFullResultChunksBlocksType) IsKnown() bool {
 	switch r {
-	case ParseResponseResultFullResultChunksBlocksTypeHeader, ParseResponseResultFullResultChunksBlocksTypeFooter, ParseResponseResultFullResultChunksBlocksTypeTitle, ParseResponseResultFullResultChunksBlocksTypeSectionHeader, ParseResponseResultFullResultChunksBlocksTypePageNumber, ParseResponseResultFullResultChunksBlocksTypeListItem, ParseResponseResultFullResultChunksBlocksTypeFigure, ParseResponseResultFullResultChunksBlocksTypeTable, ParseResponseResultFullResultChunksBlocksTypeKeyValue, ParseResponseResultFullResultChunksBlocksTypeText, ParseResponseResultFullResultChunksBlocksTypeComment:
+	case ParseResponseResultFullResultChunksBlocksTypeHeader, ParseResponseResultFullResultChunksBlocksTypeFooter, ParseResponseResultFullResultChunksBlocksTypeTitle, ParseResponseResultFullResultChunksBlocksTypeSectionHeader, ParseResponseResultFullResultChunksBlocksTypePageNumber, ParseResponseResultFullResultChunksBlocksTypeListItem, ParseResponseResultFullResultChunksBlocksTypeFigure, ParseResponseResultFullResultChunksBlocksTypeTable, ParseResponseResultFullResultChunksBlocksTypeKeyValue, ParseResponseResultFullResultChunksBlocksTypeText, ParseResponseResultFullResultChunksBlocksTypeComment, ParseResponseResultFullResultChunksBlocksTypeSignature:
 		return true
 	}
 	return false
