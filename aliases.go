@@ -199,6 +199,9 @@ const BaseProcessingOptionsFilterBlockText = shared.BaseProcessingOptionsFilterB
 // This is an alias to an internal value.
 const BaseProcessingOptionsFilterBlockComment = shared.BaseProcessingOptionsFilterBlockComment
 
+// This is an alias to an internal value.
+const BaseProcessingOptionsFilterBlockSignature = shared.BaseProcessingOptionsFilterBlockSignature
+
 // The mode to use for OCR. Agentic mode adds an extra pass, correcting any
 // table/text mistakes at a small cost.
 //
@@ -343,6 +346,9 @@ const ParseResponseResultFullResultChunksBlocksTypeText = shared.ParseResponseRe
 
 // This is an alias to an internal value.
 const ParseResponseResultFullResultChunksBlocksTypeComment = shared.ParseResponseResultFullResultChunksBlocksTypeComment
+
+// This is an alias to an internal value.
+const ParseResponseResultFullResultChunksBlocksTypeSignature = shared.ParseResponseResultFullResultChunksBlocksTypeSignature
 
 // Granular confidence scores for the block. It is a dictionary of confidence
 // scores for the block. The confidence scores will not be None if the user has
