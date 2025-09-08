@@ -231,6 +231,8 @@ type EditResponse = shared.EditResponse
 // This is an alias to an internal type.
 type EditResponseFormSchema = shared.EditResponseFormSchema
 
+// Type of the form widget
+//
 // This is an alias to an internal type.
 type EditResponseFormSchemaType = shared.EditResponseFormSchemaType
 

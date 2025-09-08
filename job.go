@@ -189,8 +189,9 @@ func (r JobGetResponseAsyncJobResponseStatus) IsKnown() bool {
 
 type JobGetResponseAsyncJobResponseResult struct {
 	// This field can have the runtime type of [[]interface{}].
-	Citations   interface{} `json:"citations"`
-	DocumentURL string      `json:"document_url"`
+	Citations interface{} `json:"citations"`
+	// Presigned URL to download the edited document.
+	DocumentURL string `json:"document_url"`
 	// The duration of the parse request in seconds.
 	Duration float64 `json:"duration"`
 	// This field can have the runtime type of [[]shared.EditResponseFormSchema].
@@ -339,8 +340,9 @@ func (r JobGetResponseEnhancedAsyncJobResponseStatus) IsKnown() bool {
 
 type JobGetResponseEnhancedAsyncJobResponseResult struct {
 	// This field can have the runtime type of [[]interface{}].
-	Citations   interface{} `json:"citations"`
-	DocumentURL string      `json:"document_url"`
+	Citations interface{} `json:"citations"`
+	// Presigned URL to download the edited document.
+	DocumentURL string `json:"document_url"`
 	// The duration of the parse request in seconds.
 	Duration float64 `json:"duration"`
 	// This field can have the runtime type of [[]shared.EditResponseFormSchema].

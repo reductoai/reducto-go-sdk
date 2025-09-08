@@ -403,9 +403,12 @@ func (r BoundingBoxParam) MarshalJSON() (data []byte, err error) {
 }
 
 type EditResponse struct {
-	DocumentURL string                   `json:"document_url,required"`
-	FormSchema  []EditResponseFormSchema `json:"form_schema,nullable"`
-	JSON        editResponseJSON         `json:"-"`
+	// Presigned URL to download the edited document.
+	DocumentURL string `json:"document_url,required"`
+	// Form schema for PDF forms. List of widgets with their types, descriptions, and
+	// bounding boxes.
+	FormSchema []EditResponseFormSchema `json:"form_schema,nullable"`
+	JSON       editResponseJSON         `json:"-"`
 }
 
 // editResponseJSON contains the JSON metadata for the struct [EditResponse]
@@ -429,13 +432,19 @@ func (r EditResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
 func (r EditResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
 
 type EditResponseFormSchema struct {
-	Bbox        BoundingBox                `json:"bbox,required"`
-	Description string                     `json:"description,required"`
-	Type        EditResponseFormSchemaType `json:"type,required"`
+	// Bounding box coordinates of the widget
+	Bbox BoundingBox `json:"bbox,required"`
+	// Description of the widget extracted from the document
+	Description string `json:"description,required"`
+	// Type of the form widget
+	Type EditResponseFormSchemaType `json:"type,required"`
 	// If True (default), the system will attempt to fill this widget. If False, the
 	// widget will be created but intentionally left unfilled.
-	Fill bool                       `json:"fill"`
-	JSON editResponseFormSchemaJSON `json:"-"`
+	Fill bool `json:"fill"`
+	// If provided, this value will be used directly instead of attempting to
+	// intelligently determine the field value.
+	Value string                     `json:"value,nullable"`
+	JSON  editResponseFormSchemaJSON `json:"-"`
 }
 
 // editResponseFormSchemaJSON contains the JSON metadata for the struct
@@ -445,6 +454,7 @@ type editResponseFormSchemaJSON struct {
 	Description apijson.Field
 	Type        apijson.Field
 	Fill        apijson.Field
+	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -457,6 +467,7 @@ func (r editResponseFormSchemaJSON) RawJSON() string {
 	return r.raw
 }
 
+// Type of the form widget
 type EditResponseFormSchemaType string
 
 const (
