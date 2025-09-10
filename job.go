@@ -63,13 +63,15 @@ func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.Reque
 type JobCancelResponse = interface{}
 
 type JobGetResponse struct {
-	Status    JobGetResponseStatus `json:"status,required"`
-	CreatedAt time.Time            `json:"created_at,nullable" format:"date-time"`
-	Duration  float64              `json:"duration,nullable"`
-	NumPages  int64                `json:"num_pages,nullable"`
-	Progress  float64              `json:"progress,nullable"`
-	RawConfig string               `json:"raw_config,nullable"`
-	Reason    string               `json:"reason,nullable"`
+	Status JobGetResponseStatus `json:"status,required"`
+	// This field can have the runtime type of [interface{}].
+	Bucket    interface{} `json:"bucket"`
+	CreatedAt time.Time   `json:"created_at,nullable" format:"date-time"`
+	Duration  float64     `json:"duration,nullable"`
+	NumPages  int64       `json:"num_pages,nullable"`
+	Progress  float64     `json:"progress,nullable"`
+	RawConfig string      `json:"raw_config,nullable"`
+	Reason    string      `json:"reason,nullable"`
 	// This field can have the runtime type of [JobGetResponseAsyncJobResponseResult],
 	// [JobGetResponseEnhancedAsyncJobResponseResult].
 	Result interface{} `json:"result"`
@@ -84,6 +86,7 @@ type JobGetResponse struct {
 // jobGetResponseJSON contains the JSON metadata for the struct [JobGetResponse]
 type jobGetResponseJSON struct {
 	Status      apijson.Field
+	Bucket      apijson.Field
 	CreatedAt   apijson.Field
 	Duration    apijson.Field
 	NumPages    apijson.Field
@@ -280,6 +283,7 @@ func init() {
 
 type JobGetResponseEnhancedAsyncJobResponse struct {
 	Status     JobGetResponseEnhancedAsyncJobResponseStatus `json:"status,required"`
+	Bucket     interface{}                                  `json:"bucket"`
 	CreatedAt  time.Time                                    `json:"created_at,nullable" format:"date-time"`
 	Duration   float64                                      `json:"duration,nullable"`
 	NumPages   int64                                        `json:"num_pages,nullable"`
@@ -297,6 +301,7 @@ type JobGetResponseEnhancedAsyncJobResponse struct {
 // struct [JobGetResponseEnhancedAsyncJobResponse]
 type jobGetResponseEnhancedAsyncJobResponseJSON struct {
 	Status      apijson.Field
+	Bucket      apijson.Field
 	CreatedAt   apijson.Field
 	Duration    apijson.Field
 	NumPages    apijson.Field
