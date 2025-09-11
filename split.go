@@ -87,7 +87,8 @@ type SplitRunParams struct {
 	// If True, attempts to process the job with priority if the user has priority
 	// processing budget available; by default, sync jobs are prioritized above async
 	// jobs.
-	Priority param.Field[bool] `json:"priority"`
+	Priority     param.Field[bool]                       `json:"priority"`
+	SplitOptions param.Field[SplitRunParamsSplitOptions] `json:"split_options"`
 	// The prompt that describes rules for splitting the document.
 	SplitRules param.Field[string] `json:"split_rules"`
 }
@@ -115,6 +116,37 @@ type SplitRunParamsDocumentURLArray []string
 
 func (r SplitRunParamsDocumentURLArray) ImplementsSplitRunParamsDocumentURLUnion() {}
 
+type SplitRunParamsSplitOptions struct {
+	// If tables should be truncated to the first few rows or if all content should be
+	// preserved. truncate improves latency, preserve is recommended for cases where
+	// partition_key is being used and the partition_key may be included within the
+	// table. Defaults to truncate
+	TableCutoff param.Field[SplitRunParamsSplitOptionsTableCutoff] `json:"table_cutoff"`
+}
+
+func (r SplitRunParamsSplitOptions) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// If tables should be truncated to the first few rows or if all content should be
+// preserved. truncate improves latency, preserve is recommended for cases where
+// partition_key is being used and the partition_key may be included within the
+// table. Defaults to truncate
+type SplitRunParamsSplitOptionsTableCutoff string
+
+const (
+	SplitRunParamsSplitOptionsTableCutoffTruncate SplitRunParamsSplitOptionsTableCutoff = "truncate"
+	SplitRunParamsSplitOptionsTableCutoffPreserve SplitRunParamsSplitOptionsTableCutoff = "preserve"
+)
+
+func (r SplitRunParamsSplitOptionsTableCutoff) IsKnown() bool {
+	switch r {
+	case SplitRunParamsSplitOptionsTableCutoffTruncate, SplitRunParamsSplitOptionsTableCutoffPreserve:
+		return true
+	}
+	return false
+}
+
 type SplitRunJobParams struct {
 	// The URL of the document to be processed. You can provide one of the following:
 	//
@@ -133,7 +165,8 @@ type SplitRunJobParams struct {
 	// If True, attempts to process the job with priority if the user has priority
 	// processing budget available; by default, sync jobs are prioritized above async
 	// jobs.
-	Priority param.Field[bool] `json:"priority"`
+	Priority     param.Field[bool]                          `json:"priority"`
+	SplitOptions param.Field[SplitRunJobParamsSplitOptions] `json:"split_options"`
 	// The prompt that describes rules for splitting the document.
 	SplitRules param.Field[string]                       `json:"split_rules"`
 	Webhook    param.Field[shared.WebhookConfigNewParam] `json:"webhook"`
@@ -161,3 +194,34 @@ type SplitRunJobParamsDocumentURLUnion interface {
 type SplitRunJobParamsDocumentURLArray []string
 
 func (r SplitRunJobParamsDocumentURLArray) ImplementsSplitRunJobParamsDocumentURLUnion() {}
+
+type SplitRunJobParamsSplitOptions struct {
+	// If tables should be truncated to the first few rows or if all content should be
+	// preserved. truncate improves latency, preserve is recommended for cases where
+	// partition_key is being used and the partition_key may be included within the
+	// table. Defaults to truncate
+	TableCutoff param.Field[SplitRunJobParamsSplitOptionsTableCutoff] `json:"table_cutoff"`
+}
+
+func (r SplitRunJobParamsSplitOptions) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// If tables should be truncated to the first few rows or if all content should be
+// preserved. truncate improves latency, preserve is recommended for cases where
+// partition_key is being used and the partition_key may be included within the
+// table. Defaults to truncate
+type SplitRunJobParamsSplitOptionsTableCutoff string
+
+const (
+	SplitRunJobParamsSplitOptionsTableCutoffTruncate SplitRunJobParamsSplitOptionsTableCutoff = "truncate"
+	SplitRunJobParamsSplitOptionsTableCutoffPreserve SplitRunJobParamsSplitOptionsTableCutoff = "preserve"
+)
+
+func (r SplitRunJobParamsSplitOptionsTableCutoff) IsKnown() bool {
+	switch r {
+	case SplitRunJobParamsSplitOptionsTableCutoffTruncate, SplitRunJobParamsSplitOptionsTableCutoffPreserve:
+		return true
+	}
+	return false
+}

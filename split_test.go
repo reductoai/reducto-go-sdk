@@ -103,7 +103,10 @@ func TestSplitRunWithOptionalParams(t *testing.T) {
 				Prompt:  reducto.F("prompt"),
 			}),
 		}),
-		Priority:   reducto.F(true),
+		Priority: reducto.F(true),
+		SplitOptions: reducto.F(reducto.SplitRunParamsSplitOptions{
+			TableCutoff: reducto.F(reducto.SplitRunParamsSplitOptionsTableCutoffTruncate),
+		}),
 		SplitRules: reducto.F("split_rules"),
 	})
 	if err != nil {
@@ -204,7 +207,10 @@ func TestSplitRunJobWithOptionalParams(t *testing.T) {
 				Prompt:  reducto.F("prompt"),
 			}),
 		}),
-		Priority:   reducto.F(true),
+		Priority: reducto.F(true),
+		SplitOptions: reducto.F(reducto.SplitRunJobParamsSplitOptions{
+			TableCutoff: reducto.F(reducto.SplitRunJobParamsSplitOptionsTableCutoffTruncate),
+		}),
 		SplitRules: reducto.F("split_rules"),
 		Webhook: reducto.F(shared.WebhookConfigNewParam{
 			Channels: reducto.F([]string{"string"}),
