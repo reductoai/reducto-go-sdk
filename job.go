@@ -199,11 +199,12 @@ type JobGetResponseAsyncJobResponseResult struct {
 	Duration float64 `json:"duration"`
 	// This field can have the runtime type of [[]shared.EditResponseFormSchema].
 	FormSchema interface{} `json:"form_schema"`
-	JobID      string      `json:"job_id"`
+	JobID      string      `json:"job_id,nullable"`
 	// The storage URL of the converted PDF file.
 	PdfURL string `json:"pdf_url,nullable"`
 	// This field can have the runtime type of [shared.ParseResponseResult],
-	// [[]interface{}], [shared.SplitResponseResult].
+	// [[]interface{}], [shared.SplitResponseResult],
+	// [JobGetResponseAsyncJobResponseResultPipelineResponseResult].
 	Result interface{} `json:"result"`
 	// The link to the studio pipeline for the document.
 	StudioLink string `json:"studio_link,nullable"`
@@ -247,13 +248,15 @@ func (r *JobGetResponseAsyncJobResponseResult) UnmarshalJSON(data []byte) (err e
 // you can cast to the specific types for more type safety.
 //
 // Possible runtime types of the union are [shared.ParseResponse],
-// [shared.ExtractResponse], [shared.SplitResponse], [shared.EditResponse].
+// [shared.ExtractResponse], [shared.SplitResponse], [shared.EditResponse],
+// [JobGetResponseAsyncJobResponseResultPipelineResponse].
 func (r JobGetResponseAsyncJobResponseResult) AsUnion() JobGetResponseAsyncJobResponseResultUnion {
 	return r.union
 }
 
 // Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
-// [shared.SplitResponse] or [shared.EditResponse].
+// [shared.SplitResponse], [shared.EditResponse] or
+// [JobGetResponseAsyncJobResponseResultPipelineResponse].
 type JobGetResponseAsyncJobResponseResultUnion interface {
 	ImplementsJobGetResponseAsyncJobResponseResult()
 }
@@ -278,7 +281,121 @@ func init() {
 			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(shared.EditResponse{}),
 		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(JobGetResponseAsyncJobResponseResultPipelineResponse{}),
+		},
 	)
+}
+
+type JobGetResponseAsyncJobResponseResultPipelineResponse struct {
+	JobID  string                                                     `json:"job_id,required"`
+	Result JobGetResponseAsyncJobResponseResultPipelineResponseResult `json:"result,required"`
+	Usage  shared.ParseUsage                                          `json:"usage,required"`
+	JSON   jobGetResponseAsyncJobResponseResultPipelineResponseJSON   `json:"-"`
+}
+
+// jobGetResponseAsyncJobResponseResultPipelineResponseJSON contains the JSON
+// metadata for the struct [JobGetResponseAsyncJobResponseResultPipelineResponse]
+type jobGetResponseAsyncJobResponseResultPipelineResponseJSON struct {
+	JobID       apijson.Field
+	Result      apijson.Field
+	Usage       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseAsyncJobResponseResultPipelineResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseAsyncJobResponseResultPipelineResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r JobGetResponseAsyncJobResponseResultPipelineResponse) ImplementsJobGetResponseAsyncJobResponseResult() {
+}
+
+type JobGetResponseAsyncJobResponseResultPipelineResponseResult struct {
+	Extract JobGetResponseAsyncJobResponseResultPipelineResponseResultExtractUnion `json:"extract,required,nullable"`
+	Parse   shared.ParseResponse                                                   `json:"parse,required,nullable"`
+	Split   shared.SplitResponse                                                   `json:"split,required,nullable"`
+	JSON    jobGetResponseAsyncJobResponseResultPipelineResponseResultJSON         `json:"-"`
+}
+
+// jobGetResponseAsyncJobResponseResultPipelineResponseResultJSON contains the JSON
+// metadata for the struct
+// [JobGetResponseAsyncJobResponseResultPipelineResponseResult]
+type jobGetResponseAsyncJobResponseResultPipelineResponseResultJSON struct {
+	Extract     apijson.Field
+	Parse       apijson.Field
+	Split       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseAsyncJobResponseResultPipelineResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseAsyncJobResponseResultPipelineResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Union satisfied by
+// [JobGetResponseAsyncJobResponseResultPipelineResponseResultExtractArray] or
+// [shared.ExtractResponse].
+type JobGetResponseAsyncJobResponseResultPipelineResponseResultExtractUnion interface {
+	ImplementsJobGetResponseAsyncJobResponseResultPipelineResponseResultExtractUnion()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*JobGetResponseAsyncJobResponseResultPipelineResponseResultExtractUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(JobGetResponseAsyncJobResponseResultPipelineResponseResultExtractArray{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(shared.ExtractResponse{}),
+		},
+	)
+}
+
+type JobGetResponseAsyncJobResponseResultPipelineResponseResultExtractArray []JobGetResponseAsyncJobResponseResultPipelineResponseResultExtractArrayItem
+
+func (r JobGetResponseAsyncJobResponseResultPipelineResponseResultExtractArray) ImplementsJobGetResponseAsyncJobResponseResultPipelineResponseResultExtractUnion() {
+}
+
+// This is the response format for Extract -> Split Pipelines
+type JobGetResponseAsyncJobResponseResultPipelineResponseResultExtractArrayItem struct {
+	PageRange []int64                                                                        `json:"page_range,required"`
+	Result    shared.ExtractResponse                                                         `json:"result,required"`
+	SplitName string                                                                         `json:"split_name,required"`
+	Partition string                                                                         `json:"partition,nullable"`
+	JSON      jobGetResponseAsyncJobResponseResultPipelineResponseResultExtractArrayItemJSON `json:"-"`
+}
+
+// jobGetResponseAsyncJobResponseResultPipelineResponseResultExtractArrayItemJSON
+// contains the JSON metadata for the struct
+// [JobGetResponseAsyncJobResponseResultPipelineResponseResultExtractArrayItem]
+type jobGetResponseAsyncJobResponseResultPipelineResponseResultExtractArrayItemJSON struct {
+	PageRange   apijson.Field
+	Result      apijson.Field
+	SplitName   apijson.Field
+	Partition   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseAsyncJobResponseResultPipelineResponseResultExtractArrayItem) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseAsyncJobResponseResultPipelineResponseResultExtractArrayItemJSON) RawJSON() string {
+	return r.raw
 }
 
 type JobGetResponseEnhancedAsyncJobResponse struct {
@@ -352,11 +469,12 @@ type JobGetResponseEnhancedAsyncJobResponseResult struct {
 	Duration float64 `json:"duration"`
 	// This field can have the runtime type of [[]shared.EditResponseFormSchema].
 	FormSchema interface{} `json:"form_schema"`
-	JobID      string      `json:"job_id"`
+	JobID      string      `json:"job_id,nullable"`
 	// The storage URL of the converted PDF file.
 	PdfURL string `json:"pdf_url,nullable"`
 	// This field can have the runtime type of [shared.ParseResponseResult],
-	// [[]interface{}], [shared.SplitResponseResult].
+	// [[]interface{}], [shared.SplitResponseResult],
+	// [JobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResult].
 	Result interface{} `json:"result"`
 	// The link to the studio pipeline for the document.
 	StudioLink string `json:"studio_link,nullable"`
@@ -400,13 +518,15 @@ func (r *JobGetResponseEnhancedAsyncJobResponseResult) UnmarshalJSON(data []byte
 // which you can cast to the specific types for more type safety.
 //
 // Possible runtime types of the union are [shared.ParseResponse],
-// [shared.ExtractResponse], [shared.SplitResponse], [shared.EditResponse].
+// [shared.ExtractResponse], [shared.SplitResponse], [shared.EditResponse],
+// [JobGetResponseEnhancedAsyncJobResponseResultPipelineResponse].
 func (r JobGetResponseEnhancedAsyncJobResponseResult) AsUnion() JobGetResponseEnhancedAsyncJobResponseResultUnion {
 	return r.union
 }
 
 // Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
-// [shared.SplitResponse] or [shared.EditResponse].
+// [shared.SplitResponse], [shared.EditResponse] or
+// [JobGetResponseEnhancedAsyncJobResponseResultPipelineResponse].
 type JobGetResponseEnhancedAsyncJobResponseResultUnion interface {
 	ImplementsJobGetResponseEnhancedAsyncJobResponseResult()
 }
@@ -431,7 +551,122 @@ func init() {
 			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(shared.EditResponse{}),
 		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(JobGetResponseEnhancedAsyncJobResponseResultPipelineResponse{}),
+		},
 	)
+}
+
+type JobGetResponseEnhancedAsyncJobResponseResultPipelineResponse struct {
+	JobID  string                                                             `json:"job_id,required"`
+	Result JobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResult `json:"result,required"`
+	Usage  shared.ParseUsage                                                  `json:"usage,required"`
+	JSON   jobGetResponseEnhancedAsyncJobResponseResultPipelineResponseJSON   `json:"-"`
+}
+
+// jobGetResponseEnhancedAsyncJobResponseResultPipelineResponseJSON contains the
+// JSON metadata for the struct
+// [JobGetResponseEnhancedAsyncJobResponseResultPipelineResponse]
+type jobGetResponseEnhancedAsyncJobResponseResultPipelineResponseJSON struct {
+	JobID       apijson.Field
+	Result      apijson.Field
+	Usage       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseEnhancedAsyncJobResponseResultPipelineResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseEnhancedAsyncJobResponseResultPipelineResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r JobGetResponseEnhancedAsyncJobResponseResultPipelineResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {
+}
+
+type JobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResult struct {
+	Extract JobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractUnion `json:"extract,required,nullable"`
+	Parse   shared.ParseResponse                                                           `json:"parse,required,nullable"`
+	Split   shared.SplitResponse                                                           `json:"split,required,nullable"`
+	JSON    jobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultJSON         `json:"-"`
+}
+
+// jobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultJSON contains
+// the JSON metadata for the struct
+// [JobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResult]
+type jobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultJSON struct {
+	Extract     apijson.Field
+	Parse       apijson.Field
+	Split       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Union satisfied by
+// [JobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractArray]
+// or [shared.ExtractResponse].
+type JobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractUnion interface {
+	ImplementsJobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractUnion()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*JobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(JobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractArray{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(shared.ExtractResponse{}),
+		},
+	)
+}
+
+type JobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractArray []JobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractArrayItem
+
+func (r JobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractArray) ImplementsJobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractUnion() {
+}
+
+// This is the response format for Extract -> Split Pipelines
+type JobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractArrayItem struct {
+	PageRange []int64                                                                                `json:"page_range,required"`
+	Result    shared.ExtractResponse                                                                 `json:"result,required"`
+	SplitName string                                                                                 `json:"split_name,required"`
+	Partition string                                                                                 `json:"partition,nullable"`
+	JSON      jobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractArrayItemJSON `json:"-"`
+}
+
+// jobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractArrayItemJSON
+// contains the JSON metadata for the struct
+// [JobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractArrayItem]
+type jobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractArrayItemJSON struct {
+	PageRange   apijson.Field
+	Result      apijson.Field
+	SplitName   apijson.Field
+	Partition   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractArrayItem) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractArrayItemJSON) RawJSON() string {
+	return r.raw
 }
 
 type JobGetResponseEnhancedAsyncJobResponseType string

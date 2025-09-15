@@ -588,6 +588,7 @@ type ExtractResponse struct {
 	// If disable_chunking is True (default), then it will be a list of length one.
 	Result []interface{}        `json:"result,required"`
 	Usage  ExtractResponseUsage `json:"usage,required"`
+	JobID  string               `json:"job_id,nullable"`
 	// The link to the studio pipeline for the document.
 	StudioLink string              `json:"studio_link,nullable"`
 	JSON       extractResponseJSON `json:"-"`
@@ -598,6 +599,7 @@ type extractResponseJSON struct {
 	Citations   apijson.Field
 	Result      apijson.Field
 	Usage       apijson.Field
+	JobID       apijson.Field
 	StudioLink  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -613,7 +615,13 @@ func (r extractResponseJSON) RawJSON() string {
 
 func (r ExtractResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
 
+func (r ExtractResponse) ImplementsJobGetResponseAsyncJobResponseResultPipelineResponseResultExtractUnion() {
+}
+
 func (r ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+
+func (r ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractUnion() {
+}
 
 type ExtractResponseUsage struct {
 	NumFields int64                    `json:"num_fields,required"`
