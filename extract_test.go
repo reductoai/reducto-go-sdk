@@ -72,6 +72,7 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 			}),
 			ExperimentalOptions: reducto.F(shared.ExperimentalProcessingOptionsParam{
 				DangerFilterWideBoxes: reducto.F(true),
+				DetectSignatures:      reducto.F(true),
 				EmbedTextMetadataPdf:  reducto.F(true),
 				EnableCheckboxes:      reducto.F(true),
 				EnableEquations:       reducto.F(true),
@@ -184,6 +185,7 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 		}),
 		ExperimentalOptions: reducto.F(shared.ExperimentalProcessingOptionsParam{
 			DangerFilterWideBoxes: reducto.F(true),
+			DetectSignatures:      reducto.F(true),
 			EmbedTextMetadataPdf:  reducto.F(true),
 			EnableCheckboxes:      reducto.F(true),
 			EnableEquations:       reducto.F(true),
