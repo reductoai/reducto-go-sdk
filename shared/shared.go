@@ -490,6 +490,8 @@ type ExperimentalProcessingOptionsParam struct {
 	// than 50% of the document width. Defaults to False. You probably don't want to
 	// use this.
 	DangerFilterWideBoxes param.Field[bool] `json:"danger_filter_wide_boxes"`
+	// If True, detect signatures in the document. Defaults to False.
+	DetectSignatures param.Field[bool] `json:"detect_signatures"`
 	// If extracted OCR text metadata should be embedded back into the returned PDF,
 	// overwriting any existing text. Defaults to False.
 	EmbedTextMetadataPdf param.Field[bool] `json:"embed_text_metadata_pdf"`
