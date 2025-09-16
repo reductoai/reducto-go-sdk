@@ -613,17 +613,11 @@ func (r extractResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+func (r ExtractResponse) ImplementsPipelineResponseResultExtractUnion() {}
+
 func (r ExtractResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
 
-func (r ExtractResponse) ImplementsJobGetResponseAsyncJobResponseResultPipelineResponseResultExtractUnion() {
-}
-
 func (r ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
-
-func (r ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractUnion() {
-}
-
-func (r ExtractResponse) ImplementsPipelineRunResponseResultExtractUnion() {}
 
 type ExtractResponseUsage struct {
 	NumFields int64                    `json:"num_fields,required"`
@@ -1117,6 +1111,112 @@ func (r *ParseUsage) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r parseUsageJSON) RawJSON() string {
+	return r.raw
+}
+
+type PipelineResponse struct {
+	JobID  string                 `json:"job_id,required"`
+	Result PipelineResponseResult `json:"result,required"`
+	Usage  ParseUsage             `json:"usage,required"`
+	JSON   pipelineResponseJSON   `json:"-"`
+}
+
+// pipelineResponseJSON contains the JSON metadata for the struct
+// [PipelineResponse]
+type pipelineResponseJSON struct {
+	JobID       apijson.Field
+	Result      apijson.Field
+	Usage       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *PipelineResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r pipelineResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r PipelineResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+
+func (r PipelineResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+
+type PipelineResponseResult struct {
+	Extract PipelineResponseResultExtractUnion `json:"extract,required,nullable"`
+	Parse   ParseResponse                      `json:"parse,required,nullable"`
+	Split   SplitResponse                      `json:"split,required,nullable"`
+	JSON    pipelineResponseResultJSON         `json:"-"`
+}
+
+// pipelineResponseResultJSON contains the JSON metadata for the struct
+// [PipelineResponseResult]
+type pipelineResponseResultJSON struct {
+	Extract     apijson.Field
+	Parse       apijson.Field
+	Split       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *PipelineResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r pipelineResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Union satisfied by [PipelineResponseResultExtractArray] or [ExtractResponse].
+type PipelineResponseResultExtractUnion interface {
+	ImplementsPipelineResponseResultExtractUnion()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*PipelineResponseResultExtractUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(PipelineResponseResultExtractArray{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(ExtractResponse{}),
+		},
+	)
+}
+
+type PipelineResponseResultExtractArray []PipelineResponseResultExtractArrayItem
+
+func (r PipelineResponseResultExtractArray) ImplementsPipelineResponseResultExtractUnion() {}
+
+// This is the response format for Extract -> Split Pipelines
+type PipelineResponseResultExtractArrayItem struct {
+	PageRange []int64                                    `json:"page_range,required"`
+	Result    ExtractResponse                            `json:"result,required"`
+	SplitName string                                     `json:"split_name,required"`
+	Partition string                                     `json:"partition,nullable"`
+	JSON      pipelineResponseResultExtractArrayItemJSON `json:"-"`
+}
+
+// pipelineResponseResultExtractArrayItemJSON contains the JSON metadata for the
+// struct [PipelineResponseResultExtractArrayItem]
+type pipelineResponseResultExtractArrayItemJSON struct {
+	PageRange   apijson.Field
+	Result      apijson.Field
+	SplitName   apijson.Field
+	Partition   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *PipelineResponseResultExtractArrayItem) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r pipelineResponseResultExtractArrayItemJSON) RawJSON() string {
 	return r.raw
 }
 
