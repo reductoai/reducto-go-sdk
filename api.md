@@ -87,6 +87,18 @@ Methods:
 - <code title="post /edit">client.Edit.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditService.Run">Run</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditRunParams">EditRunParams</a>) (<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared">shared</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared#EditResponse">EditResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /edit_async">client.Edit.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditService.RunJob">RunJob</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditRunJobParams">EditRunJobParams</a>) (<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditRunJobResponse">EditRunJobResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+# Pipeline
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineRunResponse">PipelineRunResponse</a>
+- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineRunJobResponse">PipelineRunJobResponse</a>
+
+Methods:
+
+- <code title="post /pipeline">client.Pipeline.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineService.Run">Run</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineRunParams">PipelineRunParams</a>) (<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineRunResponse">PipelineRunResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /pipeline_async">client.Pipeline.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineService.RunJob">RunJob</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineRunJobParams">PipelineRunJobParams</a>) (<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineRunJobResponse">PipelineRunJobResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # Webhook
 
 Methods:

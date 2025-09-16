@@ -16,14 +16,15 @@ import (
 // interacting with the reducto API. You should not instantiate this client
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options []option.RequestOption
-	Job     *JobService
-	Split   *SplitService
-	Parse   *ParseService
-	Extract *ExtractService
-	Edit    *EditService
-	Webhook *WebhookService
-	Config  *ConfigService
+	Options  []option.RequestOption
+	Job      *JobService
+	Split    *SplitService
+	Parse    *ParseService
+	Extract  *ExtractService
+	Edit     *EditService
+	Pipeline *PipelineService
+	Webhook  *WebhookService
+	Config   *ConfigService
 }
 
 // DefaultClientOptions read from the environment (REDUCTO_API_KEY,
@@ -53,6 +54,7 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.Parse = NewParseService(opts...)
 	r.Extract = NewExtractService(opts...)
 	r.Edit = NewEditService(opts...)
+	r.Pipeline = NewPipelineService(opts...)
 	r.Webhook = NewWebhookService(opts...)
 	r.Config = NewConfigService(opts...)
 

@@ -623,6 +623,8 @@ func (r ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult(
 func (r ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultPipelineResponseResultExtractUnion() {
 }
 
+func (r ExtractResponse) ImplementsPipelineRunResponseResultExtractUnion() {}
+
 type ExtractResponseUsage struct {
 	NumFields int64                    `json:"num_fields,required"`
 	NumPages  int64                    `json:"num_pages,required"`
@@ -1307,6 +1309,10 @@ func (r UploadParam) ImplementsExtractRunJobParamsDocumentURLUnion() {}
 func (r UploadParam) ImplementsEditRunParamsDocumentURLUnion() {}
 
 func (r UploadParam) ImplementsEditRunJobParamsDocumentURLUnion() {}
+
+func (r UploadParam) ImplementsPipelineRunParamsDocumentURLUnion() {}
+
+func (r UploadParam) ImplementsPipelineRunJobParamsDocumentURLUnion() {}
 
 type WebhookConfigNewParam struct {
 	// A list of Svix channels the message will be delivered down, omit to send to all
