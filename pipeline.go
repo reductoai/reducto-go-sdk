@@ -5,14 +5,12 @@ package reducto
 import (
 	"context"
 	"net/http"
-	"reflect"
 
 	"github.com/reductoai/reducto-go-sdk/internal/apijson"
 	"github.com/reductoai/reducto-go-sdk/internal/param"
 	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
 	"github.com/reductoai/reducto-go-sdk/option"
 	"github.com/reductoai/reducto-go-sdk/shared"
-	"github.com/tidwall/gjson"
 )
 
 // PipelineService contains methods and other services that help with interacting
@@ -35,7 +33,7 @@ func NewPipelineService(opts ...option.RequestOption) (r *PipelineService) {
 }
 
 // Pipeline
-func (r *PipelineService) Run(ctx context.Context, body PipelineRunParams, opts ...option.RequestOption) (res *PipelineRunResponse, err error) {
+func (r *PipelineService) Run(ctx context.Context, body PipelineRunParams, opts ...option.RequestOption) (res *shared.PipelineResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "pipeline"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -48,109 +46,6 @@ func (r *PipelineService) RunJob(ctx context.Context, body PipelineRunJobParams,
 	path := "pipeline_async"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
-}
-
-type PipelineRunResponse struct {
-	JobID  string                    `json:"job_id,required"`
-	Result PipelineRunResponseResult `json:"result,required"`
-	Usage  shared.ParseUsage         `json:"usage,required"`
-	JSON   pipelineRunResponseJSON   `json:"-"`
-}
-
-// pipelineRunResponseJSON contains the JSON metadata for the struct
-// [PipelineRunResponse]
-type pipelineRunResponseJSON struct {
-	JobID       apijson.Field
-	Result      apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *PipelineRunResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r pipelineRunResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type PipelineRunResponseResult struct {
-	Extract PipelineRunResponseResultExtractUnion `json:"extract,required,nullable"`
-	Parse   shared.ParseResponse                  `json:"parse,required,nullable"`
-	Split   shared.SplitResponse                  `json:"split,required,nullable"`
-	JSON    pipelineRunResponseResultJSON         `json:"-"`
-}
-
-// pipelineRunResponseResultJSON contains the JSON metadata for the struct
-// [PipelineRunResponseResult]
-type pipelineRunResponseResultJSON struct {
-	Extract     apijson.Field
-	Parse       apijson.Field
-	Split       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *PipelineRunResponseResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r pipelineRunResponseResultJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by [PipelineRunResponseResultExtractArray] or
-// [shared.ExtractResponse].
-type PipelineRunResponseResultExtractUnion interface {
-	ImplementsPipelineRunResponseResultExtractUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*PipelineRunResponseResultExtractUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(PipelineRunResponseResultExtractArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.ExtractResponse{}),
-		},
-	)
-}
-
-type PipelineRunResponseResultExtractArray []PipelineRunResponseResultExtractArrayItem
-
-func (r PipelineRunResponseResultExtractArray) ImplementsPipelineRunResponseResultExtractUnion() {}
-
-// This is the response format for Extract -> Split Pipelines
-type PipelineRunResponseResultExtractArrayItem struct {
-	PageRange []int64                                       `json:"page_range,required"`
-	Result    shared.ExtractResponse                        `json:"result,required"`
-	SplitName string                                        `json:"split_name,required"`
-	Partition string                                        `json:"partition,nullable"`
-	JSON      pipelineRunResponseResultExtractArrayItemJSON `json:"-"`
-}
-
-// pipelineRunResponseResultExtractArrayItemJSON contains the JSON metadata for the
-// struct [PipelineRunResponseResultExtractArrayItem]
-type pipelineRunResponseResultExtractArrayItemJSON struct {
-	PageRange   apijson.Field
-	Result      apijson.Field
-	SplitName   apijson.Field
-	Partition   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *PipelineRunResponseResultExtractArrayItem) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r pipelineRunResponseResultExtractArrayItemJSON) RawJSON() string {
-	return r.raw
 }
 
 type PipelineRunJobResponse struct {

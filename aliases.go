@@ -402,6 +402,23 @@ const ParseResponseResultTypeURL = shared.ParseResponseResultTypeURL
 type ParseUsage = shared.ParseUsage
 
 // This is an alias to an internal type.
+type PipelineResponse = shared.PipelineResponse
+
+// This is an alias to an internal type.
+type PipelineResponseResult = shared.PipelineResponseResult
+
+// This is an alias to an internal type.
+type PipelineResponseResultExtractUnion = shared.PipelineResponseResultExtractUnion
+
+// This is an alias to an internal type.
+type PipelineResponseResultExtractArray = shared.PipelineResponseResultExtractArray
+
+// This is the response format for Extract -> Split Pipelines
+//
+// This is an alias to an internal type.
+type PipelineResponseResultExtractArrayItem = shared.PipelineResponseResultExtractArrayItem
+
+// This is an alias to an internal type.
 type SplitCategoryParam = shared.SplitCategoryParam
 
 // This is an alias to an internal type.
