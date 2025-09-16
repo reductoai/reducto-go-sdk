@@ -107,7 +107,9 @@ type EditRunParamsDocumentURLUnion interface {
 
 type EditRunParamsEditOptions struct {
 	// The color to use for edits, in hex format.
-	Color                 param.Field[string]                                        `json:"color"`
+	Color param.Field[string] `json:"color"`
+	// The LLM provider to use for edit processing. If not specified, defaults to
+	// 'google'
 	LlmProviderPreference param.Field[EditRunParamsEditOptionsLlmProviderPreference] `json:"llm_provider_preference"`
 }
 
@@ -115,17 +117,19 @@ func (r EditRunParamsEditOptions) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+// The LLM provider to use for edit processing. If not specified, defaults to
+// 'google'
 type EditRunParamsEditOptionsLlmProviderPreference string
 
 const (
 	EditRunParamsEditOptionsLlmProviderPreferenceOpenAI    EditRunParamsEditOptionsLlmProviderPreference = "openai"
 	EditRunParamsEditOptionsLlmProviderPreferenceAnthropic EditRunParamsEditOptionsLlmProviderPreference = "anthropic"
-	EditRunParamsEditOptionsLlmProviderPreferenceGemini    EditRunParamsEditOptionsLlmProviderPreference = "gemini"
+	EditRunParamsEditOptionsLlmProviderPreferenceGoogle    EditRunParamsEditOptionsLlmProviderPreference = "google"
 )
 
 func (r EditRunParamsEditOptionsLlmProviderPreference) IsKnown() bool {
 	switch r {
-	case EditRunParamsEditOptionsLlmProviderPreferenceOpenAI, EditRunParamsEditOptionsLlmProviderPreferenceAnthropic, EditRunParamsEditOptionsLlmProviderPreferenceGemini:
+	case EditRunParamsEditOptionsLlmProviderPreferenceOpenAI, EditRunParamsEditOptionsLlmProviderPreferenceAnthropic, EditRunParamsEditOptionsLlmProviderPreferenceGoogle:
 		return true
 	}
 	return false
@@ -207,7 +211,9 @@ type EditRunJobParamsDocumentURLUnion interface {
 
 type EditRunJobParamsEditOptions struct {
 	// The color to use for edits, in hex format.
-	Color                 param.Field[string]                                           `json:"color"`
+	Color param.Field[string] `json:"color"`
+	// The LLM provider to use for edit processing. If not specified, defaults to
+	// 'google'
 	LlmProviderPreference param.Field[EditRunJobParamsEditOptionsLlmProviderPreference] `json:"llm_provider_preference"`
 }
 
@@ -215,17 +221,19 @@ func (r EditRunJobParamsEditOptions) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+// The LLM provider to use for edit processing. If not specified, defaults to
+// 'google'
 type EditRunJobParamsEditOptionsLlmProviderPreference string
 
 const (
 	EditRunJobParamsEditOptionsLlmProviderPreferenceOpenAI    EditRunJobParamsEditOptionsLlmProviderPreference = "openai"
 	EditRunJobParamsEditOptionsLlmProviderPreferenceAnthropic EditRunJobParamsEditOptionsLlmProviderPreference = "anthropic"
-	EditRunJobParamsEditOptionsLlmProviderPreferenceGemini    EditRunJobParamsEditOptionsLlmProviderPreference = "gemini"
+	EditRunJobParamsEditOptionsLlmProviderPreferenceGoogle    EditRunJobParamsEditOptionsLlmProviderPreference = "google"
 )
 
 func (r EditRunJobParamsEditOptionsLlmProviderPreference) IsKnown() bool {
 	switch r {
-	case EditRunJobParamsEditOptionsLlmProviderPreferenceOpenAI, EditRunJobParamsEditOptionsLlmProviderPreferenceAnthropic, EditRunJobParamsEditOptionsLlmProviderPreferenceGemini:
+	case EditRunJobParamsEditOptionsLlmProviderPreferenceOpenAI, EditRunJobParamsEditOptionsLlmProviderPreferenceAnthropic, EditRunJobParamsEditOptionsLlmProviderPreferenceGoogle:
 		return true
 	}
 	return false
