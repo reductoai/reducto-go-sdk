@@ -5,6 +5,7 @@ package reducto
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/reductoai/reducto-go-sdk/internal/apijson"
 	"github.com/reductoai/reducto-go-sdk/internal/param"
@@ -34,7 +35,7 @@ func NewEditService(opts ...option.RequestOption) (r *EditService) {
 
 // Edit
 func (r *EditService) Run(ctx context.Context, body EditRunParams, opts ...option.RequestOption) (res *shared.EditResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "edit"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -42,7 +43,7 @@ func (r *EditService) Run(ctx context.Context, body EditRunParams, opts ...optio
 
 // Edit Async
 func (r *EditService) RunJob(ctx context.Context, body EditRunJobParams, opts ...option.RequestOption) (res *EditRunJobResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "edit_async"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

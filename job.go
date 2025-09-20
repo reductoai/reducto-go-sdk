@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/reductoai/reducto-go-sdk/internal/apijson"
@@ -38,7 +39,7 @@ func NewJobService(opts ...option.RequestOption) (r *JobService) {
 
 // Cancel Job
 func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.RequestOption) (res *JobCancelResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required job_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.Re
 
 // Retrieve Parse
 func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.RequestOption) (res *JobGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required job_id parameter")
 		return
