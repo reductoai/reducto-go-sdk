@@ -5,6 +5,7 @@ package reducto
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/reductoai/reducto-go-sdk/internal/apijson"
 	"github.com/reductoai/reducto-go-sdk/internal/param"
@@ -34,7 +35,7 @@ func NewParseService(opts ...option.RequestOption) (r *ParseService) {
 
 // Parse
 func (r *ParseService) Run(ctx context.Context, body ParseRunParams, opts ...option.RequestOption) (res *shared.ParseResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "parse"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -42,7 +43,7 @@ func (r *ParseService) Run(ctx context.Context, body ParseRunParams, opts ...opt
 
 // Async Parse
 func (r *ParseService) RunJob(ctx context.Context, body ParseRunJobParams, opts ...option.RequestOption) (res *ParseRunJobResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "parse_async"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

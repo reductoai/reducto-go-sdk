@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"os"
+	"slices"
 
 	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
 	"github.com/reductoai/reducto-go-sdk/option"
@@ -93,7 +94,7 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 // For even greater flexibility, see [option.WithResponseInto] and
 // [option.WithResponseBodyInto].
 func (r *Client) Execute(ctx context.Context, method string, path string, params interface{}, res interface{}, opts ...option.RequestOption) error {
-	opts = append(r.Options, opts...)
+	opts = slices.Concat(r.Options, opts)
 	return requestconfig.ExecuteNewRequest(ctx, method, path, params, res, opts...)
 }
 
@@ -132,7 +133,7 @@ func (r *Client) Delete(ctx context.Context, path string, params interface{}, re
 
 // Get Version
 func (r *Client) APIVersion(ctx context.Context, opts ...option.RequestOption) (res *APIVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -140,7 +141,7 @@ func (r *Client) APIVersion(ctx context.Context, opts ...option.RequestOption) (
 
 // Upload
 func (r *Client) Upload(ctx context.Context, params UploadParams, opts ...option.RequestOption) (res *shared.Upload, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "upload"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
