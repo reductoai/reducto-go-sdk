@@ -511,9 +511,6 @@ type ExperimentalProcessingOptionsParam struct {
 	// Instead of using LibreOffice, when enabled, this flag uses a Windows VM to
 	// convert files. This is slower but more accurate.
 	NativeOfficeConversion param.Field[bool] `json:"native_office_conversion"`
-	// If True, enable numeric parse confidence scores in granular_confidence
-	// dictionary. Defaults to False.
-	NumericalParseConfidence param.Field[bool] `json:"numerical_parse_confidence"`
 	// If figure images should be returned in the result. Defaults to False.
 	ReturnFigureImages param.Field[bool] `json:"return_figure_images"`
 	// If table images should be returned in the result. Defaults to False.
