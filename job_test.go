@@ -26,7 +26,7 @@ func TestJobListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Jobs.List(context.TODO(), reducto.JobListParams{
+	_, err := client.Job.List(context.TODO(), reducto.JobListParams{
 		Cursor:         reducto.F("cursor"),
 		ExcludeConfigs: reducto.F(true),
 		Limit:          reducto.F(int64(1)),
@@ -53,7 +53,7 @@ func TestJobCancel(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Jobs.Cancel(context.TODO(), "job_id")
+	_, err := client.Job.Cancel(context.TODO(), "job_id")
 	if err != nil {
 		var apierr *reducto.Error
 		if errors.As(err, &apierr) {
@@ -76,7 +76,7 @@ func TestJobGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Jobs.Get(context.TODO(), "job_id")
+	_, err := client.Job.Get(context.TODO(), "job_id")
 	if err != nil {
 		var apierr *reducto.Error
 		if errors.As(err, &apierr) {
