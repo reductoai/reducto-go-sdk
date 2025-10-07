@@ -10,6 +10,15 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+type AdvancedCitationsConfigParam struct {
+	// If True, enable numeric citation confidence scores. Defaults to False.
+	NumericalConfidence param.Field[bool] `json:"numerical_confidence"`
+}
+
+func (r AdvancedCitationsConfigParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type AdvancedProcessingOptionsParam struct {
 	// If True, add page markers to the output (e.g. [[PAGE 1 BEGINS HERE]] and
 	// [[PAGE 1 ENDS HERE]] added as blocks to the content). Defaults to False.
@@ -43,7 +52,7 @@ type AdvancedProcessingOptionsParam struct {
 	KeepLineBreaks param.Field[bool] `json:"keep_line_breaks"`
 	// The configuration options for large table chunking (currently only supported on
 	// spreadsheet and CSV files).
-	LargeTableChunking param.Field[AdvancedProcessingOptionsLargeTableChunkingParam] `json:"large_table_chunking"`
+	LargeTableChunking param.Field[LargeTableChunkingConfigParam] `json:"large_table_chunking"`
 	// A flag to indicate if consecutive tables with the same number of columns should
 	// be merged across breaks and spaces.
 	MergeTables param.Field[bool] `json:"merge_tables"`
@@ -72,21 +81,6 @@ type AdvancedProcessingOptionsParam struct {
 }
 
 func (r AdvancedProcessingOptionsParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The configuration options for large table chunking (currently only supported on
-// spreadsheet and CSV files).
-type AdvancedProcessingOptionsLargeTableChunkingParam struct {
-	// If large tables should be chunked into smaller tables, currently only supported
-	// on spreadsheet and CSV files.
-	Enabled param.Field[bool] `json:"enabled"`
-	// The max row/column size for a table to be chunked. Defaults to 50. Header
-	// rows/columns are persisted based on heuristics.
-	Size param.Field[int64] `json:"size"`
-}
-
-func (r AdvancedProcessingOptionsLargeTableChunkingParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -203,12 +197,12 @@ func (r ArrayExtractConfigMode) IsKnown() bool {
 type BaseProcessingOptionsParam struct {
 	// The configuration options for chunking. Chunking is commonly used for RAG
 	// usecases.
-	Chunking param.Field[BaseProcessingOptionsChunkingParam] `json:"chunking"`
+	Chunking param.Field[ChunkingConfigParam] `json:"chunking"`
 	// The mode to use for extraction. Metadata/hybrid are only recommended with high
 	// quality metadata embeddings.
 	ExtractionMode param.Field[BaseProcessingOptionsExtractionMode] `json:"extraction_mode"`
 	// The configuration options for figure summarization.
-	FigureSummary param.Field[BaseProcessingOptionsFigureSummaryParam] `json:"figure_summary"`
+	FigureSummary param.Field[FigureSummaryConfigParam] `json:"figure_summary"`
 	// A list of block types to filter from chunk content. Pass blocks to filter them
 	// from content. By default, no blocks are filtered.
 	FilterBlocks param.Field[[]BaseProcessingOptionsFilterBlock] `json:"filter_blocks"`
@@ -219,52 +213,11 @@ type BaseProcessingOptionsParam struct {
 	// table/text mistakes at a small cost.
 	OcrMode param.Field[BaseProcessingOptionsOcrMode] `json:"ocr_mode"`
 	// The configuration options for table summarization.
-	TableSummary param.Field[BaseProcessingOptionsTableSummaryParam] `json:"table_summary"`
+	TableSummary param.Field[TableSummaryConfigParam] `json:"table_summary"`
 }
 
 func (r BaseProcessingOptionsParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-// The configuration options for chunking. Chunking is commonly used for RAG
-// usecases.
-type BaseProcessingOptionsChunkingParam struct {
-	// Choose how to partition chunks. Variable mode chunks by character length and
-	// visual context. Section mode chunks by section headers. Page mode chunks
-	// according to pages. Page sections mode chunks first by page, then by sections
-	// within each page. Disabled returns one single chunk.
-	ChunkMode param.Field[BaseProcessingOptionsChunkingChunkMode] `json:"chunk_mode"`
-	// The approximate size of chunks (in characters) that the document will be split
-	// into. Defaults to None, in which case the chunk size is variable between 250 -
-	// 1500 characters.
-	ChunkSize param.Field[int64] `json:"chunk_size"`
-}
-
-func (r BaseProcessingOptionsChunkingParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Choose how to partition chunks. Variable mode chunks by character length and
-// visual context. Section mode chunks by section headers. Page mode chunks
-// according to pages. Page sections mode chunks first by page, then by sections
-// within each page. Disabled returns one single chunk.
-type BaseProcessingOptionsChunkingChunkMode string
-
-const (
-	BaseProcessingOptionsChunkingChunkModeVariable     BaseProcessingOptionsChunkingChunkMode = "variable"
-	BaseProcessingOptionsChunkingChunkModeSection      BaseProcessingOptionsChunkingChunkMode = "section"
-	BaseProcessingOptionsChunkingChunkModePage         BaseProcessingOptionsChunkingChunkMode = "page"
-	BaseProcessingOptionsChunkingChunkModeBlock        BaseProcessingOptionsChunkingChunkMode = "block"
-	BaseProcessingOptionsChunkingChunkModeDisabled     BaseProcessingOptionsChunkingChunkMode = "disabled"
-	BaseProcessingOptionsChunkingChunkModePageSections BaseProcessingOptionsChunkingChunkMode = "page_sections"
-)
-
-func (r BaseProcessingOptionsChunkingChunkMode) IsKnown() bool {
-	switch r {
-	case BaseProcessingOptionsChunkingChunkModeVariable, BaseProcessingOptionsChunkingChunkModeSection, BaseProcessingOptionsChunkingChunkModePage, BaseProcessingOptionsChunkingChunkModeBlock, BaseProcessingOptionsChunkingChunkModeDisabled, BaseProcessingOptionsChunkingChunkModePageSections:
-		return true
-	}
-	return false
 }
 
 // The mode to use for extraction. Metadata/hybrid are only recommended with high
@@ -283,22 +236,6 @@ func (r BaseProcessingOptionsExtractionMode) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-// The configuration options for figure summarization.
-type BaseProcessingOptionsFigureSummaryParam struct {
-	// If figure summarization should be performed.
-	Enabled param.Field[bool] `json:"enabled"`
-	// If the figure summary prompt should override our default prompt.
-	Override param.Field[bool] `json:"override"`
-	// Add information to the prompt for figure summarization. Note any visual cues
-	// that should be incorporated. Example: 'When provided a diagram, extract all of
-	// the figure content verbatim.'
-	Prompt param.Field[string] `json:"prompt"`
-}
-
-func (r BaseProcessingOptionsFigureSummaryParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 type BaseProcessingOptionsFilterBlock string
@@ -341,18 +278,6 @@ func (r BaseProcessingOptionsOcrMode) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-// The configuration options for table summarization.
-type BaseProcessingOptionsTableSummaryParam struct {
-	// If table summarization should be performed.
-	Enabled param.Field[bool] `json:"enabled"`
-	// Add information to the prompt for table summarization.
-	Prompt param.Field[string] `json:"prompt"`
-}
-
-func (r BaseProcessingOptionsTableSummaryParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 type BoundingBox struct {
@@ -400,6 +325,45 @@ type BoundingBoxParam struct {
 
 func (r BoundingBoxParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type ChunkingConfigParam struct {
+	// Choose how to partition chunks. Variable mode chunks by character length and
+	// visual context. Section mode chunks by section headers. Page mode chunks
+	// according to pages. Page sections mode chunks first by page, then by sections
+	// within each page. Disabled returns one single chunk.
+	ChunkMode param.Field[ChunkingConfigChunkMode] `json:"chunk_mode"`
+	// The approximate size of chunks (in characters) that the document will be split
+	// into. Defaults to None, in which case the chunk size is variable between 250 -
+	// 1500 characters.
+	ChunkSize param.Field[int64] `json:"chunk_size"`
+}
+
+func (r ChunkingConfigParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Choose how to partition chunks. Variable mode chunks by character length and
+// visual context. Section mode chunks by section headers. Page mode chunks
+// according to pages. Page sections mode chunks first by page, then by sections
+// within each page. Disabled returns one single chunk.
+type ChunkingConfigChunkMode string
+
+const (
+	ChunkingConfigChunkModeVariable     ChunkingConfigChunkMode = "variable"
+	ChunkingConfigChunkModeSection      ChunkingConfigChunkMode = "section"
+	ChunkingConfigChunkModePage         ChunkingConfigChunkMode = "page"
+	ChunkingConfigChunkModeBlock        ChunkingConfigChunkMode = "block"
+	ChunkingConfigChunkModeDisabled     ChunkingConfigChunkMode = "disabled"
+	ChunkingConfigChunkModePageSections ChunkingConfigChunkMode = "page_sections"
+)
+
+func (r ChunkingConfigChunkMode) IsKnown() bool {
+	switch r {
+	case ChunkingConfigChunkModeVariable, ChunkingConfigChunkModeSection, ChunkingConfigChunkModePage, ChunkingConfigChunkModeBlock, ChunkingConfigChunkModeDisabled, ChunkingConfigChunkModePageSections:
+		return true
+	}
+	return false
 }
 
 type EditResponse struct {
@@ -485,6 +449,38 @@ func (r EditResponseFormSchemaType) IsKnown() bool {
 	return false
 }
 
+type EnrichConfigParam struct {
+	// If enabled, a large language/vision model will be used to postprocess the
+	// extracted content. Note: enabling enrich requires tables be outputted in
+	// markdown format. Defaults to False.
+	Enabled param.Field[bool] `json:"enabled"`
+	// The mode to use for enrichment. Defaults to standard
+	Mode param.Field[EnrichConfigMode] `json:"mode"`
+	// Add information to the prompt for enrichment.
+	Prompt param.Field[string] `json:"prompt"`
+}
+
+func (r EnrichConfigParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The mode to use for enrichment. Defaults to standard
+type EnrichConfigMode string
+
+const (
+	EnrichConfigModeStandard EnrichConfigMode = "standard"
+	EnrichConfigModePage     EnrichConfigMode = "page"
+	EnrichConfigModeTable    EnrichConfigMode = "table"
+)
+
+func (r EnrichConfigMode) IsKnown() bool {
+	switch r {
+	case EnrichConfigModeStandard, EnrichConfigModePage, EnrichConfigModeTable:
+		return true
+	}
+	return false
+}
+
 type ExperimentalProcessingOptionsParam struct {
 	// You probably shouldn't use this. If True, filter out boxes with width greater
 	// than 50% of the document width. Defaults to False. You probably don't want to
@@ -505,7 +501,7 @@ type ExperimentalProcessingOptionsParam struct {
 	// False
 	EnableScripts param.Field[bool] `json:"enable_scripts"`
 	// The configuration options for enrichment.
-	Enrich param.Field[ExperimentalProcessingOptionsEnrichParam] `json:"enrich"`
+	Enrich param.Field[EnrichConfigParam] `json:"enrich"`
 	// The layout model to use for the document. This will be deprecated in the future.
 	LayoutModel param.Field[ExperimentalProcessingOptionsLayoutModel] `json:"layout_model"`
 	// Instead of using LibreOffice, when enabled, this flag uses a Windows VM to
@@ -527,39 +523,6 @@ type ExperimentalProcessingOptionsParam struct {
 
 func (r ExperimentalProcessingOptionsParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-// The configuration options for enrichment.
-type ExperimentalProcessingOptionsEnrichParam struct {
-	// If enabled, a large language/vision model will be used to postprocess the
-	// extracted content. Note: enabling enrich requires tables be outputted in
-	// markdown format. Defaults to False.
-	Enabled param.Field[bool] `json:"enabled"`
-	// The mode to use for enrichment. Defaults to standard
-	Mode param.Field[ExperimentalProcessingOptionsEnrichMode] `json:"mode"`
-	// Add information to the prompt for enrichment.
-	Prompt param.Field[string] `json:"prompt"`
-}
-
-func (r ExperimentalProcessingOptionsEnrichParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The mode to use for enrichment. Defaults to standard
-type ExperimentalProcessingOptionsEnrichMode string
-
-const (
-	ExperimentalProcessingOptionsEnrichModeStandard ExperimentalProcessingOptionsEnrichMode = "standard"
-	ExperimentalProcessingOptionsEnrichModePage     ExperimentalProcessingOptionsEnrichMode = "page"
-	ExperimentalProcessingOptionsEnrichModeTable    ExperimentalProcessingOptionsEnrichMode = "table"
-)
-
-func (r ExperimentalProcessingOptionsEnrichMode) IsKnown() bool {
-	switch r {
-	case ExperimentalProcessingOptionsEnrichModeStandard, ExperimentalProcessingOptionsEnrichModePage, ExperimentalProcessingOptionsEnrichModeTable:
-		return true
-	}
-	return false
 }
 
 // The layout model to use for the document. This will be deprecated in the future.
@@ -639,6 +602,34 @@ func (r *ExtractResponseUsage) UnmarshalJSON(data []byte) (err error) {
 
 func (r extractResponseUsageJSON) RawJSON() string {
 	return r.raw
+}
+
+type FigureSummaryConfigParam struct {
+	// If figure summarization should be performed.
+	Enabled param.Field[bool] `json:"enabled"`
+	// If the figure summary prompt should override our default prompt.
+	Override param.Field[bool] `json:"override"`
+	// Add information to the prompt for figure summarization. Note any visual cues
+	// that should be incorporated. Example: 'When provided a diagram, extract all of
+	// the figure content verbatim.'
+	Prompt param.Field[string] `json:"prompt"`
+}
+
+func (r FigureSummaryConfigParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type LargeTableChunkingConfigParam struct {
+	// If large tables should be chunked into smaller tables, currently only supported
+	// on spreadsheet and CSV files.
+	Enabled param.Field[bool] `json:"enabled"`
+	// The max row/column size for a table to be chunked. Defaults to 50. Header
+	// rows/columns are persisted based on heuristics.
+	Size param.Field[int64] `json:"size"`
+}
+
+func (r LargeTableChunkingConfigParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type PageRangeParam struct {
@@ -1358,6 +1349,17 @@ func (r SplitResponseResultSplitsPartitionsConf) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type TableSummaryConfigParam struct {
+	// If table summarization should be performed.
+	Enabled param.Field[bool] `json:"enabled"`
+	// Add information to the prompt for table summarization.
+	Prompt param.Field[string] `json:"prompt"`
+}
+
+func (r TableSummaryConfigParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type Upload struct {

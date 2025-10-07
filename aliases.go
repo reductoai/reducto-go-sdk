@@ -10,13 +10,10 @@ import (
 type Error = apierror.Error
 
 // This is an alias to an internal type.
-type AdvancedProcessingOptionsParam = shared.AdvancedProcessingOptionsParam
+type AdvancedCitationsConfigParam = shared.AdvancedCitationsConfigParam
 
-// The configuration options for large table chunking (currently only supported on
-// spreadsheet and CSV files).
-//
 // This is an alias to an internal type.
-type AdvancedProcessingOptionsLargeTableChunkingParam = shared.AdvancedProcessingOptionsLargeTableChunkingParam
+type AdvancedProcessingOptionsParam = shared.AdvancedProcessingOptionsParam
 
 // The OCR system to use. Highres is recommended for documents with English
 // characters. Legacy uses an alternative OCR backend.
@@ -111,38 +108,6 @@ const ArrayExtractConfigModeNoOverlap = shared.ArrayExtractConfigModeNoOverlap
 // This is an alias to an internal type.
 type BaseProcessingOptionsParam = shared.BaseProcessingOptionsParam
 
-// The configuration options for chunking. Chunking is commonly used for RAG
-// usecases.
-//
-// This is an alias to an internal type.
-type BaseProcessingOptionsChunkingParam = shared.BaseProcessingOptionsChunkingParam
-
-// Choose how to partition chunks. Variable mode chunks by character length and
-// visual context. Section mode chunks by section headers. Page mode chunks
-// according to pages. Page sections mode chunks first by page, then by sections
-// within each page. Disabled returns one single chunk.
-//
-// This is an alias to an internal type.
-type BaseProcessingOptionsChunkingChunkMode = shared.BaseProcessingOptionsChunkingChunkMode
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsChunkingChunkModeVariable = shared.BaseProcessingOptionsChunkingChunkModeVariable
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsChunkingChunkModeSection = shared.BaseProcessingOptionsChunkingChunkModeSection
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsChunkingChunkModePage = shared.BaseProcessingOptionsChunkingChunkModePage
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsChunkingChunkModeBlock = shared.BaseProcessingOptionsChunkingChunkModeBlock
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsChunkingChunkModeDisabled = shared.BaseProcessingOptionsChunkingChunkModeDisabled
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsChunkingChunkModePageSections = shared.BaseProcessingOptionsChunkingChunkModePageSections
-
 // The mode to use for extraction. Metadata/hybrid are only recommended with high
 // quality metadata embeddings.
 //
@@ -157,11 +122,6 @@ const BaseProcessingOptionsExtractionModeMetadata = shared.BaseProcessingOptions
 
 // This is an alias to an internal value.
 const BaseProcessingOptionsExtractionModeHybrid = shared.BaseProcessingOptionsExtractionModeHybrid
-
-// The configuration options for figure summarization.
-//
-// This is an alias to an internal type.
-type BaseProcessingOptionsFigureSummaryParam = shared.BaseProcessingOptionsFigureSummaryParam
 
 // This is an alias to an internal type.
 type BaseProcessingOptionsFilterBlock = shared.BaseProcessingOptionsFilterBlock
@@ -214,16 +174,40 @@ const BaseProcessingOptionsOcrModeStandard = shared.BaseProcessingOptionsOcrMode
 // This is an alias to an internal value.
 const BaseProcessingOptionsOcrModeAgentic = shared.BaseProcessingOptionsOcrModeAgentic
 
-// The configuration options for table summarization.
-//
-// This is an alias to an internal type.
-type BaseProcessingOptionsTableSummaryParam = shared.BaseProcessingOptionsTableSummaryParam
-
 // This is an alias to an internal type.
 type BoundingBox = shared.BoundingBox
 
 // This is an alias to an internal type.
 type BoundingBoxParam = shared.BoundingBoxParam
+
+// This is an alias to an internal type.
+type ChunkingConfigParam = shared.ChunkingConfigParam
+
+// Choose how to partition chunks. Variable mode chunks by character length and
+// visual context. Section mode chunks by section headers. Page mode chunks
+// according to pages. Page sections mode chunks first by page, then by sections
+// within each page. Disabled returns one single chunk.
+//
+// This is an alias to an internal type.
+type ChunkingConfigChunkMode = shared.ChunkingConfigChunkMode
+
+// This is an alias to an internal value.
+const ChunkingConfigChunkModeVariable = shared.ChunkingConfigChunkModeVariable
+
+// This is an alias to an internal value.
+const ChunkingConfigChunkModeSection = shared.ChunkingConfigChunkModeSection
+
+// This is an alias to an internal value.
+const ChunkingConfigChunkModePage = shared.ChunkingConfigChunkModePage
+
+// This is an alias to an internal value.
+const ChunkingConfigChunkModeBlock = shared.ChunkingConfigChunkModeBlock
+
+// This is an alias to an internal value.
+const ChunkingConfigChunkModeDisabled = shared.ChunkingConfigChunkModeDisabled
+
+// This is an alias to an internal value.
+const ChunkingConfigChunkModePageSections = shared.ChunkingConfigChunkModePageSections
 
 // This is an alias to an internal type.
 type EditResponse = shared.EditResponse
@@ -249,26 +233,24 @@ const EditResponseFormSchemaTypeDropdown = shared.EditResponseFormSchemaTypeDrop
 const EditResponseFormSchemaTypeBarcode = shared.EditResponseFormSchemaTypeBarcode
 
 // This is an alias to an internal type.
-type ExperimentalProcessingOptionsParam = shared.ExperimentalProcessingOptionsParam
-
-// The configuration options for enrichment.
-//
-// This is an alias to an internal type.
-type ExperimentalProcessingOptionsEnrichParam = shared.ExperimentalProcessingOptionsEnrichParam
+type EnrichConfigParam = shared.EnrichConfigParam
 
 // The mode to use for enrichment. Defaults to standard
 //
 // This is an alias to an internal type.
-type ExperimentalProcessingOptionsEnrichMode = shared.ExperimentalProcessingOptionsEnrichMode
+type EnrichConfigMode = shared.EnrichConfigMode
 
 // This is an alias to an internal value.
-const ExperimentalProcessingOptionsEnrichModeStandard = shared.ExperimentalProcessingOptionsEnrichModeStandard
+const EnrichConfigModeStandard = shared.EnrichConfigModeStandard
 
 // This is an alias to an internal value.
-const ExperimentalProcessingOptionsEnrichModePage = shared.ExperimentalProcessingOptionsEnrichModePage
+const EnrichConfigModePage = shared.EnrichConfigModePage
 
 // This is an alias to an internal value.
-const ExperimentalProcessingOptionsEnrichModeTable = shared.ExperimentalProcessingOptionsEnrichModeTable
+const EnrichConfigModeTable = shared.EnrichConfigModeTable
+
+// This is an alias to an internal type.
+type ExperimentalProcessingOptionsParam = shared.ExperimentalProcessingOptionsParam
 
 // The layout model to use for the document. This will be deprecated in the future.
 //
@@ -286,6 +268,12 @@ type ExtractResponse = shared.ExtractResponse
 
 // This is an alias to an internal type.
 type ExtractResponseUsage = shared.ExtractResponseUsage
+
+// This is an alias to an internal type.
+type FigureSummaryConfigParam = shared.FigureSummaryConfigParam
+
+// This is an alias to an internal type.
+type LargeTableChunkingConfigParam = shared.LargeTableChunkingConfigParam
 
 // This is an alias to an internal type.
 type PageRangeParam = shared.PageRangeParam
@@ -452,6 +440,9 @@ const SplitResponseResultSplitsPartitionsConfHigh = shared.SplitResponseResultSp
 
 // This is an alias to an internal value.
 const SplitResponseResultSplitsPartitionsConfLow = shared.SplitResponseResultSplitsPartitionsConfLow
+
+// This is an alias to an internal type.
+type TableSummaryConfigParam = shared.TableSummaryConfigParam
 
 // This is an alias to an internal type.
 type Upload = shared.Upload
