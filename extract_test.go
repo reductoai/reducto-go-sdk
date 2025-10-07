@@ -44,7 +44,7 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 				IncludeColorInformation:   reducto.F(true),
 				IncludeFormulaInformation: reducto.F(true),
 				KeepLineBreaks:            reducto.F(true),
-				LargeTableChunking: reducto.F(shared.AdvancedProcessingOptionsLargeTableChunkingParam{
+				LargeTableChunking: reducto.F(shared.LargeTableChunkingConfigParam{
 					Enabled: reducto.F(true),
 					Size:    reducto.F(int64(0)),
 				}),
@@ -67,7 +67,7 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 				PagesPerSegment:             reducto.F(int64(0)),
 				StreamingExtractItemDensity: reducto.F(int64(0)),
 			}),
-			CitationsOptions: reducto.F(reducto.ExtractConfigCitationsOptionsParam{
+			CitationsOptions: reducto.F(shared.AdvancedCitationsConfigParam{
 				NumericalConfidence: reducto.F(true),
 			}),
 			ExperimentalOptions: reducto.F(shared.ExperimentalProcessingOptionsParam{
@@ -77,9 +77,9 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 				EnableCheckboxes:      reducto.F(true),
 				EnableEquations:       reducto.F(true),
 				EnableScripts:         reducto.F(true),
-				Enrich: reducto.F(shared.ExperimentalProcessingOptionsEnrichParam{
+				Enrich: reducto.F(shared.EnrichConfigParam{
 					Enabled: reducto.F(true),
-					Mode:    reducto.F(shared.ExperimentalProcessingOptionsEnrichModeStandard),
+					Mode:    reducto.F(shared.EnrichConfigModeStandard),
 					Prompt:  reducto.F("prompt"),
 				}),
 				LayoutModel:                 reducto.F(shared.ExperimentalProcessingOptionsLayoutModelDefault),
@@ -94,12 +94,12 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 			GenerateCitations:          reducto.F(true),
 			IncludeImages:              reducto.F(true),
 			Options: reducto.F(shared.BaseProcessingOptionsParam{
-				Chunking: reducto.F(shared.BaseProcessingOptionsChunkingParam{
-					ChunkMode: reducto.F(shared.BaseProcessingOptionsChunkingChunkModeVariable),
+				Chunking: reducto.F(shared.ChunkingConfigParam{
+					ChunkMode: reducto.F(shared.ChunkingConfigChunkModeVariable),
 					ChunkSize: reducto.F(int64(0)),
 				}),
 				ExtractionMode: reducto.F(shared.BaseProcessingOptionsExtractionModeOcr),
-				FigureSummary: reducto.F(shared.BaseProcessingOptionsFigureSummaryParam{
+				FigureSummary: reducto.F(shared.FigureSummaryConfigParam{
 					Enabled:  reducto.F(true),
 					Override: reducto.F(true),
 					Prompt:   reducto.F("prompt"),
@@ -107,7 +107,7 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 				FilterBlocks:   reducto.F([]shared.BaseProcessingOptionsFilterBlock{shared.BaseProcessingOptionsFilterBlockHeader}),
 				ForceURLResult: reducto.F(true),
 				OcrMode:        reducto.F(shared.BaseProcessingOptionsOcrModeStandard),
-				TableSummary: reducto.F(shared.BaseProcessingOptionsTableSummaryParam{
+				TableSummary: reducto.F(shared.TableSummaryConfigParam{
 					Enabled: reducto.F(true),
 					Prompt:  reducto.F("prompt"),
 				}),
@@ -156,7 +156,7 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 			IncludeColorInformation:   reducto.F(true),
 			IncludeFormulaInformation: reducto.F(true),
 			KeepLineBreaks:            reducto.F(true),
-			LargeTableChunking: reducto.F(shared.AdvancedProcessingOptionsLargeTableChunkingParam{
+			LargeTableChunking: reducto.F(shared.LargeTableChunkingConfigParam{
 				Enabled: reducto.F(true),
 				Size:    reducto.F(int64(0)),
 			}),
@@ -179,7 +179,7 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 			PagesPerSegment:             reducto.F(int64(0)),
 			StreamingExtractItemDensity: reducto.F(int64(0)),
 		}),
-		CitationsOptions: reducto.F(reducto.ExtractRunJobParamsCitationsOptions{
+		CitationsOptions: reducto.F(shared.AdvancedCitationsConfigParam{
 			NumericalConfidence: reducto.F(true),
 		}),
 		ExperimentalOptions: reducto.F(shared.ExperimentalProcessingOptionsParam{
@@ -189,9 +189,9 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 			EnableCheckboxes:      reducto.F(true),
 			EnableEquations:       reducto.F(true),
 			EnableScripts:         reducto.F(true),
-			Enrich: reducto.F(shared.ExperimentalProcessingOptionsEnrichParam{
+			Enrich: reducto.F(shared.EnrichConfigParam{
 				Enabled: reducto.F(true),
-				Mode:    reducto.F(shared.ExperimentalProcessingOptionsEnrichModeStandard),
+				Mode:    reducto.F(shared.EnrichConfigModeStandard),
 				Prompt:  reducto.F("prompt"),
 			}),
 			LayoutModel:                 reducto.F(shared.ExperimentalProcessingOptionsLayoutModelDefault),
@@ -206,12 +206,12 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 		GenerateCitations:          reducto.F(true),
 		IncludeImages:              reducto.F(true),
 		Options: reducto.F(shared.BaseProcessingOptionsParam{
-			Chunking: reducto.F(shared.BaseProcessingOptionsChunkingParam{
-				ChunkMode: reducto.F(shared.BaseProcessingOptionsChunkingChunkModeVariable),
+			Chunking: reducto.F(shared.ChunkingConfigParam{
+				ChunkMode: reducto.F(shared.ChunkingConfigChunkModeVariable),
 				ChunkSize: reducto.F(int64(0)),
 			}),
 			ExtractionMode: reducto.F(shared.BaseProcessingOptionsExtractionModeOcr),
-			FigureSummary: reducto.F(shared.BaseProcessingOptionsFigureSummaryParam{
+			FigureSummary: reducto.F(shared.FigureSummaryConfigParam{
 				Enabled:  reducto.F(true),
 				Override: reducto.F(true),
 				Prompt:   reducto.F("prompt"),
@@ -219,7 +219,7 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 			FilterBlocks:   reducto.F([]shared.BaseProcessingOptionsFilterBlock{shared.BaseProcessingOptionsFilterBlockHeader}),
 			ForceURLResult: reducto.F(true),
 			OcrMode:        reducto.F(shared.BaseProcessingOptionsOcrModeStandard),
-			TableSummary: reducto.F(shared.BaseProcessingOptionsTableSummaryParam{
+			TableSummary: reducto.F(shared.TableSummaryConfigParam{
 				Enabled: reducto.F(true),
 				Prompt:  reducto.F("prompt"),
 			}),
