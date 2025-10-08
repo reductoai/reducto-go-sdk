@@ -459,15 +459,16 @@ func init() {
 type JobGetResponseEnhancedAsyncJobResponseType string
 
 const (
-	JobGetResponseEnhancedAsyncJobResponseTypeParse   JobGetResponseEnhancedAsyncJobResponseType = "Parse"
-	JobGetResponseEnhancedAsyncJobResponseTypeExtract JobGetResponseEnhancedAsyncJobResponseType = "Extract"
-	JobGetResponseEnhancedAsyncJobResponseTypeSplit   JobGetResponseEnhancedAsyncJobResponseType = "Split"
-	JobGetResponseEnhancedAsyncJobResponseTypeEdit    JobGetResponseEnhancedAsyncJobResponseType = "Edit"
+	JobGetResponseEnhancedAsyncJobResponseTypeParse    JobGetResponseEnhancedAsyncJobResponseType = "Parse"
+	JobGetResponseEnhancedAsyncJobResponseTypeExtract  JobGetResponseEnhancedAsyncJobResponseType = "Extract"
+	JobGetResponseEnhancedAsyncJobResponseTypeSplit    JobGetResponseEnhancedAsyncJobResponseType = "Split"
+	JobGetResponseEnhancedAsyncJobResponseTypeEdit     JobGetResponseEnhancedAsyncJobResponseType = "Edit"
+	JobGetResponseEnhancedAsyncJobResponseTypePipeline JobGetResponseEnhancedAsyncJobResponseType = "Pipeline"
 )
 
 func (r JobGetResponseEnhancedAsyncJobResponseType) IsKnown() bool {
 	switch r {
-	case JobGetResponseEnhancedAsyncJobResponseTypeParse, JobGetResponseEnhancedAsyncJobResponseTypeExtract, JobGetResponseEnhancedAsyncJobResponseTypeSplit, JobGetResponseEnhancedAsyncJobResponseTypeEdit:
+	case JobGetResponseEnhancedAsyncJobResponseTypeParse, JobGetResponseEnhancedAsyncJobResponseTypeExtract, JobGetResponseEnhancedAsyncJobResponseTypeSplit, JobGetResponseEnhancedAsyncJobResponseTypeEdit, JobGetResponseEnhancedAsyncJobResponseTypePipeline:
 		return true
 	}
 	return false
@@ -493,15 +494,16 @@ func (r JobGetResponseStatus) IsKnown() bool {
 type JobGetResponseType string
 
 const (
-	JobGetResponseTypeParse   JobGetResponseType = "Parse"
-	JobGetResponseTypeExtract JobGetResponseType = "Extract"
-	JobGetResponseTypeSplit   JobGetResponseType = "Split"
-	JobGetResponseTypeEdit    JobGetResponseType = "Edit"
+	JobGetResponseTypeParse    JobGetResponseType = "Parse"
+	JobGetResponseTypeExtract  JobGetResponseType = "Extract"
+	JobGetResponseTypeSplit    JobGetResponseType = "Split"
+	JobGetResponseTypeEdit     JobGetResponseType = "Edit"
+	JobGetResponseTypePipeline JobGetResponseType = "Pipeline"
 )
 
 func (r JobGetResponseType) IsKnown() bool {
 	switch r {
-	case JobGetResponseTypeParse, JobGetResponseTypeExtract, JobGetResponseTypeSplit, JobGetResponseTypeEdit:
+	case JobGetResponseTypeParse, JobGetResponseTypeExtract, JobGetResponseTypeSplit, JobGetResponseTypeEdit, JobGetResponseTypePipeline:
 		return true
 	}
 	return false
