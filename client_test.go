@@ -39,7 +39,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Parse.Run(context.Background(), reducto.ParseRunParams{
+	client.Parse.Run(context.Background(), reducto.ParseRunParamsParseConfig{
 		ParseConfig: reducto.ParseConfigParam{
 			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
 		},
@@ -67,7 +67,7 @@ func TestRetryAfter(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Parse.Run(context.Background(), reducto.ParseRunParams{
+	_, err := client.Parse.Run(context.Background(), reducto.ParseRunParamsParseConfig{
 		ParseConfig: reducto.ParseConfigParam{
 			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
 		},
@@ -106,7 +106,7 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeaderDel("X-Stainless-Retry-Count"),
 	)
-	_, err := client.Parse.Run(context.Background(), reducto.ParseRunParams{
+	_, err := client.Parse.Run(context.Background(), reducto.ParseRunParamsParseConfig{
 		ParseConfig: reducto.ParseConfigParam{
 			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
 		},
@@ -140,7 +140,7 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeader("X-Stainless-Retry-Count", "42"),
 	)
-	_, err := client.Parse.Run(context.Background(), reducto.ParseRunParams{
+	_, err := client.Parse.Run(context.Background(), reducto.ParseRunParamsParseConfig{
 		ParseConfig: reducto.ParseConfigParam{
 			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
 		},
@@ -173,7 +173,7 @@ func TestRetryAfterMs(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Parse.Run(context.Background(), reducto.ParseRunParams{
+	_, err := client.Parse.Run(context.Background(), reducto.ParseRunParamsParseConfig{
 		ParseConfig: reducto.ParseConfigParam{
 			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
 		},
@@ -200,7 +200,7 @@ func TestContextCancel(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
-	_, err := client.Parse.Run(cancelCtx, reducto.ParseRunParams{
+	_, err := client.Parse.Run(cancelCtx, reducto.ParseRunParamsParseConfig{
 		ParseConfig: reducto.ParseConfigParam{
 			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
 		},
@@ -224,7 +224,7 @@ func TestContextCancelDelay(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
-	_, err := client.Parse.Run(cancelCtx, reducto.ParseRunParams{
+	_, err := client.Parse.Run(cancelCtx, reducto.ParseRunParamsParseConfig{
 		ParseConfig: reducto.ParseConfigParam{
 			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
 		},
@@ -254,7 +254,7 @@ func TestContextDeadline(t *testing.T) {
 				},
 			}),
 		)
-		_, err := client.Parse.Run(deadlineCtx, reducto.ParseRunParams{
+		_, err := client.Parse.Run(deadlineCtx, reducto.ParseRunParamsParseConfig{
 			ParseConfig: reducto.ParseConfigParam{
 				DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
 			},

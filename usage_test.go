@@ -25,7 +25,7 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	parseResponse, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
+	response, err := client.Parse.Run(context.TODO(), reducto.ParseRunParamsParseConfig{
 		ParseConfig: reducto.ParseConfigParam{
 			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
 		},
@@ -34,5 +34,5 @@ func TestUsage(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	t.Logf("%+v\n", parseResponse.JobID)
+	t.Logf("%+v\n", response)
 }

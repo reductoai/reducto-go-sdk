@@ -54,7 +54,7 @@ func main() {
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("REDUCTO_API_KEY")
 		option.WithEnvironmentEu(),      // or option.WithEnvironmentProduction() | option.WithEnvironmentAu(); defaults to option.WithEnvironmentProduction()
 	)
-	parseResponse, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
+	response, err := client.Parse.Run(context.TODO(), reducto.ParseRunParamsParseConfig{
 		ParseConfig: reducto.ParseConfigParam{
 			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
 		},
@@ -62,7 +62,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", parseResponse.JobID)
+	fmt.Printf("%+v\n", response)
 }
 
 ```
@@ -181,7 +181,7 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
 _, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
-	ParseConfig: reducto.ParseConfigParam{
+	Body: reducto.ParseConfigParam{
 		DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
 	},
 })
@@ -212,7 +212,7 @@ defer cancel()
 client.Parse.Run(
 	ctx,
 	reducto.ParseRunParams{
-		ParseConfig: reducto.ParseConfigParam{
+		Body: reducto.ParseConfigParam{
 			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
 		},
 	},
@@ -270,7 +270,7 @@ client := reducto.NewClient(
 client.Parse.Run(
 	context.TODO(),
 	reducto.ParseRunParams{
-		ParseConfig: reducto.ParseConfigParam{
+		Body: reducto.ParseConfigParam{
 			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
 		},
 	},
@@ -286,10 +286,10 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-parseResponse, err := client.Parse.Run(
+response, err := client.Parse.Run(
 	context.TODO(),
 	reducto.ParseRunParams{
-		ParseConfig: reducto.ParseConfigParam{
+		Body: reducto.ParseConfigParam{
 			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
 		},
 	},
@@ -298,7 +298,7 @@ parseResponse, err := client.Parse.Run(
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", parseResponse)
+fmt.Printf("%+v\n", response)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)

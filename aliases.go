@@ -31,6 +31,9 @@ const AdvancedProcessingOptionsOcrSystemMultilingual = shared.AdvancedProcessing
 const AdvancedProcessingOptionsOcrSystemCombined = shared.AdvancedProcessingOptionsOcrSystemCombined
 
 // This is an alias to an internal value.
+const AdvancedProcessingOptionsOcrSystemReducto = shared.AdvancedProcessingOptionsOcrSystemReducto
+
+// This is an alias to an internal value.
 const AdvancedProcessingOptionsOcrSystemLegacy = shared.AdvancedProcessingOptionsOcrSystemLegacy
 
 // The page range to process (1-indexed). By default, the entire document is
