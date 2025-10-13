@@ -41,6 +41,8 @@ type ExtractConfigParam struct {
 	// The JSON schema to use for extraction.
 	Schema          param.Field[interface{}]                           `json:"schema,required"`
 	AdvancedOptions param.Field[shared.AdvancedProcessingOptionsParam] `json:"advanced_options"`
+	// The configuration options for agent extract
+	AgentExtract param.Field[ExtractConfigAgentExtractParam] `json:"agent_extract"`
 	// The configuration options for array extract
 	ArrayExtract param.Field[shared.ArrayExtractConfigParam] `json:"array_extract"`
 	// The configuration options for citations.
@@ -52,8 +54,11 @@ type ExtractConfigParam struct {
 	GenerateCitations param.Field[bool] `json:"generate_citations"`
 	// If images should be passed directly for extractions. Can only be enabled for
 	// documents with less than 10 pages. Defaults to False.
-	IncludeImages param.Field[bool]                              `json:"include_images"`
-	Options       param.Field[shared.BaseProcessingOptionsParam] `json:"options"`
+	IncludeImages param.Field[bool] `json:"include_images"`
+	// If True, the job will be processed with lower latency and higher priority. Uses
+	// 2x the cost of a regular job. Defaults to False.
+	LatencySensitive param.Field[bool]                              `json:"latency_sensitive"`
+	Options          param.Field[shared.BaseProcessingOptionsParam] `json:"options"`
 	// If True, attempts to process the job with priority if the user has priority
 	// processing budget available; by default, sync jobs are prioritized above async
 	// jobs.
@@ -70,6 +75,8 @@ type ExtractConfigParam struct {
 func (r ExtractConfigParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
+
+func (r ExtractConfigParam) implementsExtractRunParamsBodyUnion() {}
 
 // The URL of the document to be processed. You can provide one of the following:
 //
@@ -89,6 +96,16 @@ type ExtractConfigDocumentURLUnionParam interface {
 type ExtractConfigDocumentURLArrayParam []string
 
 func (r ExtractConfigDocumentURLArrayParam) ImplementsExtractConfigDocumentURLUnionParam() {}
+
+// The configuration options for agent extract
+type ExtractConfigAgentExtractParam struct {
+	// If agent extraction should be used for extraction.
+	Enabled param.Field[bool] `json:"enabled"`
+}
+
+func (r ExtractConfigAgentExtractParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
 
 type ParseConfigParam struct {
 	// The URL of the document to be processed. You can provide one of the following:
@@ -110,6 +127,8 @@ type ParseConfigParam struct {
 func (r ParseConfigParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
+
+func (r ParseConfigParam) implementsParseRunParamsBodyUnion() {}
 
 // The URL of the document to be processed. You can provide one of the following:
 //

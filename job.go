@@ -53,14 +53,14 @@ func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.Re
 }
 
 // Retrieve Parse
-func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.RequestOption) (res *JobGetResponse, err error) {
+func (r *JobService) Get(ctx context.Context, jobID string, query JobGetParams, opts ...option.RequestOption) (res *JobGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required job_id parameter")
 		return
 	}
 	path := fmt.Sprintf("job/%s", jobID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
 
@@ -220,7 +220,8 @@ type JobGetResponseAsyncJobResponseResult struct {
 	// The link to the studio pipeline for the document.
 	StudioLink string `json:"studio_link,nullable"`
 	// This field can have the runtime type of [shared.ParseUsage],
-	// [shared.ExtractResponseUsage].
+	// [shared.ExtractResponseUsage],
+	// [JobGetResponseAsyncJobResponseResultV3ExtractResponseUsage].
 	Usage interface{}                              `json:"usage"`
 	JSON  jobGetResponseAsyncJobResponseResultJSON `json:"-"`
 	union JobGetResponseAsyncJobResponseResultUnion
@@ -260,13 +261,15 @@ func (r *JobGetResponseAsyncJobResponseResult) UnmarshalJSON(data []byte) (err e
 //
 // Possible runtime types of the union are [shared.ParseResponse],
 // [shared.ExtractResponse], [shared.SplitResponse], [shared.EditResponse],
-// [shared.PipelineResponse].
+// [shared.PipelineResponse],
+// [JobGetResponseAsyncJobResponseResultV3ExtractResponse].
 func (r JobGetResponseAsyncJobResponseResult) AsUnion() JobGetResponseAsyncJobResponseResultUnion {
 	return r.union
 }
 
 // Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
-// [shared.SplitResponse], [shared.EditResponse] or [shared.PipelineResponse].
+// [shared.SplitResponse], [shared.EditResponse], [shared.PipelineResponse] or
+// [JobGetResponseAsyncJobResponseResultV3ExtractResponse].
 type JobGetResponseAsyncJobResponseResultUnion interface {
 	ImplementsJobGetResponseAsyncJobResponseResult()
 }
@@ -295,7 +298,70 @@ func init() {
 			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(shared.PipelineResponse{}),
 		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(JobGetResponseAsyncJobResponseResultV3ExtractResponse{}),
+		},
 	)
+}
+
+type JobGetResponseAsyncJobResponseResultV3ExtractResponse struct {
+	// The extracted response in your provided schema. This is a list of dictionaries.
+	// If disable_chunking is True (default), then it will be a list of length one.
+	Result []interface{}                                              `json:"result,required"`
+	Usage  JobGetResponseAsyncJobResponseResultV3ExtractResponseUsage `json:"usage,required"`
+	JobID  string                                                     `json:"job_id,nullable"`
+	// The link to the studio pipeline for the document.
+	StudioLink string                                                    `json:"studio_link,nullable"`
+	JSON       jobGetResponseAsyncJobResponseResultV3ExtractResponseJSON `json:"-"`
+}
+
+// jobGetResponseAsyncJobResponseResultV3ExtractResponseJSON contains the JSON
+// metadata for the struct [JobGetResponseAsyncJobResponseResultV3ExtractResponse]
+type jobGetResponseAsyncJobResponseResultV3ExtractResponseJSON struct {
+	Result      apijson.Field
+	Usage       apijson.Field
+	JobID       apijson.Field
+	StudioLink  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseAsyncJobResponseResultV3ExtractResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseAsyncJobResponseResultV3ExtractResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r JobGetResponseAsyncJobResponseResultV3ExtractResponse) ImplementsJobGetResponseAsyncJobResponseResult() {
+}
+
+type JobGetResponseAsyncJobResponseResultV3ExtractResponseUsage struct {
+	NumFields int64                                                          `json:"num_fields,required"`
+	NumPages  int64                                                          `json:"num_pages,required"`
+	Credits   float64                                                        `json:"credits,nullable"`
+	JSON      jobGetResponseAsyncJobResponseResultV3ExtractResponseUsageJSON `json:"-"`
+}
+
+// jobGetResponseAsyncJobResponseResultV3ExtractResponseUsageJSON contains the JSON
+// metadata for the struct
+// [JobGetResponseAsyncJobResponseResultV3ExtractResponseUsage]
+type jobGetResponseAsyncJobResponseResultV3ExtractResponseUsageJSON struct {
+	NumFields   apijson.Field
+	NumPages    apijson.Field
+	Credits     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseAsyncJobResponseResultV3ExtractResponseUsage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseAsyncJobResponseResultV3ExtractResponseUsageJSON) RawJSON() string {
+	return r.raw
 }
 
 type JobGetResponseEnhancedAsyncJobResponse struct {
@@ -378,7 +444,8 @@ type JobGetResponseEnhancedAsyncJobResponseResult struct {
 	// The link to the studio pipeline for the document.
 	StudioLink string `json:"studio_link,nullable"`
 	// This field can have the runtime type of [shared.ParseUsage],
-	// [shared.ExtractResponseUsage].
+	// [shared.ExtractResponseUsage],
+	// [JobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponseUsage].
 	Usage interface{}                                      `json:"usage"`
 	JSON  jobGetResponseEnhancedAsyncJobResponseResultJSON `json:"-"`
 	union JobGetResponseEnhancedAsyncJobResponseResultUnion
@@ -418,13 +485,15 @@ func (r *JobGetResponseEnhancedAsyncJobResponseResult) UnmarshalJSON(data []byte
 //
 // Possible runtime types of the union are [shared.ParseResponse],
 // [shared.ExtractResponse], [shared.SplitResponse], [shared.EditResponse],
-// [shared.PipelineResponse].
+// [shared.PipelineResponse],
+// [JobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponse].
 func (r JobGetResponseEnhancedAsyncJobResponseResult) AsUnion() JobGetResponseEnhancedAsyncJobResponseResultUnion {
 	return r.union
 }
 
 // Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
-// [shared.SplitResponse], [shared.EditResponse] or [shared.PipelineResponse].
+// [shared.SplitResponse], [shared.EditResponse], [shared.PipelineResponse] or
+// [JobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponse].
 type JobGetResponseEnhancedAsyncJobResponseResultUnion interface {
 	ImplementsJobGetResponseEnhancedAsyncJobResponseResult()
 }
@@ -453,7 +522,71 @@ func init() {
 			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(shared.PipelineResponse{}),
 		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(JobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponse{}),
+		},
 	)
+}
+
+type JobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponse struct {
+	// The extracted response in your provided schema. This is a list of dictionaries.
+	// If disable_chunking is True (default), then it will be a list of length one.
+	Result []interface{}                                                      `json:"result,required"`
+	Usage  JobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponseUsage `json:"usage,required"`
+	JobID  string                                                             `json:"job_id,nullable"`
+	// The link to the studio pipeline for the document.
+	StudioLink string                                                            `json:"studio_link,nullable"`
+	JSON       jobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponseJSON `json:"-"`
+}
+
+// jobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponseJSON contains the
+// JSON metadata for the struct
+// [JobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponse]
+type jobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponseJSON struct {
+	Result      apijson.Field
+	Usage       apijson.Field
+	JobID       apijson.Field
+	StudioLink  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r JobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {
+}
+
+type JobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponseUsage struct {
+	NumFields int64                                                                  `json:"num_fields,required"`
+	NumPages  int64                                                                  `json:"num_pages,required"`
+	Credits   float64                                                                `json:"credits,nullable"`
+	JSON      jobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponseUsageJSON `json:"-"`
+}
+
+// jobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponseUsageJSON contains
+// the JSON metadata for the struct
+// [JobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponseUsage]
+type jobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponseUsageJSON struct {
+	NumFields   apijson.Field
+	NumPages    apijson.Field
+	Credits     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponseUsage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseEnhancedAsyncJobResponseResultV3ExtractResponseUsageJSON) RawJSON() string {
+	return r.raw
 }
 
 type JobGetResponseEnhancedAsyncJobResponseType string
@@ -610,6 +743,18 @@ func (r JobGetAllResponseJobsType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type JobGetParams struct {
+	BucketName param.Field[string] `query:"bucket_name"`
+}
+
+// URLQuery serializes [JobGetParams]'s query parameters as `url.Values`.
+func (r JobGetParams) URLQuery() (v url.Values) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type JobGetAllParams struct {

@@ -92,12 +92,13 @@ const (
 	AdvancedProcessingOptionsOcrSystemHighres      AdvancedProcessingOptionsOcrSystem = "highres"
 	AdvancedProcessingOptionsOcrSystemMultilingual AdvancedProcessingOptionsOcrSystem = "multilingual"
 	AdvancedProcessingOptionsOcrSystemCombined     AdvancedProcessingOptionsOcrSystem = "combined"
+	AdvancedProcessingOptionsOcrSystemReducto      AdvancedProcessingOptionsOcrSystem = "reducto"
 	AdvancedProcessingOptionsOcrSystemLegacy       AdvancedProcessingOptionsOcrSystem = "legacy"
 )
 
 func (r AdvancedProcessingOptionsOcrSystem) IsKnown() bool {
 	switch r {
-	case AdvancedProcessingOptionsOcrSystemHighres, AdvancedProcessingOptionsOcrSystemMultilingual, AdvancedProcessingOptionsOcrSystemCombined, AdvancedProcessingOptionsOcrSystemLegacy:
+	case AdvancedProcessingOptionsOcrSystemHighres, AdvancedProcessingOptionsOcrSystemMultilingual, AdvancedProcessingOptionsOcrSystemCombined, AdvancedProcessingOptionsOcrSystemReducto, AdvancedProcessingOptionsOcrSystemLegacy:
 		return true
 	}
 	return false
@@ -502,6 +503,9 @@ type ExperimentalProcessingOptionsParam struct {
 	EnableScripts param.Field[bool] `json:"enable_scripts"`
 	// The configuration options for enrichment.
 	Enrich param.Field[EnrichConfigParam] `json:"enrich"`
+	// Layout enrichment is a beta feature that improves our layout and reading order
+	// performance at the cost of increased latency. Defaults to False.
+	LayoutEnrichment param.Field[bool] `json:"layout_enrichment"`
 	// The layout model to use for the document. This will be deprecated in the future.
 	LayoutModel param.Field[ExperimentalProcessingOptionsLayoutModel] `json:"layout_model"`
 	// Instead of using LibreOffice, when enabled, this flag uses a Windows VM to
@@ -579,6 +583,8 @@ func (r ExtractResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
 
 func (r ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
 
+func (r ExtractResponse) ImplementsExtractRunResponse() {}
+
 type ExtractResponseUsage struct {
 	NumFields int64                    `json:"num_fields,required"`
 	NumPages  int64                    `json:"num_pages,required"`
@@ -645,6 +651,20 @@ func (r PageRangeParam) MarshalJSON() (data []byte, err error) {
 
 func (r PageRangeParam) ImplementsAdvancedProcessingOptionsPageRangeUnionParam() {}
 
+func (r PageRangeParam) ImplementsParseRunParamsBodyParseConfigConfigPageRangeUnion() {}
+
+func (r PageRangeParam) ImplementsParseRunParamsBodySyncParseConfigSettingsPageRangeUnion() {}
+
+func (r PageRangeParam) ImplementsParseRunJobParamsBodyAsyncParseConfigSettingsPageRangeUnion() {}
+
+func (r PageRangeParam) ImplementsExtractRunParamsBodyExtractConfigParseConfigPageRangeUnion() {}
+
+func (r PageRangeParam) ImplementsExtractRunParamsBodySyncExtractConfigParsingSettingsPageRangeUnion() {
+}
+
+func (r PageRangeParam) ImplementsExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsPageRangeUnion() {
+}
+
 type ParseResponse struct {
 	// The duration of the parse request in seconds.
 	Duration float64 `json:"duration,required"`
@@ -686,6 +706,8 @@ func (r parseResponseJSON) RawJSON() string {
 func (r ParseResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
 
 func (r ParseResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+
+func (r ParseResponse) ImplementsParseRunResponse() {}
 
 // The response from the document processing service. Note that there can be two
 // types of responses, Full Result and URL Result. This is due to limitations on
@@ -1399,11 +1421,19 @@ func (r UploadParam) ImplementsSplitRunJobParamsDocumentURLUnion() {}
 
 func (r UploadParam) ImplementsParseConfigDocumentURLUnionParam() {}
 
-func (r UploadParam) ImplementsParseRunJobParamsDocumentURLUnion() {}
+func (r UploadParam) ImplementsParseRunParamsBodySyncParseConfigInputUnion() {}
+
+func (r UploadParam) ImplementsParseRunJobParamsBodyAsyncParseConfigNewDocumentURLUnion() {}
+
+func (r UploadParam) ImplementsParseRunJobParamsBodyAsyncParseConfigInputUnion() {}
 
 func (r UploadParam) ImplementsExtractConfigDocumentURLUnionParam() {}
 
-func (r UploadParam) ImplementsExtractRunJobParamsDocumentURLUnion() {}
+func (r UploadParam) ImplementsExtractRunParamsBodySyncExtractConfigInputUnion() {}
+
+func (r UploadParam) ImplementsExtractRunJobParamsBodyAsyncExtractConfigNewDocumentURLUnion() {}
+
+func (r UploadParam) ImplementsExtractRunJobParamsBodyAsyncExtractConfigInputUnion() {}
 
 func (r UploadParam) ImplementsEditRunParamsDocumentURLUnion() {}
 
