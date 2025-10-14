@@ -5,6 +5,7 @@ package shared
 type UnionString string
 
 func (UnionString) ImplementsSplitRunParamsInputUnion()                         {}
+func (UnionString) ImplementsSplitRunJobParamsInputUnion()                      {}
 func (UnionString) ImplementsParseRunParamsBodySyncParseConfigInputUnion()      {}
 func (UnionString) ImplementsParseRunParamsBodyAsyncParseConfigInputUnion()     {}
 func (UnionString) ImplementsParseRunJobParamsInputUnion()                      {}

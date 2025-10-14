@@ -1554,6 +1554,8 @@ func (r UploadParam) MarshalJSON() (data []byte, err error) {
 
 func (r UploadParam) ImplementsSplitRunParamsInputUnion() {}
 
+func (r UploadParam) ImplementsSplitRunJobParamsInputUnion() {}
+
 func (r UploadParam) ImplementsParseRunParamsBodySyncParseConfigInputUnion() {}
 
 func (r UploadParam) ImplementsParseRunParamsBodyAsyncParseConfigInputUnion() {}

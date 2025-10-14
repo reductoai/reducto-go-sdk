@@ -134,9 +134,66 @@ func (r SplitRunParamsSettingsTableCutoff) IsKnown() bool {
 }
 
 type SplitRunJobParams struct {
-	Body interface{} `json:"body,required"`
+	// The URL of the document to be processed. You can provide one of the
+	// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
+	// prefixed URL obtained from the /upload endpoint after directly uploading a
+	// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
+	Input param.Field[SplitRunJobParamsInputUnion] `json:"input,required"`
+	// The configuration options for processing the document.
+	SplitDescription param.Field[[]shared.SplitCategoryParam] `json:"split_description,required"`
+	// The configuration options for asynchronous processing (default synchronous).
+	Async param.Field[shared.ConfigV3AsyncConfigParam] `json:"async"`
+	// The configuration options for parsing the document. If you are passing in a
+	// jobid:// URL for the file, then this configuration will be ignored.
+	Parsing param.Field[shared.ParseOptionsParam] `json:"parsing"`
+	// The settings for split processing.
+	Settings param.Field[SplitRunJobParamsSettings] `json:"settings"`
+	// The prompt that describes rules for splitting the document.
+	SplitRules param.Field[string] `json:"split_rules"`
 }
 
 func (r SplitRunJobParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
+	return apijson.MarshalRoot(r)
+}
+
+// The URL of the document to be processed. You can provide one of the
+// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
+// prefixed URL obtained from the /upload endpoint after directly uploading a
+// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
+//
+// Satisfied by [shared.UnionString], [shared.UploadParam].
+type SplitRunJobParamsInputUnion interface {
+	ImplementsSplitRunJobParamsInputUnion()
+}
+
+// The settings for split processing.
+type SplitRunJobParamsSettings struct {
+	// If tables should be truncated to the first few rows or if all content should be
+	// preserved. truncate improves latency, preserve is recommended for cases where
+	// partition_key is being used and the partition_key may be included within the
+	// table. Defaults to truncate
+	TableCutoff param.Field[SplitRunJobParamsSettingsTableCutoff] `json:"table_cutoff"`
+}
+
+func (r SplitRunJobParamsSettings) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// If tables should be truncated to the first few rows or if all content should be
+// preserved. truncate improves latency, preserve is recommended for cases where
+// partition_key is being used and the partition_key may be included within the
+// table. Defaults to truncate
+type SplitRunJobParamsSettingsTableCutoff string
+
+const (
+	SplitRunJobParamsSettingsTableCutoffTruncate SplitRunJobParamsSettingsTableCutoff = "truncate"
+	SplitRunJobParamsSettingsTableCutoffPreserve SplitRunJobParamsSettingsTableCutoff = "preserve"
+)
+
+func (r SplitRunJobParamsSettingsTableCutoff) IsKnown() bool {
+	switch r {
+	case SplitRunJobParamsSettingsTableCutoffTruncate, SplitRunJobParamsSettingsTableCutoffPreserve:
+		return true
+	}
+	return false
 }
