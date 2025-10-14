@@ -55,7 +55,7 @@ func main() {
 		option.WithEnvironmentEu(),      // or option.WithEnvironmentProduction() | option.WithEnvironmentAu(); defaults to option.WithEnvironmentProduction()
 	)
 	response, err := client.Parse.Run(context.TODO(), reducto.ParseRunParamsSyncParseConfig{
-		Input: reducto.F[reducto.ParseRunParamsSyncParseConfigInputUnion](shared.UnionString("string")),
+		Input: reducto.F[reducto.ParseRunParamsSyncParseConfigInputUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),
 	})
 	if err != nil {
 		panic(err.Error())
