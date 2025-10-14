@@ -28,8 +28,8 @@ func TestPipelineRunWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Pipeline.Run(context.TODO(), reducto.PipelineRunParams{
-		DocumentURL: reducto.F[reducto.PipelineRunParamsDocumentURLUnion](shared.UnionString("string")),
-		PipelineID:  reducto.F("pipeline_id"),
+		Input:      reducto.F[reducto.PipelineRunParamsInputUnion](shared.UnionString("string")),
+		PipelineID: reducto.F("pipeline_id"),
 	})
 	if err != nil {
 		var apierr *reducto.Error
@@ -54,14 +54,15 @@ func TestPipelineRunJobWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Pipeline.RunJob(context.TODO(), reducto.PipelineRunJobParams{
-		DocumentURL: reducto.F[reducto.PipelineRunJobParamsDocumentURLUnion](shared.UnionString("string")),
-		PipelineID:  reducto.F("pipeline_id"),
-		Priority:    reducto.F(true),
-		Webhook: reducto.F(shared.WebhookConfigNewParam{
-			Channels: reducto.F([]string{"string"}),
+		Input:      reducto.F[reducto.PipelineRunJobParamsInputUnion](shared.UnionString("string")),
+		PipelineID: reducto.F("pipeline_id"),
+		Async: reducto.F(reducto.PipelineRunJobParamsAsync{
 			Metadata: reducto.F[any](map[string]interface{}{}),
-			Mode:     reducto.F(shared.WebhookConfigNewModeDisabled),
-			URL:      reducto.F("url"),
+			Priority: reducto.F(true),
+			Webhook: reducto.F[reducto.PipelineRunJobParamsAsyncWebhookUnion](reducto.PipelineRunJobParamsAsyncWebhookSvixWebhookConfig{
+				Channels: reducto.F([]string{"string"}),
+				Mode:     reducto.F(reducto.PipelineRunJobParamsAsyncWebhookSvixWebhookConfigModeSvix),
+			}),
 		}),
 	})
 	if err != nil {

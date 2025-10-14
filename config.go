@@ -3,10 +3,7 @@
 package reducto
 
 import (
-	"github.com/reductoai/reducto-go-sdk/internal/apijson"
-	"github.com/reductoai/reducto-go-sdk/internal/param"
 	"github.com/reductoai/reducto-go-sdk/option"
-	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 // ConfigService contains methods and other services that help with interacting
@@ -26,118 +23,4 @@ func NewConfigService(opts ...option.RequestOption) (r *ConfigService) {
 	r = &ConfigService{}
 	r.Options = opts
 	return
-}
-
-type ExtractConfigParam struct {
-	// The URL of the document to be processed. You can provide one of the following:
-	//
-	//  1. A publicly available URL
-	//  2. A presigned S3 URL
-	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-	//     uploading a document
-	//  4. A job_id (jobid://) or a list of job_ids (jobid://) obtained from a previous
-	//     /parse endpoint
-	DocumentURL param.Field[ExtractConfigDocumentURLUnionParam] `json:"document_url,required"`
-	// The JSON schema to use for extraction.
-	Schema          param.Field[interface{}]                           `json:"schema,required"`
-	AdvancedOptions param.Field[shared.AdvancedProcessingOptionsParam] `json:"advanced_options"`
-	// The configuration options for agent extract
-	AgentExtract param.Field[ExtractConfigAgentExtractParam] `json:"agent_extract"`
-	// The configuration options for array extract
-	ArrayExtract param.Field[shared.ArrayExtractConfigParam] `json:"array_extract"`
-	// The configuration options for citations.
-	CitationsOptions    param.Field[shared.AdvancedCitationsConfigParam]       `json:"citations_options"`
-	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
-	// If table citations should be generated for the extracted content.
-	ExperimentalTableCitations param.Field[bool] `json:"experimental_table_citations"`
-	// If citations should be generated for the extracted content.
-	GenerateCitations param.Field[bool] `json:"generate_citations"`
-	// If images should be passed directly for extractions. Can only be enabled for
-	// documents with less than 10 pages. Defaults to False.
-	IncludeImages param.Field[bool] `json:"include_images"`
-	// If True, the job will be processed with lower latency and higher priority. Uses
-	// 2x the cost of a regular job. Defaults to False.
-	LatencySensitive param.Field[bool]                              `json:"latency_sensitive"`
-	Options          param.Field[shared.BaseProcessingOptionsParam] `json:"options"`
-	// If True, attempts to process the job with priority if the user has priority
-	// processing budget available; by default, sync jobs are prioritized above async
-	// jobs.
-	Priority param.Field[bool] `json:"priority"`
-	// If spreadsheet agent should be used for extraction.
-	SpreadsheetAgent param.Field[bool] `json:"spreadsheet_agent"`
-	// A system prompt to use for the extraction. This is a general prompt that is
-	// applied to the entire document before any other prompts.
-	SystemPrompt param.Field[string] `json:"system_prompt"`
-	// If chunking should be used for the extraction. Defaults to False.
-	UseChunking param.Field[bool] `json:"use_chunking"`
-}
-
-func (r ExtractConfigParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r ExtractConfigParam) implementsExtractRunParamsBodyUnion() {}
-
-// The URL of the document to be processed. You can provide one of the following:
-//
-//  1. A publicly available URL
-//  2. A presigned S3 URL
-//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-//     uploading a document
-//  4. A job_id (jobid://) or a list of job_ids (jobid://) obtained from a previous
-//     /parse endpoint
-//
-// Satisfied by [shared.UnionString], [ExtractConfigDocumentURLArrayParam],
-// [shared.UploadParam].
-type ExtractConfigDocumentURLUnionParam interface {
-	ImplementsExtractConfigDocumentURLUnionParam()
-}
-
-type ExtractConfigDocumentURLArrayParam []string
-
-func (r ExtractConfigDocumentURLArrayParam) ImplementsExtractConfigDocumentURLUnionParam() {}
-
-// The configuration options for agent extract
-type ExtractConfigAgentExtractParam struct {
-	// If agent extraction should be used for extraction.
-	Enabled param.Field[bool] `json:"enabled"`
-}
-
-func (r ExtractConfigAgentExtractParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type ParseConfigParam struct {
-	// The URL of the document to be processed. You can provide one of the following:
-	//
-	//  1. A publicly available URL
-	//  2. A presigned S3 URL
-	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-	//     uploading a document
-	DocumentURL         param.Field[ParseConfigDocumentURLUnionParam]          `json:"document_url,required"`
-	AdvancedOptions     param.Field[shared.AdvancedProcessingOptionsParam]     `json:"advanced_options"`
-	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
-	Options             param.Field[shared.BaseProcessingOptionsParam]         `json:"options"`
-	// If True, attempts to process the job with priority if the user has priority
-	// processing budget available; by default, sync jobs are prioritized above async
-	// jobs.
-	Priority param.Field[bool] `json:"priority"`
-}
-
-func (r ParseConfigParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r ParseConfigParam) implementsParseRunParamsBodyUnion() {}
-
-// The URL of the document to be processed. You can provide one of the following:
-//
-//  1. A publicly available URL
-//  2. A presigned S3 URL
-//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-//     uploading a document
-//
-// Satisfied by [shared.UnionString], [shared.UploadParam].
-type ParseConfigDocumentURLUnionParam interface {
-	ImplementsParseConfigDocumentURLUnionParam()
 }

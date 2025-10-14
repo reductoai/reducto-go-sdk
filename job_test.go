@@ -36,7 +36,7 @@ func TestJobCancel(t *testing.T) {
 	}
 }
 
-func TestJobGetWithOptionalParams(t *testing.T) {
+func TestJobGet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -49,13 +49,7 @@ func TestJobGetWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Job.Get(
-		context.TODO(),
-		"job_id",
-		reducto.JobGetParams{
-			BucketName: reducto.F("bucket_name"),
-		},
-	)
+	_, err := client.Job.Get(context.TODO(), "job_id")
 	if err != nil {
 		var apierr *reducto.Error
 		if errors.As(err, &apierr) {

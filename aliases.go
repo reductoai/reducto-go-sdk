@@ -10,207 +10,10 @@ import (
 type Error = apierror.Error
 
 // This is an alias to an internal type.
-type AdvancedCitationsConfigParam = shared.AdvancedCitationsConfigParam
-
-// This is an alias to an internal type.
-type AdvancedProcessingOptionsParam = shared.AdvancedProcessingOptionsParam
-
-// The OCR system to use. Highres is recommended for documents with English
-// characters. Legacy uses an alternative OCR backend.
-//
-// This is an alias to an internal type.
-type AdvancedProcessingOptionsOcrSystem = shared.AdvancedProcessingOptionsOcrSystem
-
-// This is an alias to an internal value.
-const AdvancedProcessingOptionsOcrSystemHighres = shared.AdvancedProcessingOptionsOcrSystemHighres
-
-// This is an alias to an internal value.
-const AdvancedProcessingOptionsOcrSystemMultilingual = shared.AdvancedProcessingOptionsOcrSystemMultilingual
-
-// This is an alias to an internal value.
-const AdvancedProcessingOptionsOcrSystemCombined = shared.AdvancedProcessingOptionsOcrSystemCombined
-
-// This is an alias to an internal value.
-const AdvancedProcessingOptionsOcrSystemReducto = shared.AdvancedProcessingOptionsOcrSystemReducto
-
-// This is an alias to an internal value.
-const AdvancedProcessingOptionsOcrSystemLegacy = shared.AdvancedProcessingOptionsOcrSystemLegacy
-
-// The page range to process (1-indexed). By default, the entire document is
-// processed.
-//
-// This is an alias to an internal type.
-type AdvancedProcessingOptionsPageRangeUnionParam = shared.AdvancedProcessingOptionsPageRangeUnionParam
-
-// This is an alias to an internal type.
-type AdvancedProcessingOptionsPageRangeArrayParam = shared.AdvancedProcessingOptionsPageRangeArrayParam
-
-// In a spreadsheet with different tables inside, we enable splitting up the tables
-// by default. Intelligent mode applies more powerful models for superior accuracy,
-// at 5× the default per-cell rate. Disabling will register as one large table.
-//
-// This is an alias to an internal type.
-type AdvancedProcessingOptionsSpreadsheetTableClustering = shared.AdvancedProcessingOptionsSpreadsheetTableClustering
-
-// This is an alias to an internal value.
-const AdvancedProcessingOptionsSpreadsheetTableClusteringDefault = shared.AdvancedProcessingOptionsSpreadsheetTableClusteringDefault
-
-// This is an alias to an internal value.
-const AdvancedProcessingOptionsSpreadsheetTableClusteringDisabled = shared.AdvancedProcessingOptionsSpreadsheetTableClusteringDisabled
-
-// This is an alias to an internal value.
-const AdvancedProcessingOptionsSpreadsheetTableClusteringIntelligent = shared.AdvancedProcessingOptionsSpreadsheetTableClusteringIntelligent
-
-// The mode to use for table output. Dynamic returns md for simpler tables and html
-// for more complex tables.
-//
-// This is an alias to an internal type.
-type AdvancedProcessingOptionsTableOutputFormat = shared.AdvancedProcessingOptionsTableOutputFormat
-
-// This is an alias to an internal value.
-const AdvancedProcessingOptionsTableOutputFormatHTML = shared.AdvancedProcessingOptionsTableOutputFormatHTML
-
-// This is an alias to an internal value.
-const AdvancedProcessingOptionsTableOutputFormatJson = shared.AdvancedProcessingOptionsTableOutputFormatJson
-
-// This is an alias to an internal value.
-const AdvancedProcessingOptionsTableOutputFormatMd = shared.AdvancedProcessingOptionsTableOutputFormatMd
-
-// This is an alias to an internal value.
-const AdvancedProcessingOptionsTableOutputFormatJsonbbox = shared.AdvancedProcessingOptionsTableOutputFormatJsonbbox
-
-// This is an alias to an internal value.
-const AdvancedProcessingOptionsTableOutputFormatDynamic = shared.AdvancedProcessingOptionsTableOutputFormatDynamic
-
-// This is an alias to an internal value.
-const AdvancedProcessingOptionsTableOutputFormatAIJson = shared.AdvancedProcessingOptionsTableOutputFormatAIJson
-
-// This is an alias to an internal value.
-const AdvancedProcessingOptionsTableOutputFormatCsv = shared.AdvancedProcessingOptionsTableOutputFormatCsv
-
-// This is an alias to an internal type.
-type ArrayExtractConfigParam = shared.ArrayExtractConfigParam
-
-// The array extraction version to use.
-//
-// This is an alias to an internal type.
-type ArrayExtractConfigMode = shared.ArrayExtractConfigMode
-
-// This is an alias to an internal value.
-const ArrayExtractConfigModeAuto = shared.ArrayExtractConfigModeAuto
-
-// This is an alias to an internal value.
-const ArrayExtractConfigModeLegacy = shared.ArrayExtractConfigModeLegacy
-
-// This is an alias to an internal value.
-const ArrayExtractConfigModeStreaming = shared.ArrayExtractConfigModeStreaming
-
-// This is an alias to an internal value.
-const ArrayExtractConfigModeNoOverlap = shared.ArrayExtractConfigModeNoOverlap
-
-// This is an alias to an internal type.
-type BaseProcessingOptionsParam = shared.BaseProcessingOptionsParam
-
-// The mode to use for extraction. Metadata/hybrid are only recommended with high
-// quality metadata embeddings.
-//
-// This is an alias to an internal type.
-type BaseProcessingOptionsExtractionMode = shared.BaseProcessingOptionsExtractionMode
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsExtractionModeOcr = shared.BaseProcessingOptionsExtractionModeOcr
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsExtractionModeMetadata = shared.BaseProcessingOptionsExtractionModeMetadata
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsExtractionModeHybrid = shared.BaseProcessingOptionsExtractionModeHybrid
-
-// This is an alias to an internal type.
-type BaseProcessingOptionsFilterBlock = shared.BaseProcessingOptionsFilterBlock
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsFilterBlockHeader = shared.BaseProcessingOptionsFilterBlockHeader
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsFilterBlockFooter = shared.BaseProcessingOptionsFilterBlockFooter
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsFilterBlockTitle = shared.BaseProcessingOptionsFilterBlockTitle
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsFilterBlockSectionHeader = shared.BaseProcessingOptionsFilterBlockSectionHeader
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsFilterBlockPageNumber = shared.BaseProcessingOptionsFilterBlockPageNumber
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsFilterBlockListItem = shared.BaseProcessingOptionsFilterBlockListItem
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsFilterBlockFigure = shared.BaseProcessingOptionsFilterBlockFigure
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsFilterBlockTable = shared.BaseProcessingOptionsFilterBlockTable
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsFilterBlockKeyValue = shared.BaseProcessingOptionsFilterBlockKeyValue
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsFilterBlockText = shared.BaseProcessingOptionsFilterBlockText
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsFilterBlockComment = shared.BaseProcessingOptionsFilterBlockComment
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsFilterBlockSignature = shared.BaseProcessingOptionsFilterBlockSignature
-
-// The mode to use for OCR. Agentic mode adds an extra pass, correcting any
-// table/text mistakes at a small cost.
-//
-// This is an alias to an internal type.
-type BaseProcessingOptionsOcrMode = shared.BaseProcessingOptionsOcrMode
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsOcrModeStandard = shared.BaseProcessingOptionsOcrModeStandard
-
-// This is an alias to an internal value.
-const BaseProcessingOptionsOcrModeAgentic = shared.BaseProcessingOptionsOcrModeAgentic
-
-// This is an alias to an internal type.
 type BoundingBox = shared.BoundingBox
 
 // This is an alias to an internal type.
 type BoundingBoxParam = shared.BoundingBoxParam
-
-// This is an alias to an internal type.
-type ChunkingConfigParam = shared.ChunkingConfigParam
-
-// Choose how to partition chunks. Variable mode chunks by character length and
-// visual context. Section mode chunks by section headers. Page mode chunks
-// according to pages. Page sections mode chunks first by page, then by sections
-// within each page. Disabled returns one single chunk.
-//
-// This is an alias to an internal type.
-type ChunkingConfigChunkMode = shared.ChunkingConfigChunkMode
-
-// This is an alias to an internal value.
-const ChunkingConfigChunkModeVariable = shared.ChunkingConfigChunkModeVariable
-
-// This is an alias to an internal value.
-const ChunkingConfigChunkModeSection = shared.ChunkingConfigChunkModeSection
-
-// This is an alias to an internal value.
-const ChunkingConfigChunkModePage = shared.ChunkingConfigChunkModePage
-
-// This is an alias to an internal value.
-const ChunkingConfigChunkModeBlock = shared.ChunkingConfigChunkModeBlock
-
-// This is an alias to an internal value.
-const ChunkingConfigChunkModeDisabled = shared.ChunkingConfigChunkModeDisabled
-
-// This is an alias to an internal value.
-const ChunkingConfigChunkModePageSections = shared.ChunkingConfigChunkModePageSections
 
 // This is an alias to an internal type.
 type EditResponse = shared.EditResponse
@@ -236,47 +39,10 @@ const EditResponseFormSchemaTypeDropdown = shared.EditResponseFormSchemaTypeDrop
 const EditResponseFormSchemaTypeBarcode = shared.EditResponseFormSchemaTypeBarcode
 
 // This is an alias to an internal type.
-type EnrichConfigParam = shared.EnrichConfigParam
-
-// The mode to use for enrichment. Defaults to standard
-//
-// This is an alias to an internal type.
-type EnrichConfigMode = shared.EnrichConfigMode
-
-// This is an alias to an internal value.
-const EnrichConfigModeStandard = shared.EnrichConfigModeStandard
-
-// This is an alias to an internal value.
-const EnrichConfigModePage = shared.EnrichConfigModePage
-
-// This is an alias to an internal value.
-const EnrichConfigModeTable = shared.EnrichConfigModeTable
-
-// This is an alias to an internal type.
-type ExperimentalProcessingOptionsParam = shared.ExperimentalProcessingOptionsParam
-
-// The layout model to use for the document. This will be deprecated in the future.
-//
-// This is an alias to an internal type.
-type ExperimentalProcessingOptionsLayoutModel = shared.ExperimentalProcessingOptionsLayoutModel
-
-// This is an alias to an internal value.
-const ExperimentalProcessingOptionsLayoutModelDefault = shared.ExperimentalProcessingOptionsLayoutModelDefault
-
-// This is an alias to an internal value.
-const ExperimentalProcessingOptionsLayoutModelBeta = shared.ExperimentalProcessingOptionsLayoutModelBeta
-
-// This is an alias to an internal type.
 type ExtractResponse = shared.ExtractResponse
 
 // This is an alias to an internal type.
 type ExtractResponseUsage = shared.ExtractResponseUsage
-
-// This is an alias to an internal type.
-type FigureSummaryConfigParam = shared.FigureSummaryConfigParam
-
-// This is an alias to an internal type.
-type LargeTableChunkingConfigParam = shared.LargeTableChunkingConfigParam
 
 // This is an alias to an internal type.
 type PageRangeParam = shared.PageRangeParam
@@ -410,6 +176,21 @@ type PipelineResponseResultExtractArray = shared.PipelineResponseResultExtractAr
 type PipelineResponseResultExtractArrayItem = shared.PipelineResponseResultExtractArrayItem
 
 // This is an alias to an internal type.
+type PipelineResponseResultExtractArrayResult = shared.PipelineResponseResultExtractArrayResult
+
+// This is an alias to an internal type.
+type PipelineResponseResultExtractArrayResultV3ExtractResponse = shared.PipelineResponseResultExtractArrayResultV3ExtractResponse
+
+// This is an alias to an internal type.
+type PipelineResponseResultExtractArrayResultV3ExtractResponseUsage = shared.PipelineResponseResultExtractArrayResultV3ExtractResponseUsage
+
+// This is an alias to an internal type.
+type PipelineResponseResultExtractV3ExtractResponse = shared.PipelineResponseResultExtractV3ExtractResponse
+
+// This is an alias to an internal type.
+type PipelineResponseResultExtractV3ExtractResponseUsage = shared.PipelineResponseResultExtractV3ExtractResponseUsage
+
+// This is an alias to an internal type.
 type SplitCategoryParam = shared.SplitCategoryParam
 
 // This is an alias to an internal type.
@@ -443,9 +224,6 @@ const SplitResponseResultSplitsPartitionsConfHigh = shared.SplitResponseResultSp
 
 // This is an alias to an internal value.
 const SplitResponseResultSplitsPartitionsConfLow = shared.SplitResponseResultSplitsPartitionsConfLow
-
-// This is an alias to an internal type.
-type TableSummaryConfigParam = shared.TableSummaryConfigParam
 
 // This is an alias to an internal type.
 type Upload = shared.Upload

@@ -53,14 +53,14 @@ func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.Re
 }
 
 // Retrieve Parse
-func (r *JobService) Get(ctx context.Context, jobID string, query JobGetParams, opts ...option.RequestOption) (res *JobGetResponse, err error) {
+func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.RequestOption) (res *JobGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required job_id parameter")
 		return
 	}
 	path := fmt.Sprintf("job/%s", jobID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
@@ -743,18 +743,6 @@ func (r JobGetAllResponseJobsType) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type JobGetParams struct {
-	BucketName param.Field[string] `query:"bucket_name"`
-}
-
-// URLQuery serializes [JobGetParams]'s query parameters as `url.Values`.
-func (r JobGetParams) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
 }
 
 type JobGetAllParams struct {
