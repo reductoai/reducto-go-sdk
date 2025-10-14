@@ -57,6 +57,121 @@ func (r BoundingBoxParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+type ChunkingParam struct {
+	// Choose how to partition chunks. Variable mode chunks by character length and
+	// visual context. Section mode chunks by section headers. Page mode chunks
+	// according to pages. Page sections mode chunks first by page, then by sections
+	// within each page. Disabled returns one single chunk.
+	ChunkMode param.Field[ChunkingChunkMode] `json:"chunk_mode"`
+	// The approximate size of chunks (in characters) that the document will be split
+	// into. Defaults to null, in which case the chunk size is variable between 250 -
+	// 1500 characters.
+	ChunkSize param.Field[int64] `json:"chunk_size"`
+}
+
+func (r ChunkingParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Choose how to partition chunks. Variable mode chunks by character length and
+// visual context. Section mode chunks by section headers. Page mode chunks
+// according to pages. Page sections mode chunks first by page, then by sections
+// within each page. Disabled returns one single chunk.
+type ChunkingChunkMode string
+
+const (
+	ChunkingChunkModeVariable     ChunkingChunkMode = "variable"
+	ChunkingChunkModeSection      ChunkingChunkMode = "section"
+	ChunkingChunkModePage         ChunkingChunkMode = "page"
+	ChunkingChunkModeDisabled     ChunkingChunkMode = "disabled"
+	ChunkingChunkModeBlock        ChunkingChunkMode = "block"
+	ChunkingChunkModePageSections ChunkingChunkMode = "page_sections"
+)
+
+func (r ChunkingChunkMode) IsKnown() bool {
+	switch r {
+	case ChunkingChunkModeVariable, ChunkingChunkModeSection, ChunkingChunkModePage, ChunkingChunkModeDisabled, ChunkingChunkModeBlock, ChunkingChunkModePageSections:
+		return true
+	}
+	return false
+}
+
+type ConfigV3AsyncConfigParam struct {
+	// JSON metadata included in webhook request body. Defaults to None.
+	Metadata param.Field[interface{}] `json:"metadata"`
+	// If True, attempts to process the job with priority if the user has priority
+	// processing budget available; by default, sync jobs are prioritized above async
+	// jobs.
+	Priority param.Field[bool] `json:"priority"`
+	// The webhook configuration for the asynchronous processing.
+	Webhook param.Field[ConfigV3AsyncConfigWebhookUnionParam] `json:"webhook"`
+}
+
+func (r ConfigV3AsyncConfigParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The webhook configuration for the asynchronous processing.
+type ConfigV3AsyncConfigWebhookParam struct {
+	Channels param.Field[interface{}]                    `json:"channels"`
+	Mode     param.Field[ConfigV3AsyncConfigWebhookMode] `json:"mode"`
+	URL      param.Field[string]                         `json:"url"`
+}
+
+func (r ConfigV3AsyncConfigWebhookParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r ConfigV3AsyncConfigWebhookParam) ImplementsConfigV3AsyncConfigWebhookUnionParam() {}
+
+// The webhook configuration for the asynchronous processing.
+//
+// Satisfied by [shared.SvixWebhookConfigParam], [shared.DirectWebhookConfigParam],
+// [ConfigV3AsyncConfigWebhookParam].
+type ConfigV3AsyncConfigWebhookUnionParam interface {
+	ImplementsConfigV3AsyncConfigWebhookUnionParam()
+}
+
+type ConfigV3AsyncConfigWebhookMode string
+
+const (
+	ConfigV3AsyncConfigWebhookModeSvix   ConfigV3AsyncConfigWebhookMode = "svix"
+	ConfigV3AsyncConfigWebhookModeDirect ConfigV3AsyncConfigWebhookMode = "direct"
+)
+
+func (r ConfigV3AsyncConfigWebhookMode) IsKnown() bool {
+	switch r {
+	case ConfigV3AsyncConfigWebhookModeSvix, ConfigV3AsyncConfigWebhookModeDirect:
+		return true
+	}
+	return false
+}
+
+type DirectWebhookConfigParam struct {
+	URL  param.Field[string]                  `json:"url,required"`
+	Mode param.Field[DirectWebhookConfigMode] `json:"mode"`
+}
+
+func (r DirectWebhookConfigParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r DirectWebhookConfigParam) ImplementsConfigV3AsyncConfigWebhookUnionParam() {}
+
+type DirectWebhookConfigMode string
+
+const (
+	DirectWebhookConfigModeDirect DirectWebhookConfigMode = "direct"
+)
+
+func (r DirectWebhookConfigMode) IsKnown() bool {
+	switch r {
+	case DirectWebhookConfigModeDirect:
+		return true
+	}
+	return false
+}
+
 type EditResponse struct {
 	// Presigned URL to download the edited document.
 	DocumentURL string `json:"document_url,required"`
@@ -140,14 +255,61 @@ func (r EditResponseFormSchemaType) IsKnown() bool {
 	return false
 }
 
+type EnhanceParam struct {
+	// Agentic uses vision language models to enhance the accuracy of the output of
+	// different types of extraction. This will incur a cost and latency increase.
+	Agentic param.Field[[]EnhanceAgenticUnionParam] `json:"agentic"`
+	// If True, summarize figures using a small vision language model. Defaults to
+	// True.
+	SummarizeFigures param.Field[bool] `json:"summarize_figures"`
+}
+
+func (r EnhanceParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type EnhanceAgenticParam struct {
+	Scope param.Field[EnhanceAgenticScope] `json:"scope,required"`
+	// Custom prompt for table agentic.
+	Prompt param.Field[string] `json:"prompt"`
+}
+
+func (r EnhanceAgenticParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r EnhanceAgenticParam) ImplementsEnhanceAgenticUnionParam() {}
+
+// Satisfied by [shared.TableAgenticParam], [shared.FigureAgenticParam],
+// [shared.TextAgenticParam], [EnhanceAgenticParam].
+type EnhanceAgenticUnionParam interface {
+	ImplementsEnhanceAgenticUnionParam()
+}
+
+type EnhanceAgenticScope string
+
+const (
+	EnhanceAgenticScopeTable  EnhanceAgenticScope = "table"
+	EnhanceAgenticScopeFigure EnhanceAgenticScope = "figure"
+	EnhanceAgenticScopeText   EnhanceAgenticScope = "text"
+)
+
+func (r EnhanceAgenticScope) IsKnown() bool {
+	switch r {
+	case EnhanceAgenticScopeTable, EnhanceAgenticScopeFigure, EnhanceAgenticScopeText:
+		return true
+	}
+	return false
+}
+
 type ExtractResponse struct {
 	// The citations corresponding to the extracted response.
 	Citations []interface{} `json:"citations,required,nullable"`
 	// The extracted response in your provided schema. This is a list of dictionaries.
 	// If disable_chunking is True (default), then it will be a list of length one.
-	Result []interface{}        `json:"result,required"`
-	Usage  ExtractResponseUsage `json:"usage,required"`
-	JobID  string               `json:"job_id,nullable"`
+	Result []interface{} `json:"result,required"`
+	Usage  ExtractUsage  `json:"usage,required"`
+	JobID  string        `json:"job_id,nullable"`
 	// The link to the studio pipeline for the document.
 	StudioLink string              `json:"studio_link,nullable"`
 	JSON       extractResponseJSON `json:"-"`
@@ -180,16 +342,15 @@ func (r ExtractResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
 
 func (r ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
 
-type ExtractResponseUsage struct {
-	NumFields int64                    `json:"num_fields,required"`
-	NumPages  int64                    `json:"num_pages,required"`
-	Credits   float64                  `json:"credits,nullable"`
-	JSON      extractResponseUsageJSON `json:"-"`
+type ExtractUsage struct {
+	NumFields int64            `json:"num_fields,required"`
+	NumPages  int64            `json:"num_pages,required"`
+	Credits   float64          `json:"credits,nullable"`
+	JSON      extractUsageJSON `json:"-"`
 }
 
-// extractResponseUsageJSON contains the JSON metadata for the struct
-// [ExtractResponseUsage]
-type extractResponseUsageJSON struct {
+// extractUsageJSON contains the JSON metadata for the struct [ExtractUsage]
+type extractUsageJSON struct {
 	NumFields   apijson.Field
 	NumPages    apijson.Field
 	Credits     apijson.Field
@@ -197,12 +358,94 @@ type extractResponseUsageJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *ExtractResponseUsage) UnmarshalJSON(data []byte) (err error) {
+func (r *ExtractUsage) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r extractResponseUsageJSON) RawJSON() string {
+func (r extractUsageJSON) RawJSON() string {
 	return r.raw
+}
+
+type FigureAgenticParam struct {
+	Scope param.Field[FigureAgenticScope] `json:"scope,required"`
+	// Custom prompt for figure agentic.
+	Prompt param.Field[string] `json:"prompt"`
+}
+
+func (r FigureAgenticParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r FigureAgenticParam) ImplementsEnhanceAgenticUnionParam() {}
+
+type FigureAgenticScope string
+
+const (
+	FigureAgenticScopeFigure FigureAgenticScope = "figure"
+)
+
+func (r FigureAgenticScope) IsKnown() bool {
+	switch r {
+	case FigureAgenticScopeFigure:
+		return true
+	}
+	return false
+}
+
+type FormattingParam struct {
+	// If True, add page markers to the output. Defaults to False. Useful for
+	// extracting data with page specific information.
+	AddPageMarkers param.Field[bool] `json:"add_page_markers"`
+	// A list of formatting to include in the output. [insert description of each
+	// option here later]
+	Include param.Field[[]FormattingInclude] `json:"include"`
+	// A flag to indicate if consecutive tables with the same number of columns should
+	// be merged. Defaults to False.
+	MergeTables param.Field[bool] `json:"merge_tables"`
+	// The mode to use for table output. Defaults to dynamic, which returns md for
+	// simpler tables and html for more complex tables.
+	TableOutputFormat param.Field[FormattingTableOutputFormat] `json:"table_output_format"`
+}
+
+func (r FormattingParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type FormattingInclude string
+
+const (
+	FormattingIncludeChangeTracking FormattingInclude = "change_tracking"
+	FormattingIncludeHighlight      FormattingInclude = "highlight"
+	FormattingIncludeComments       FormattingInclude = "comments"
+)
+
+func (r FormattingInclude) IsKnown() bool {
+	switch r {
+	case FormattingIncludeChangeTracking, FormattingIncludeHighlight, FormattingIncludeComments:
+		return true
+	}
+	return false
+}
+
+// The mode to use for table output. Defaults to dynamic, which returns md for
+// simpler tables and html for more complex tables.
+type FormattingTableOutputFormat string
+
+const (
+	FormattingTableOutputFormatHTML     FormattingTableOutputFormat = "html"
+	FormattingTableOutputFormatJson     FormattingTableOutputFormat = "json"
+	FormattingTableOutputFormatMd       FormattingTableOutputFormat = "md"
+	FormattingTableOutputFormatJsonbbox FormattingTableOutputFormat = "jsonbbox"
+	FormattingTableOutputFormatDynamic  FormattingTableOutputFormat = "dynamic"
+	FormattingTableOutputFormatCsv      FormattingTableOutputFormat = "csv"
+)
+
+func (r FormattingTableOutputFormat) IsKnown() bool {
+	switch r {
+	case FormattingTableOutputFormatHTML, FormattingTableOutputFormatJson, FormattingTableOutputFormatMd, FormattingTableOutputFormatJsonbbox, FormattingTableOutputFormatDynamic, FormattingTableOutputFormatCsv:
+		return true
+	}
+	return false
 }
 
 type PageRangeParam struct {
@@ -216,21 +459,19 @@ func (r PageRangeParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r PageRangeParam) ImplementsSplitRunParamsParsingSettingsPageRangeUnion() {}
+func (r PageRangeParam) ImplementsSettingsPageRangeUnionParam() {}
 
-func (r PageRangeParam) ImplementsParseRunParamsBodySyncParseConfigSettingsPageRangeUnion() {}
-
-func (r PageRangeParam) ImplementsParseRunParamsBodyAsyncParseConfigSettingsPageRangeUnion() {}
-
-func (r PageRangeParam) ImplementsParseRunJobParamsSettingsPageRangeUnion() {}
-
-func (r PageRangeParam) ImplementsExtractRunParamsBodySyncExtractConfigParsingSettingsPageRangeUnion() {
+type ParseOptionsParam struct {
+	Enhance     param.Field[EnhanceParam]     `json:"enhance"`
+	Formatting  param.Field[FormattingParam]  `json:"formatting"`
+	Retrieval   param.Field[RetrievalParam]   `json:"retrieval"`
+	Settings    param.Field[SettingsParam]    `json:"settings"`
+	Spreadsheet param.Field[SpreadsheetParam] `json:"spreadsheet"`
 }
 
-func (r PageRangeParam) ImplementsExtractRunParamsBodyAsyncExtractConfigParsingSettingsPageRangeUnion() {
+func (r ParseOptionsParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
-
-func (r PageRangeParam) ImplementsExtractRunJobParamsParsingSettingsPageRangeUnion() {}
 
 type ParseResponse struct {
 	// The duration of the parse request in seconds.
@@ -748,7 +989,7 @@ func (r pipelineResponseResultJSON) RawJSON() string {
 }
 
 // Union satisfied by [PipelineResponseResultExtractArray], [ExtractResponse] or
-// [PipelineResponseResultExtractV3ExtractResponse].
+// [V3ExtractResponse].
 type PipelineResponseResultExtractUnion interface {
 	ImplementsPipelineResponseResultExtractUnion()
 }
@@ -767,7 +1008,7 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(PipelineResponseResultExtractV3ExtractResponse{}),
+			Type:       reflect.TypeOf(V3ExtractResponse{}),
 		},
 	)
 }
@@ -806,10 +1047,8 @@ func (r pipelineResponseResultExtractArrayItemJSON) RawJSON() string {
 
 type PipelineResponseResultExtractArrayResult struct {
 	// This field can have the runtime type of [[]interface{}].
-	Result interface{} `json:"result,required"`
-	// This field can have the runtime type of [ExtractResponseUsage],
-	// [PipelineResponseResultExtractArrayResultV3ExtractResponseUsage].
-	Usage interface{} `json:"usage,required"`
+	Result interface{}  `json:"result,required"`
+	Usage  ExtractUsage `json:"usage,required"`
 	// This field can have the runtime type of [[]interface{}].
 	Citations interface{} `json:"citations"`
 	JobID     string      `json:"job_id,nullable"`
@@ -847,14 +1086,12 @@ func (r *PipelineResponseResultExtractArrayResult) UnmarshalJSON(data []byte) (e
 // AsUnion returns a [PipelineResponseResultExtractArrayResultUnion] interface
 // which you can cast to the specific types for more type safety.
 //
-// Possible runtime types of the union are [ExtractResponse],
-// [PipelineResponseResultExtractArrayResultV3ExtractResponse].
+// Possible runtime types of the union are [ExtractResponse], [V3ExtractResponse].
 func (r PipelineResponseResultExtractArrayResult) AsUnion() PipelineResponseResultExtractArrayResultUnion {
 	return r.union
 }
 
-// Union satisfied by [ExtractResponse] or
-// [PipelineResponseResultExtractArrayResultV3ExtractResponse].
+// Union satisfied by [ExtractResponse] or [V3ExtractResponse].
 type PipelineResponseResultExtractArrayResultUnion interface {
 	ImplementsPipelineResponseResultExtractArrayResult()
 }
@@ -869,127 +1106,122 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(PipelineResponseResultExtractArrayResultV3ExtractResponse{}),
+			Type:       reflect.TypeOf(V3ExtractResponse{}),
 		},
 	)
 }
 
-type PipelineResponseResultExtractArrayResultV3ExtractResponse struct {
-	// The extracted response in your provided schema. This is a list of dictionaries.
-	// If disable_chunking is True (default), then it will be a list of length one.
-	Result []interface{}                                                  `json:"result,required"`
-	Usage  PipelineResponseResultExtractArrayResultV3ExtractResponseUsage `json:"usage,required"`
-	JobID  string                                                         `json:"job_id,nullable"`
-	// The link to the studio pipeline for the document.
-	StudioLink string                                                        `json:"studio_link,nullable"`
-	JSON       pipelineResponseResultExtractArrayResultV3ExtractResponseJSON `json:"-"`
+type RetrievalParam struct {
+	Chunking param.Field[ChunkingParam] `json:"chunking"`
+	// If True, use embedding optimized mode. Defaults to False.
+	EmbeddingOptimized param.Field[bool] `json:"embedding_optimized"`
+	// A list of block types to filter out from 'content' and 'embed' fields. By
+	// default, no blocks are filtered.
+	FilterBlocks param.Field[[]RetrievalFilterBlock] `json:"filter_blocks"`
 }
 
-// pipelineResponseResultExtractArrayResultV3ExtractResponseJSON contains the JSON
-// metadata for the struct
-// [PipelineResponseResultExtractArrayResultV3ExtractResponse]
-type pipelineResponseResultExtractArrayResultV3ExtractResponseJSON struct {
-	Result      apijson.Field
-	Usage       apijson.Field
-	JobID       apijson.Field
-	StudioLink  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+func (r RetrievalParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
-func (r *PipelineResponseResultExtractArrayResultV3ExtractResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
+type RetrievalFilterBlock string
+
+const (
+	RetrievalFilterBlockHeader        RetrievalFilterBlock = "Header"
+	RetrievalFilterBlockFooter        RetrievalFilterBlock = "Footer"
+	RetrievalFilterBlockTitle         RetrievalFilterBlock = "Title"
+	RetrievalFilterBlockSectionHeader RetrievalFilterBlock = "Section Header"
+	RetrievalFilterBlockPageNumber    RetrievalFilterBlock = "Page Number"
+	RetrievalFilterBlockListItem      RetrievalFilterBlock = "List Item"
+	RetrievalFilterBlockFigure        RetrievalFilterBlock = "Figure"
+	RetrievalFilterBlockTable         RetrievalFilterBlock = "Table"
+	RetrievalFilterBlockKeyValue      RetrievalFilterBlock = "Key Value"
+	RetrievalFilterBlockText          RetrievalFilterBlock = "Text"
+	RetrievalFilterBlockComment       RetrievalFilterBlock = "Comment"
+	RetrievalFilterBlockSignature     RetrievalFilterBlock = "Signature"
+)
+
+func (r RetrievalFilterBlock) IsKnown() bool {
+	switch r {
+	case RetrievalFilterBlockHeader, RetrievalFilterBlockFooter, RetrievalFilterBlockTitle, RetrievalFilterBlockSectionHeader, RetrievalFilterBlockPageNumber, RetrievalFilterBlockListItem, RetrievalFilterBlockFigure, RetrievalFilterBlockTable, RetrievalFilterBlockKeyValue, RetrievalFilterBlockText, RetrievalFilterBlockComment, RetrievalFilterBlockSignature:
+		return true
+	}
+	return false
 }
 
-func (r pipelineResponseResultExtractArrayResultV3ExtractResponseJSON) RawJSON() string {
-	return r.raw
+type SettingsParam struct {
+	// Password to decrypt password-protected documents.
+	DocumentPassword param.Field[string] `json:"document_password"`
+	// If True, embed OCR metadata into the returned PDF. Defaults to False.
+	EmbedPdfMetadata param.Field[bool] `json:"embed_pdf_metadata"`
+	// Force the URL to be downloaded as a specific file extension (e.g. `.png`).
+	ForceFileExtension param.Field[string] `json:"force_file_extension"`
+	// Force the result to be returned in URL form.
+	ForceURLResult param.Field[bool] `json:"force_url_result"`
+	// Standard is our best multilingual OCR system. Legacy only supports germanic
+	// languages and is available for backwards compatibility.
+	OcrSystem param.Field[SettingsOcrSystem] `json:"ocr_system"`
+	// The page range to process (1-indexed). By default, the entire document is
+	// processed.
+	PageRange param.Field[SettingsPageRangeUnionParam] `json:"page_range"`
+	// If True, persist the results indefinitely. Defaults to False.
+	PersistResults param.Field[bool] `json:"persist_results"`
+	// Whether to return images for the specified block types. By default, no images
+	// are returned.
+	ReturnImages param.Field[[]SettingsReturnImage] `json:"return_images"`
+	// If True, return OCR data in the result. Defaults to False.
+	ReturnOcrData param.Field[bool] `json:"return_ocr_data"`
+	// The timeout for the job in seconds. Defaults to 900.
+	Timeout param.Field[float64] `json:"timeout"`
 }
 
-func (r PipelineResponseResultExtractArrayResultV3ExtractResponse) ImplementsPipelineResponseResultExtractArrayResult() {
+func (r SettingsParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
-type PipelineResponseResultExtractArrayResultV3ExtractResponseUsage struct {
-	NumFields int64                                                              `json:"num_fields,required"`
-	NumPages  int64                                                              `json:"num_pages,required"`
-	Credits   float64                                                            `json:"credits,nullable"`
-	JSON      pipelineResponseResultExtractArrayResultV3ExtractResponseUsageJSON `json:"-"`
+// Standard is our best multilingual OCR system. Legacy only supports germanic
+// languages and is available for backwards compatibility.
+type SettingsOcrSystem string
+
+const (
+	SettingsOcrSystemStandard SettingsOcrSystem = "standard"
+	SettingsOcrSystemLegacy   SettingsOcrSystem = "legacy"
+)
+
+func (r SettingsOcrSystem) IsKnown() bool {
+	switch r {
+	case SettingsOcrSystemStandard, SettingsOcrSystemLegacy:
+		return true
+	}
+	return false
 }
 
-// pipelineResponseResultExtractArrayResultV3ExtractResponseUsageJSON contains the
-// JSON metadata for the struct
-// [PipelineResponseResultExtractArrayResultV3ExtractResponseUsage]
-type pipelineResponseResultExtractArrayResultV3ExtractResponseUsageJSON struct {
-	NumFields   apijson.Field
-	NumPages    apijson.Field
-	Credits     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+// The page range to process (1-indexed). By default, the entire document is
+// processed.
+//
+// Satisfied by [shared.PageRangeParam], [shared.SettingsPageRangeArrayParam],
+// [shared.SettingsPageRangeArrayParam].
+type SettingsPageRangeUnionParam interface {
+	ImplementsSettingsPageRangeUnionParam()
 }
 
-func (r *PipelineResponseResultExtractArrayResultV3ExtractResponseUsage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
+type SettingsPageRangeArrayParam []PageRangeParam
 
-func (r pipelineResponseResultExtractArrayResultV3ExtractResponseUsageJSON) RawJSON() string {
-	return r.raw
-}
+func (r SettingsPageRangeArrayParam) ImplementsSettingsPageRangeUnionParam() {}
 
-type PipelineResponseResultExtractV3ExtractResponse struct {
-	// The extracted response in your provided schema. This is a list of dictionaries.
-	// If disable_chunking is True (default), then it will be a list of length one.
-	Result []interface{}                                       `json:"result,required"`
-	Usage  PipelineResponseResultExtractV3ExtractResponseUsage `json:"usage,required"`
-	JobID  string                                              `json:"job_id,nullable"`
-	// The link to the studio pipeline for the document.
-	StudioLink string                                             `json:"studio_link,nullable"`
-	JSON       pipelineResponseResultExtractV3ExtractResponseJSON `json:"-"`
-}
+type SettingsReturnImage string
 
-// pipelineResponseResultExtractV3ExtractResponseJSON contains the JSON metadata
-// for the struct [PipelineResponseResultExtractV3ExtractResponse]
-type pipelineResponseResultExtractV3ExtractResponseJSON struct {
-	Result      apijson.Field
-	Usage       apijson.Field
-	JobID       apijson.Field
-	StudioLink  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
+const (
+	SettingsReturnImageFigure SettingsReturnImage = "figure"
+	SettingsReturnImageTable  SettingsReturnImage = "table"
+)
 
-func (r *PipelineResponseResultExtractV3ExtractResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r pipelineResponseResultExtractV3ExtractResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r PipelineResponseResultExtractV3ExtractResponse) ImplementsPipelineResponseResultExtractUnion() {
-}
-
-type PipelineResponseResultExtractV3ExtractResponseUsage struct {
-	NumFields int64                                                   `json:"num_fields,required"`
-	NumPages  int64                                                   `json:"num_pages,required"`
-	Credits   float64                                                 `json:"credits,nullable"`
-	JSON      pipelineResponseResultExtractV3ExtractResponseUsageJSON `json:"-"`
-}
-
-// pipelineResponseResultExtractV3ExtractResponseUsageJSON contains the JSON
-// metadata for the struct [PipelineResponseResultExtractV3ExtractResponseUsage]
-type pipelineResponseResultExtractV3ExtractResponseUsageJSON struct {
-	NumFields   apijson.Field
-	NumPages    apijson.Field
-	Credits     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *PipelineResponseResultExtractV3ExtractResponseUsage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r pipelineResponseResultExtractV3ExtractResponseUsageJSON) RawJSON() string {
-	return r.raw
+func (r SettingsReturnImage) IsKnown() bool {
+	switch r {
+	case SettingsReturnImageFigure, SettingsReturnImageTable:
+		return true
+	}
+	return false
 }
 
 type SplitCategoryParam struct {
@@ -999,6 +1231,17 @@ type SplitCategoryParam struct {
 }
 
 func (r SplitCategoryParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type SplitLargeTablesParam struct {
+	// If True, split large tables into smaller tables. Defaults to True.
+	Enabled param.Field[bool] `json:"enabled"`
+	// The size of the tables to split into. Defaults to 50.
+	Size param.Field[int64] `json:"size"`
+}
+
+func (r SplitLargeTablesParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -1135,6 +1378,149 @@ func (r SplitResponseResultSplitsPartitionsConf) IsKnown() bool {
 	return false
 }
 
+type SpreadsheetParam struct {
+	// In a spreadsheet with different tables inside, we enable splitting up the tables
+	// by default. Accurate mode applies more powerful models for superior accuracy, at
+	// 5× the default per-cell rate. Disabling will register as one large table.
+	Clustering param.Field[SpreadsheetClustering] `json:"clustering"`
+	// Whether to exclude hidden sheets, rows, or columns in the output.
+	Exclude param.Field[[]SpreadsheetExclude] `json:"exclude"`
+	// Whether to include cell color and formula information in the output.
+	Include          param.Field[[]SpreadsheetInclude]  `json:"include"`
+	SplitLargeTables param.Field[SplitLargeTablesParam] `json:"split_large_tables"`
+}
+
+func (r SpreadsheetParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// In a spreadsheet with different tables inside, we enable splitting up the tables
+// by default. Accurate mode applies more powerful models for superior accuracy, at
+// 5× the default per-cell rate. Disabling will register as one large table.
+type SpreadsheetClustering string
+
+const (
+	SpreadsheetClusteringAccurate SpreadsheetClustering = "accurate"
+	SpreadsheetClusteringFast     SpreadsheetClustering = "fast"
+	SpreadsheetClusteringDisabled SpreadsheetClustering = "disabled"
+)
+
+func (r SpreadsheetClustering) IsKnown() bool {
+	switch r {
+	case SpreadsheetClusteringAccurate, SpreadsheetClusteringFast, SpreadsheetClusteringDisabled:
+		return true
+	}
+	return false
+}
+
+type SpreadsheetExclude string
+
+const (
+	SpreadsheetExcludeHiddenSheets SpreadsheetExclude = "hidden_sheets"
+	SpreadsheetExcludeHiddenRows   SpreadsheetExclude = "hidden_rows"
+	SpreadsheetExcludeHiddenCols   SpreadsheetExclude = "hidden_cols"
+)
+
+func (r SpreadsheetExclude) IsKnown() bool {
+	switch r {
+	case SpreadsheetExcludeHiddenSheets, SpreadsheetExcludeHiddenRows, SpreadsheetExcludeHiddenCols:
+		return true
+	}
+	return false
+}
+
+type SpreadsheetInclude string
+
+const (
+	SpreadsheetIncludeCellColors SpreadsheetInclude = "cell_colors"
+	SpreadsheetIncludeFormula    SpreadsheetInclude = "formula"
+)
+
+func (r SpreadsheetInclude) IsKnown() bool {
+	switch r {
+	case SpreadsheetIncludeCellColors, SpreadsheetIncludeFormula:
+		return true
+	}
+	return false
+}
+
+type SvixWebhookConfigParam struct {
+	// A list of Svix channels the message will be delivered down, omit to send to all
+	// channels.
+	Channels param.Field[[]string]              `json:"channels"`
+	Mode     param.Field[SvixWebhookConfigMode] `json:"mode"`
+}
+
+func (r SvixWebhookConfigParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r SvixWebhookConfigParam) ImplementsConfigV3AsyncConfigWebhookUnionParam() {}
+
+type SvixWebhookConfigMode string
+
+const (
+	SvixWebhookConfigModeSvix SvixWebhookConfigMode = "svix"
+)
+
+func (r SvixWebhookConfigMode) IsKnown() bool {
+	switch r {
+	case SvixWebhookConfigModeSvix:
+		return true
+	}
+	return false
+}
+
+type TableAgenticParam struct {
+	Scope param.Field[TableAgenticScope] `json:"scope,required"`
+	// Custom prompt for table agentic.
+	Prompt param.Field[string] `json:"prompt"`
+}
+
+func (r TableAgenticParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r TableAgenticParam) ImplementsEnhanceAgenticUnionParam() {}
+
+type TableAgenticScope string
+
+const (
+	TableAgenticScopeTable TableAgenticScope = "table"
+)
+
+func (r TableAgenticScope) IsKnown() bool {
+	switch r {
+	case TableAgenticScopeTable:
+		return true
+	}
+	return false
+}
+
+type TextAgenticParam struct {
+	Scope param.Field[TextAgenticScope] `json:"scope,required"`
+}
+
+func (r TextAgenticParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r TextAgenticParam) ImplementsEnhanceAgenticUnionParam() {}
+
+type TextAgenticScope string
+
+const (
+	TextAgenticScopeText TextAgenticScope = "text"
+)
+
+func (r TextAgenticScope) IsKnown() bool {
+	switch r {
+	case TextAgenticScopeText:
+		return true
+	}
+	return false
+}
+
 type Upload struct {
 	FileID       string     `json:"file_id,required"`
 	PresignedURL string     `json:"presigned_url,nullable"`
@@ -1187,6 +1573,46 @@ func (r UploadParam) ImplementsEditRunJobParamsDocumentURLUnion() {}
 func (r UploadParam) ImplementsPipelineRunParamsInputUnion() {}
 
 func (r UploadParam) ImplementsPipelineRunJobParamsInputUnion() {}
+
+type V3ExtractResponse struct {
+	// The extracted response in your provided schema. This is a list of dictionaries.
+	// If disable_chunking is True (default), then it will be a list of length one.
+	Result []interface{} `json:"result,required"`
+	Usage  ExtractUsage  `json:"usage,required"`
+	JobID  string        `json:"job_id,nullable"`
+	// The link to the studio pipeline for the document.
+	StudioLink string                `json:"studio_link,nullable"`
+	JSON       v3ExtractResponseJSON `json:"-"`
+}
+
+// v3ExtractResponseJSON contains the JSON metadata for the struct
+// [V3ExtractResponse]
+type v3ExtractResponseJSON struct {
+	Result      apijson.Field
+	Usage       apijson.Field
+	JobID       apijson.Field
+	StudioLink  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V3ExtractResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v3ExtractResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V3ExtractResponse) ImplementsPipelineResponseResultExtractUnion() {}
+
+func (r V3ExtractResponse) ImplementsPipelineResponseResultExtractArrayResult() {}
+
+func (r V3ExtractResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+
+func (r V3ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+
+func (r V3ExtractResponse) ImplementsExtractRunResponse() {}
 
 type WebhookConfigNewParam struct {
 	// A list of Svix channels the message will be delivered down, omit to send to all

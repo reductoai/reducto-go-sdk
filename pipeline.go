@@ -103,7 +103,7 @@ type PipelineRunJobParams struct {
 	// The ID of the pipeline to use for the document.
 	PipelineID param.Field[string] `json:"pipeline_id,required"`
 	// The configuration options for asynchronous processing (default synchronous).
-	Async param.Field[PipelineRunJobParamsAsync] `json:"async"`
+	Async param.Field[shared.ConfigV3AsyncConfigParam] `json:"async"`
 }
 
 func (r PipelineRunJobParams) MarshalJSON() (data []byte, err error) {
@@ -118,111 +118,4 @@ func (r PipelineRunJobParams) MarshalJSON() (data []byte, err error) {
 // Satisfied by [shared.UnionString], [shared.UploadParam].
 type PipelineRunJobParamsInputUnion interface {
 	ImplementsPipelineRunJobParamsInputUnion()
-}
-
-// The configuration options for asynchronous processing (default synchronous).
-type PipelineRunJobParamsAsync struct {
-	// JSON metadata included in webhook request body. Defaults to None.
-	Metadata param.Field[interface{}] `json:"metadata"`
-	// If True, attempts to process the job with priority if the user has priority
-	// processing budget available; by default, sync jobs are prioritized above async
-	// jobs.
-	Priority param.Field[bool] `json:"priority"`
-	// The webhook configuration for the asynchronous processing.
-	Webhook param.Field[PipelineRunJobParamsAsyncWebhookUnion] `json:"webhook"`
-}
-
-func (r PipelineRunJobParamsAsync) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The webhook configuration for the asynchronous processing.
-type PipelineRunJobParamsAsyncWebhook struct {
-	Channels param.Field[interface{}]                          `json:"channels"`
-	Mode     param.Field[PipelineRunJobParamsAsyncWebhookMode] `json:"mode"`
-	URL      param.Field[string]                               `json:"url"`
-}
-
-func (r PipelineRunJobParamsAsyncWebhook) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r PipelineRunJobParamsAsyncWebhook) implementsPipelineRunJobParamsAsyncWebhookUnion() {}
-
-// The webhook configuration for the asynchronous processing.
-//
-// Satisfied by [PipelineRunJobParamsAsyncWebhookSvixWebhookConfig],
-// [PipelineRunJobParamsAsyncWebhookDirectWebhookConfig],
-// [PipelineRunJobParamsAsyncWebhook].
-type PipelineRunJobParamsAsyncWebhookUnion interface {
-	implementsPipelineRunJobParamsAsyncWebhookUnion()
-}
-
-type PipelineRunJobParamsAsyncWebhookSvixWebhookConfig struct {
-	// A list of Svix channels the message will be delivered down, omit to send to all
-	// channels.
-	Channels param.Field[[]string]                                              `json:"channels"`
-	Mode     param.Field[PipelineRunJobParamsAsyncWebhookSvixWebhookConfigMode] `json:"mode"`
-}
-
-func (r PipelineRunJobParamsAsyncWebhookSvixWebhookConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r PipelineRunJobParamsAsyncWebhookSvixWebhookConfig) implementsPipelineRunJobParamsAsyncWebhookUnion() {
-}
-
-type PipelineRunJobParamsAsyncWebhookSvixWebhookConfigMode string
-
-const (
-	PipelineRunJobParamsAsyncWebhookSvixWebhookConfigModeSvix PipelineRunJobParamsAsyncWebhookSvixWebhookConfigMode = "svix"
-)
-
-func (r PipelineRunJobParamsAsyncWebhookSvixWebhookConfigMode) IsKnown() bool {
-	switch r {
-	case PipelineRunJobParamsAsyncWebhookSvixWebhookConfigModeSvix:
-		return true
-	}
-	return false
-}
-
-type PipelineRunJobParamsAsyncWebhookDirectWebhookConfig struct {
-	URL  param.Field[string]                                                  `json:"url,required"`
-	Mode param.Field[PipelineRunJobParamsAsyncWebhookDirectWebhookConfigMode] `json:"mode"`
-}
-
-func (r PipelineRunJobParamsAsyncWebhookDirectWebhookConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r PipelineRunJobParamsAsyncWebhookDirectWebhookConfig) implementsPipelineRunJobParamsAsyncWebhookUnion() {
-}
-
-type PipelineRunJobParamsAsyncWebhookDirectWebhookConfigMode string
-
-const (
-	PipelineRunJobParamsAsyncWebhookDirectWebhookConfigModeDirect PipelineRunJobParamsAsyncWebhookDirectWebhookConfigMode = "direct"
-)
-
-func (r PipelineRunJobParamsAsyncWebhookDirectWebhookConfigMode) IsKnown() bool {
-	switch r {
-	case PipelineRunJobParamsAsyncWebhookDirectWebhookConfigModeDirect:
-		return true
-	}
-	return false
-}
-
-type PipelineRunJobParamsAsyncWebhookMode string
-
-const (
-	PipelineRunJobParamsAsyncWebhookModeSvix   PipelineRunJobParamsAsyncWebhookMode = "svix"
-	PipelineRunJobParamsAsyncWebhookModeDirect PipelineRunJobParamsAsyncWebhookMode = "direct"
-)
-
-func (r PipelineRunJobParamsAsyncWebhookMode) IsKnown() bool {
-	switch r {
-	case PipelineRunJobParamsAsyncWebhookModeSvix, PipelineRunJobParamsAsyncWebhookModeDirect:
-		return true
-	}
-	return false
 }
