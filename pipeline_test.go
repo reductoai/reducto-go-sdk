@@ -56,12 +56,12 @@ func TestPipelineRunJobWithOptionalParams(t *testing.T) {
 	_, err := client.Pipeline.RunJob(context.TODO(), reducto.PipelineRunJobParams{
 		Input:      reducto.F[reducto.PipelineRunJobParamsInputUnion](shared.UnionString("string")),
 		PipelineID: reducto.F("pipeline_id"),
-		Async: reducto.F(reducto.PipelineRunJobParamsAsync{
+		Async: reducto.F(shared.ConfigV3AsyncConfigParam{
 			Metadata: reducto.F[any](map[string]interface{}{}),
 			Priority: reducto.F(true),
-			Webhook: reducto.F[reducto.PipelineRunJobParamsAsyncWebhookUnion](reducto.PipelineRunJobParamsAsyncWebhookSvixWebhookConfig{
+			Webhook: reducto.F[shared.ConfigV3AsyncConfigWebhookUnionParam](shared.SvixWebhookConfigParam{
 				Channels: reducto.F([]string{"string"}),
-				Mode:     reducto.F(reducto.PipelineRunJobParamsAsyncWebhookSvixWebhookConfigModeSvix),
+				Mode:     reducto.F(shared.SvixWebhookConfigModeSvix),
 			}),
 		}),
 	})

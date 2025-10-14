@@ -30,47 +30,47 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 	_, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
 		Body: reducto.ParseRunParamsBodySyncParseConfig{
 			Input: reducto.F[reducto.ParseRunParamsBodySyncParseConfigInputUnion](shared.UnionString("string")),
-			Enhance: reducto.F(reducto.ParseRunParamsBodySyncParseConfigEnhance{
-				Agentic: reducto.F([]reducto.ParseRunParamsBodySyncParseConfigEnhanceAgenticUnion{reducto.ParseRunParamsBodySyncParseConfigEnhanceAgenticTableAgentic{
-					Scope:  reducto.F(reducto.ParseRunParamsBodySyncParseConfigEnhanceAgenticTableAgenticScopeTable),
+			Enhance: reducto.F(shared.EnhanceParam{
+				Agentic: reducto.F([]shared.EnhanceAgenticUnionParam{shared.TableAgenticParam{
+					Scope:  reducto.F(shared.TableAgenticScopeTable),
 					Prompt: reducto.F("prompt"),
 				}}),
 				SummarizeFigures: reducto.F(true),
 			}),
-			Formatting: reducto.F(reducto.ParseRunParamsBodySyncParseConfigFormatting{
+			Formatting: reducto.F(shared.FormattingParam{
 				AddPageMarkers:    reducto.F(true),
-				Include:           reducto.F([]reducto.ParseRunParamsBodySyncParseConfigFormattingInclude{reducto.ParseRunParamsBodySyncParseConfigFormattingIncludeChangeTracking}),
+				Include:           reducto.F([]shared.FormattingInclude{shared.FormattingIncludeChangeTracking}),
 				MergeTables:       reducto.F(true),
-				TableOutputFormat: reducto.F(reducto.ParseRunParamsBodySyncParseConfigFormattingTableOutputFormatHTML),
+				TableOutputFormat: reducto.F(shared.FormattingTableOutputFormatHTML),
 			}),
-			Retrieval: reducto.F(reducto.ParseRunParamsBodySyncParseConfigRetrieval{
-				Chunking: reducto.F(reducto.ParseRunParamsBodySyncParseConfigRetrievalChunking{
-					ChunkMode: reducto.F(reducto.ParseRunParamsBodySyncParseConfigRetrievalChunkingChunkModeVariable),
+			Retrieval: reducto.F(shared.RetrievalParam{
+				Chunking: reducto.F(shared.ChunkingParam{
+					ChunkMode: reducto.F(shared.ChunkingChunkModeVariable),
 					ChunkSize: reducto.F(int64(0)),
 				}),
 				EmbeddingOptimized: reducto.F(true),
-				FilterBlocks:       reducto.F([]reducto.ParseRunParamsBodySyncParseConfigRetrievalFilterBlock{reducto.ParseRunParamsBodySyncParseConfigRetrievalFilterBlockHeader}),
+				FilterBlocks:       reducto.F([]shared.RetrievalFilterBlock{shared.RetrievalFilterBlockHeader}),
 			}),
-			Settings: reducto.F(reducto.ParseRunParamsBodySyncParseConfigSettings{
+			Settings: reducto.F(shared.SettingsParam{
 				DocumentPassword:   reducto.F("document_password"),
 				EmbedPdfMetadata:   reducto.F(true),
 				ForceFileExtension: reducto.F("force_file_extension"),
 				ForceURLResult:     reducto.F(true),
-				OcrSystem:          reducto.F(reducto.ParseRunParamsBodySyncParseConfigSettingsOcrSystemStandard),
-				PageRange: reducto.F[reducto.ParseRunParamsBodySyncParseConfigSettingsPageRangeUnion](shared.PageRangeParam{
+				OcrSystem:          reducto.F(shared.SettingsOcrSystemStandard),
+				PageRange: reducto.F[shared.SettingsPageRangeUnionParam](shared.PageRangeParam{
 					End:   reducto.F(int64(0)),
 					Start: reducto.F(int64(0)),
 				}),
 				PersistResults: reducto.F(true),
-				ReturnImages:   reducto.F([]reducto.ParseRunParamsBodySyncParseConfigSettingsReturnImage{reducto.ParseRunParamsBodySyncParseConfigSettingsReturnImageFigure}),
+				ReturnImages:   reducto.F([]shared.SettingsReturnImage{shared.SettingsReturnImageFigure}),
 				ReturnOcrData:  reducto.F(true),
 				Timeout:        reducto.F(0.000000),
 			}),
-			Spreadsheet: reducto.F(reducto.ParseRunParamsBodySyncParseConfigSpreadsheet{
-				Clustering: reducto.F(reducto.ParseRunParamsBodySyncParseConfigSpreadsheetClusteringAccurate),
-				Exclude:    reducto.F([]reducto.ParseRunParamsBodySyncParseConfigSpreadsheetExclude{reducto.ParseRunParamsBodySyncParseConfigSpreadsheetExcludeHiddenSheets}),
-				Include:    reducto.F([]reducto.ParseRunParamsBodySyncParseConfigSpreadsheetInclude{reducto.ParseRunParamsBodySyncParseConfigSpreadsheetIncludeCellColors}),
-				SplitLargeTables: reducto.F(reducto.ParseRunParamsBodySyncParseConfigSpreadsheetSplitLargeTables{
+			Spreadsheet: reducto.F(shared.SpreadsheetParam{
+				Clustering: reducto.F(shared.SpreadsheetClusteringAccurate),
+				Exclude:    reducto.F([]shared.SpreadsheetExclude{shared.SpreadsheetExcludeHiddenSheets}),
+				Include:    reducto.F([]shared.SpreadsheetInclude{shared.SpreadsheetIncludeCellColors}),
+				SplitLargeTables: reducto.F(shared.SplitLargeTablesParam{
 					Enabled: reducto.F(true),
 					Size:    reducto.F(int64(0)),
 				}),
@@ -101,55 +101,55 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Parse.RunJob(context.TODO(), reducto.ParseRunJobParams{
 		Input: reducto.F[reducto.ParseRunJobParamsInputUnion](shared.UnionString("string")),
-		Async: reducto.F(reducto.ParseRunJobParamsAsync{
+		Async: reducto.F(shared.ConfigV3AsyncConfigParam{
 			Metadata: reducto.F[any](map[string]interface{}{}),
 			Priority: reducto.F(true),
-			Webhook: reducto.F[reducto.ParseRunJobParamsAsyncWebhookUnion](reducto.ParseRunJobParamsAsyncWebhookSvixWebhookConfig{
+			Webhook: reducto.F[shared.ConfigV3AsyncConfigWebhookUnionParam](shared.SvixWebhookConfigParam{
 				Channels: reducto.F([]string{"string"}),
-				Mode:     reducto.F(reducto.ParseRunJobParamsAsyncWebhookSvixWebhookConfigModeSvix),
+				Mode:     reducto.F(shared.SvixWebhookConfigModeSvix),
 			}),
 		}),
-		Enhance: reducto.F(reducto.ParseRunJobParamsEnhance{
-			Agentic: reducto.F([]reducto.ParseRunJobParamsEnhanceAgenticUnion{reducto.ParseRunJobParamsEnhanceAgenticTableAgentic{
-				Scope:  reducto.F(reducto.ParseRunJobParamsEnhanceAgenticTableAgenticScopeTable),
+		Enhance: reducto.F(shared.EnhanceParam{
+			Agentic: reducto.F([]shared.EnhanceAgenticUnionParam{shared.TableAgenticParam{
+				Scope:  reducto.F(shared.TableAgenticScopeTable),
 				Prompt: reducto.F("prompt"),
 			}}),
 			SummarizeFigures: reducto.F(true),
 		}),
-		Formatting: reducto.F(reducto.ParseRunJobParamsFormatting{
+		Formatting: reducto.F(shared.FormattingParam{
 			AddPageMarkers:    reducto.F(true),
-			Include:           reducto.F([]reducto.ParseRunJobParamsFormattingInclude{reducto.ParseRunJobParamsFormattingIncludeChangeTracking}),
+			Include:           reducto.F([]shared.FormattingInclude{shared.FormattingIncludeChangeTracking}),
 			MergeTables:       reducto.F(true),
-			TableOutputFormat: reducto.F(reducto.ParseRunJobParamsFormattingTableOutputFormatHTML),
+			TableOutputFormat: reducto.F(shared.FormattingTableOutputFormatHTML),
 		}),
-		Retrieval: reducto.F(reducto.ParseRunJobParamsRetrieval{
-			Chunking: reducto.F(reducto.ParseRunJobParamsRetrievalChunking{
-				ChunkMode: reducto.F(reducto.ParseRunJobParamsRetrievalChunkingChunkModeVariable),
+		Retrieval: reducto.F(shared.RetrievalParam{
+			Chunking: reducto.F(shared.ChunkingParam{
+				ChunkMode: reducto.F(shared.ChunkingChunkModeVariable),
 				ChunkSize: reducto.F(int64(0)),
 			}),
 			EmbeddingOptimized: reducto.F(true),
-			FilterBlocks:       reducto.F([]reducto.ParseRunJobParamsRetrievalFilterBlock{reducto.ParseRunJobParamsRetrievalFilterBlockHeader}),
+			FilterBlocks:       reducto.F([]shared.RetrievalFilterBlock{shared.RetrievalFilterBlockHeader}),
 		}),
-		Settings: reducto.F(reducto.ParseRunJobParamsSettings{
+		Settings: reducto.F(shared.SettingsParam{
 			DocumentPassword:   reducto.F("document_password"),
 			EmbedPdfMetadata:   reducto.F(true),
 			ForceFileExtension: reducto.F("force_file_extension"),
 			ForceURLResult:     reducto.F(true),
-			OcrSystem:          reducto.F(reducto.ParseRunJobParamsSettingsOcrSystemStandard),
-			PageRange: reducto.F[reducto.ParseRunJobParamsSettingsPageRangeUnion](shared.PageRangeParam{
+			OcrSystem:          reducto.F(shared.SettingsOcrSystemStandard),
+			PageRange: reducto.F[shared.SettingsPageRangeUnionParam](shared.PageRangeParam{
 				End:   reducto.F(int64(0)),
 				Start: reducto.F(int64(0)),
 			}),
 			PersistResults: reducto.F(true),
-			ReturnImages:   reducto.F([]reducto.ParseRunJobParamsSettingsReturnImage{reducto.ParseRunJobParamsSettingsReturnImageFigure}),
+			ReturnImages:   reducto.F([]shared.SettingsReturnImage{shared.SettingsReturnImageFigure}),
 			ReturnOcrData:  reducto.F(true),
 			Timeout:        reducto.F(0.000000),
 		}),
-		Spreadsheet: reducto.F(reducto.ParseRunJobParamsSpreadsheet{
-			Clustering: reducto.F(reducto.ParseRunJobParamsSpreadsheetClusteringAccurate),
-			Exclude:    reducto.F([]reducto.ParseRunJobParamsSpreadsheetExclude{reducto.ParseRunJobParamsSpreadsheetExcludeHiddenSheets}),
-			Include:    reducto.F([]reducto.ParseRunJobParamsSpreadsheetInclude{reducto.ParseRunJobParamsSpreadsheetIncludeCellColors}),
-			SplitLargeTables: reducto.F(reducto.ParseRunJobParamsSpreadsheetSplitLargeTables{
+		Spreadsheet: reducto.F(shared.SpreadsheetParam{
+			Clustering: reducto.F(shared.SpreadsheetClusteringAccurate),
+			Exclude:    reducto.F([]shared.SpreadsheetExclude{shared.SpreadsheetExcludeHiddenSheets}),
+			Include:    reducto.F([]shared.SpreadsheetInclude{shared.SpreadsheetIncludeCellColors}),
+			SplitLargeTables: reducto.F(shared.SplitLargeTablesParam{
 				Enabled: reducto.F(true),
 				Size:    reducto.F(int64(0)),
 			}),

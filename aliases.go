@@ -16,6 +16,61 @@ type BoundingBox = shared.BoundingBox
 type BoundingBoxParam = shared.BoundingBoxParam
 
 // This is an alias to an internal type.
+type ChunkingParam = shared.ChunkingParam
+
+// Choose how to partition chunks. Variable mode chunks by character length and
+// visual context. Section mode chunks by section headers. Page mode chunks
+// according to pages. Page sections mode chunks first by page, then by sections
+// within each page. Disabled returns one single chunk.
+//
+// This is an alias to an internal type.
+type ChunkingChunkMode = shared.ChunkingChunkMode
+
+// This is an alias to an internal value.
+const ChunkingChunkModeVariable = shared.ChunkingChunkModeVariable
+
+// This is an alias to an internal value.
+const ChunkingChunkModeSection = shared.ChunkingChunkModeSection
+
+// This is an alias to an internal value.
+const ChunkingChunkModePage = shared.ChunkingChunkModePage
+
+// This is an alias to an internal value.
+const ChunkingChunkModeDisabled = shared.ChunkingChunkModeDisabled
+
+// This is an alias to an internal value.
+const ChunkingChunkModeBlock = shared.ChunkingChunkModeBlock
+
+// This is an alias to an internal value.
+const ChunkingChunkModePageSections = shared.ChunkingChunkModePageSections
+
+// This is an alias to an internal type.
+type ConfigV3AsyncConfigParam = shared.ConfigV3AsyncConfigParam
+
+// The webhook configuration for the asynchronous processing.
+//
+// This is an alias to an internal type.
+type ConfigV3AsyncConfigWebhookUnionParam = shared.ConfigV3AsyncConfigWebhookUnionParam
+
+// This is an alias to an internal type.
+type ConfigV3AsyncConfigWebhookMode = shared.ConfigV3AsyncConfigWebhookMode
+
+// This is an alias to an internal value.
+const ConfigV3AsyncConfigWebhookModeSvix = shared.ConfigV3AsyncConfigWebhookModeSvix
+
+// This is an alias to an internal value.
+const ConfigV3AsyncConfigWebhookModeDirect = shared.ConfigV3AsyncConfigWebhookModeDirect
+
+// This is an alias to an internal type.
+type DirectWebhookConfigParam = shared.DirectWebhookConfigParam
+
+// This is an alias to an internal type.
+type DirectWebhookConfigMode = shared.DirectWebhookConfigMode
+
+// This is an alias to an internal value.
+const DirectWebhookConfigModeDirect = shared.DirectWebhookConfigModeDirect
+
+// This is an alias to an internal type.
 type EditResponse = shared.EditResponse
 
 // This is an alias to an internal type.
@@ -39,13 +94,82 @@ const EditResponseFormSchemaTypeDropdown = shared.EditResponseFormSchemaTypeDrop
 const EditResponseFormSchemaTypeBarcode = shared.EditResponseFormSchemaTypeBarcode
 
 // This is an alias to an internal type.
+type EnhanceParam = shared.EnhanceParam
+
+// This is an alias to an internal type.
+type EnhanceAgenticUnionParam = shared.EnhanceAgenticUnionParam
+
+// This is an alias to an internal type.
+type EnhanceAgenticScope = shared.EnhanceAgenticScope
+
+// This is an alias to an internal value.
+const EnhanceAgenticScopeTable = shared.EnhanceAgenticScopeTable
+
+// This is an alias to an internal value.
+const EnhanceAgenticScopeFigure = shared.EnhanceAgenticScopeFigure
+
+// This is an alias to an internal value.
+const EnhanceAgenticScopeText = shared.EnhanceAgenticScopeText
+
+// This is an alias to an internal type.
 type ExtractResponse = shared.ExtractResponse
 
 // This is an alias to an internal type.
-type ExtractResponseUsage = shared.ExtractResponseUsage
+type ExtractUsage = shared.ExtractUsage
+
+// This is an alias to an internal type.
+type FigureAgenticParam = shared.FigureAgenticParam
+
+// This is an alias to an internal type.
+type FigureAgenticScope = shared.FigureAgenticScope
+
+// This is an alias to an internal value.
+const FigureAgenticScopeFigure = shared.FigureAgenticScopeFigure
+
+// This is an alias to an internal type.
+type FormattingParam = shared.FormattingParam
+
+// This is an alias to an internal type.
+type FormattingInclude = shared.FormattingInclude
+
+// This is an alias to an internal value.
+const FormattingIncludeChangeTracking = shared.FormattingIncludeChangeTracking
+
+// This is an alias to an internal value.
+const FormattingIncludeHighlight = shared.FormattingIncludeHighlight
+
+// This is an alias to an internal value.
+const FormattingIncludeComments = shared.FormattingIncludeComments
+
+// The mode to use for table output. Defaults to dynamic, which returns md for
+// simpler tables and html for more complex tables.
+//
+// This is an alias to an internal type.
+type FormattingTableOutputFormat = shared.FormattingTableOutputFormat
+
+// This is an alias to an internal value.
+const FormattingTableOutputFormatHTML = shared.FormattingTableOutputFormatHTML
+
+// This is an alias to an internal value.
+const FormattingTableOutputFormatJson = shared.FormattingTableOutputFormatJson
+
+// This is an alias to an internal value.
+const FormattingTableOutputFormatMd = shared.FormattingTableOutputFormatMd
+
+// This is an alias to an internal value.
+const FormattingTableOutputFormatJsonbbox = shared.FormattingTableOutputFormatJsonbbox
+
+// This is an alias to an internal value.
+const FormattingTableOutputFormatDynamic = shared.FormattingTableOutputFormatDynamic
+
+// This is an alias to an internal value.
+const FormattingTableOutputFormatCsv = shared.FormattingTableOutputFormatCsv
 
 // This is an alias to an internal type.
 type PageRangeParam = shared.PageRangeParam
+
+// This is an alias to an internal type.
+type ParseOptionsParam = shared.ParseOptionsParam
 
 // This is an alias to an internal type.
 type ParseResponse = shared.ParseResponse
@@ -179,19 +303,85 @@ type PipelineResponseResultExtractArrayItem = shared.PipelineResponseResultExtra
 type PipelineResponseResultExtractArrayResult = shared.PipelineResponseResultExtractArrayResult
 
 // This is an alias to an internal type.
-type PipelineResponseResultExtractArrayResultV3ExtractResponse = shared.PipelineResponseResultExtractArrayResultV3ExtractResponse
+type RetrievalParam = shared.RetrievalParam
 
 // This is an alias to an internal type.
-type PipelineResponseResultExtractArrayResultV3ExtractResponseUsage = shared.PipelineResponseResultExtractArrayResultV3ExtractResponseUsage
+type RetrievalFilterBlock = shared.RetrievalFilterBlock
+
+// This is an alias to an internal value.
+const RetrievalFilterBlockHeader = shared.RetrievalFilterBlockHeader
+
+// This is an alias to an internal value.
+const RetrievalFilterBlockFooter = shared.RetrievalFilterBlockFooter
+
+// This is an alias to an internal value.
+const RetrievalFilterBlockTitle = shared.RetrievalFilterBlockTitle
+
+// This is an alias to an internal value.
+const RetrievalFilterBlockSectionHeader = shared.RetrievalFilterBlockSectionHeader
+
+// This is an alias to an internal value.
+const RetrievalFilterBlockPageNumber = shared.RetrievalFilterBlockPageNumber
+
+// This is an alias to an internal value.
+const RetrievalFilterBlockListItem = shared.RetrievalFilterBlockListItem
+
+// This is an alias to an internal value.
+const RetrievalFilterBlockFigure = shared.RetrievalFilterBlockFigure
+
+// This is an alias to an internal value.
+const RetrievalFilterBlockTable = shared.RetrievalFilterBlockTable
+
+// This is an alias to an internal value.
+const RetrievalFilterBlockKeyValue = shared.RetrievalFilterBlockKeyValue
+
+// This is an alias to an internal value.
+const RetrievalFilterBlockText = shared.RetrievalFilterBlockText
+
+// This is an alias to an internal value.
+const RetrievalFilterBlockComment = shared.RetrievalFilterBlockComment
+
+// This is an alias to an internal value.
+const RetrievalFilterBlockSignature = shared.RetrievalFilterBlockSignature
 
 // This is an alias to an internal type.
-type PipelineResponseResultExtractV3ExtractResponse = shared.PipelineResponseResultExtractV3ExtractResponse
+type SettingsParam = shared.SettingsParam
+
+// Standard is our best multilingual OCR system. Legacy only supports germanic
+// languages and is available for backwards compatibility.
+//
+// This is an alias to an internal type.
+type SettingsOcrSystem = shared.SettingsOcrSystem
+
+// This is an alias to an internal value.
+const SettingsOcrSystemStandard = shared.SettingsOcrSystemStandard
+
+// This is an alias to an internal value.
+const SettingsOcrSystemLegacy = shared.SettingsOcrSystemLegacy
+
+// The page range to process (1-indexed). By default, the entire document is
+// processed.
+//
+// This is an alias to an internal type.
+type SettingsPageRangeUnionParam = shared.SettingsPageRangeUnionParam
 
 // This is an alias to an internal type.
-type PipelineResponseResultExtractV3ExtractResponseUsage = shared.PipelineResponseResultExtractV3ExtractResponseUsage
+type SettingsPageRangeArrayParam = shared.SettingsPageRangeArrayParam
+
+// This is an alias to an internal type.
+type SettingsReturnImage = shared.SettingsReturnImage
+
+// This is an alias to an internal value.
+const SettingsReturnImageFigure = shared.SettingsReturnImageFigure
+
+// This is an alias to an internal value.
+const SettingsReturnImageTable = shared.SettingsReturnImageTable
 
 // This is an alias to an internal type.
 type SplitCategoryParam = shared.SplitCategoryParam
+
+// This is an alias to an internal type.
+type SplitLargeTablesParam = shared.SplitLargeTablesParam
 
 // This is an alias to an internal type.
 type SplitResponse = shared.SplitResponse
@@ -226,10 +416,80 @@ const SplitResponseResultSplitsPartitionsConfHigh = shared.SplitResponseResultSp
 const SplitResponseResultSplitsPartitionsConfLow = shared.SplitResponseResultSplitsPartitionsConfLow
 
 // This is an alias to an internal type.
+type SpreadsheetParam = shared.SpreadsheetParam
+
+// In a spreadsheet with different tables inside, we enable splitting up the tables
+// by default. Accurate mode applies more powerful models for superior accuracy, at
+// 5× the default per-cell rate. Disabling will register as one large table.
+//
+// This is an alias to an internal type.
+type SpreadsheetClustering = shared.SpreadsheetClustering
+
+// This is an alias to an internal value.
+const SpreadsheetClusteringAccurate = shared.SpreadsheetClusteringAccurate
+
+// This is an alias to an internal value.
+const SpreadsheetClusteringFast = shared.SpreadsheetClusteringFast
+
+// This is an alias to an internal value.
+const SpreadsheetClusteringDisabled = shared.SpreadsheetClusteringDisabled
+
+// This is an alias to an internal type.
+type SpreadsheetExclude = shared.SpreadsheetExclude
+
+// This is an alias to an internal value.
+const SpreadsheetExcludeHiddenSheets = shared.SpreadsheetExcludeHiddenSheets
+
+// This is an alias to an internal value.
+const SpreadsheetExcludeHiddenRows = shared.SpreadsheetExcludeHiddenRows
+
+// This is an alias to an internal value.
+const SpreadsheetExcludeHiddenCols = shared.SpreadsheetExcludeHiddenCols
+
+// This is an alias to an internal type.
+type SpreadsheetInclude = shared.SpreadsheetInclude
+
+// This is an alias to an internal value.
+const SpreadsheetIncludeCellColors = shared.SpreadsheetIncludeCellColors
+
+// This is an alias to an internal value.
+const SpreadsheetIncludeFormula = shared.SpreadsheetIncludeFormula
+
+// This is an alias to an internal type.
+type SvixWebhookConfigParam = shared.SvixWebhookConfigParam
+
+// This is an alias to an internal type.
+type SvixWebhookConfigMode = shared.SvixWebhookConfigMode
+
+// This is an alias to an internal value.
+const SvixWebhookConfigModeSvix = shared.SvixWebhookConfigModeSvix
+
+// This is an alias to an internal type.
+type TableAgenticParam = shared.TableAgenticParam
+
+// This is an alias to an internal type.
+type TableAgenticScope = shared.TableAgenticScope
+
+// This is an alias to an internal value.
+const TableAgenticScopeTable = shared.TableAgenticScopeTable
+
+// This is an alias to an internal type.
+type TextAgenticParam = shared.TextAgenticParam
+
+// This is an alias to an internal type.
+type TextAgenticScope = shared.TextAgenticScope
+
+// This is an alias to an internal value.
+const TextAgenticScopeText = shared.TextAgenticScopeText
+
+// This is an alias to an internal type.
 type Upload = shared.Upload
 
 // This is an alias to an internal type.
 type UploadParam = shared.UploadParam
+
+// This is an alias to an internal type.
+type V3ExtractResponse = shared.V3ExtractResponse
 
 // This is an alias to an internal type.
 type WebhookConfigNewParam = shared.WebhookConfigNewParam

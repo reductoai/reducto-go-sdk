@@ -34,48 +34,48 @@ func TestSplitRunWithOptionalParams(t *testing.T) {
 			Name:         reducto.F("name"),
 			PartitionKey: reducto.F("partition_key"),
 		}}),
-		Parsing: reducto.F(reducto.SplitRunParamsParsing{
-			Enhance: reducto.F(reducto.SplitRunParamsParsingEnhance{
-				Agentic: reducto.F([]reducto.SplitRunParamsParsingEnhanceAgenticUnion{reducto.SplitRunParamsParsingEnhanceAgenticTableAgentic{
-					Scope:  reducto.F(reducto.SplitRunParamsParsingEnhanceAgenticTableAgenticScopeTable),
+		Parsing: reducto.F(shared.ParseOptionsParam{
+			Enhance: reducto.F(shared.EnhanceParam{
+				Agentic: reducto.F([]shared.EnhanceAgenticUnionParam{shared.TableAgenticParam{
+					Scope:  reducto.F(shared.TableAgenticScopeTable),
 					Prompt: reducto.F("prompt"),
 				}}),
 				SummarizeFigures: reducto.F(true),
 			}),
-			Formatting: reducto.F(reducto.SplitRunParamsParsingFormatting{
+			Formatting: reducto.F(shared.FormattingParam{
 				AddPageMarkers:    reducto.F(true),
-				Include:           reducto.F([]reducto.SplitRunParamsParsingFormattingInclude{reducto.SplitRunParamsParsingFormattingIncludeChangeTracking}),
+				Include:           reducto.F([]shared.FormattingInclude{shared.FormattingIncludeChangeTracking}),
 				MergeTables:       reducto.F(true),
-				TableOutputFormat: reducto.F(reducto.SplitRunParamsParsingFormattingTableOutputFormatHTML),
+				TableOutputFormat: reducto.F(shared.FormattingTableOutputFormatHTML),
 			}),
-			Retrieval: reducto.F(reducto.SplitRunParamsParsingRetrieval{
-				Chunking: reducto.F(reducto.SplitRunParamsParsingRetrievalChunking{
-					ChunkMode: reducto.F(reducto.SplitRunParamsParsingRetrievalChunkingChunkModeVariable),
+			Retrieval: reducto.F(shared.RetrievalParam{
+				Chunking: reducto.F(shared.ChunkingParam{
+					ChunkMode: reducto.F(shared.ChunkingChunkModeVariable),
 					ChunkSize: reducto.F(int64(0)),
 				}),
 				EmbeddingOptimized: reducto.F(true),
-				FilterBlocks:       reducto.F([]reducto.SplitRunParamsParsingRetrievalFilterBlock{reducto.SplitRunParamsParsingRetrievalFilterBlockHeader}),
+				FilterBlocks:       reducto.F([]shared.RetrievalFilterBlock{shared.RetrievalFilterBlockHeader}),
 			}),
-			Settings: reducto.F(reducto.SplitRunParamsParsingSettings{
+			Settings: reducto.F(shared.SettingsParam{
 				DocumentPassword:   reducto.F("document_password"),
 				EmbedPdfMetadata:   reducto.F(true),
 				ForceFileExtension: reducto.F("force_file_extension"),
 				ForceURLResult:     reducto.F(true),
-				OcrSystem:          reducto.F(reducto.SplitRunParamsParsingSettingsOcrSystemStandard),
-				PageRange: reducto.F[reducto.SplitRunParamsParsingSettingsPageRangeUnion](shared.PageRangeParam{
+				OcrSystem:          reducto.F(shared.SettingsOcrSystemStandard),
+				PageRange: reducto.F[shared.SettingsPageRangeUnionParam](shared.PageRangeParam{
 					End:   reducto.F(int64(0)),
 					Start: reducto.F(int64(0)),
 				}),
 				PersistResults: reducto.F(true),
-				ReturnImages:   reducto.F([]reducto.SplitRunParamsParsingSettingsReturnImage{reducto.SplitRunParamsParsingSettingsReturnImageFigure}),
+				ReturnImages:   reducto.F([]shared.SettingsReturnImage{shared.SettingsReturnImageFigure}),
 				ReturnOcrData:  reducto.F(true),
 				Timeout:        reducto.F(0.000000),
 			}),
-			Spreadsheet: reducto.F(reducto.SplitRunParamsParsingSpreadsheet{
-				Clustering: reducto.F(reducto.SplitRunParamsParsingSpreadsheetClusteringAccurate),
-				Exclude:    reducto.F([]reducto.SplitRunParamsParsingSpreadsheetExclude{reducto.SplitRunParamsParsingSpreadsheetExcludeHiddenSheets}),
-				Include:    reducto.F([]reducto.SplitRunParamsParsingSpreadsheetInclude{reducto.SplitRunParamsParsingSpreadsheetIncludeCellColors}),
-				SplitLargeTables: reducto.F(reducto.SplitRunParamsParsingSpreadsheetSplitLargeTables{
+			Spreadsheet: reducto.F(shared.SpreadsheetParam{
+				Clustering: reducto.F(shared.SpreadsheetClusteringAccurate),
+				Exclude:    reducto.F([]shared.SpreadsheetExclude{shared.SpreadsheetExcludeHiddenSheets}),
+				Include:    reducto.F([]shared.SpreadsheetInclude{shared.SpreadsheetIncludeCellColors}),
+				SplitLargeTables: reducto.F(shared.SplitLargeTablesParam{
 					Enabled: reducto.F(true),
 					Size:    reducto.F(int64(0)),
 				}),
