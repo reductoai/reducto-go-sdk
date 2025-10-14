@@ -74,8 +74,8 @@ type PipelineRunParams struct {
 	// The URL of the document to be processed. You can provide one of the
 	// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
 	// prefixed URL obtained from the /upload endpoint after directly uploading a
-	// document
-	DocumentURL param.Field[PipelineRunParamsDocumentURLUnion] `json:"document_url,required"`
+	// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
+	Input param.Field[PipelineRunParamsInputUnion] `json:"input,required"`
 	// The ID of the pipeline to use for the document.
 	PipelineID param.Field[string] `json:"pipeline_id,required"`
 }
@@ -87,26 +87,23 @@ func (r PipelineRunParams) MarshalJSON() (data []byte, err error) {
 // The URL of the document to be processed. You can provide one of the
 // following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
 // prefixed URL obtained from the /upload endpoint after directly uploading a
-// document
+// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
 //
 // Satisfied by [shared.UnionString], [shared.UploadParam].
-type PipelineRunParamsDocumentURLUnion interface {
-	ImplementsPipelineRunParamsDocumentURLUnion()
+type PipelineRunParamsInputUnion interface {
+	ImplementsPipelineRunParamsInputUnion()
 }
 
 type PipelineRunJobParams struct {
 	// The URL of the document to be processed. You can provide one of the
 	// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
 	// prefixed URL obtained from the /upload endpoint after directly uploading a
-	// document
-	DocumentURL param.Field[PipelineRunJobParamsDocumentURLUnion] `json:"document_url,required"`
+	// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
+	Input param.Field[PipelineRunJobParamsInputUnion] `json:"input,required"`
 	// The ID of the pipeline to use for the document.
 	PipelineID param.Field[string] `json:"pipeline_id,required"`
-	// If True, attempts to process the job with priority if the user has priority
-	// processing budget available; by default, sync jobs are prioritized above async
-	// jobs.
-	Priority param.Field[bool]                         `json:"priority"`
-	Webhook  param.Field[shared.WebhookConfigNewParam] `json:"webhook"`
+	// The configuration options for asynchronous processing (default synchronous).
+	Async param.Field[PipelineRunJobParamsAsync] `json:"async"`
 }
 
 func (r PipelineRunJobParams) MarshalJSON() (data []byte, err error) {
@@ -116,9 +113,116 @@ func (r PipelineRunJobParams) MarshalJSON() (data []byte, err error) {
 // The URL of the document to be processed. You can provide one of the
 // following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
 // prefixed URL obtained from the /upload endpoint after directly uploading a
-// document
+// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
 //
 // Satisfied by [shared.UnionString], [shared.UploadParam].
-type PipelineRunJobParamsDocumentURLUnion interface {
-	ImplementsPipelineRunJobParamsDocumentURLUnion()
+type PipelineRunJobParamsInputUnion interface {
+	ImplementsPipelineRunJobParamsInputUnion()
+}
+
+// The configuration options for asynchronous processing (default synchronous).
+type PipelineRunJobParamsAsync struct {
+	// JSON metadata included in webhook request body. Defaults to None.
+	Metadata param.Field[interface{}] `json:"metadata"`
+	// If True, attempts to process the job with priority if the user has priority
+	// processing budget available; by default, sync jobs are prioritized above async
+	// jobs.
+	Priority param.Field[bool] `json:"priority"`
+	// The webhook configuration for the asynchronous processing.
+	Webhook param.Field[PipelineRunJobParamsAsyncWebhookUnion] `json:"webhook"`
+}
+
+func (r PipelineRunJobParamsAsync) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The webhook configuration for the asynchronous processing.
+type PipelineRunJobParamsAsyncWebhook struct {
+	Channels param.Field[interface{}]                          `json:"channels"`
+	Mode     param.Field[PipelineRunJobParamsAsyncWebhookMode] `json:"mode"`
+	URL      param.Field[string]                               `json:"url"`
+}
+
+func (r PipelineRunJobParamsAsyncWebhook) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r PipelineRunJobParamsAsyncWebhook) implementsPipelineRunJobParamsAsyncWebhookUnion() {}
+
+// The webhook configuration for the asynchronous processing.
+//
+// Satisfied by [PipelineRunJobParamsAsyncWebhookSvixWebhookConfig],
+// [PipelineRunJobParamsAsyncWebhookDirectWebhookConfig],
+// [PipelineRunJobParamsAsyncWebhook].
+type PipelineRunJobParamsAsyncWebhookUnion interface {
+	implementsPipelineRunJobParamsAsyncWebhookUnion()
+}
+
+type PipelineRunJobParamsAsyncWebhookSvixWebhookConfig struct {
+	// A list of Svix channels the message will be delivered down, omit to send to all
+	// channels.
+	Channels param.Field[[]string]                                              `json:"channels"`
+	Mode     param.Field[PipelineRunJobParamsAsyncWebhookSvixWebhookConfigMode] `json:"mode"`
+}
+
+func (r PipelineRunJobParamsAsyncWebhookSvixWebhookConfig) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r PipelineRunJobParamsAsyncWebhookSvixWebhookConfig) implementsPipelineRunJobParamsAsyncWebhookUnion() {
+}
+
+type PipelineRunJobParamsAsyncWebhookSvixWebhookConfigMode string
+
+const (
+	PipelineRunJobParamsAsyncWebhookSvixWebhookConfigModeSvix PipelineRunJobParamsAsyncWebhookSvixWebhookConfigMode = "svix"
+)
+
+func (r PipelineRunJobParamsAsyncWebhookSvixWebhookConfigMode) IsKnown() bool {
+	switch r {
+	case PipelineRunJobParamsAsyncWebhookSvixWebhookConfigModeSvix:
+		return true
+	}
+	return false
+}
+
+type PipelineRunJobParamsAsyncWebhookDirectWebhookConfig struct {
+	URL  param.Field[string]                                                  `json:"url,required"`
+	Mode param.Field[PipelineRunJobParamsAsyncWebhookDirectWebhookConfigMode] `json:"mode"`
+}
+
+func (r PipelineRunJobParamsAsyncWebhookDirectWebhookConfig) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r PipelineRunJobParamsAsyncWebhookDirectWebhookConfig) implementsPipelineRunJobParamsAsyncWebhookUnion() {
+}
+
+type PipelineRunJobParamsAsyncWebhookDirectWebhookConfigMode string
+
+const (
+	PipelineRunJobParamsAsyncWebhookDirectWebhookConfigModeDirect PipelineRunJobParamsAsyncWebhookDirectWebhookConfigMode = "direct"
+)
+
+func (r PipelineRunJobParamsAsyncWebhookDirectWebhookConfigMode) IsKnown() bool {
+	switch r {
+	case PipelineRunJobParamsAsyncWebhookDirectWebhookConfigModeDirect:
+		return true
+	}
+	return false
+}
+
+type PipelineRunJobParamsAsyncWebhookMode string
+
+const (
+	PipelineRunJobParamsAsyncWebhookModeSvix   PipelineRunJobParamsAsyncWebhookMode = "svix"
+	PipelineRunJobParamsAsyncWebhookModeDirect PipelineRunJobParamsAsyncWebhookMode = "direct"
+)
+
+func (r PipelineRunJobParamsAsyncWebhookMode) IsKnown() bool {
+	switch r {
+	case PipelineRunJobParamsAsyncWebhookModeSvix, PipelineRunJobParamsAsyncWebhookModeDirect:
+		return true
+	}
+	return false
 }

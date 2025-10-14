@@ -25,10 +25,8 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	response, err := client.Parse.Run(context.TODO(), reducto.ParseRunParamsParseConfig{
-		ParseConfig: reducto.ParseConfigParam{
-			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
-		},
+	response, err := client.Parse.Run(context.TODO(), reducto.ParseRunParamsSyncParseConfig{
+		Input: reducto.F[reducto.ParseRunParamsSyncParseConfigInputUnion](shared.UnionString("string")),
 	})
 	if err != nil {
 		t.Error(err)

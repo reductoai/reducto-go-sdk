@@ -54,10 +54,8 @@ func main() {
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("REDUCTO_API_KEY")
 		option.WithEnvironmentEu(),      // or option.WithEnvironmentProduction() | option.WithEnvironmentAu(); defaults to option.WithEnvironmentProduction()
 	)
-	response, err := client.Parse.Run(context.TODO(), reducto.ParseRunParamsParseConfig{
-		ParseConfig: reducto.ParseConfigParam{
-			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
-		},
+	response, err := client.Parse.Run(context.TODO(), reducto.ParseRunParamsSyncParseConfig{
+		Input: reducto.F[reducto.ParseRunParamsSyncParseConfigInputUnion](shared.UnionString("string")),
 	})
 	if err != nil {
 		panic(err.Error())
@@ -181,8 +179,8 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
 _, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
-	Body: reducto.ParseConfigParam{
-		DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
+	Body: reducto.ParseRunParamsBodySyncParseConfig{
+		Input: reducto.F[reducto.ParseRunParamsBodySyncParseConfigInputUnion](shared.UnionString("string")),
 	},
 })
 if err != nil {
@@ -212,8 +210,8 @@ defer cancel()
 client.Parse.Run(
 	ctx,
 	reducto.ParseRunParams{
-		Body: reducto.ParseConfigParam{
-			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
+		Body: reducto.ParseRunParamsBodySyncParseConfig{
+			Input: reducto.F[reducto.ParseRunParamsBodySyncParseConfigInputUnion](shared.UnionString("string")),
 		},
 	},
 	// This sets the per-retry timeout
@@ -270,8 +268,8 @@ client := reducto.NewClient(
 client.Parse.Run(
 	context.TODO(),
 	reducto.ParseRunParams{
-		Body: reducto.ParseConfigParam{
-			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
+		Body: reducto.ParseRunParamsBodySyncParseConfig{
+			Input: reducto.F[reducto.ParseRunParamsBodySyncParseConfigInputUnion](shared.UnionString("string")),
 		},
 	},
 	option.WithMaxRetries(5),
@@ -289,8 +287,8 @@ var response *http.Response
 response, err := client.Parse.Run(
 	context.TODO(),
 	reducto.ParseRunParams{
-		Body: reducto.ParseConfigParam{
-			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
+		Body: reducto.ParseRunParamsBodySyncParseConfig{
+			Input: reducto.F[reducto.ParseRunParamsBodySyncParseConfigInputUnion](shared.UnionString("string")),
 		},
 	},
 	option.WithResponseInto(&response),

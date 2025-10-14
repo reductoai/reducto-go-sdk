@@ -52,28 +52,25 @@ func (r *ExtractService) RunJob(ctx context.Context, body ExtractRunJobParams, o
 }
 
 type ExtractRunResponse struct {
+	JobID string `json:"job_id,nullable"`
 	// This field can have the runtime type of [[]interface{}].
-	Result interface{} `json:"result,required"`
-	// This field can have the runtime type of [shared.ExtractResponseUsage],
-	// [ExtractRunResponseV3ExtractResponseUsage].
-	Usage interface{} `json:"usage,required"`
-	// This field can have the runtime type of [[]interface{}].
-	Citations interface{} `json:"citations"`
-	JobID     string      `json:"job_id,nullable"`
+	Result interface{} `json:"result"`
 	// The link to the studio pipeline for the document.
-	StudioLink string                 `json:"studio_link,nullable"`
-	JSON       extractRunResponseJSON `json:"-"`
-	union      ExtractRunResponseUnion
+	StudioLink string `json:"studio_link,nullable"`
+	// This field can have the runtime type of
+	// [ExtractRunResponseV3ExtractResponseUsage].
+	Usage interface{}            `json:"usage"`
+	JSON  extractRunResponseJSON `json:"-"`
+	union ExtractRunResponseUnion
 }
 
 // extractRunResponseJSON contains the JSON metadata for the struct
 // [ExtractRunResponse]
 type extractRunResponseJSON struct {
-	Result      apijson.Field
-	Usage       apijson.Field
-	Citations   apijson.Field
 	JobID       apijson.Field
+	Result      apijson.Field
 	StudioLink  apijson.Field
+	Usage       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -94,16 +91,16 @@ func (r *ExtractRunResponse) UnmarshalJSON(data []byte) (err error) {
 // AsUnion returns a [ExtractRunResponseUnion] interface which you can cast to the
 // specific types for more type safety.
 //
-// Possible runtime types of the union are [shared.ExtractResponse],
-// [ExtractRunResponseV3ExtractResponse].
+// Possible runtime types of the union are [ExtractRunResponseV3ExtractResponse],
+// [ExtractRunResponseAsyncExtractResponse].
 func (r ExtractRunResponse) AsUnion() ExtractRunResponseUnion {
 	return r.union
 }
 
-// Union satisfied by [shared.ExtractResponse] or
-// [ExtractRunResponseV3ExtractResponse].
+// Union satisfied by [ExtractRunResponseV3ExtractResponse] or
+// [ExtractRunResponseAsyncExtractResponse].
 type ExtractRunResponseUnion interface {
-	ImplementsExtractRunResponse()
+	implementsExtractRunResponse()
 }
 
 func init() {
@@ -112,11 +109,11 @@ func init() {
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.ExtractResponse{}),
+			Type:       reflect.TypeOf(ExtractRunResponseV3ExtractResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ExtractRunResponseV3ExtractResponse{}),
+			Type:       reflect.TypeOf(ExtractRunResponseAsyncExtractResponse{}),
 		},
 	)
 }
@@ -151,7 +148,7 @@ func (r extractRunResponseV3ExtractResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r ExtractRunResponseV3ExtractResponse) ImplementsExtractRunResponse() {}
+func (r ExtractRunResponseV3ExtractResponse) implementsExtractRunResponse() {}
 
 type ExtractRunResponseV3ExtractResponseUsage struct {
 	NumFields int64                                        `json:"num_fields,required"`
@@ -177,6 +174,29 @@ func (r *ExtractRunResponseV3ExtractResponseUsage) UnmarshalJSON(data []byte) (e
 func (r extractRunResponseV3ExtractResponseUsageJSON) RawJSON() string {
 	return r.raw
 }
+
+type ExtractRunResponseAsyncExtractResponse struct {
+	JobID string                                     `json:"job_id,required"`
+	JSON  extractRunResponseAsyncExtractResponseJSON `json:"-"`
+}
+
+// extractRunResponseAsyncExtractResponseJSON contains the JSON metadata for the
+// struct [ExtractRunResponseAsyncExtractResponse]
+type extractRunResponseAsyncExtractResponseJSON struct {
+	JobID       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ExtractRunResponseAsyncExtractResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r extractRunResponseAsyncExtractResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r ExtractRunResponseAsyncExtractResponse) implementsExtractRunResponse() {}
 
 type ExtractRunJobResponse struct {
 	JobID string                    `json:"job_id,required"`
@@ -208,48 +228,11 @@ func (r ExtractRunParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ExtractRunParamsBody struct {
-	AdvancedOptions         param.Field[shared.AdvancedProcessingOptionsParam] `json:"advanced_options"`
-	AgentExtract            param.Field[interface{}]                           `json:"agent_extract"`
-	AlphaBigExtractionModel param.Field[bool]                                  `json:"alpha_big_extraction_model"`
-	AlphaDeepExtract        param.Field[bool]                                  `json:"alpha_deep_extract"`
-	AlphaTableCitations     param.Field[bool]                                  `json:"alpha_table_citations"`
-	// The configuration options for array extract
-	ArrayExtract param.Field[shared.ArrayExtractConfigParam] `json:"array_extract"`
-	Async        param.Field[interface{}]                    `json:"async"`
-	// The configuration options for citations.
-	CitationsOptions    param.Field[shared.AdvancedCitationsConfigParam]       `json:"citations_options"`
-	DocumentURL         param.Field[interface{}]                               `json:"document_url"`
-	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
-	// If table citations should be generated for the extracted content.
-	ExperimentalTableCitations param.Field[bool] `json:"experimental_table_citations"`
-	// If citations should be generated for the extracted content.
-	GenerateCitations param.Field[bool] `json:"generate_citations"`
-	// If images should be passed directly for extractions. Can only be enabled for
-	// documents with less than 10 pages. Defaults to False.
-	IncludeImages param.Field[bool]        `json:"include_images"`
-	Input         param.Field[interface{}] `json:"input"`
-	Instructions  param.Field[interface{}] `json:"instructions"`
-	// If True, the job will be processed with lower latency and higher priority. Uses
-	// 2x the cost of a regular job. Defaults to False.
-	LatencySensitive param.Field[bool]        `json:"latency_sensitive"`
-	NormalizedSchema param.Field[interface{}] `json:"normalized_schema"`
-	Options          param.Field[interface{}] `json:"options"`
-	ParseConfig      param.Field[interface{}] `json:"parse_config"`
-	Parsing          param.Field[interface{}] `json:"parsing"`
-	// If True, attempts to process the job with priority if the user has priority
-	// processing budget available; by default, sync jobs are prioritized above async
-	// jobs.
-	Priority param.Field[bool]        `json:"priority"`
-	Schema   param.Field[interface{}] `json:"schema"`
-	Settings param.Field[interface{}] `json:"settings"`
-	// If spreadsheet agent should be used for extraction.
-	SpreadsheetAgent param.Field[bool] `json:"spreadsheet_agent"`
-	// A system prompt to use for the extraction. This is a general prompt that is
-	// applied to the entire document before any other prompts.
-	SystemPrompt param.Field[string] `json:"system_prompt"`
-	// If chunking should be used for the extraction. Defaults to False.
-	UseChunking param.Field[bool]        `json:"use_chunking"`
-	UserConfig  param.Field[interface{}] `json:"user_config"`
+	Input        param.Field[interface{}] `json:"input,required"`
+	Async        param.Field[interface{}] `json:"async"`
+	Instructions param.Field[interface{}] `json:"instructions"`
+	Parsing      param.Field[interface{}] `json:"parsing"`
+	Settings     param.Field[interface{}] `json:"settings"`
 }
 
 func (r ExtractRunParamsBody) MarshalJSON() (data []byte, err error) {
@@ -258,586 +241,10 @@ func (r ExtractRunParamsBody) MarshalJSON() (data []byte, err error) {
 
 func (r ExtractRunParamsBody) implementsExtractRunParamsBodyUnion() {}
 
-// Satisfied by [ExtractConfigParam], [ExtractRunParamsBodyExtractConfig],
-// [ExtractRunParamsBodySyncExtractConfig], [ExtractRunParamsBody].
+// Satisfied by [ExtractRunParamsBodySyncExtractConfig],
+// [ExtractRunParamsBodyAsyncExtractConfig], [ExtractRunParamsBody].
 type ExtractRunParamsBodyUnion interface {
 	implementsExtractRunParamsBodyUnion()
-}
-
-type ExtractRunParamsBodyExtractConfig struct {
-	DocumentURL param.Field[ExtractRunParamsBodyExtractConfigDocumentURLUnion] `json:"document_url,required"`
-	// The JSON schema to use for extraction.
-	Schema param.Field[interface{}] `json:"schema,required"`
-	// If agent extraction should be used for extraction.
-	AgentExtract            param.Field[bool] `json:"agent_extract"`
-	AlphaBigExtractionModel param.Field[bool] `json:"alpha_big_extraction_model"`
-	AlphaDeepExtract        param.Field[bool] `json:"alpha_deep_extract"`
-	AlphaTableCitations     param.Field[bool] `json:"alpha_table_citations"`
-	// The configuration options for asynchronous processing (default synchronous).
-	Async         param.Field[ExtractRunParamsBodyExtractConfigAsync] `json:"async"`
-	IncludeImages param.Field[bool]                                   `json:"include_images"`
-	// If True, the job will be processed with lower latency and higher priority. Uses
-	// 2x the cost of a regular job. Defaults to False.
-	LatencySensitive param.Field[bool] `json:"latency_sensitive"`
-	// The normalized JSON schema to use for extraction.
-	NormalizedSchema param.Field[interface{}] `json:"normalized_schema"`
-	// The configuration options for extraction.
-	Options param.Field[ExtractRunParamsBodyExtractConfigOptions] `json:"options"`
-	// The configuration options for extraction.
-	ParseConfig param.Field[ExtractRunParamsBodyExtractConfigParseConfig] `json:"parse_config"`
-	// If True, attempts to process the job with priority if the user has priority
-	// processing budget available; by default, sync jobs are prioritized above async
-	// jobs.
-	Priority param.Field[bool] `json:"priority"`
-	// A system prompt to use for the extraction. This is a general prompt that is
-	// applied to the entire document before any other prompts.
-	SystemPrompt param.Field[string] `json:"system_prompt"`
-	// User-specific configuration options.
-	UserConfig param.Field[map[string]interface{}] `json:"user_config"`
-}
-
-func (r ExtractRunParamsBodyExtractConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r ExtractRunParamsBodyExtractConfig) implementsExtractRunParamsBodyUnion() {}
-
-// Satisfied by [shared.UnionString],
-// [ExtractRunParamsBodyExtractConfigDocumentURLArray].
-type ExtractRunParamsBodyExtractConfigDocumentURLUnion interface {
-	ImplementsExtractRunParamsBodyExtractConfigDocumentURLUnion()
-}
-
-type ExtractRunParamsBodyExtractConfigDocumentURLArray []string
-
-func (r ExtractRunParamsBodyExtractConfigDocumentURLArray) ImplementsExtractRunParamsBodyExtractConfigDocumentURLUnion() {
-}
-
-// The configuration options for asynchronous processing (default synchronous).
-type ExtractRunParamsBodyExtractConfigAsync struct {
-	Enabled  param.Field[bool]                                          `json:"enabled"`
-	Priority param.Field[bool]                                          `json:"priority"`
-	Webhook  param.Field[ExtractRunParamsBodyExtractConfigAsyncWebhook] `json:"webhook"`
-}
-
-func (r ExtractRunParamsBodyExtractConfigAsync) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type ExtractRunParamsBodyExtractConfigAsyncWebhook struct {
-	// A list of Svix channels the message will be delivered down, omit to send to all
-	// channels.
-	Channels param.Field[[]string]                                          `json:"channels"`
-	Metadata param.Field[interface{}]                                       `json:"metadata"`
-	Mode     param.Field[ExtractRunParamsBodyExtractConfigAsyncWebhookMode] `json:"mode"`
-	URL      param.Field[string]                                            `json:"url"`
-}
-
-func (r ExtractRunParamsBodyExtractConfigAsyncWebhook) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type ExtractRunParamsBodyExtractConfigAsyncWebhookMode string
-
-const (
-	ExtractRunParamsBodyExtractConfigAsyncWebhookModeDirect ExtractRunParamsBodyExtractConfigAsyncWebhookMode = "direct"
-	ExtractRunParamsBodyExtractConfigAsyncWebhookModeSvix   ExtractRunParamsBodyExtractConfigAsyncWebhookMode = "svix"
-)
-
-func (r ExtractRunParamsBodyExtractConfigAsyncWebhookMode) IsKnown() bool {
-	switch r {
-	case ExtractRunParamsBodyExtractConfigAsyncWebhookModeDirect, ExtractRunParamsBodyExtractConfigAsyncWebhookModeSvix:
-		return true
-	}
-	return false
-}
-
-// The configuration options for extraction.
-type ExtractRunParamsBodyExtractConfigOptions struct {
-	// Array extraction allows you to extract long lists of information from lengthy
-	// documents. It makes parallel calls on overlapping sections of the document.
-	ArrayExtract param.Field[bool] `json:"array_extract"`
-	// Length of each segment, in pages, for parallel calls with array extraction.
-	ArrayExtractPages param.Field[int64] `json:"array_extract_pages"`
-	// If table citations should be generated for the extracted content.
-	ExperimentalTableCitations param.Field[bool] `json:"experimental_table_citations"`
-	// The array extraction version to use.
-	ExtractAlgorithm param.Field[ExtractRunParamsBodyExtractConfigOptionsExtractAlgorithm] `json:"extract_algorithm"`
-	// If citations should be generated for the extracted content.
-	GenerateCitations param.Field[bool] `json:"generate_citations"`
-	// If True, enable numeric citation confidence scores. Defaults to False.
-	NumericalConfidence param.Field[bool] `json:"numerical_confidence"`
-	// If spreadsheet agent should be used for extraction.
-	SpreadsheetAgent param.Field[bool] `json:"spreadsheet_agent"`
-	// Number of items to extract in each stream call.
-	StreamingExtractItemDensity param.Field[int64] `json:"streaming_extract_item_density"`
-}
-
-func (r ExtractRunParamsBodyExtractConfigOptions) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The array extraction version to use.
-type ExtractRunParamsBodyExtractConfigOptionsExtractAlgorithm string
-
-const (
-	ExtractRunParamsBodyExtractConfigOptionsExtractAlgorithmAuto      ExtractRunParamsBodyExtractConfigOptionsExtractAlgorithm = "auto"
-	ExtractRunParamsBodyExtractConfigOptionsExtractAlgorithmLegacy    ExtractRunParamsBodyExtractConfigOptionsExtractAlgorithm = "legacy"
-	ExtractRunParamsBodyExtractConfigOptionsExtractAlgorithmStreaming ExtractRunParamsBodyExtractConfigOptionsExtractAlgorithm = "streaming"
-	ExtractRunParamsBodyExtractConfigOptionsExtractAlgorithmNoOverlap ExtractRunParamsBodyExtractConfigOptionsExtractAlgorithm = "no_overlap"
-)
-
-func (r ExtractRunParamsBodyExtractConfigOptionsExtractAlgorithm) IsKnown() bool {
-	switch r {
-	case ExtractRunParamsBodyExtractConfigOptionsExtractAlgorithmAuto, ExtractRunParamsBodyExtractConfigOptionsExtractAlgorithmLegacy, ExtractRunParamsBodyExtractConfigOptionsExtractAlgorithmStreaming, ExtractRunParamsBodyExtractConfigOptionsExtractAlgorithmNoOverlap:
-		return true
-	}
-	return false
-}
-
-// The configuration options for extraction.
-type ExtractRunParamsBodyExtractConfigParseConfig struct {
-	// If True, add page markers to the output. Defaults to False.
-	AddPageMarkers param.Field[bool] `json:"add_page_markers"`
-	// If enabled, a large language/vision model will be used to postprocess the layout
-	// predictions. Defaults to False.
-	BetaLayoutEnrichment param.Field[bool] `json:"beta_layout_enrichment"`
-	// The name of the bucket to use for the document.
-	BucketName param.Field[string] `json:"bucket_name"`
-	// A flag to indicate if bar chart extraction should be performed (requires
-	// figure_summary=True). Defaults to False.
-	ChartExtract param.Field[bool] `json:"chart_extract"`
-	// The mode to use for chunking. Defaults to 'variable'. Section chunks according
-	// to sections in the document. Page chunks according to pages. Page sections
-	// chunks according to both pages and sections. Disabled returns a single chunk.
-	ChunkMode param.Field[ExtractRunParamsBodyExtractConfigParseConfigChunkMode] `json:"chunk_mode"`
-	// The approximate size of chunks (in characters) that the document will be split
-	// into. Defaults to None, in which case the chunk size is variable between 250 -
-	// 1500 characters.
-	ChunkSize param.Field[int64] `json:"chunk_size"`
-	// A flag to indicate if the hierarchy of the document should be continued from
-	// chunk to chunk. E.g. ## Prev Section (cont.)
-	ContinueHierarchy param.Field[bool]                                                     `json:"continue_hierarchy"`
-	CustomFormat      param.Field[ExtractRunParamsBodyExtractConfigParseConfigCustomFormat] `json:"custom_format"`
-	// Override the customer ID for the request. Defaults to None.
-	CustomerID param.Field[string] `json:"customer_id"`
-	// If True, filter out boxes with width greater than 50% of the document width.
-	// Defaults to False. You probably don't want to use this.
-	DangerFilterWideBoxes param.Field[bool] `json:"danger_filter_wide_boxes"`
-	// If True, detect signatures in the document. Defaults to False.
-	DetectSignatures param.Field[bool] `json:"detect_signatures"`
-	// DEPRECATED, use chunk_mode=disabled instead
-	DisableChunking param.Field[bool] `json:"disable_chunking"`
-	// Password to decrypt password-protected documents.
-	DocumentPassword param.Field[string] `json:"document_password"`
-	// The dots per inch (DPI) setting for image processing. Higher values increase
-	// resolution but increase latency. The maximum recommended value is 300.
-	Dpi param.Field[int64] `json:"dpi"`
-	// If True, embed text metadata into the returned PDF. Defaults to False.
-	EmbedTextMetadataPdf param.Field[bool] `json:"embed_text_metadata_pdf"`
-	// Add <u> tag around text that's underlined and surround strikethroughs and
-	// underlines with <change> tags, defaults to False
-	EnableChangeTracking param.Field[bool] `json:"enable_change_tracking"`
-	// Pull PDF comments from the document, defaults to False
-	EnableComments param.Field[bool] `json:"enable_comments"`
-	// Add <mark> tags around highlighted text detected using the segmentation model,
-	// defaults to False
-	EnableHighlightDetection param.Field[bool] `json:"enable_highlight_detection"`
-	// Add <sub> tag around subscripts and <sup> tag around superscripts, defaults to
-	// False
-	EnableScripts param.Field[bool] `json:"enable_scripts"`
-	// Instead of using LibreOffice, when enabled, this flag uses a Windows VM to
-	// convert docx files. This is slower but more accurate.
-	EnhancedDocxConversion param.Field[bool] `json:"enhanced_docx_conversion"`
-	// If True, use enhanced figure summarization pipeline for complex charts. Defaults
-	// to False.
-	EnhancedFigureSummary param.Field[bool] `json:"enhanced_figure_summary"`
-	// If enabled, a large language/vision model will be used to postprocess the
-	// extracted content. Defaults to False.
-	Enrich param.Field[bool] `json:"enrich"`
-	// The mode to use for enrichment. Defaults to standard
-	EnrichMode param.Field[ExtractRunParamsBodyExtractConfigParseConfigEnrichMode] `json:"enrich_mode"`
-	// Add information to the prompt for enrichment.
-	EnrichPrompt param.Field[string] `json:"enrich_prompt"`
-	// Skip hidden rows and cols in Excel files. Defaults to False.
-	ExcludeHiddenRowsCols param.Field[bool] `json:"exclude_hidden_rows_cols"`
-	// Skip hidden sheets in Excel files. Defaults to False.
-	ExcludeHiddenSheets param.Field[bool] `json:"exclude_hidden_sheets"`
-	// Note, this is an alpha feature subject to change at any time. If enabled, large
-	// tables will be chunked into multiple tables. Defaults to False.
-	ExperimentalLargeSpreadsheetTableChunking param.Field[bool] `json:"experimental_large_spreadsheet_table_chunking"`
-	// Extra metadata to be added to logs.
-	ExtraMetadata param.Field[map[string]interface{}] `json:"extra_metadata"`
-	// A flag to indicate if figure summarization should be performed. Defaults to
-	// False.
-	FigureSummary param.Field[bool] `json:"figure_summary"`
-	// If the figure summary prompt should override our default prompt.
-	FigureSummaryOverride param.Field[bool] `json:"figure_summary_override"`
-	// Add information to the prompt for figure summarization.
-	FigureSummaryPrompt param.Field[string] `json:"figure_summary_prompt"`
-	// If True, filter out line numbers from the output. Defaults to False.
-	FilterLineNumbers param.Field[bool] `json:"filter_line_numbers"`
-	// Force the URL to be downloaded as a specific file extension (e.g. `.png`).
-	ForceFileExtension param.Field[string] `json:"force_file_extension"`
-	// Force the result to be returned in URL form.
-	ForceURLResult param.Field[bool] `json:"force_url_result"`
-	// A list of block types to ignore. Defaults to ['Page Number', 'Header', 'Footer',
-	// 'Comment'].
-	IgnoreBlocks param.Field[[]ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlock] `json:"ignore_blocks"`
-	// If True, preserve color information in spreadsheet cells by wrapping text with
-	// LaTeX color commands during parsing.
-	IncludeColorInformation param.Field[bool] `json:"include_color_information"`
-	// If True, preserve formula information in spreadsheet cells by wrapping text with
-	// LaTeX formula commands during parsing.
-	IncludeFormulaInformation param.Field[bool] `json:"include_formula_information"`
-	// If table cell colors should be used to determine table structure. Defaults to
-	// False.
-	InferTableColor param.Field[bool] `json:"infer_table_color"`
-	// If True, include bounding box information in JSON table output. Defaults to
-	// False.
-	JsonBbox param.Field[bool] `json:"json_bbox"`
-	// If line breaks should be preserved in the text. Defaults to False.
-	KeepLineBreaks param.Field[bool] `json:"keep_line_breaks"`
-	// The AWS KMS key to use for the document.
-	KmsArn param.Field[string] `json:"kms_arn"`
-	// If large tables should be chunked into smaller tables, currently only supported
-	// on spreadsheet and CSV files.
-	LargeTableChunking param.Field[bool] `json:"large_table_chunking"`
-	// The max row/column size for a table to be chunked. Defaults to 50.
-	LargeTableChunkingSize param.Field[int64] `json:"large_table_chunking_size"`
-	// The layout model to use for the document. This will be deprecated in the future.
-	LayoutModel param.Field[ExtractRunParamsBodyExtractConfigParseConfigLayoutModel] `json:"layout_model"`
-	// The maximum number of pages to process in a single batch. Defaults to 10.
-	MaxBatchSize param.Field[int64] `json:"max_batch_size"`
-	// A flag to indicate if consecutive tables with the same number of columns should
-	// be merged. Defaults to False.
-	MergeTables param.Field[bool] `json:"merge_tables"`
-	// The type of document to be processed. Defaults to document. If auto is
-	// specified, the orientation of the first page will be used to determine the
-	// document type.
-	Mode param.Field[ExtractRunParamsBodyExtractConfigParseConfigMode] `json:"mode"`
-	// The dimension of the OCR crops along each axis. num_ocr_crops^2 is the total
-	// number of crops. Defaults to 2.
-	NumOcrCrops param.Field[int64] `json:"num_ocr_crops"`
-	// If True, enable numeric parse confidence scores in granular_confidence field.
-	// Defaults to False.
-	NumericalParseConfidence param.Field[bool] `json:"numerical_parse_confidence"`
-	// The mode to use for OCR. If agentic is enabled, table OCR will be automatically
-	// edited.
-	OcrMode param.Field[ExtractRunParamsBodyExtractConfigParseConfigOcrMode] `json:"ocr_mode"`
-	// The OCR system to use. Defaults to cloud (AWS Textract/Azure DocAI/etc).
-	OcrSystem param.Field[ExtractRunParamsBodyExtractConfigParseConfigOcrSystem] `json:"ocr_system"`
-	// The threshold for box overlap. Defaults to 0.5.
-	OverlapThreshold param.Field[float64] `json:"overlap_threshold"`
-	// The page number to stop processing at.
-	PageEnd param.Field[int64] `json:"page_end"`
-	// The page range to process.
-	PageRange param.Field[ExtractRunParamsBodyExtractConfigParseConfigPageRangeUnion] `json:"page_range"`
-	// The page number to start processing from.
-	PageStart param.Field[int64] `json:"page_start"`
-	// The method to use for OCR. hybrid uses the PDF text first, then OCR. pdf only
-	// uses the PDF text. ocr only uses OCR.
-	PdfOcr param.Field[ExtractRunParamsBodyExtractConfigParseConfigPdfOcr] `json:"pdf_ocr"`
-	// If True, persist the results indefinitely. Defaults to False.
-	PersistResults param.Field[bool] `json:"persist_results"`
-	// Forces all external API calls to be routed to specified country/region.
-	RegionPreference param.Field[ExtractRunParamsBodyExtractConfigParseConfigRegionPreference] `json:"region_preference"`
-	// If True, remove text formatting from the output (e.g. hyphens for list items).
-	// Defaults to False.
-	RemoveTextFormatting param.Field[bool] `json:"remove_text_formatting"`
-	// If figure images should be returned in the result. Defaults to False.
-	ReturnFigureImages param.Field[bool] `json:"return_figure_images"`
-	// If True, return OCR data in the result. Defaults to False.
-	ReturnOcrData param.Field[bool] `json:"return_ocr_data"`
-	// If table images should be returned in the result. Defaults to False.
-	ReturnTableImages param.Field[bool] `json:"return_table_images"`
-	// Use an orientation model to detect and rotate figures as needed, defaults to
-	// False
-	RotateFigures param.Field[bool] `json:"rotate_figures"`
-	// Use an orientation model to detect and rotate pages as needed, defaults to False
-	RotatePages param.Field[bool] `json:"rotate_pages"`
-	// On a spreadsheet, the algorithm that is used to split up sheets into multiple
-	// tables.
-	SpreadsheetTableClustering param.Field[ExtractRunParamsBodyExtractConfigParseConfigSpreadsheetTableClustering] `json:"spreadsheet_table_clustering"`
-	// If True, enable figure summaries for all figures regardless of size (onprem
-	// only). Defaults to False.
-	SummarizeAllFigures param.Field[bool] `json:"summarize_all_figures"`
-	// The mode to use for table output. Defaults to html.
-	TableOutputFormat param.Field[ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormat] `json:"table_output_format"`
-	// If tables should be summarized for embedding. Defaults to True.
-	TableSummary param.Field[bool] `json:"table_summary"`
-	// Add information to the prompt for table summarization.
-	TableSummaryPrompt param.Field[string] `json:"table_summary_prompt"`
-	// LEGACY: For sync/on-prem only. The timeout for the job in seconds. Defaults
-	// to 1800.
-	Timeout param.Field[float64] `json:"timeout"`
-	// Add checkboxes to the output, defaults to False
-	UseCheckboxes param.Field[bool] `json:"use_checkboxes"`
-	// Add equations to the output, defaults to False
-	UseEquations param.Field[bool] `json:"use_equations"`
-	// Use a faster inference model for parsing. Defaults to False.
-	UseFastInference param.Field[bool] `json:"use_fast_inference"`
-	// Use GPU acceleration for OCR processing. Defaults to False.
-	UseGPUOcr param.Field[bool] `json:"use_gpu_ocr"`
-	// A user specified timeout, defaults to None
-	UserSpecifiedTimeoutSeconds param.Field[float64] `json:"user_specified_timeout_seconds"`
-	// The version of the processing options.
-	Version param.Field[ExtractRunParamsBodyExtractConfigParseConfigVersion] `json:"version"`
-}
-
-func (r ExtractRunParamsBodyExtractConfigParseConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The mode to use for chunking. Defaults to 'variable'. Section chunks according
-// to sections in the document. Page chunks according to pages. Page sections
-// chunks according to both pages and sections. Disabled returns a single chunk.
-type ExtractRunParamsBodyExtractConfigParseConfigChunkMode string
-
-const (
-	ExtractRunParamsBodyExtractConfigParseConfigChunkModeVariable     ExtractRunParamsBodyExtractConfigParseConfigChunkMode = "variable"
-	ExtractRunParamsBodyExtractConfigParseConfigChunkModeSection      ExtractRunParamsBodyExtractConfigParseConfigChunkMode = "section"
-	ExtractRunParamsBodyExtractConfigParseConfigChunkModePage         ExtractRunParamsBodyExtractConfigParseConfigChunkMode = "page"
-	ExtractRunParamsBodyExtractConfigParseConfigChunkModeDisabled     ExtractRunParamsBodyExtractConfigParseConfigChunkMode = "disabled"
-	ExtractRunParamsBodyExtractConfigParseConfigChunkModeBlock        ExtractRunParamsBodyExtractConfigParseConfigChunkMode = "block"
-	ExtractRunParamsBodyExtractConfigParseConfigChunkModePageSections ExtractRunParamsBodyExtractConfigParseConfigChunkMode = "page_sections"
-)
-
-func (r ExtractRunParamsBodyExtractConfigParseConfigChunkMode) IsKnown() bool {
-	switch r {
-	case ExtractRunParamsBodyExtractConfigParseConfigChunkModeVariable, ExtractRunParamsBodyExtractConfigParseConfigChunkModeSection, ExtractRunParamsBodyExtractConfigParseConfigChunkModePage, ExtractRunParamsBodyExtractConfigParseConfigChunkModeDisabled, ExtractRunParamsBodyExtractConfigParseConfigChunkModeBlock, ExtractRunParamsBodyExtractConfigParseConfigChunkModePageSections:
-		return true
-	}
-	return false
-}
-
-type ExtractRunParamsBodyExtractConfigParseConfigCustomFormat string
-
-const (
-	ExtractRunParamsBodyExtractConfigParseConfigCustomFormatAml     ExtractRunParamsBodyExtractConfigParseConfigCustomFormat = "aml"
-	ExtractRunParamsBodyExtractConfigParseConfigCustomFormatAIUsage ExtractRunParamsBodyExtractConfigParseConfigCustomFormat = "ai_usage"
-)
-
-func (r ExtractRunParamsBodyExtractConfigParseConfigCustomFormat) IsKnown() bool {
-	switch r {
-	case ExtractRunParamsBodyExtractConfigParseConfigCustomFormatAml, ExtractRunParamsBodyExtractConfigParseConfigCustomFormatAIUsage:
-		return true
-	}
-	return false
-}
-
-// The mode to use for enrichment. Defaults to standard
-type ExtractRunParamsBodyExtractConfigParseConfigEnrichMode string
-
-const (
-	ExtractRunParamsBodyExtractConfigParseConfigEnrichModeStandard ExtractRunParamsBodyExtractConfigParseConfigEnrichMode = "standard"
-	ExtractRunParamsBodyExtractConfigParseConfigEnrichModePage     ExtractRunParamsBodyExtractConfigParseConfigEnrichMode = "page"
-	ExtractRunParamsBodyExtractConfigParseConfigEnrichModeTable    ExtractRunParamsBodyExtractConfigParseConfigEnrichMode = "table"
-)
-
-func (r ExtractRunParamsBodyExtractConfigParseConfigEnrichMode) IsKnown() bool {
-	switch r {
-	case ExtractRunParamsBodyExtractConfigParseConfigEnrichModeStandard, ExtractRunParamsBodyExtractConfigParseConfigEnrichModePage, ExtractRunParamsBodyExtractConfigParseConfigEnrichModeTable:
-		return true
-	}
-	return false
-}
-
-type ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlock string
-
-const (
-	ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockHeader        ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlock = "Header"
-	ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockFooter        ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlock = "Footer"
-	ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockTitle         ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlock = "Title"
-	ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockSectionHeader ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlock = "Section Header"
-	ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockPageNumber    ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlock = "Page Number"
-	ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockListItem      ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlock = "List Item"
-	ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockFigure        ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlock = "Figure"
-	ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockTable         ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlock = "Table"
-	ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockKeyValue      ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlock = "Key Value"
-	ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockText          ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlock = "Text"
-	ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockComment       ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlock = "Comment"
-	ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockSignature     ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlock = "Signature"
-)
-
-func (r ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlock) IsKnown() bool {
-	switch r {
-	case ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockHeader, ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockFooter, ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockTitle, ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockSectionHeader, ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockPageNumber, ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockListItem, ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockFigure, ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockTable, ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockKeyValue, ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockText, ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockComment, ExtractRunParamsBodyExtractConfigParseConfigIgnoreBlockSignature:
-		return true
-	}
-	return false
-}
-
-// The layout model to use for the document. This will be deprecated in the future.
-type ExtractRunParamsBodyExtractConfigParseConfigLayoutModel string
-
-const (
-	ExtractRunParamsBodyExtractConfigParseConfigLayoutModelDefault ExtractRunParamsBodyExtractConfigParseConfigLayoutModel = "default"
-	ExtractRunParamsBodyExtractConfigParseConfigLayoutModelBeta    ExtractRunParamsBodyExtractConfigParseConfigLayoutModel = "beta"
-)
-
-func (r ExtractRunParamsBodyExtractConfigParseConfigLayoutModel) IsKnown() bool {
-	switch r {
-	case ExtractRunParamsBodyExtractConfigParseConfigLayoutModelDefault, ExtractRunParamsBodyExtractConfigParseConfigLayoutModelBeta:
-		return true
-	}
-	return false
-}
-
-// The type of document to be processed. Defaults to document. If auto is
-// specified, the orientation of the first page will be used to determine the
-// document type.
-type ExtractRunParamsBodyExtractConfigParseConfigMode string
-
-const (
-	ExtractRunParamsBodyExtractConfigParseConfigModeDocument ExtractRunParamsBodyExtractConfigParseConfigMode = "document"
-	ExtractRunParamsBodyExtractConfigParseConfigModeDeck     ExtractRunParamsBodyExtractConfigParseConfigMode = "deck"
-	ExtractRunParamsBodyExtractConfigParseConfigModeAuto     ExtractRunParamsBodyExtractConfigParseConfigMode = "auto"
-)
-
-func (r ExtractRunParamsBodyExtractConfigParseConfigMode) IsKnown() bool {
-	switch r {
-	case ExtractRunParamsBodyExtractConfigParseConfigModeDocument, ExtractRunParamsBodyExtractConfigParseConfigModeDeck, ExtractRunParamsBodyExtractConfigParseConfigModeAuto:
-		return true
-	}
-	return false
-}
-
-// The mode to use for OCR. If agentic is enabled, table OCR will be automatically
-// edited.
-type ExtractRunParamsBodyExtractConfigParseConfigOcrMode string
-
-const (
-	ExtractRunParamsBodyExtractConfigParseConfigOcrModeStandard ExtractRunParamsBodyExtractConfigParseConfigOcrMode = "standard"
-	ExtractRunParamsBodyExtractConfigParseConfigOcrModeAgentic  ExtractRunParamsBodyExtractConfigParseConfigOcrMode = "agentic"
-)
-
-func (r ExtractRunParamsBodyExtractConfigParseConfigOcrMode) IsKnown() bool {
-	switch r {
-	case ExtractRunParamsBodyExtractConfigParseConfigOcrModeStandard, ExtractRunParamsBodyExtractConfigParseConfigOcrModeAgentic:
-		return true
-	}
-	return false
-}
-
-// The OCR system to use. Defaults to cloud (AWS Textract/Azure DocAI/etc).
-type ExtractRunParamsBodyExtractConfigParseConfigOcrSystem string
-
-const (
-	ExtractRunParamsBodyExtractConfigParseConfigOcrSystemGcloud    ExtractRunParamsBodyExtractConfigParseConfigOcrSystem = "gcloud"
-	ExtractRunParamsBodyExtractConfigParseConfigOcrSystemTextract  ExtractRunParamsBodyExtractConfigParseConfigOcrSystem = "textract"
-	ExtractRunParamsBodyExtractConfigParseConfigOcrSystemTesseract ExtractRunParamsBodyExtractConfigParseConfigOcrSystem = "tesseract"
-	ExtractRunParamsBodyExtractConfigParseConfigOcrSystemCombined  ExtractRunParamsBodyExtractConfigParseConfigOcrSystem = "combined"
-)
-
-func (r ExtractRunParamsBodyExtractConfigParseConfigOcrSystem) IsKnown() bool {
-	switch r {
-	case ExtractRunParamsBodyExtractConfigParseConfigOcrSystemGcloud, ExtractRunParamsBodyExtractConfigParseConfigOcrSystemTextract, ExtractRunParamsBodyExtractConfigParseConfigOcrSystemTesseract, ExtractRunParamsBodyExtractConfigParseConfigOcrSystemCombined:
-		return true
-	}
-	return false
-}
-
-// The page range to process.
-//
-// Satisfied by [shared.PageRangeParam],
-// [ExtractRunParamsBodyExtractConfigParseConfigPageRangeArray],
-// [ExtractRunParamsBodyExtractConfigParseConfigPageRangeArray].
-type ExtractRunParamsBodyExtractConfigParseConfigPageRangeUnion interface {
-	ImplementsExtractRunParamsBodyExtractConfigParseConfigPageRangeUnion()
-}
-
-type ExtractRunParamsBodyExtractConfigParseConfigPageRangeArray []shared.PageRangeParam
-
-func (r ExtractRunParamsBodyExtractConfigParseConfigPageRangeArray) ImplementsExtractRunParamsBodyExtractConfigParseConfigPageRangeUnion() {
-}
-
-// The method to use for OCR. hybrid uses the PDF text first, then OCR. pdf only
-// uses the PDF text. ocr only uses OCR.
-type ExtractRunParamsBodyExtractConfigParseConfigPdfOcr string
-
-const (
-	ExtractRunParamsBodyExtractConfigParseConfigPdfOcrHybrid ExtractRunParamsBodyExtractConfigParseConfigPdfOcr = "hybrid"
-	ExtractRunParamsBodyExtractConfigParseConfigPdfOcrPdf    ExtractRunParamsBodyExtractConfigParseConfigPdfOcr = "pdf"
-	ExtractRunParamsBodyExtractConfigParseConfigPdfOcrOcr    ExtractRunParamsBodyExtractConfigParseConfigPdfOcr = "ocr"
-)
-
-func (r ExtractRunParamsBodyExtractConfigParseConfigPdfOcr) IsKnown() bool {
-	switch r {
-	case ExtractRunParamsBodyExtractConfigParseConfigPdfOcrHybrid, ExtractRunParamsBodyExtractConfigParseConfigPdfOcrPdf, ExtractRunParamsBodyExtractConfigParseConfigPdfOcrOcr:
-		return true
-	}
-	return false
-}
-
-// Forces all external API calls to be routed to specified country/region.
-type ExtractRunParamsBodyExtractConfigParseConfigRegionPreference string
-
-const (
-	ExtractRunParamsBodyExtractConfigParseConfigRegionPreferenceUs ExtractRunParamsBodyExtractConfigParseConfigRegionPreference = "us"
-)
-
-func (r ExtractRunParamsBodyExtractConfigParseConfigRegionPreference) IsKnown() bool {
-	switch r {
-	case ExtractRunParamsBodyExtractConfigParseConfigRegionPreferenceUs:
-		return true
-	}
-	return false
-}
-
-// On a spreadsheet, the algorithm that is used to split up sheets into multiple
-// tables.
-type ExtractRunParamsBodyExtractConfigParseConfigSpreadsheetTableClustering string
-
-const (
-	ExtractRunParamsBodyExtractConfigParseConfigSpreadsheetTableClusteringDefault     ExtractRunParamsBodyExtractConfigParseConfigSpreadsheetTableClustering = "default"
-	ExtractRunParamsBodyExtractConfigParseConfigSpreadsheetTableClusteringDisabled    ExtractRunParamsBodyExtractConfigParseConfigSpreadsheetTableClustering = "disabled"
-	ExtractRunParamsBodyExtractConfigParseConfigSpreadsheetTableClusteringIntelligent ExtractRunParamsBodyExtractConfigParseConfigSpreadsheetTableClustering = "intelligent"
-)
-
-func (r ExtractRunParamsBodyExtractConfigParseConfigSpreadsheetTableClustering) IsKnown() bool {
-	switch r {
-	case ExtractRunParamsBodyExtractConfigParseConfigSpreadsheetTableClusteringDefault, ExtractRunParamsBodyExtractConfigParseConfigSpreadsheetTableClusteringDisabled, ExtractRunParamsBodyExtractConfigParseConfigSpreadsheetTableClusteringIntelligent:
-		return true
-	}
-	return false
-}
-
-// The mode to use for table output. Defaults to html.
-type ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormat string
-
-const (
-	ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormatHTML    ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormat = "html"
-	ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormatJson    ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormat = "json"
-	ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormatMd      ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormat = "md"
-	ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormatDynamic ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormat = "dynamic"
-	ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormatAIJson  ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormat = "ai_json"
-	ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormatCsv     ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormat = "csv"
-)
-
-func (r ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormat) IsKnown() bool {
-	switch r {
-	case ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormatHTML, ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormatJson, ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormatMd, ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormatDynamic, ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormatAIJson, ExtractRunParamsBodyExtractConfigParseConfigTableOutputFormatCsv:
-		return true
-	}
-	return false
-}
-
-// The version of the processing options.
-type ExtractRunParamsBodyExtractConfigParseConfigVersion string
-
-const (
-	ExtractRunParamsBodyExtractConfigParseConfigVersionV1 ExtractRunParamsBodyExtractConfigParseConfigVersion = "v1"
-	ExtractRunParamsBodyExtractConfigParseConfigVersionV2 ExtractRunParamsBodyExtractConfigParseConfigVersion = "v2"
-	ExtractRunParamsBodyExtractConfigParseConfigVersionV3 ExtractRunParamsBodyExtractConfigParseConfigVersion = "v3"
-)
-
-func (r ExtractRunParamsBodyExtractConfigParseConfigVersion) IsKnown() bool {
-	switch r {
-	case ExtractRunParamsBodyExtractConfigParseConfigVersionV1, ExtractRunParamsBodyExtractConfigParseConfigVersionV2, ExtractRunParamsBodyExtractConfigParseConfigVersionV3:
-		return true
-	}
-	return false
 }
 
 type ExtractRunParamsBodySyncExtractConfig struct {
@@ -1343,170 +750,28 @@ func (r ExtractRunParamsBodySyncExtractConfigSettingsCitations) MarshalJSON() (d
 	return apijson.MarshalRoot(r)
 }
 
-type ExtractRunJobParams struct {
-	Body ExtractRunJobParamsBodyUnion `json:"body,required"`
-}
-
-func (r ExtractRunJobParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
-}
-
-type ExtractRunJobParamsBody struct {
-	AdvancedOptions param.Field[shared.AdvancedProcessingOptionsParam] `json:"advanced_options"`
-	AgentExtract    param.Field[interface{}]                           `json:"agent_extract"`
-	// The configuration options for array extract
-	ArrayExtract param.Field[shared.ArrayExtractConfigParam] `json:"array_extract"`
-	Async        param.Field[interface{}]                    `json:"async"`
-	// The configuration options for citations.
-	CitationsOptions    param.Field[shared.AdvancedCitationsConfigParam]       `json:"citations_options"`
-	DocumentURL         param.Field[interface{}]                               `json:"document_url"`
-	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
-	// If table citations should be generated for the extracted content.
-	ExperimentalTableCitations param.Field[bool] `json:"experimental_table_citations"`
-	// If citations should be generated for the extracted content.
-	GenerateCitations param.Field[bool] `json:"generate_citations"`
-	// If images should be passed directly for extractions. Can only be enabled for
-	// documents with less than 10 pages. Defaults to False.
-	IncludeImages param.Field[bool]        `json:"include_images"`
-	Input         param.Field[interface{}] `json:"input"`
-	Instructions  param.Field[interface{}] `json:"instructions"`
-	// If True, the job will be processed with lower latency and higher priority. Uses
-	// 2x the cost of a regular job. Defaults to False.
-	LatencySensitive param.Field[bool]                              `json:"latency_sensitive"`
-	Options          param.Field[shared.BaseProcessingOptionsParam] `json:"options"`
-	Parsing          param.Field[interface{}]                       `json:"parsing"`
-	// If True, attempts to process the job with priority if the user has priority
-	// processing budget available; by default, sync jobs are prioritized above async
-	// jobs.
-	Priority param.Field[bool]        `json:"priority"`
-	Schema   param.Field[interface{}] `json:"schema"`
-	Settings param.Field[interface{}] `json:"settings"`
-	// If spreadsheet agent should be used for extraction.
-	SpreadsheetAgent param.Field[bool] `json:"spreadsheet_agent"`
-	// A system prompt to use for the extraction. This is a general prompt that is
-	// applied to the entire document before any other prompts.
-	SystemPrompt param.Field[string] `json:"system_prompt"`
-	// If chunking should be used for the extraction. Defaults to False.
-	UseChunking param.Field[bool]                         `json:"use_chunking"`
-	Webhook     param.Field[shared.WebhookConfigNewParam] `json:"webhook"`
-}
-
-func (r ExtractRunJobParamsBody) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r ExtractRunJobParamsBody) implementsExtractRunJobParamsBodyUnion() {}
-
-// Satisfied by [ExtractRunJobParamsBodyAsyncExtractConfigNew],
-// [ExtractRunJobParamsBodyAsyncExtractConfig], [ExtractRunJobParamsBody].
-type ExtractRunJobParamsBodyUnion interface {
-	implementsExtractRunJobParamsBodyUnion()
-}
-
-type ExtractRunJobParamsBodyAsyncExtractConfigNew struct {
-	// The URL of the document to be processed. You can provide one of the following:
-	//
-	//  1. A publicly available URL
-	//  2. A presigned S3 URL
-	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-	//     uploading a document
-	//  4. A job_id (jobid://) or a list of job_ids (jobid://) obtained from a previous
-	//     /parse endpoint
-	DocumentURL param.Field[ExtractRunJobParamsBodyAsyncExtractConfigNewDocumentURLUnion] `json:"document_url,required"`
-	// The JSON schema to use for extraction.
-	Schema          param.Field[interface{}]                           `json:"schema,required"`
-	AdvancedOptions param.Field[shared.AdvancedProcessingOptionsParam] `json:"advanced_options"`
-	// The configuration options for agent extract
-	AgentExtract param.Field[ExtractRunJobParamsBodyAsyncExtractConfigNewAgentExtract] `json:"agent_extract"`
-	// The configuration options for array extract
-	ArrayExtract param.Field[shared.ArrayExtractConfigParam] `json:"array_extract"`
-	// The configuration options for citations.
-	CitationsOptions    param.Field[shared.AdvancedCitationsConfigParam]       `json:"citations_options"`
-	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
-	// If table citations should be generated for the extracted content.
-	ExperimentalTableCitations param.Field[bool] `json:"experimental_table_citations"`
-	// If citations should be generated for the extracted content.
-	GenerateCitations param.Field[bool] `json:"generate_citations"`
-	// If images should be passed directly for extractions. Can only be enabled for
-	// documents with less than 10 pages. Defaults to False.
-	IncludeImages param.Field[bool] `json:"include_images"`
-	// If True, the job will be processed with lower latency and higher priority. Uses
-	// 2x the cost of a regular job. Defaults to False.
-	LatencySensitive param.Field[bool]                              `json:"latency_sensitive"`
-	Options          param.Field[shared.BaseProcessingOptionsParam] `json:"options"`
-	// If True, attempts to process the job with priority if the user has priority
-	// processing budget available; by default, sync jobs are prioritized above async
-	// jobs.
-	Priority param.Field[bool] `json:"priority"`
-	// If spreadsheet agent should be used for extraction.
-	SpreadsheetAgent param.Field[bool] `json:"spreadsheet_agent"`
-	// A system prompt to use for the extraction. This is a general prompt that is
-	// applied to the entire document before any other prompts.
-	SystemPrompt param.Field[string] `json:"system_prompt"`
-	// If chunking should be used for the extraction. Defaults to False.
-	UseChunking param.Field[bool]                         `json:"use_chunking"`
-	Webhook     param.Field[shared.WebhookConfigNewParam] `json:"webhook"`
-}
-
-func (r ExtractRunJobParamsBodyAsyncExtractConfigNew) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r ExtractRunJobParamsBodyAsyncExtractConfigNew) implementsExtractRunJobParamsBodyUnion() {}
-
-// The URL of the document to be processed. You can provide one of the following:
-//
-//  1. A publicly available URL
-//  2. A presigned S3 URL
-//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-//     uploading a document
-//  4. A job_id (jobid://) or a list of job_ids (jobid://) obtained from a previous
-//     /parse endpoint
-//
-// Satisfied by [shared.UnionString],
-// [ExtractRunJobParamsBodyAsyncExtractConfigNewDocumentURLArray],
-// [shared.UploadParam].
-type ExtractRunJobParamsBodyAsyncExtractConfigNewDocumentURLUnion interface {
-	ImplementsExtractRunJobParamsBodyAsyncExtractConfigNewDocumentURLUnion()
-}
-
-type ExtractRunJobParamsBodyAsyncExtractConfigNewDocumentURLArray []string
-
-func (r ExtractRunJobParamsBodyAsyncExtractConfigNewDocumentURLArray) ImplementsExtractRunJobParamsBodyAsyncExtractConfigNewDocumentURLUnion() {
-}
-
-// The configuration options for agent extract
-type ExtractRunJobParamsBodyAsyncExtractConfigNewAgentExtract struct {
-	// If agent extraction should be used for extraction.
-	Enabled param.Field[bool] `json:"enabled"`
-}
-
-func (r ExtractRunJobParamsBodyAsyncExtractConfigNewAgentExtract) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type ExtractRunJobParamsBodyAsyncExtractConfig struct {
+type ExtractRunParamsBodyAsyncExtractConfig struct {
 	// The URL of the document to be processed. You can provide one of the
 	// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
 	// prefixed URL obtained from the /upload endpoint after directly uploading a
 	// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
-	Input param.Field[ExtractRunJobParamsBodyAsyncExtractConfigInputUnion] `json:"input,required"`
+	Input param.Field[ExtractRunParamsBodyAsyncExtractConfigInputUnion] `json:"input,required"`
 	// The configuration options for asynchronous processing (default synchronous).
-	Async param.Field[ExtractRunJobParamsBodyAsyncExtractConfigAsync] `json:"async"`
+	Async param.Field[ExtractRunParamsBodyAsyncExtractConfigAsync] `json:"async"`
 	// The instructions to use for the extraction.
-	Instructions param.Field[ExtractRunJobParamsBodyAsyncExtractConfigInstructions] `json:"instructions"`
+	Instructions param.Field[ExtractRunParamsBodyAsyncExtractConfigInstructions] `json:"instructions"`
 	// The configuration options for parsing the document. If you are passing in a
 	// jobid:// URL for the file, then this configuration will be ignored.
-	Parsing param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsing] `json:"parsing"`
+	Parsing param.Field[ExtractRunParamsBodyAsyncExtractConfigParsing] `json:"parsing"`
 	// The settings to use for the extraction.
-	Settings param.Field[ExtractRunJobParamsBodyAsyncExtractConfigSettings] `json:"settings"`
+	Settings param.Field[ExtractRunParamsBodyAsyncExtractConfigSettings] `json:"settings"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfig) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfig) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfig) implementsExtractRunJobParamsBodyUnion() {}
+func (r ExtractRunParamsBodyAsyncExtractConfig) implementsExtractRunParamsBodyUnion() {}
 
 // The URL of the document to be processed. You can provide one of the
 // following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
@@ -1514,12 +779,12 @@ func (r ExtractRunJobParamsBodyAsyncExtractConfig) implementsExtractRunJobParams
 // document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
 //
 // Satisfied by [shared.UnionString], [shared.UploadParam].
-type ExtractRunJobParamsBodyAsyncExtractConfigInputUnion interface {
-	ImplementsExtractRunJobParamsBodyAsyncExtractConfigInputUnion()
+type ExtractRunParamsBodyAsyncExtractConfigInputUnion interface {
+	ImplementsExtractRunParamsBodyAsyncExtractConfigInputUnion()
 }
 
 // The configuration options for asynchronous processing (default synchronous).
-type ExtractRunJobParamsBodyAsyncExtractConfigAsync struct {
+type ExtractRunParamsBodyAsyncExtractConfigAsync struct {
 	// JSON metadata included in webhook request body. Defaults to None.
 	Metadata param.Field[interface{}] `json:"metadata"`
 	// If True, attempts to process the job with priority if the user has priority
@@ -1527,292 +792,292 @@ type ExtractRunJobParamsBodyAsyncExtractConfigAsync struct {
 	// jobs.
 	Priority param.Field[bool] `json:"priority"`
 	// The webhook configuration for the asynchronous processing.
-	Webhook param.Field[ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookUnion] `json:"webhook"`
+	Webhook param.Field[ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookUnion] `json:"webhook"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigAsync) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigAsync) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
 // The webhook configuration for the asynchronous processing.
-type ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhook struct {
-	Channels param.Field[interface{}]                                               `json:"channels"`
-	Mode     param.Field[ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookMode] `json:"mode"`
-	URL      param.Field[string]                                                    `json:"url"`
+type ExtractRunParamsBodyAsyncExtractConfigAsyncWebhook struct {
+	Channels param.Field[interface{}]                                            `json:"channels"`
+	Mode     param.Field[ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookMode] `json:"mode"`
+	URL      param.Field[string]                                                 `json:"url"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhook) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigAsyncWebhook) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhook) implementsExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookUnion() {
+func (r ExtractRunParamsBodyAsyncExtractConfigAsyncWebhook) implementsExtractRunParamsBodyAsyncExtractConfigAsyncWebhookUnion() {
 }
 
 // The webhook configuration for the asynchronous processing.
 //
 // Satisfied by
-// [ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfig],
-// [ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfig],
-// [ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhook].
-type ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookUnion interface {
-	implementsExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookUnion()
+// [ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfig],
+// [ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfig],
+// [ExtractRunParamsBodyAsyncExtractConfigAsyncWebhook].
+type ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookUnion interface {
+	implementsExtractRunParamsBodyAsyncExtractConfigAsyncWebhookUnion()
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfig struct {
+type ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfig struct {
 	// A list of Svix channels the message will be delivered down, omit to send to all
 	// channels.
-	Channels param.Field[[]string]                                                                   `json:"channels"`
-	Mode     param.Field[ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfigMode] `json:"mode"`
+	Channels param.Field[[]string]                                                                `json:"channels"`
+	Mode     param.Field[ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfigMode] `json:"mode"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfig) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfig) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfig) implementsExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookUnion() {
+func (r ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfig) implementsExtractRunParamsBodyAsyncExtractConfigAsyncWebhookUnion() {
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfigMode string
+type ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfigMode string
 
 const (
-	ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfigModeSvix ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfigMode = "svix"
+	ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfigModeSvix ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfigMode = "svix"
 )
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfigMode) IsKnown() bool {
+func (r ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfigMode) IsKnown() bool {
 	switch r {
-	case ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfigModeSvix:
+	case ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookSvixWebhookConfigModeSvix:
 		return true
 	}
 	return false
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfig struct {
-	URL  param.Field[string]                                                                       `json:"url,required"`
-	Mode param.Field[ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfigMode] `json:"mode"`
+type ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfig struct {
+	URL  param.Field[string]                                                                    `json:"url,required"`
+	Mode param.Field[ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfigMode] `json:"mode"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfig) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfig) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfig) implementsExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookUnion() {
+func (r ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfig) implementsExtractRunParamsBodyAsyncExtractConfigAsyncWebhookUnion() {
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfigMode string
+type ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfigMode string
 
 const (
-	ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfigModeDirect ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfigMode = "direct"
+	ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfigModeDirect ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfigMode = "direct"
 )
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfigMode) IsKnown() bool {
+func (r ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfigMode) IsKnown() bool {
 	switch r {
-	case ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfigModeDirect:
+	case ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookDirectWebhookConfigModeDirect:
 		return true
 	}
 	return false
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookMode string
+type ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookMode string
 
 const (
-	ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookModeSvix   ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookMode = "svix"
-	ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookModeDirect ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookMode = "direct"
+	ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookModeSvix   ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookMode = "svix"
+	ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookModeDirect ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookMode = "direct"
 )
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookMode) IsKnown() bool {
+func (r ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookMode) IsKnown() bool {
 	switch r {
-	case ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookModeSvix, ExtractRunJobParamsBodyAsyncExtractConfigAsyncWebhookModeDirect:
+	case ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookModeSvix, ExtractRunParamsBodyAsyncExtractConfigAsyncWebhookModeDirect:
 		return true
 	}
 	return false
 }
 
 // The instructions to use for the extraction.
-type ExtractRunJobParamsBodyAsyncExtractConfigInstructions struct {
+type ExtractRunParamsBodyAsyncExtractConfigInstructions struct {
 	// The JSON schema to use for the extraction.
 	Schema param.Field[interface{}] `json:"schema"`
 	// The system prompt to use for the extraction.
 	SystemPrompt param.Field[string] `json:"system_prompt"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigInstructions) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigInstructions) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
 // The configuration options for parsing the document. If you are passing in a
 // jobid:// URL for the file, then this configuration will be ignored.
-type ExtractRunJobParamsBodyAsyncExtractConfigParsing struct {
-	Enhance     param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhance]     `json:"enhance"`
-	Formatting  param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsingFormatting]  `json:"formatting"`
-	Retrieval   param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrieval]   `json:"retrieval"`
-	Settings    param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsingSettings]    `json:"settings"`
-	Spreadsheet param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheet] `json:"spreadsheet"`
+type ExtractRunParamsBodyAsyncExtractConfigParsing struct {
+	Enhance     param.Field[ExtractRunParamsBodyAsyncExtractConfigParsingEnhance]     `json:"enhance"`
+	Formatting  param.Field[ExtractRunParamsBodyAsyncExtractConfigParsingFormatting]  `json:"formatting"`
+	Retrieval   param.Field[ExtractRunParamsBodyAsyncExtractConfigParsingRetrieval]   `json:"retrieval"`
+	Settings    param.Field[ExtractRunParamsBodyAsyncExtractConfigParsingSettings]    `json:"settings"`
+	Spreadsheet param.Field[ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheet] `json:"spreadsheet"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsing) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsing) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhance struct {
+type ExtractRunParamsBodyAsyncExtractConfigParsingEnhance struct {
 	// Agentic uses vision language models to enhance the accuracy of the output of
 	// different types of extraction. This will incur a cost and latency increase.
-	Agentic param.Field[[]ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticUnion] `json:"agentic"`
+	Agentic param.Field[[]ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticUnion] `json:"agentic"`
 	// If True, summarize figures using a small vision language model. Defaults to
 	// True.
 	SummarizeFigures param.Field[bool] `json:"summarize_figures"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhance) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingEnhance) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgentic struct {
-	Scope param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticScope] `json:"scope,required"`
+type ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgentic struct {
+	Scope param.Field[ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticScope] `json:"scope,required"`
 	// Custom prompt for table agentic.
 	Prompt param.Field[string] `json:"prompt"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgentic) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgentic) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgentic) implementsExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticUnion() {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgentic) implementsExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticUnion() {
 }
 
 // Satisfied by
-// [ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgentic],
-// [ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgentic],
-// [ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgentic],
-// [ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgentic].
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticUnion interface {
-	implementsExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticUnion()
+// [ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgentic],
+// [ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgentic],
+// [ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgentic],
+// [ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgentic].
+type ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticUnion interface {
+	implementsExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticUnion()
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgentic struct {
-	Scope param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgenticScope] `json:"scope,required"`
+type ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgentic struct {
+	Scope param.Field[ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgenticScope] `json:"scope,required"`
 	// Custom prompt for table agentic.
 	Prompt param.Field[string] `json:"prompt"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgentic) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgentic) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgentic) implementsExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticUnion() {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgentic) implementsExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticUnion() {
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgenticScope string
+type ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgenticScope string
 
 const (
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgenticScopeTable ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgenticScope = "table"
+	ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgenticScopeTable ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgenticScope = "table"
 )
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgenticScope) IsKnown() bool {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgenticScope) IsKnown() bool {
 	switch r {
-	case ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgenticScopeTable:
+	case ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTableAgenticScopeTable:
 		return true
 	}
 	return false
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgentic struct {
-	Scope param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgenticScope] `json:"scope,required"`
+type ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgentic struct {
+	Scope param.Field[ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgenticScope] `json:"scope,required"`
 	// Custom prompt for figure agentic.
 	Prompt param.Field[string] `json:"prompt"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgentic) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgentic) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgentic) implementsExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticUnion() {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgentic) implementsExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticUnion() {
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgenticScope string
+type ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgenticScope string
 
 const (
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgenticScopeFigure ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgenticScope = "figure"
+	ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgenticScopeFigure ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgenticScope = "figure"
 )
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgenticScope) IsKnown() bool {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgenticScope) IsKnown() bool {
 	switch r {
-	case ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgenticScopeFigure:
+	case ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticFigureAgenticScopeFigure:
 		return true
 	}
 	return false
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgentic struct {
-	Scope param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgenticScope] `json:"scope,required"`
+type ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgentic struct {
+	Scope param.Field[ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgenticScope] `json:"scope,required"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgentic) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgentic) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgentic) implementsExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticUnion() {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgentic) implementsExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticUnion() {
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgenticScope string
+type ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgenticScope string
 
 const (
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgenticScopeText ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgenticScope = "text"
+	ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgenticScopeText ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgenticScope = "text"
 )
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgenticScope) IsKnown() bool {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgenticScope) IsKnown() bool {
 	switch r {
-	case ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgenticScopeText:
+	case ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticTextAgenticScopeText:
 		return true
 	}
 	return false
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticScope string
+type ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticScope string
 
 const (
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticScopeTable  ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticScope = "table"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticScopeFigure ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticScope = "figure"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticScopeText   ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticScope = "text"
+	ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticScopeTable  ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticScope = "table"
+	ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticScopeFigure ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticScope = "figure"
+	ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticScopeText   ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticScope = "text"
 )
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticScope) IsKnown() bool {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticScope) IsKnown() bool {
 	switch r {
-	case ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticScopeTable, ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticScopeFigure, ExtractRunJobParamsBodyAsyncExtractConfigParsingEnhanceAgenticScopeText:
+	case ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticScopeTable, ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticScopeFigure, ExtractRunParamsBodyAsyncExtractConfigParsingEnhanceAgenticScopeText:
 		return true
 	}
 	return false
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingFormatting struct {
+type ExtractRunParamsBodyAsyncExtractConfigParsingFormatting struct {
 	// If True, add page markers to the output. Defaults to False. Useful for
 	// extracting data with page specific information.
 	AddPageMarkers param.Field[bool] `json:"add_page_markers"`
 	// A list of formatting to include in the output. [insert description of each
 	// option here later]
-	Include param.Field[[]ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingInclude] `json:"include"`
+	Include param.Field[[]ExtractRunParamsBodyAsyncExtractConfigParsingFormattingInclude] `json:"include"`
 	// A flag to indicate if consecutive tables with the same number of columns should
 	// be merged. Defaults to False.
 	MergeTables param.Field[bool] `json:"merge_tables"`
 	// The mode to use for table output. Defaults to dynamic, which returns md for
 	// simpler tables and html for more complex tables.
-	TableOutputFormat param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat] `json:"table_output_format"`
+	TableOutputFormat param.Field[ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat] `json:"table_output_format"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingFormatting) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingFormatting) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingInclude string
+type ExtractRunParamsBodyAsyncExtractConfigParsingFormattingInclude string
 
 const (
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingIncludeChangeTracking ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingInclude = "change_tracking"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingIncludeHighlight      ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingInclude = "highlight"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingIncludeComments       ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingInclude = "comments"
+	ExtractRunParamsBodyAsyncExtractConfigParsingFormattingIncludeChangeTracking ExtractRunParamsBodyAsyncExtractConfigParsingFormattingInclude = "change_tracking"
+	ExtractRunParamsBodyAsyncExtractConfigParsingFormattingIncludeHighlight      ExtractRunParamsBodyAsyncExtractConfigParsingFormattingInclude = "highlight"
+	ExtractRunParamsBodyAsyncExtractConfigParsingFormattingIncludeComments       ExtractRunParamsBodyAsyncExtractConfigParsingFormattingInclude = "comments"
 )
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingInclude) IsKnown() bool {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingFormattingInclude) IsKnown() bool {
 	switch r {
-	case ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingIncludeChangeTracking, ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingIncludeHighlight, ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingIncludeComments:
+	case ExtractRunParamsBodyAsyncExtractConfigParsingFormattingIncludeChangeTracking, ExtractRunParamsBodyAsyncExtractConfigParsingFormattingIncludeHighlight, ExtractRunParamsBodyAsyncExtractConfigParsingFormattingIncludeComments:
 		return true
 	}
 	return false
@@ -1820,51 +1085,51 @@ func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingInclude) IsKno
 
 // The mode to use for table output. Defaults to dynamic, which returns md for
 // simpler tables and html for more complex tables.
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat string
+type ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat string
 
 const (
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatHTML     ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat = "html"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatJson     ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat = "json"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatMd       ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat = "md"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatJsonbbox ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat = "jsonbbox"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatDynamic  ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat = "dynamic"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatCsv      ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat = "csv"
+	ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatHTML     ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat = "html"
+	ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatJson     ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat = "json"
+	ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatMd       ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat = "md"
+	ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatJsonbbox ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat = "jsonbbox"
+	ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatDynamic  ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat = "dynamic"
+	ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatCsv      ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat = "csv"
 )
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat) IsKnown() bool {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormat) IsKnown() bool {
 	switch r {
-	case ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatHTML, ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatJson, ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatMd, ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatJsonbbox, ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatDynamic, ExtractRunJobParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatCsv:
+	case ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatHTML, ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatJson, ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatMd, ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatJsonbbox, ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatDynamic, ExtractRunParamsBodyAsyncExtractConfigParsingFormattingTableOutputFormatCsv:
 		return true
 	}
 	return false
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrieval struct {
-	Chunking param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunking] `json:"chunking"`
+type ExtractRunParamsBodyAsyncExtractConfigParsingRetrieval struct {
+	Chunking param.Field[ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunking] `json:"chunking"`
 	// If True, use embedding optimized mode. Defaults to False.
 	EmbeddingOptimized param.Field[bool] `json:"embedding_optimized"`
 	// A list of block types to filter out from 'content' and 'embed' fields. By
 	// default, no blocks are filtered.
-	FilterBlocks param.Field[[]ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock] `json:"filter_blocks"`
+	FilterBlocks param.Field[[]ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock] `json:"filter_blocks"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrieval) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingRetrieval) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunking struct {
+type ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunking struct {
 	// Choose how to partition chunks. Variable mode chunks by character length and
 	// visual context. Section mode chunks by section headers. Page mode chunks
 	// according to pages. Page sections mode chunks first by page, then by sections
 	// within each page. Disabled returns one single chunk.
-	ChunkMode param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode] `json:"chunk_mode"`
+	ChunkMode param.Field[ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode] `json:"chunk_mode"`
 	// The approximate size of chunks (in characters) that the document will be split
 	// into. Defaults to null, in which case the chunk size is variable between 250 -
 	// 1500 characters.
 	ChunkSize param.Field[int64] `json:"chunk_size"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunking) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunking) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -1872,51 +1137,51 @@ func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunking) Marsh
 // visual context. Section mode chunks by section headers. Page mode chunks
 // according to pages. Page sections mode chunks first by page, then by sections
 // within each page. Disabled returns one single chunk.
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode string
+type ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode string
 
 const (
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModeVariable     ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode = "variable"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModeSection      ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode = "section"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModePage         ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode = "page"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModeDisabled     ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode = "disabled"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModeBlock        ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode = "block"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModePageSections ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode = "page_sections"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModeVariable     ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode = "variable"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModeSection      ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode = "section"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModePage         ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode = "page"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModeDisabled     ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode = "disabled"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModeBlock        ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode = "block"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModePageSections ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode = "page_sections"
 )
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode) IsKnown() bool {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkMode) IsKnown() bool {
 	switch r {
-	case ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModeVariable, ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModeSection, ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModePage, ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModeDisabled, ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModeBlock, ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModePageSections:
+	case ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModeVariable, ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModeSection, ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModePage, ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModeDisabled, ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModeBlock, ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalChunkingChunkModePageSections:
 		return true
 	}
 	return false
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock string
+type ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock string
 
 const (
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockHeader        ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Header"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockFooter        ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Footer"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockTitle         ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Title"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockSectionHeader ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Section Header"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockPageNumber    ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Page Number"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockListItem      ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "List Item"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockFigure        ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Figure"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockTable         ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Table"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockKeyValue      ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Key Value"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockText          ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Text"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockComment       ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Comment"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockSignature     ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Signature"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockHeader        ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Header"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockFooter        ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Footer"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockTitle         ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Title"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockSectionHeader ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Section Header"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockPageNumber    ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Page Number"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockListItem      ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "List Item"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockFigure        ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Figure"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockTable         ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Table"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockKeyValue      ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Key Value"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockText          ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Text"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockComment       ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Comment"
+	ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockSignature     ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock = "Signature"
 )
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock) IsKnown() bool {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlock) IsKnown() bool {
 	switch r {
-	case ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockHeader, ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockFooter, ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockTitle, ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockSectionHeader, ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockPageNumber, ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockListItem, ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockFigure, ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockTable, ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockKeyValue, ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockText, ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockComment, ExtractRunJobParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockSignature:
+	case ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockHeader, ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockFooter, ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockTitle, ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockSectionHeader, ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockPageNumber, ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockListItem, ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockFigure, ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockTable, ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockKeyValue, ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockText, ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockComment, ExtractRunParamsBodyAsyncExtractConfigParsingRetrievalFilterBlockSignature:
 		return true
 	}
 	return false
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingSettings struct {
+type ExtractRunParamsBodyAsyncExtractConfigParsingSettings struct {
 	// Password to decrypt password-protected documents.
 	DocumentPassword param.Field[string] `json:"document_password"`
 	// If True, embed OCR metadata into the returned PDF. Defaults to False.
@@ -1927,37 +1192,37 @@ type ExtractRunJobParamsBodyAsyncExtractConfigParsingSettings struct {
 	ForceURLResult param.Field[bool] `json:"force_url_result"`
 	// Standard is our best multilingual OCR system. Legacy only supports germanic
 	// languages and is available for backwards compatibility.
-	OcrSystem param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsOcrSystem] `json:"ocr_system"`
+	OcrSystem param.Field[ExtractRunParamsBodyAsyncExtractConfigParsingSettingsOcrSystem] `json:"ocr_system"`
 	// The page range to process (1-indexed). By default, the entire document is
 	// processed.
-	PageRange param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsPageRangeUnion] `json:"page_range"`
+	PageRange param.Field[ExtractRunParamsBodyAsyncExtractConfigParsingSettingsPageRangeUnion] `json:"page_range"`
 	// If True, persist the results indefinitely. Defaults to False.
 	PersistResults param.Field[bool] `json:"persist_results"`
 	// Whether to return images for the specified block types. By default, no images
 	// are returned.
-	ReturnImages param.Field[[]ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsReturnImage] `json:"return_images"`
+	ReturnImages param.Field[[]ExtractRunParamsBodyAsyncExtractConfigParsingSettingsReturnImage] `json:"return_images"`
 	// If True, return OCR data in the result. Defaults to False.
 	ReturnOcrData param.Field[bool] `json:"return_ocr_data"`
 	// The timeout for the job in seconds. Defaults to 900.
 	Timeout param.Field[float64] `json:"timeout"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingSettings) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingSettings) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
 // Standard is our best multilingual OCR system. Legacy only supports germanic
 // languages and is available for backwards compatibility.
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsOcrSystem string
+type ExtractRunParamsBodyAsyncExtractConfigParsingSettingsOcrSystem string
 
 const (
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsOcrSystemStandard ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsOcrSystem = "standard"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsOcrSystemLegacy   ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsOcrSystem = "legacy"
+	ExtractRunParamsBodyAsyncExtractConfigParsingSettingsOcrSystemStandard ExtractRunParamsBodyAsyncExtractConfigParsingSettingsOcrSystem = "standard"
+	ExtractRunParamsBodyAsyncExtractConfigParsingSettingsOcrSystemLegacy   ExtractRunParamsBodyAsyncExtractConfigParsingSettingsOcrSystem = "legacy"
 )
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsOcrSystem) IsKnown() bool {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingSettingsOcrSystem) IsKnown() bool {
 	switch r {
-	case ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsOcrSystemStandard, ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsOcrSystemLegacy:
+	case ExtractRunParamsBodyAsyncExtractConfigParsingSettingsOcrSystemStandard, ExtractRunParamsBodyAsyncExtractConfigParsingSettingsOcrSystemLegacy:
 		return true
 	}
 	return false
@@ -1967,115 +1232,115 @@ func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsOcrSystem) IsKno
 // processed.
 //
 // Satisfied by [shared.PageRangeParam],
-// [ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsPageRangeArray],
-// [ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsPageRangeArray].
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsPageRangeUnion interface {
-	ImplementsExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsPageRangeUnion()
+// [ExtractRunParamsBodyAsyncExtractConfigParsingSettingsPageRangeArray],
+// [ExtractRunParamsBodyAsyncExtractConfigParsingSettingsPageRangeArray].
+type ExtractRunParamsBodyAsyncExtractConfigParsingSettingsPageRangeUnion interface {
+	ImplementsExtractRunParamsBodyAsyncExtractConfigParsingSettingsPageRangeUnion()
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsPageRangeArray []shared.PageRangeParam
+type ExtractRunParamsBodyAsyncExtractConfigParsingSettingsPageRangeArray []shared.PageRangeParam
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsPageRangeArray) ImplementsExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsPageRangeUnion() {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingSettingsPageRangeArray) ImplementsExtractRunParamsBodyAsyncExtractConfigParsingSettingsPageRangeUnion() {
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsReturnImage string
+type ExtractRunParamsBodyAsyncExtractConfigParsingSettingsReturnImage string
 
 const (
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsReturnImageFigure ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsReturnImage = "figure"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsReturnImageTable  ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsReturnImage = "table"
+	ExtractRunParamsBodyAsyncExtractConfigParsingSettingsReturnImageFigure ExtractRunParamsBodyAsyncExtractConfigParsingSettingsReturnImage = "figure"
+	ExtractRunParamsBodyAsyncExtractConfigParsingSettingsReturnImageTable  ExtractRunParamsBodyAsyncExtractConfigParsingSettingsReturnImage = "table"
 )
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsReturnImage) IsKnown() bool {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingSettingsReturnImage) IsKnown() bool {
 	switch r {
-	case ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsReturnImageFigure, ExtractRunJobParamsBodyAsyncExtractConfigParsingSettingsReturnImageTable:
+	case ExtractRunParamsBodyAsyncExtractConfigParsingSettingsReturnImageFigure, ExtractRunParamsBodyAsyncExtractConfigParsingSettingsReturnImageTable:
 		return true
 	}
 	return false
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheet struct {
+type ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheet struct {
 	// In a spreadsheet with different tables inside, we enable splitting up the tables
 	// by default. Accurate mode applies more powerful models for superior accuracy, at
 	// 5× the default per-cell rate. Disabling will register as one large table.
-	Clustering param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetClustering] `json:"clustering"`
+	Clustering param.Field[ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetClustering] `json:"clustering"`
 	// Whether to exclude hidden sheets, rows, or columns in the output.
-	Exclude param.Field[[]ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetExclude] `json:"exclude"`
+	Exclude param.Field[[]ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetExclude] `json:"exclude"`
 	// Whether to include cell color and formula information in the output.
-	Include          param.Field[[]ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetInclude]        `json:"include"`
-	SplitLargeTables param.Field[ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetSplitLargeTables] `json:"split_large_tables"`
+	Include          param.Field[[]ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetInclude]        `json:"include"`
+	SplitLargeTables param.Field[ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetSplitLargeTables] `json:"split_large_tables"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheet) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheet) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
 // In a spreadsheet with different tables inside, we enable splitting up the tables
 // by default. Accurate mode applies more powerful models for superior accuracy, at
 // 5× the default per-cell rate. Disabling will register as one large table.
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetClustering string
+type ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetClustering string
 
 const (
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetClusteringAccurate ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetClustering = "accurate"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetClusteringFast     ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetClustering = "fast"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetClusteringDisabled ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetClustering = "disabled"
+	ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetClusteringAccurate ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetClustering = "accurate"
+	ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetClusteringFast     ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetClustering = "fast"
+	ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetClusteringDisabled ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetClustering = "disabled"
 )
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetClustering) IsKnown() bool {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetClustering) IsKnown() bool {
 	switch r {
-	case ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetClusteringAccurate, ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetClusteringFast, ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetClusteringDisabled:
+	case ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetClusteringAccurate, ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetClusteringFast, ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetClusteringDisabled:
 		return true
 	}
 	return false
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetExclude string
+type ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetExclude string
 
 const (
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetExcludeHiddenSheets ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetExclude = "hidden_sheets"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetExcludeHiddenRows   ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetExclude = "hidden_rows"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetExcludeHiddenCols   ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetExclude = "hidden_cols"
+	ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetExcludeHiddenSheets ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetExclude = "hidden_sheets"
+	ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetExcludeHiddenRows   ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetExclude = "hidden_rows"
+	ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetExcludeHiddenCols   ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetExclude = "hidden_cols"
 )
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetExclude) IsKnown() bool {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetExclude) IsKnown() bool {
 	switch r {
-	case ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetExcludeHiddenSheets, ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetExcludeHiddenRows, ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetExcludeHiddenCols:
+	case ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetExcludeHiddenSheets, ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetExcludeHiddenRows, ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetExcludeHiddenCols:
 		return true
 	}
 	return false
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetInclude string
+type ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetInclude string
 
 const (
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetIncludeCellColors ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetInclude = "cell_colors"
-	ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetIncludeFormula    ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetInclude = "formula"
+	ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetIncludeCellColors ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetInclude = "cell_colors"
+	ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetIncludeFormula    ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetInclude = "formula"
 )
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetInclude) IsKnown() bool {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetInclude) IsKnown() bool {
 	switch r {
-	case ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetIncludeCellColors, ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetIncludeFormula:
+	case ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetIncludeCellColors, ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetIncludeFormula:
 		return true
 	}
 	return false
 }
 
-type ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetSplitLargeTables struct {
+type ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetSplitLargeTables struct {
 	// If True, split large tables into smaller tables. Defaults to True.
 	Enabled param.Field[bool] `json:"enabled"`
 	// The size of the tables to split into. Defaults to 50.
 	Size param.Field[int64] `json:"size"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigParsingSpreadsheetSplitLargeTables) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigParsingSpreadsheetSplitLargeTables) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
 // The settings to use for the extraction.
-type ExtractRunJobParamsBodyAsyncExtractConfigSettings struct {
+type ExtractRunParamsBodyAsyncExtractConfigSettings struct {
 	// If True, use array extraction.
 	ArrayExtract param.Field[bool] `json:"array_extract"`
 	// The citations to use for the extraction.
-	Citations param.Field[ExtractRunJobParamsBodyAsyncExtractConfigSettingsCitations] `json:"citations"`
+	Citations param.Field[ExtractRunParamsBodyAsyncExtractConfigSettingsCitations] `json:"citations"`
 	// If True, include images in the extraction.
 	IncludeImages param.Field[bool] `json:"include_images"`
 	// If True, jobs will be processed with a higher throughput and priority at a
@@ -2083,18 +1348,627 @@ type ExtractRunJobParamsBodyAsyncExtractConfigSettings struct {
 	OptimizeForLatency param.Field[bool] `json:"optimize_for_latency"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigSettings) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigSettings) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
 // The citations to use for the extraction.
-type ExtractRunJobParamsBodyAsyncExtractConfigSettingsCitations struct {
+type ExtractRunParamsBodyAsyncExtractConfigSettingsCitations struct {
 	// If True, include citations in the extraction.
 	Enabled param.Field[bool] `json:"enabled"`
 	// If True, enable numeric citation confidence scores. Defaults to True.
 	NumericalConfidence param.Field[bool] `json:"numerical_confidence"`
 }
 
-func (r ExtractRunJobParamsBodyAsyncExtractConfigSettingsCitations) MarshalJSON() (data []byte, err error) {
+func (r ExtractRunParamsBodyAsyncExtractConfigSettingsCitations) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type ExtractRunJobParams struct {
+	// The URL of the document to be processed. You can provide one of the
+	// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
+	// prefixed URL obtained from the /upload endpoint after directly uploading a
+	// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
+	Input param.Field[ExtractRunJobParamsInputUnion] `json:"input,required"`
+	// The configuration options for asynchronous processing (default synchronous).
+	Async param.Field[ExtractRunJobParamsAsync] `json:"async"`
+	// The instructions to use for the extraction.
+	Instructions param.Field[ExtractRunJobParamsInstructions] `json:"instructions"`
+	// The configuration options for parsing the document. If you are passing in a
+	// jobid:// URL for the file, then this configuration will be ignored.
+	Parsing param.Field[ExtractRunJobParamsParsing] `json:"parsing"`
+	// The settings to use for the extraction.
+	Settings param.Field[ExtractRunJobParamsSettings] `json:"settings"`
+}
+
+func (r ExtractRunJobParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The URL of the document to be processed. You can provide one of the
+// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
+// prefixed URL obtained from the /upload endpoint after directly uploading a
+// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
+//
+// Satisfied by [shared.UnionString], [shared.UploadParam].
+type ExtractRunJobParamsInputUnion interface {
+	ImplementsExtractRunJobParamsInputUnion()
+}
+
+// The configuration options for asynchronous processing (default synchronous).
+type ExtractRunJobParamsAsync struct {
+	// JSON metadata included in webhook request body. Defaults to None.
+	Metadata param.Field[interface{}] `json:"metadata"`
+	// If True, attempts to process the job with priority if the user has priority
+	// processing budget available; by default, sync jobs are prioritized above async
+	// jobs.
+	Priority param.Field[bool] `json:"priority"`
+	// The webhook configuration for the asynchronous processing.
+	Webhook param.Field[ExtractRunJobParamsAsyncWebhookUnion] `json:"webhook"`
+}
+
+func (r ExtractRunJobParamsAsync) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The webhook configuration for the asynchronous processing.
+type ExtractRunJobParamsAsyncWebhook struct {
+	Channels param.Field[interface{}]                         `json:"channels"`
+	Mode     param.Field[ExtractRunJobParamsAsyncWebhookMode] `json:"mode"`
+	URL      param.Field[string]                              `json:"url"`
+}
+
+func (r ExtractRunJobParamsAsyncWebhook) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r ExtractRunJobParamsAsyncWebhook) implementsExtractRunJobParamsAsyncWebhookUnion() {}
+
+// The webhook configuration for the asynchronous processing.
+//
+// Satisfied by [ExtractRunJobParamsAsyncWebhookSvixWebhookConfig],
+// [ExtractRunJobParamsAsyncWebhookDirectWebhookConfig],
+// [ExtractRunJobParamsAsyncWebhook].
+type ExtractRunJobParamsAsyncWebhookUnion interface {
+	implementsExtractRunJobParamsAsyncWebhookUnion()
+}
+
+type ExtractRunJobParamsAsyncWebhookSvixWebhookConfig struct {
+	// A list of Svix channels the message will be delivered down, omit to send to all
+	// channels.
+	Channels param.Field[[]string]                                             `json:"channels"`
+	Mode     param.Field[ExtractRunJobParamsAsyncWebhookSvixWebhookConfigMode] `json:"mode"`
+}
+
+func (r ExtractRunJobParamsAsyncWebhookSvixWebhookConfig) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r ExtractRunJobParamsAsyncWebhookSvixWebhookConfig) implementsExtractRunJobParamsAsyncWebhookUnion() {
+}
+
+type ExtractRunJobParamsAsyncWebhookSvixWebhookConfigMode string
+
+const (
+	ExtractRunJobParamsAsyncWebhookSvixWebhookConfigModeSvix ExtractRunJobParamsAsyncWebhookSvixWebhookConfigMode = "svix"
+)
+
+func (r ExtractRunJobParamsAsyncWebhookSvixWebhookConfigMode) IsKnown() bool {
+	switch r {
+	case ExtractRunJobParamsAsyncWebhookSvixWebhookConfigModeSvix:
+		return true
+	}
+	return false
+}
+
+type ExtractRunJobParamsAsyncWebhookDirectWebhookConfig struct {
+	URL  param.Field[string]                                                 `json:"url,required"`
+	Mode param.Field[ExtractRunJobParamsAsyncWebhookDirectWebhookConfigMode] `json:"mode"`
+}
+
+func (r ExtractRunJobParamsAsyncWebhookDirectWebhookConfig) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r ExtractRunJobParamsAsyncWebhookDirectWebhookConfig) implementsExtractRunJobParamsAsyncWebhookUnion() {
+}
+
+type ExtractRunJobParamsAsyncWebhookDirectWebhookConfigMode string
+
+const (
+	ExtractRunJobParamsAsyncWebhookDirectWebhookConfigModeDirect ExtractRunJobParamsAsyncWebhookDirectWebhookConfigMode = "direct"
+)
+
+func (r ExtractRunJobParamsAsyncWebhookDirectWebhookConfigMode) IsKnown() bool {
+	switch r {
+	case ExtractRunJobParamsAsyncWebhookDirectWebhookConfigModeDirect:
+		return true
+	}
+	return false
+}
+
+type ExtractRunJobParamsAsyncWebhookMode string
+
+const (
+	ExtractRunJobParamsAsyncWebhookModeSvix   ExtractRunJobParamsAsyncWebhookMode = "svix"
+	ExtractRunJobParamsAsyncWebhookModeDirect ExtractRunJobParamsAsyncWebhookMode = "direct"
+)
+
+func (r ExtractRunJobParamsAsyncWebhookMode) IsKnown() bool {
+	switch r {
+	case ExtractRunJobParamsAsyncWebhookModeSvix, ExtractRunJobParamsAsyncWebhookModeDirect:
+		return true
+	}
+	return false
+}
+
+// The instructions to use for the extraction.
+type ExtractRunJobParamsInstructions struct {
+	// The JSON schema to use for the extraction.
+	Schema param.Field[interface{}] `json:"schema"`
+	// The system prompt to use for the extraction.
+	SystemPrompt param.Field[string] `json:"system_prompt"`
+}
+
+func (r ExtractRunJobParamsInstructions) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The configuration options for parsing the document. If you are passing in a
+// jobid:// URL for the file, then this configuration will be ignored.
+type ExtractRunJobParamsParsing struct {
+	Enhance     param.Field[ExtractRunJobParamsParsingEnhance]     `json:"enhance"`
+	Formatting  param.Field[ExtractRunJobParamsParsingFormatting]  `json:"formatting"`
+	Retrieval   param.Field[ExtractRunJobParamsParsingRetrieval]   `json:"retrieval"`
+	Settings    param.Field[ExtractRunJobParamsParsingSettings]    `json:"settings"`
+	Spreadsheet param.Field[ExtractRunJobParamsParsingSpreadsheet] `json:"spreadsheet"`
+}
+
+func (r ExtractRunJobParamsParsing) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type ExtractRunJobParamsParsingEnhance struct {
+	// Agentic uses vision language models to enhance the accuracy of the output of
+	// different types of extraction. This will incur a cost and latency increase.
+	Agentic param.Field[[]ExtractRunJobParamsParsingEnhanceAgenticUnion] `json:"agentic"`
+	// If True, summarize figures using a small vision language model. Defaults to
+	// True.
+	SummarizeFigures param.Field[bool] `json:"summarize_figures"`
+}
+
+func (r ExtractRunJobParamsParsingEnhance) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type ExtractRunJobParamsParsingEnhanceAgentic struct {
+	Scope param.Field[ExtractRunJobParamsParsingEnhanceAgenticScope] `json:"scope,required"`
+	// Custom prompt for table agentic.
+	Prompt param.Field[string] `json:"prompt"`
+}
+
+func (r ExtractRunJobParamsParsingEnhanceAgentic) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r ExtractRunJobParamsParsingEnhanceAgentic) implementsExtractRunJobParamsParsingEnhanceAgenticUnion() {
+}
+
+// Satisfied by [ExtractRunJobParamsParsingEnhanceAgenticTableAgentic],
+// [ExtractRunJobParamsParsingEnhanceAgenticFigureAgentic],
+// [ExtractRunJobParamsParsingEnhanceAgenticTextAgentic],
+// [ExtractRunJobParamsParsingEnhanceAgentic].
+type ExtractRunJobParamsParsingEnhanceAgenticUnion interface {
+	implementsExtractRunJobParamsParsingEnhanceAgenticUnion()
+}
+
+type ExtractRunJobParamsParsingEnhanceAgenticTableAgentic struct {
+	Scope param.Field[ExtractRunJobParamsParsingEnhanceAgenticTableAgenticScope] `json:"scope,required"`
+	// Custom prompt for table agentic.
+	Prompt param.Field[string] `json:"prompt"`
+}
+
+func (r ExtractRunJobParamsParsingEnhanceAgenticTableAgentic) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r ExtractRunJobParamsParsingEnhanceAgenticTableAgentic) implementsExtractRunJobParamsParsingEnhanceAgenticUnion() {
+}
+
+type ExtractRunJobParamsParsingEnhanceAgenticTableAgenticScope string
+
+const (
+	ExtractRunJobParamsParsingEnhanceAgenticTableAgenticScopeTable ExtractRunJobParamsParsingEnhanceAgenticTableAgenticScope = "table"
+)
+
+func (r ExtractRunJobParamsParsingEnhanceAgenticTableAgenticScope) IsKnown() bool {
+	switch r {
+	case ExtractRunJobParamsParsingEnhanceAgenticTableAgenticScopeTable:
+		return true
+	}
+	return false
+}
+
+type ExtractRunJobParamsParsingEnhanceAgenticFigureAgentic struct {
+	Scope param.Field[ExtractRunJobParamsParsingEnhanceAgenticFigureAgenticScope] `json:"scope,required"`
+	// Custom prompt for figure agentic.
+	Prompt param.Field[string] `json:"prompt"`
+}
+
+func (r ExtractRunJobParamsParsingEnhanceAgenticFigureAgentic) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r ExtractRunJobParamsParsingEnhanceAgenticFigureAgentic) implementsExtractRunJobParamsParsingEnhanceAgenticUnion() {
+}
+
+type ExtractRunJobParamsParsingEnhanceAgenticFigureAgenticScope string
+
+const (
+	ExtractRunJobParamsParsingEnhanceAgenticFigureAgenticScopeFigure ExtractRunJobParamsParsingEnhanceAgenticFigureAgenticScope = "figure"
+)
+
+func (r ExtractRunJobParamsParsingEnhanceAgenticFigureAgenticScope) IsKnown() bool {
+	switch r {
+	case ExtractRunJobParamsParsingEnhanceAgenticFigureAgenticScopeFigure:
+		return true
+	}
+	return false
+}
+
+type ExtractRunJobParamsParsingEnhanceAgenticTextAgentic struct {
+	Scope param.Field[ExtractRunJobParamsParsingEnhanceAgenticTextAgenticScope] `json:"scope,required"`
+}
+
+func (r ExtractRunJobParamsParsingEnhanceAgenticTextAgentic) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r ExtractRunJobParamsParsingEnhanceAgenticTextAgentic) implementsExtractRunJobParamsParsingEnhanceAgenticUnion() {
+}
+
+type ExtractRunJobParamsParsingEnhanceAgenticTextAgenticScope string
+
+const (
+	ExtractRunJobParamsParsingEnhanceAgenticTextAgenticScopeText ExtractRunJobParamsParsingEnhanceAgenticTextAgenticScope = "text"
+)
+
+func (r ExtractRunJobParamsParsingEnhanceAgenticTextAgenticScope) IsKnown() bool {
+	switch r {
+	case ExtractRunJobParamsParsingEnhanceAgenticTextAgenticScopeText:
+		return true
+	}
+	return false
+}
+
+type ExtractRunJobParamsParsingEnhanceAgenticScope string
+
+const (
+	ExtractRunJobParamsParsingEnhanceAgenticScopeTable  ExtractRunJobParamsParsingEnhanceAgenticScope = "table"
+	ExtractRunJobParamsParsingEnhanceAgenticScopeFigure ExtractRunJobParamsParsingEnhanceAgenticScope = "figure"
+	ExtractRunJobParamsParsingEnhanceAgenticScopeText   ExtractRunJobParamsParsingEnhanceAgenticScope = "text"
+)
+
+func (r ExtractRunJobParamsParsingEnhanceAgenticScope) IsKnown() bool {
+	switch r {
+	case ExtractRunJobParamsParsingEnhanceAgenticScopeTable, ExtractRunJobParamsParsingEnhanceAgenticScopeFigure, ExtractRunJobParamsParsingEnhanceAgenticScopeText:
+		return true
+	}
+	return false
+}
+
+type ExtractRunJobParamsParsingFormatting struct {
+	// If True, add page markers to the output. Defaults to False. Useful for
+	// extracting data with page specific information.
+	AddPageMarkers param.Field[bool] `json:"add_page_markers"`
+	// A list of formatting to include in the output. [insert description of each
+	// option here later]
+	Include param.Field[[]ExtractRunJobParamsParsingFormattingInclude] `json:"include"`
+	// A flag to indicate if consecutive tables with the same number of columns should
+	// be merged. Defaults to False.
+	MergeTables param.Field[bool] `json:"merge_tables"`
+	// The mode to use for table output. Defaults to dynamic, which returns md for
+	// simpler tables and html for more complex tables.
+	TableOutputFormat param.Field[ExtractRunJobParamsParsingFormattingTableOutputFormat] `json:"table_output_format"`
+}
+
+func (r ExtractRunJobParamsParsingFormatting) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type ExtractRunJobParamsParsingFormattingInclude string
+
+const (
+	ExtractRunJobParamsParsingFormattingIncludeChangeTracking ExtractRunJobParamsParsingFormattingInclude = "change_tracking"
+	ExtractRunJobParamsParsingFormattingIncludeHighlight      ExtractRunJobParamsParsingFormattingInclude = "highlight"
+	ExtractRunJobParamsParsingFormattingIncludeComments       ExtractRunJobParamsParsingFormattingInclude = "comments"
+)
+
+func (r ExtractRunJobParamsParsingFormattingInclude) IsKnown() bool {
+	switch r {
+	case ExtractRunJobParamsParsingFormattingIncludeChangeTracking, ExtractRunJobParamsParsingFormattingIncludeHighlight, ExtractRunJobParamsParsingFormattingIncludeComments:
+		return true
+	}
+	return false
+}
+
+// The mode to use for table output. Defaults to dynamic, which returns md for
+// simpler tables and html for more complex tables.
+type ExtractRunJobParamsParsingFormattingTableOutputFormat string
+
+const (
+	ExtractRunJobParamsParsingFormattingTableOutputFormatHTML     ExtractRunJobParamsParsingFormattingTableOutputFormat = "html"
+	ExtractRunJobParamsParsingFormattingTableOutputFormatJson     ExtractRunJobParamsParsingFormattingTableOutputFormat = "json"
+	ExtractRunJobParamsParsingFormattingTableOutputFormatMd       ExtractRunJobParamsParsingFormattingTableOutputFormat = "md"
+	ExtractRunJobParamsParsingFormattingTableOutputFormatJsonbbox ExtractRunJobParamsParsingFormattingTableOutputFormat = "jsonbbox"
+	ExtractRunJobParamsParsingFormattingTableOutputFormatDynamic  ExtractRunJobParamsParsingFormattingTableOutputFormat = "dynamic"
+	ExtractRunJobParamsParsingFormattingTableOutputFormatCsv      ExtractRunJobParamsParsingFormattingTableOutputFormat = "csv"
+)
+
+func (r ExtractRunJobParamsParsingFormattingTableOutputFormat) IsKnown() bool {
+	switch r {
+	case ExtractRunJobParamsParsingFormattingTableOutputFormatHTML, ExtractRunJobParamsParsingFormattingTableOutputFormatJson, ExtractRunJobParamsParsingFormattingTableOutputFormatMd, ExtractRunJobParamsParsingFormattingTableOutputFormatJsonbbox, ExtractRunJobParamsParsingFormattingTableOutputFormatDynamic, ExtractRunJobParamsParsingFormattingTableOutputFormatCsv:
+		return true
+	}
+	return false
+}
+
+type ExtractRunJobParamsParsingRetrieval struct {
+	Chunking param.Field[ExtractRunJobParamsParsingRetrievalChunking] `json:"chunking"`
+	// If True, use embedding optimized mode. Defaults to False.
+	EmbeddingOptimized param.Field[bool] `json:"embedding_optimized"`
+	// A list of block types to filter out from 'content' and 'embed' fields. By
+	// default, no blocks are filtered.
+	FilterBlocks param.Field[[]ExtractRunJobParamsParsingRetrievalFilterBlock] `json:"filter_blocks"`
+}
+
+func (r ExtractRunJobParamsParsingRetrieval) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type ExtractRunJobParamsParsingRetrievalChunking struct {
+	// Choose how to partition chunks. Variable mode chunks by character length and
+	// visual context. Section mode chunks by section headers. Page mode chunks
+	// according to pages. Page sections mode chunks first by page, then by sections
+	// within each page. Disabled returns one single chunk.
+	ChunkMode param.Field[ExtractRunJobParamsParsingRetrievalChunkingChunkMode] `json:"chunk_mode"`
+	// The approximate size of chunks (in characters) that the document will be split
+	// into. Defaults to null, in which case the chunk size is variable between 250 -
+	// 1500 characters.
+	ChunkSize param.Field[int64] `json:"chunk_size"`
+}
+
+func (r ExtractRunJobParamsParsingRetrievalChunking) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Choose how to partition chunks. Variable mode chunks by character length and
+// visual context. Section mode chunks by section headers. Page mode chunks
+// according to pages. Page sections mode chunks first by page, then by sections
+// within each page. Disabled returns one single chunk.
+type ExtractRunJobParamsParsingRetrievalChunkingChunkMode string
+
+const (
+	ExtractRunJobParamsParsingRetrievalChunkingChunkModeVariable     ExtractRunJobParamsParsingRetrievalChunkingChunkMode = "variable"
+	ExtractRunJobParamsParsingRetrievalChunkingChunkModeSection      ExtractRunJobParamsParsingRetrievalChunkingChunkMode = "section"
+	ExtractRunJobParamsParsingRetrievalChunkingChunkModePage         ExtractRunJobParamsParsingRetrievalChunkingChunkMode = "page"
+	ExtractRunJobParamsParsingRetrievalChunkingChunkModeDisabled     ExtractRunJobParamsParsingRetrievalChunkingChunkMode = "disabled"
+	ExtractRunJobParamsParsingRetrievalChunkingChunkModeBlock        ExtractRunJobParamsParsingRetrievalChunkingChunkMode = "block"
+	ExtractRunJobParamsParsingRetrievalChunkingChunkModePageSections ExtractRunJobParamsParsingRetrievalChunkingChunkMode = "page_sections"
+)
+
+func (r ExtractRunJobParamsParsingRetrievalChunkingChunkMode) IsKnown() bool {
+	switch r {
+	case ExtractRunJobParamsParsingRetrievalChunkingChunkModeVariable, ExtractRunJobParamsParsingRetrievalChunkingChunkModeSection, ExtractRunJobParamsParsingRetrievalChunkingChunkModePage, ExtractRunJobParamsParsingRetrievalChunkingChunkModeDisabled, ExtractRunJobParamsParsingRetrievalChunkingChunkModeBlock, ExtractRunJobParamsParsingRetrievalChunkingChunkModePageSections:
+		return true
+	}
+	return false
+}
+
+type ExtractRunJobParamsParsingRetrievalFilterBlock string
+
+const (
+	ExtractRunJobParamsParsingRetrievalFilterBlockHeader        ExtractRunJobParamsParsingRetrievalFilterBlock = "Header"
+	ExtractRunJobParamsParsingRetrievalFilterBlockFooter        ExtractRunJobParamsParsingRetrievalFilterBlock = "Footer"
+	ExtractRunJobParamsParsingRetrievalFilterBlockTitle         ExtractRunJobParamsParsingRetrievalFilterBlock = "Title"
+	ExtractRunJobParamsParsingRetrievalFilterBlockSectionHeader ExtractRunJobParamsParsingRetrievalFilterBlock = "Section Header"
+	ExtractRunJobParamsParsingRetrievalFilterBlockPageNumber    ExtractRunJobParamsParsingRetrievalFilterBlock = "Page Number"
+	ExtractRunJobParamsParsingRetrievalFilterBlockListItem      ExtractRunJobParamsParsingRetrievalFilterBlock = "List Item"
+	ExtractRunJobParamsParsingRetrievalFilterBlockFigure        ExtractRunJobParamsParsingRetrievalFilterBlock = "Figure"
+	ExtractRunJobParamsParsingRetrievalFilterBlockTable         ExtractRunJobParamsParsingRetrievalFilterBlock = "Table"
+	ExtractRunJobParamsParsingRetrievalFilterBlockKeyValue      ExtractRunJobParamsParsingRetrievalFilterBlock = "Key Value"
+	ExtractRunJobParamsParsingRetrievalFilterBlockText          ExtractRunJobParamsParsingRetrievalFilterBlock = "Text"
+	ExtractRunJobParamsParsingRetrievalFilterBlockComment       ExtractRunJobParamsParsingRetrievalFilterBlock = "Comment"
+	ExtractRunJobParamsParsingRetrievalFilterBlockSignature     ExtractRunJobParamsParsingRetrievalFilterBlock = "Signature"
+)
+
+func (r ExtractRunJobParamsParsingRetrievalFilterBlock) IsKnown() bool {
+	switch r {
+	case ExtractRunJobParamsParsingRetrievalFilterBlockHeader, ExtractRunJobParamsParsingRetrievalFilterBlockFooter, ExtractRunJobParamsParsingRetrievalFilterBlockTitle, ExtractRunJobParamsParsingRetrievalFilterBlockSectionHeader, ExtractRunJobParamsParsingRetrievalFilterBlockPageNumber, ExtractRunJobParamsParsingRetrievalFilterBlockListItem, ExtractRunJobParamsParsingRetrievalFilterBlockFigure, ExtractRunJobParamsParsingRetrievalFilterBlockTable, ExtractRunJobParamsParsingRetrievalFilterBlockKeyValue, ExtractRunJobParamsParsingRetrievalFilterBlockText, ExtractRunJobParamsParsingRetrievalFilterBlockComment, ExtractRunJobParamsParsingRetrievalFilterBlockSignature:
+		return true
+	}
+	return false
+}
+
+type ExtractRunJobParamsParsingSettings struct {
+	// Password to decrypt password-protected documents.
+	DocumentPassword param.Field[string] `json:"document_password"`
+	// If True, embed OCR metadata into the returned PDF. Defaults to False.
+	EmbedPdfMetadata param.Field[bool] `json:"embed_pdf_metadata"`
+	// Force the URL to be downloaded as a specific file extension (e.g. `.png`).
+	ForceFileExtension param.Field[string] `json:"force_file_extension"`
+	// Force the result to be returned in URL form.
+	ForceURLResult param.Field[bool] `json:"force_url_result"`
+	// Standard is our best multilingual OCR system. Legacy only supports germanic
+	// languages and is available for backwards compatibility.
+	OcrSystem param.Field[ExtractRunJobParamsParsingSettingsOcrSystem] `json:"ocr_system"`
+	// The page range to process (1-indexed). By default, the entire document is
+	// processed.
+	PageRange param.Field[ExtractRunJobParamsParsingSettingsPageRangeUnion] `json:"page_range"`
+	// If True, persist the results indefinitely. Defaults to False.
+	PersistResults param.Field[bool] `json:"persist_results"`
+	// Whether to return images for the specified block types. By default, no images
+	// are returned.
+	ReturnImages param.Field[[]ExtractRunJobParamsParsingSettingsReturnImage] `json:"return_images"`
+	// If True, return OCR data in the result. Defaults to False.
+	ReturnOcrData param.Field[bool] `json:"return_ocr_data"`
+	// The timeout for the job in seconds. Defaults to 900.
+	Timeout param.Field[float64] `json:"timeout"`
+}
+
+func (r ExtractRunJobParamsParsingSettings) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Standard is our best multilingual OCR system. Legacy only supports germanic
+// languages and is available for backwards compatibility.
+type ExtractRunJobParamsParsingSettingsOcrSystem string
+
+const (
+	ExtractRunJobParamsParsingSettingsOcrSystemStandard ExtractRunJobParamsParsingSettingsOcrSystem = "standard"
+	ExtractRunJobParamsParsingSettingsOcrSystemLegacy   ExtractRunJobParamsParsingSettingsOcrSystem = "legacy"
+)
+
+func (r ExtractRunJobParamsParsingSettingsOcrSystem) IsKnown() bool {
+	switch r {
+	case ExtractRunJobParamsParsingSettingsOcrSystemStandard, ExtractRunJobParamsParsingSettingsOcrSystemLegacy:
+		return true
+	}
+	return false
+}
+
+// The page range to process (1-indexed). By default, the entire document is
+// processed.
+//
+// Satisfied by [shared.PageRangeParam],
+// [ExtractRunJobParamsParsingSettingsPageRangeArray],
+// [ExtractRunJobParamsParsingSettingsPageRangeArray].
+type ExtractRunJobParamsParsingSettingsPageRangeUnion interface {
+	ImplementsExtractRunJobParamsParsingSettingsPageRangeUnion()
+}
+
+type ExtractRunJobParamsParsingSettingsPageRangeArray []shared.PageRangeParam
+
+func (r ExtractRunJobParamsParsingSettingsPageRangeArray) ImplementsExtractRunJobParamsParsingSettingsPageRangeUnion() {
+}
+
+type ExtractRunJobParamsParsingSettingsReturnImage string
+
+const (
+	ExtractRunJobParamsParsingSettingsReturnImageFigure ExtractRunJobParamsParsingSettingsReturnImage = "figure"
+	ExtractRunJobParamsParsingSettingsReturnImageTable  ExtractRunJobParamsParsingSettingsReturnImage = "table"
+)
+
+func (r ExtractRunJobParamsParsingSettingsReturnImage) IsKnown() bool {
+	switch r {
+	case ExtractRunJobParamsParsingSettingsReturnImageFigure, ExtractRunJobParamsParsingSettingsReturnImageTable:
+		return true
+	}
+	return false
+}
+
+type ExtractRunJobParamsParsingSpreadsheet struct {
+	// In a spreadsheet with different tables inside, we enable splitting up the tables
+	// by default. Accurate mode applies more powerful models for superior accuracy, at
+	// 5× the default per-cell rate. Disabling will register as one large table.
+	Clustering param.Field[ExtractRunJobParamsParsingSpreadsheetClustering] `json:"clustering"`
+	// Whether to exclude hidden sheets, rows, or columns in the output.
+	Exclude param.Field[[]ExtractRunJobParamsParsingSpreadsheetExclude] `json:"exclude"`
+	// Whether to include cell color and formula information in the output.
+	Include          param.Field[[]ExtractRunJobParamsParsingSpreadsheetInclude]        `json:"include"`
+	SplitLargeTables param.Field[ExtractRunJobParamsParsingSpreadsheetSplitLargeTables] `json:"split_large_tables"`
+}
+
+func (r ExtractRunJobParamsParsingSpreadsheet) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// In a spreadsheet with different tables inside, we enable splitting up the tables
+// by default. Accurate mode applies more powerful models for superior accuracy, at
+// 5× the default per-cell rate. Disabling will register as one large table.
+type ExtractRunJobParamsParsingSpreadsheetClustering string
+
+const (
+	ExtractRunJobParamsParsingSpreadsheetClusteringAccurate ExtractRunJobParamsParsingSpreadsheetClustering = "accurate"
+	ExtractRunJobParamsParsingSpreadsheetClusteringFast     ExtractRunJobParamsParsingSpreadsheetClustering = "fast"
+	ExtractRunJobParamsParsingSpreadsheetClusteringDisabled ExtractRunJobParamsParsingSpreadsheetClustering = "disabled"
+)
+
+func (r ExtractRunJobParamsParsingSpreadsheetClustering) IsKnown() bool {
+	switch r {
+	case ExtractRunJobParamsParsingSpreadsheetClusteringAccurate, ExtractRunJobParamsParsingSpreadsheetClusteringFast, ExtractRunJobParamsParsingSpreadsheetClusteringDisabled:
+		return true
+	}
+	return false
+}
+
+type ExtractRunJobParamsParsingSpreadsheetExclude string
+
+const (
+	ExtractRunJobParamsParsingSpreadsheetExcludeHiddenSheets ExtractRunJobParamsParsingSpreadsheetExclude = "hidden_sheets"
+	ExtractRunJobParamsParsingSpreadsheetExcludeHiddenRows   ExtractRunJobParamsParsingSpreadsheetExclude = "hidden_rows"
+	ExtractRunJobParamsParsingSpreadsheetExcludeHiddenCols   ExtractRunJobParamsParsingSpreadsheetExclude = "hidden_cols"
+)
+
+func (r ExtractRunJobParamsParsingSpreadsheetExclude) IsKnown() bool {
+	switch r {
+	case ExtractRunJobParamsParsingSpreadsheetExcludeHiddenSheets, ExtractRunJobParamsParsingSpreadsheetExcludeHiddenRows, ExtractRunJobParamsParsingSpreadsheetExcludeHiddenCols:
+		return true
+	}
+	return false
+}
+
+type ExtractRunJobParamsParsingSpreadsheetInclude string
+
+const (
+	ExtractRunJobParamsParsingSpreadsheetIncludeCellColors ExtractRunJobParamsParsingSpreadsheetInclude = "cell_colors"
+	ExtractRunJobParamsParsingSpreadsheetIncludeFormula    ExtractRunJobParamsParsingSpreadsheetInclude = "formula"
+)
+
+func (r ExtractRunJobParamsParsingSpreadsheetInclude) IsKnown() bool {
+	switch r {
+	case ExtractRunJobParamsParsingSpreadsheetIncludeCellColors, ExtractRunJobParamsParsingSpreadsheetIncludeFormula:
+		return true
+	}
+	return false
+}
+
+type ExtractRunJobParamsParsingSpreadsheetSplitLargeTables struct {
+	// If True, split large tables into smaller tables. Defaults to True.
+	Enabled param.Field[bool] `json:"enabled"`
+	// The size of the tables to split into. Defaults to 50.
+	Size param.Field[int64] `json:"size"`
+}
+
+func (r ExtractRunJobParamsParsingSpreadsheetSplitLargeTables) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The settings to use for the extraction.
+type ExtractRunJobParamsSettings struct {
+	// If True, use array extraction.
+	ArrayExtract param.Field[bool] `json:"array_extract"`
+	// The citations to use for the extraction.
+	Citations param.Field[ExtractRunJobParamsSettingsCitations] `json:"citations"`
+	// If True, include images in the extraction.
+	IncludeImages param.Field[bool] `json:"include_images"`
+	// If True, jobs will be processed with a higher throughput and priority at a
+	// higher cost. Defaults to False.
+	OptimizeForLatency param.Field[bool] `json:"optimize_for_latency"`
+}
+
+func (r ExtractRunJobParamsSettings) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The citations to use for the extraction.
+type ExtractRunJobParamsSettingsCitations struct {
+	// If True, include citations in the extraction.
+	Enabled param.Field[bool] `json:"enabled"`
+	// If True, enable numeric citation confidence scores. Defaults to True.
+	NumericalConfidence param.Field[bool] `json:"numerical_confidence"`
+}
+
+func (r ExtractRunJobParamsSettingsCitations) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
