@@ -109,6 +109,9 @@ type EditRunParamsDocumentURLUnion interface {
 type EditRunParamsEditOptions struct {
 	// The color to use for edits, in hex format.
 	Color param.Field[string] `json:"color"`
+	// If True, creates overflow pages for text that doesn't fit in form fields.
+	// Defaults to False.
+	EnableOverflowPages param.Field[bool] `json:"enable_overflow_pages"`
 	// The LLM provider to use for edit processing. If not specified, defaults to
 	// 'google'
 	LlmProviderPreference param.Field[EditRunParamsEditOptionsLlmProviderPreference] `json:"llm_provider_preference"`
@@ -213,6 +216,9 @@ type EditRunJobParamsDocumentURLUnion interface {
 type EditRunJobParamsEditOptions struct {
 	// The color to use for edits, in hex format.
 	Color param.Field[string] `json:"color"`
+	// If True, creates overflow pages for text that doesn't fit in form fields.
+	// Defaults to False.
+	EnableOverflowPages param.Field[bool] `json:"enable_overflow_pages"`
 	// The LLM provider to use for edit processing. If not specified, defaults to
 	// 'google'
 	LlmProviderPreference param.Field[EditRunJobParamsEditOptionsLlmProviderPreference] `json:"llm_provider_preference"`
