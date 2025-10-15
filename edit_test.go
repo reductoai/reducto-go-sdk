@@ -32,6 +32,7 @@ func TestEditRunWithOptionalParams(t *testing.T) {
 		EditInstructions: reducto.F("edit_instructions"),
 		EditOptions: reducto.F(reducto.EditRunParamsEditOptions{
 			Color:                 reducto.F("#e1cb97"),
+			EnableOverflowPages:   reducto.F(true),
 			LlmProviderPreference: reducto.F(reducto.EditRunParamsEditOptionsLlmProviderPreferenceOpenAI),
 		}),
 		FormSchema: reducto.F([]reducto.EditRunParamsFormSchema{{
@@ -77,6 +78,7 @@ func TestEditRunJobWithOptionalParams(t *testing.T) {
 		EditInstructions: reducto.F("edit_instructions"),
 		EditOptions: reducto.F(reducto.EditRunJobParamsEditOptions{
 			Color:                 reducto.F("#e1cb97"),
+			EnableOverflowPages:   reducto.F(true),
 			LlmProviderPreference: reducto.F(reducto.EditRunJobParamsEditOptionsLlmProviderPreferenceOpenAI),
 		}),
 		FormSchema: reducto.F([]reducto.EditRunJobParamsFormSchema{{
