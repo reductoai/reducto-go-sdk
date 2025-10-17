@@ -71,13 +71,10 @@ func (r splitRunJobResponseJSON) RawJSON() string {
 }
 
 type SplitRunParams struct {
-	// For parse/split/extract pipelines, the URL of the document to be processed. You
-	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
-	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
-	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-	// previous /parse invocation
-	//
-	//	For edit pipelines, this should be a string containing the edit instructions
+	// The URL of the document to be processed. You can provide one of the
+	// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
+	// prefixed URL obtained from the /upload endpoint after directly uploading a
+	// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
 	Input param.Field[SplitRunParamsInputUnion] `json:"input,required"`
 	// The configuration options for processing the document.
 	SplitDescription param.Field[[]shared.SplitCategoryParam] `json:"split_description,required"`
@@ -94,13 +91,10 @@ func (r SplitRunParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// For parse/split/extract pipelines, the URL of the document to be processed. You
-// can provide one of the following: 1. A publicly available URL 2. A presigned S3
-// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
-// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-// previous /parse invocation
-//
-//	For edit pipelines, this should be a string containing the edit instructions
+// The URL of the document to be processed. You can provide one of the
+// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
+// prefixed URL obtained from the /upload endpoint after directly uploading a
+// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
 //
 // Satisfied by [shared.UnionString], [shared.UploadParam].
 type SplitRunParamsInputUnion interface {
@@ -140,13 +134,10 @@ func (r SplitRunParamsSettingsTableCutoff) IsKnown() bool {
 }
 
 type SplitRunJobParams struct {
-	// For parse/split/extract pipelines, the URL of the document to be processed. You
-	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
-	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
-	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-	// previous /parse invocation
-	//
-	//	For edit pipelines, this should be a string containing the edit instructions
+	// The URL of the document to be processed. You can provide one of the
+	// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
+	// prefixed URL obtained from the /upload endpoint after directly uploading a
+	// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
 	Input param.Field[SplitRunJobParamsInputUnion] `json:"input,required"`
 	// The configuration options for processing the document.
 	SplitDescription param.Field[[]shared.SplitCategoryParam] `json:"split_description,required"`
@@ -165,13 +156,10 @@ func (r SplitRunJobParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// For parse/split/extract pipelines, the URL of the document to be processed. You
-// can provide one of the following: 1. A publicly available URL 2. A presigned S3
-// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
-// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-// previous /parse invocation
-//
-//	For edit pipelines, this should be a string containing the edit instructions
+// The URL of the document to be processed. You can provide one of the
+// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
+// prefixed URL obtained from the /upload endpoint after directly uploading a
+// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
 //
 // Satisfied by [shared.UnionString], [shared.UploadParam].
 type SplitRunJobParamsInputUnion interface {
