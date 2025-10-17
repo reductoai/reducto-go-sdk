@@ -71,10 +71,13 @@ func (r pipelineRunJobResponseJSON) RawJSON() string {
 }
 
 type PipelineRunParams struct {
-	// The URL of the document to be processed. You can provide one of the
-	// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
-	// prefixed URL obtained from the /upload endpoint after directly uploading a
-	// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
+	// For parse/split/extract pipelines, the URL of the document to be processed. You
+	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+	// previous /parse invocation
+	//
+	//	For edit pipelines, this should be a string containing the edit instructions
 	Input param.Field[PipelineRunParamsInputUnion] `json:"input,required"`
 	// The ID of the pipeline to use for the document.
 	PipelineID param.Field[string] `json:"pipeline_id,required"`
@@ -84,10 +87,13 @@ func (r PipelineRunParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The URL of the document to be processed. You can provide one of the
-// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
-// prefixed URL obtained from the /upload endpoint after directly uploading a
-// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
+// For parse/split/extract pipelines, the URL of the document to be processed. You
+// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+// previous /parse invocation
+//
+//	For edit pipelines, this should be a string containing the edit instructions
 //
 // Satisfied by [shared.UnionString], [shared.UploadParam].
 type PipelineRunParamsInputUnion interface {
@@ -95,10 +101,13 @@ type PipelineRunParamsInputUnion interface {
 }
 
 type PipelineRunJobParams struct {
-	// The URL of the document to be processed. You can provide one of the
-	// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
-	// prefixed URL obtained from the /upload endpoint after directly uploading a
-	// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
+	// For parse/split/extract pipelines, the URL of the document to be processed. You
+	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+	// previous /parse invocation
+	//
+	//	For edit pipelines, this should be a string containing the edit instructions
 	Input param.Field[PipelineRunJobParamsInputUnion] `json:"input,required"`
 	// The ID of the pipeline to use for the document.
 	PipelineID param.Field[string] `json:"pipeline_id,required"`
@@ -110,10 +119,13 @@ func (r PipelineRunJobParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The URL of the document to be processed. You can provide one of the
-// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
-// prefixed URL obtained from the /upload endpoint after directly uploading a
-// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
+// For parse/split/extract pipelines, the URL of the document to be processed. You
+// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+// previous /parse invocation
+//
+//	For edit pipelines, this should be a string containing the edit instructions
 //
 // Satisfied by [shared.UnionString], [shared.UploadParam].
 type PipelineRunJobParamsInputUnion interface {
