@@ -192,10 +192,13 @@ type ExtractRunParamsBodyUnion interface {
 }
 
 type ExtractRunParamsBodySyncExtractConfig struct {
-	// The URL of the document to be processed. You can provide one of the
-	// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
-	// prefixed URL obtained from the /upload endpoint after directly uploading a
-	// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
+	// For parse/split/extract pipelines, the URL of the document to be processed. You
+	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+	// previous /parse invocation
+	//
+	//	For edit pipelines, this should be a string containing the edit instructions
 	Input param.Field[ExtractRunParamsBodySyncExtractConfigInputUnion] `json:"input,required"`
 	// The instructions to use for the extraction.
 	Instructions param.Field[ExtractRunParamsBodySyncExtractConfigInstructions] `json:"instructions"`
@@ -212,10 +215,13 @@ func (r ExtractRunParamsBodySyncExtractConfig) MarshalJSON() (data []byte, err e
 
 func (r ExtractRunParamsBodySyncExtractConfig) implementsExtractRunParamsBodyUnion() {}
 
-// The URL of the document to be processed. You can provide one of the
-// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
-// prefixed URL obtained from the /upload endpoint after directly uploading a
-// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
+// For parse/split/extract pipelines, the URL of the document to be processed. You
+// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+// previous /parse invocation
+//
+//	For edit pipelines, this should be a string containing the edit instructions
 //
 // Satisfied by [shared.UnionString], [shared.UploadParam].
 type ExtractRunParamsBodySyncExtractConfigInputUnion interface {
@@ -264,10 +270,13 @@ func (r ExtractRunParamsBodySyncExtractConfigSettingsCitations) MarshalJSON() (d
 }
 
 type ExtractRunParamsBodyAsyncExtractConfig struct {
-	// The URL of the document to be processed. You can provide one of the
-	// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
-	// prefixed URL obtained from the /upload endpoint after directly uploading a
-	// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
+	// For parse/split/extract pipelines, the URL of the document to be processed. You
+	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+	// previous /parse invocation
+	//
+	//	For edit pipelines, this should be a string containing the edit instructions
 	Input param.Field[ExtractRunParamsBodyAsyncExtractConfigInputUnion] `json:"input,required"`
 	// The configuration options for asynchronous processing (default synchronous).
 	Async param.Field[shared.ConfigV3AsyncConfigParam] `json:"async"`
@@ -286,10 +295,13 @@ func (r ExtractRunParamsBodyAsyncExtractConfig) MarshalJSON() (data []byte, err 
 
 func (r ExtractRunParamsBodyAsyncExtractConfig) implementsExtractRunParamsBodyUnion() {}
 
-// The URL of the document to be processed. You can provide one of the
-// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
-// prefixed URL obtained from the /upload endpoint after directly uploading a
-// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
+// For parse/split/extract pipelines, the URL of the document to be processed. You
+// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+// previous /parse invocation
+//
+//	For edit pipelines, this should be a string containing the edit instructions
 //
 // Satisfied by [shared.UnionString], [shared.UploadParam].
 type ExtractRunParamsBodyAsyncExtractConfigInputUnion interface {
@@ -338,10 +350,13 @@ func (r ExtractRunParamsBodyAsyncExtractConfigSettingsCitations) MarshalJSON() (
 }
 
 type ExtractRunJobParams struct {
-	// The URL of the document to be processed. You can provide one of the
-	// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
-	// prefixed URL obtained from the /upload endpoint after directly uploading a
-	// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
+	// For parse/split/extract pipelines, the URL of the document to be processed. You
+	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+	// previous /parse invocation
+	//
+	//	For edit pipelines, this should be a string containing the edit instructions
 	Input param.Field[ExtractRunJobParamsInputUnion] `json:"input,required"`
 	// The configuration options for asynchronous processing (default synchronous).
 	Async param.Field[shared.ConfigV3AsyncConfigParam] `json:"async"`
@@ -358,10 +373,13 @@ func (r ExtractRunJobParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The URL of the document to be processed. You can provide one of the
-// following: 1. A publicly available URL 2. A presigned S3 URL 3. A reducto://
-// prefixed URL obtained from the /upload endpoint after directly uploading a
-// document 4. A jobid:// prefixed URL obtained from a previous /parse invocation
+// For parse/split/extract pipelines, the URL of the document to be processed. You
+// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+// previous /parse invocation
+//
+//	For edit pipelines, this should be a string containing the edit instructions
 //
 // Satisfied by [shared.UnionString], [shared.UploadParam].
 type ExtractRunJobParamsInputUnion interface {
