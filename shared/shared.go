@@ -1171,7 +1171,7 @@ type SettingsParam struct {
 	ReturnImages param.Field[[]SettingsReturnImage] `json:"return_images"`
 	// If True, return OCR data in the result. Defaults to False.
 	ReturnOcrData param.Field[bool] `json:"return_ocr_data"`
-	// The timeout for the job in seconds. Defaults to 900.
+	// The timeout for the job in seconds.
 	Timeout param.Field[float64] `json:"timeout"`
 }
 
