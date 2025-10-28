@@ -417,11 +417,12 @@ const (
 	FormattingIncludeChangeTracking FormattingInclude = "change_tracking"
 	FormattingIncludeHighlight      FormattingInclude = "highlight"
 	FormattingIncludeComments       FormattingInclude = "comments"
+	FormattingIncludeHyperlinks     FormattingInclude = "hyperlinks"
 )
 
 func (r FormattingInclude) IsKnown() bool {
 	switch r {
-	case FormattingIncludeChangeTracking, FormattingIncludeHighlight, FormattingIncludeComments:
+	case FormattingIncludeChangeTracking, FormattingIncludeHighlight, FormattingIncludeComments, FormattingIncludeHyperlinks:
 		return true
 	}
 	return false
