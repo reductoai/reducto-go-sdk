@@ -178,13 +178,17 @@ type EditResponse struct {
 	// Form schema for PDF forms. List of widgets with their types, descriptions, and
 	// bounding boxes.
 	FormSchema []EditResponseFormSchema `json:"form_schema,nullable"`
-	JSON       editResponseJSON         `json:"-"`
+	// Usage information for the edit operation, including number of pages and credits
+	// charged.
+	Usage ParseUsage       `json:"usage,nullable"`
+	JSON  editResponseJSON `json:"-"`
 }
 
 // editResponseJSON contains the JSON metadata for the struct [EditResponse]
 type editResponseJSON struct {
 	DocumentURL apijson.Field
 	FormSchema  apijson.Field
+	Usage       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -417,11 +421,12 @@ const (
 	FormattingIncludeChangeTracking FormattingInclude = "change_tracking"
 	FormattingIncludeHighlight      FormattingInclude = "highlight"
 	FormattingIncludeComments       FormattingInclude = "comments"
+	FormattingIncludeHyperlinks     FormattingInclude = "hyperlinks"
 )
 
 func (r FormattingInclude) IsKnown() bool {
 	switch r {
-	case FormattingIncludeChangeTracking, FormattingIncludeHighlight, FormattingIncludeComments:
+	case FormattingIncludeChangeTracking, FormattingIncludeHighlight, FormattingIncludeComments, FormattingIncludeHyperlinks:
 		return true
 	}
 	return false
