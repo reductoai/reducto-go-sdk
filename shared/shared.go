@@ -1421,14 +1421,16 @@ func (r SpreadsheetClustering) IsKnown() bool {
 type SpreadsheetExclude string
 
 const (
-	SpreadsheetExcludeHiddenSheets SpreadsheetExclude = "hidden_sheets"
-	SpreadsheetExcludeHiddenRows   SpreadsheetExclude = "hidden_rows"
-	SpreadsheetExcludeHiddenCols   SpreadsheetExclude = "hidden_cols"
+	SpreadsheetExcludeHiddenSheets      SpreadsheetExclude = "hidden_sheets"
+	SpreadsheetExcludeHiddenRows        SpreadsheetExclude = "hidden_rows"
+	SpreadsheetExcludeHiddenCols        SpreadsheetExclude = "hidden_cols"
+	SpreadsheetExcludeStyling           SpreadsheetExclude = "styling"
+	SpreadsheetExcludeSpreadsheetImages SpreadsheetExclude = "spreadsheet_images"
 )
 
 func (r SpreadsheetExclude) IsKnown() bool {
 	switch r {
-	case SpreadsheetExcludeHiddenSheets, SpreadsheetExcludeHiddenRows, SpreadsheetExcludeHiddenCols:
+	case SpreadsheetExcludeHiddenSheets, SpreadsheetExcludeHiddenRows, SpreadsheetExcludeHiddenCols, SpreadsheetExcludeStyling, SpreadsheetExcludeSpreadsheetImages:
 		return true
 	}
 	return false
