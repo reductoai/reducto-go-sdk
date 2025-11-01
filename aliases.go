@@ -449,6 +449,12 @@ const SpreadsheetExcludeHiddenRows = shared.SpreadsheetExcludeHiddenRows
 // This is an alias to an internal value.
 const SpreadsheetExcludeHiddenCols = shared.SpreadsheetExcludeHiddenCols
 
+// This is an alias to an internal value.
+const SpreadsheetExcludeStyling = shared.SpreadsheetExcludeStyling
+
+// This is an alias to an internal value.
+const SpreadsheetExcludeSpreadsheetImages = shared.SpreadsheetExcludeSpreadsheetImages
+
 // This is an alias to an internal type.
 type SpreadsheetInclude = shared.SpreadsheetInclude
 
