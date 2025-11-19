@@ -276,6 +276,9 @@ type EnhanceAgenticParam struct {
 	Scope param.Field[EnhanceAgenticScope] `json:"scope,required"`
 	// Custom prompt for table agentic.
 	Prompt param.Field[string] `json:"prompt"`
+	// If True, return overlays for the figure. This is so you can use the overlays to
+	// double check the quality of the extraction
+	ReturnOverlays param.Field[bool] `json:"return_overlays"`
 }
 
 func (r EnhanceAgenticParam) MarshalJSON() (data []byte, err error) {
@@ -374,6 +377,9 @@ type FigureAgenticParam struct {
 	Scope param.Field[FigureAgenticScope] `json:"scope,required"`
 	// Custom prompt for figure agentic.
 	Prompt param.Field[string] `json:"prompt"`
+	// If True, return overlays for the figure. This is so you can use the overlays to
+	// double check the quality of the extraction
+	ReturnOverlays param.Field[bool] `json:"return_overlays"`
 }
 
 func (r FigureAgenticParam) MarshalJSON() (data []byte, err error) {
