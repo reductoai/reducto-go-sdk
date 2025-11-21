@@ -144,6 +144,9 @@ const FormattingIncludeComments = shared.FormattingIncludeComments
 // This is an alias to an internal value.
 const FormattingIncludeHyperlinks = shared.FormattingIncludeHyperlinks
 
+// This is an alias to an internal value.
+const FormattingIncludeSignatures = shared.FormattingIncludeSignatures
+
 // The mode to use for table output. Defaults to dynamic, which returns md for
 // simpler tables and html for more complex tables.
 //

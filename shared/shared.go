@@ -406,8 +406,7 @@ type FormattingParam struct {
 	// If True, add page markers to the output. Defaults to False. Useful for
 	// extracting data with page specific information.
 	AddPageMarkers param.Field[bool] `json:"add_page_markers"`
-	// A list of formatting to include in the output. [insert description of each
-	// option here later]
+	// A list of formatting to include in the output.
 	Include param.Field[[]FormattingInclude] `json:"include"`
 	// A flag to indicate if consecutive tables with the same number of columns should
 	// be merged. Defaults to False.
@@ -428,11 +427,12 @@ const (
 	FormattingIncludeHighlight      FormattingInclude = "highlight"
 	FormattingIncludeComments       FormattingInclude = "comments"
 	FormattingIncludeHyperlinks     FormattingInclude = "hyperlinks"
+	FormattingIncludeSignatures     FormattingInclude = "signatures"
 )
 
 func (r FormattingInclude) IsKnown() bool {
 	switch r {
-	case FormattingIncludeChangeTracking, FormattingIncludeHighlight, FormattingIncludeComments, FormattingIncludeHyperlinks:
+	case FormattingIncludeChangeTracking, FormattingIncludeHighlight, FormattingIncludeComments, FormattingIncludeHyperlinks, FormattingIncludeSignatures:
 		return true
 	}
 	return false
