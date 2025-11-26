@@ -1512,6 +1512,9 @@ func (r TableAgenticScope) IsKnown() bool {
 
 type TextAgenticParam struct {
 	Scope param.Field[TextAgenticScope] `json:"scope,required"`
+	// Custom instructions for agentic text. Note: This only applies to form regions
+	// (key-value).
+	Prompt param.Field[string] `json:"prompt"`
 }
 
 func (r TextAgenticParam) MarshalJSON() (data []byte, err error) {
