@@ -680,6 +680,9 @@ type ParseResponseResultFullResultChunksBlock struct {
 	Content string `json:"content,required"`
 	// The type of block extracted from the document.
 	Type ParseResponseResultFullResultChunksBlocksType `json:"type,required"`
+	// (Experimental) The URL/link to chart data JSON for figure blocks processed by
+	// chart agent.
+	ChartData []string `json:"chart_data,nullable"`
 	// The confidence for the block. It is either low or high and takes into account
 	// factors like OCR and table structure
 	Confidence string `json:"confidence,nullable"`
@@ -698,6 +701,7 @@ type parseResponseResultFullResultChunksBlockJSON struct {
 	Bbox               apijson.Field
 	Content            apijson.Field
 	Type               apijson.Field
+	ChartData          apijson.Field
 	Confidence         apijson.Field
 	GranularConfidence apijson.Field
 	ImageURL           apijson.Field
@@ -810,8 +814,10 @@ type ParseResponseResultFullResultOcrLine struct {
 	// The index of the chunk that the line belongs to.
 	ChunkIndex int64 `json:"chunk_index,nullable"`
 	// OCR confidence score between 0 and 1, where 1 indicates highest confidence
-	Confidence float64                                  `json:"confidence,nullable"`
-	JSON       parseResponseResultFullResultOcrLineJSON `json:"-"`
+	Confidence float64 `json:"confidence,nullable"`
+	// The rotation angle in degrees, from 0 to 360, counterclockwise.
+	Rotation int64                                    `json:"rotation,nullable"`
+	JSON     parseResponseResultFullResultOcrLineJSON `json:"-"`
 }
 
 // parseResponseResultFullResultOcrLineJSON contains the JSON metadata for the
@@ -821,6 +827,7 @@ type parseResponseResultFullResultOcrLineJSON struct {
 	Text        apijson.Field
 	ChunkIndex  apijson.Field
 	Confidence  apijson.Field
+	Rotation    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -839,8 +846,10 @@ type ParseResponseResultFullResultOcrWord struct {
 	// The index of the chunk that the word belongs to.
 	ChunkIndex int64 `json:"chunk_index,nullable"`
 	// OCR confidence score between 0 and 1, where 1 indicates highest confidence
-	Confidence float64                                  `json:"confidence,nullable"`
-	JSON       parseResponseResultFullResultOcrWordJSON `json:"-"`
+	Confidence float64 `json:"confidence,nullable"`
+	// The rotation angle in degrees, from 0 to 360, counterclockwise.
+	Rotation int64                                    `json:"rotation,nullable"`
+	JSON     parseResponseResultFullResultOcrWordJSON `json:"-"`
 }
 
 // parseResponseResultFullResultOcrWordJSON contains the JSON metadata for the
@@ -850,6 +859,7 @@ type parseResponseResultFullResultOcrWordJSON struct {
 	Text        apijson.Field
 	ChunkIndex  apijson.Field
 	Confidence  apijson.Field
+	Rotation    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
