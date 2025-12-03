@@ -274,6 +274,8 @@ func (r EnhanceParam) MarshalJSON() (data []byte, err error) {
 
 type EnhanceAgenticParam struct {
 	Scope param.Field[EnhanceAgenticScope] `json:"scope,required"`
+	// If True, use the advanced chart agent. Defaults to False.
+	AdvancedChartAgent param.Field[bool] `json:"advanced_chart_agent"`
 	// Custom prompt for table agentic.
 	Prompt param.Field[string] `json:"prompt"`
 	// If True, return overlays for the figure. This is so you can use the overlays to
@@ -375,6 +377,8 @@ func (r extractUsageJSON) RawJSON() string {
 
 type FigureAgenticParam struct {
 	Scope param.Field[FigureAgenticScope] `json:"scope,required"`
+	// If True, use the advanced chart agent. Defaults to False.
+	AdvancedChartAgent param.Field[bool] `json:"advanced_chart_agent"`
 	// Custom prompt for figure agentic.
 	Prompt param.Field[string] `json:"prompt"`
 	// If True, return overlays for the figure. This is so you can use the overlays to
