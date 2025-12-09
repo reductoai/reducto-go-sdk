@@ -195,57 +195,6 @@ type ParseResponseResultFullResult = shared.ParseResponseResultFullResult
 // This is an alias to an internal type.
 type ParseResponseResultFullResultChunk = shared.ParseResponseResultFullResultChunk
 
-// This is an alias to an internal type.
-type ParseResponseResultFullResultChunksBlock = shared.ParseResponseResultFullResultChunksBlock
-
-// The type of block extracted from the document.
-//
-// This is an alias to an internal type.
-type ParseResponseResultFullResultChunksBlocksType = shared.ParseResponseResultFullResultChunksBlocksType
-
-// This is an alias to an internal value.
-const ParseResponseResultFullResultChunksBlocksTypeHeader = shared.ParseResponseResultFullResultChunksBlocksTypeHeader
-
-// This is an alias to an internal value.
-const ParseResponseResultFullResultChunksBlocksTypeFooter = shared.ParseResponseResultFullResultChunksBlocksTypeFooter
-
-// This is an alias to an internal value.
-const ParseResponseResultFullResultChunksBlocksTypeTitle = shared.ParseResponseResultFullResultChunksBlocksTypeTitle
-
-// This is an alias to an internal value.
-const ParseResponseResultFullResultChunksBlocksTypeSectionHeader = shared.ParseResponseResultFullResultChunksBlocksTypeSectionHeader
-
-// This is an alias to an internal value.
-const ParseResponseResultFullResultChunksBlocksTypePageNumber = shared.ParseResponseResultFullResultChunksBlocksTypePageNumber
-
-// This is an alias to an internal value.
-const ParseResponseResultFullResultChunksBlocksTypeListItem = shared.ParseResponseResultFullResultChunksBlocksTypeListItem
-
-// This is an alias to an internal value.
-const ParseResponseResultFullResultChunksBlocksTypeFigure = shared.ParseResponseResultFullResultChunksBlocksTypeFigure
-
-// This is an alias to an internal value.
-const ParseResponseResultFullResultChunksBlocksTypeTable = shared.ParseResponseResultFullResultChunksBlocksTypeTable
-
-// This is an alias to an internal value.
-const ParseResponseResultFullResultChunksBlocksTypeKeyValue = shared.ParseResponseResultFullResultChunksBlocksTypeKeyValue
-
-// This is an alias to an internal value.
-const ParseResponseResultFullResultChunksBlocksTypeText = shared.ParseResponseResultFullResultChunksBlocksTypeText
-
-// This is an alias to an internal value.
-const ParseResponseResultFullResultChunksBlocksTypeComment = shared.ParseResponseResultFullResultChunksBlocksTypeComment
-
-// This is an alias to an internal value.
-const ParseResponseResultFullResultChunksBlocksTypeSignature = shared.ParseResponseResultFullResultChunksBlocksTypeSignature
-
-// Granular confidence scores for the block. It is a dictionary of confidence
-// scores for the block. The confidence scores will not be None if the user has
-// enabled numeric confidence scores.
-//
-// This is an alias to an internal type.
-type ParseResponseResultFullResultChunksBlocksGranularConfidence = shared.ParseResponseResultFullResultChunksBlocksGranularConfidence
-
 // type = 'full'
 //
 // This is an alias to an internal type.
@@ -352,6 +301,19 @@ const RetrievalFilterBlockSignature = shared.RetrievalFilterBlockSignature
 
 // This is an alias to an internal type.
 type SettingsParam = shared.SettingsParam
+
+// The mode to use for text extraction from PDFs. OCR mode uses optical character
+// recognition only. Hybrid mode combines OCR with embedded PDF text for best
+// accuracy (default).
+//
+// This is an alias to an internal type.
+type SettingsExtractionMode = shared.SettingsExtractionMode
+
+// This is an alias to an internal value.
+const SettingsExtractionModeOcr = shared.SettingsExtractionModeOcr
+
+// This is an alias to an internal value.
+const SettingsExtractionModeHybrid = shared.SettingsExtractionModeHybrid
 
 // Standard is our best multilingual OCR system. Legacy only supports germanic
 // languages and is available for backwards compatibility.

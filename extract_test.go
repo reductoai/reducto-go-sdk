@@ -59,6 +59,7 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 				Settings: reducto.F(shared.SettingsParam{
 					DocumentPassword:   reducto.F("document_password"),
 					EmbedPdfMetadata:   reducto.F(true),
+					ExtractionMode:     reducto.F(shared.SettingsExtractionModeOcr),
 					ForceFileExtension: reducto.F("force_file_extension"),
 					ForceURLResult:     reducto.F(true),
 					OcrSystem:          reducto.F(shared.SettingsOcrSystemStandard),
@@ -153,6 +154,7 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 			Settings: reducto.F(shared.SettingsParam{
 				DocumentPassword:   reducto.F("document_password"),
 				EmbedPdfMetadata:   reducto.F(true),
+				ExtractionMode:     reducto.F(shared.SettingsExtractionModeOcr),
 				ForceFileExtension: reducto.F("force_file_extension"),
 				ForceURLResult:     reducto.F(true),
 				OcrSystem:          reducto.F(shared.SettingsOcrSystemStandard),
