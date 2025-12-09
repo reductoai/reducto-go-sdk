@@ -645,7 +645,7 @@ func (r parseResponseResultFullResultJSON) RawJSON() string {
 func (r ParseResponseResultFullResult) implementsParseResponseResult() {}
 
 type ParseResponseResultFullResultChunk struct {
-	Blocks []ParseResponseResultFullResultChunksBlock `json:"blocks,required"`
+	Blocks []map[string]interface{} `json:"blocks,required"`
 	// The content of the chunk extracted from the document.
 	Content string `json:"content,required"`
 	// Chunk content optimized for embedding and retrieval.
@@ -674,103 +674,6 @@ func (r *ParseResponseResultFullResultChunk) UnmarshalJSON(data []byte) (err err
 }
 
 func (r parseResponseResultFullResultChunkJSON) RawJSON() string {
-	return r.raw
-}
-
-type ParseResponseResultFullResultChunksBlock struct {
-	// The bounding box of the block extracted from the document.
-	Bbox BoundingBox `json:"bbox,required"`
-	// The content of the block extracted from the document.
-	Content string `json:"content,required"`
-	// The type of block extracted from the document.
-	Type ParseResponseResultFullResultChunksBlocksType `json:"type,required"`
-	// (Experimental) The URL/link to chart data JSON for figure blocks processed by
-	// chart agent.
-	ChartData []string `json:"chart_data,nullable"`
-	// The confidence for the block. It is either low or high and takes into account
-	// factors like OCR and table structure
-	Confidence string `json:"confidence,nullable"`
-	// Granular confidence scores for the block. It is a dictionary of confidence
-	// scores for the block. The confidence scores will not be None if the user has
-	// enabled numeric confidence scores.
-	GranularConfidence ParseResponseResultFullResultChunksBlocksGranularConfidence `json:"granular_confidence,nullable"`
-	// (Experimental) The URL of the image associated with the block.
-	ImageURL string                                       `json:"image_url,nullable"`
-	JSON     parseResponseResultFullResultChunksBlockJSON `json:"-"`
-}
-
-// parseResponseResultFullResultChunksBlockJSON contains the JSON metadata for the
-// struct [ParseResponseResultFullResultChunksBlock]
-type parseResponseResultFullResultChunksBlockJSON struct {
-	Bbox               apijson.Field
-	Content            apijson.Field
-	Type               apijson.Field
-	ChartData          apijson.Field
-	Confidence         apijson.Field
-	GranularConfidence apijson.Field
-	ImageURL           apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *ParseResponseResultFullResultChunksBlock) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r parseResponseResultFullResultChunksBlockJSON) RawJSON() string {
-	return r.raw
-}
-
-// The type of block extracted from the document.
-type ParseResponseResultFullResultChunksBlocksType string
-
-const (
-	ParseResponseResultFullResultChunksBlocksTypeHeader        ParseResponseResultFullResultChunksBlocksType = "Header"
-	ParseResponseResultFullResultChunksBlocksTypeFooter        ParseResponseResultFullResultChunksBlocksType = "Footer"
-	ParseResponseResultFullResultChunksBlocksTypeTitle         ParseResponseResultFullResultChunksBlocksType = "Title"
-	ParseResponseResultFullResultChunksBlocksTypeSectionHeader ParseResponseResultFullResultChunksBlocksType = "Section Header"
-	ParseResponseResultFullResultChunksBlocksTypePageNumber    ParseResponseResultFullResultChunksBlocksType = "Page Number"
-	ParseResponseResultFullResultChunksBlocksTypeListItem      ParseResponseResultFullResultChunksBlocksType = "List Item"
-	ParseResponseResultFullResultChunksBlocksTypeFigure        ParseResponseResultFullResultChunksBlocksType = "Figure"
-	ParseResponseResultFullResultChunksBlocksTypeTable         ParseResponseResultFullResultChunksBlocksType = "Table"
-	ParseResponseResultFullResultChunksBlocksTypeKeyValue      ParseResponseResultFullResultChunksBlocksType = "Key Value"
-	ParseResponseResultFullResultChunksBlocksTypeText          ParseResponseResultFullResultChunksBlocksType = "Text"
-	ParseResponseResultFullResultChunksBlocksTypeComment       ParseResponseResultFullResultChunksBlocksType = "Comment"
-	ParseResponseResultFullResultChunksBlocksTypeSignature     ParseResponseResultFullResultChunksBlocksType = "Signature"
-)
-
-func (r ParseResponseResultFullResultChunksBlocksType) IsKnown() bool {
-	switch r {
-	case ParseResponseResultFullResultChunksBlocksTypeHeader, ParseResponseResultFullResultChunksBlocksTypeFooter, ParseResponseResultFullResultChunksBlocksTypeTitle, ParseResponseResultFullResultChunksBlocksTypeSectionHeader, ParseResponseResultFullResultChunksBlocksTypePageNumber, ParseResponseResultFullResultChunksBlocksTypeListItem, ParseResponseResultFullResultChunksBlocksTypeFigure, ParseResponseResultFullResultChunksBlocksTypeTable, ParseResponseResultFullResultChunksBlocksTypeKeyValue, ParseResponseResultFullResultChunksBlocksTypeText, ParseResponseResultFullResultChunksBlocksTypeComment, ParseResponseResultFullResultChunksBlocksTypeSignature:
-		return true
-	}
-	return false
-}
-
-// Granular confidence scores for the block. It is a dictionary of confidence
-// scores for the block. The confidence scores will not be None if the user has
-// enabled numeric confidence scores.
-type ParseResponseResultFullResultChunksBlocksGranularConfidence struct {
-	ExtractConfidence float64                                                         `json:"extract_confidence,nullable"`
-	ParseConfidence   float64                                                         `json:"parse_confidence,nullable"`
-	JSON              parseResponseResultFullResultChunksBlocksGranularConfidenceJSON `json:"-"`
-}
-
-// parseResponseResultFullResultChunksBlocksGranularConfidenceJSON contains the
-// JSON metadata for the struct
-// [ParseResponseResultFullResultChunksBlocksGranularConfidence]
-type parseResponseResultFullResultChunksBlocksGranularConfidenceJSON struct {
-	ExtractConfidence apijson.Field
-	ParseConfidence   apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
-}
-
-func (r *ParseResponseResultFullResultChunksBlocksGranularConfidence) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r parseResponseResultFullResultChunksBlocksGranularConfidenceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -1179,6 +1082,10 @@ type SettingsParam struct {
 	DocumentPassword param.Field[string] `json:"document_password"`
 	// If True, embed OCR metadata into the returned PDF. Defaults to False.
 	EmbedPdfMetadata param.Field[bool] `json:"embed_pdf_metadata"`
+	// The mode to use for text extraction from PDFs. OCR mode uses optical character
+	// recognition only. Hybrid mode combines OCR with embedded PDF text for best
+	// accuracy (default).
+	ExtractionMode param.Field[SettingsExtractionMode] `json:"extraction_mode"`
 	// Force the URL to be downloaded as a specific file extension (e.g. `.png`).
 	ForceFileExtension param.Field[string] `json:"force_file_extension"`
 	// Force the result to be returned in URL form.
@@ -1202,6 +1109,24 @@ type SettingsParam struct {
 
 func (r SettingsParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// The mode to use for text extraction from PDFs. OCR mode uses optical character
+// recognition only. Hybrid mode combines OCR with embedded PDF text for best
+// accuracy (default).
+type SettingsExtractionMode string
+
+const (
+	SettingsExtractionModeOcr    SettingsExtractionMode = "ocr"
+	SettingsExtractionModeHybrid SettingsExtractionMode = "hybrid"
+)
+
+func (r SettingsExtractionMode) IsKnown() bool {
+	switch r {
+	case SettingsExtractionModeOcr, SettingsExtractionModeHybrid:
+		return true
+	}
+	return false
 }
 
 // Standard is our best multilingual OCR system. Legacy only supports germanic
