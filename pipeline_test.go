@@ -30,6 +30,9 @@ func TestPipelineRunWithOptionalParams(t *testing.T) {
 	_, err := client.Pipeline.Run(context.TODO(), reducto.PipelineRunParams{
 		Input:      reducto.F[reducto.PipelineRunParamsInputUnion](shared.UnionString("string")),
 		PipelineID: reducto.F("pipeline_id"),
+		Settings: reducto.F(reducto.PipelineRunParamsSettings{
+			DocumentPassword: reducto.F("document_password"),
+		}),
 	})
 	if err != nil {
 		var apierr *reducto.Error
@@ -63,6 +66,9 @@ func TestPipelineRunJobWithOptionalParams(t *testing.T) {
 				Channels: reducto.F([]string{"string"}),
 				Mode:     reducto.F(shared.SvixWebhookConfigModeSvix),
 			}),
+		}),
+		Settings: reducto.F(reducto.PipelineRunJobParamsSettings{
+			DocumentPassword: reducto.F("document_password"),
 		}),
 	})
 	if err != nil {

@@ -81,6 +81,8 @@ type PipelineRunParams struct {
 	Input param.Field[PipelineRunParamsInputUnion] `json:"input,required"`
 	// The ID of the pipeline to use for the document.
 	PipelineID param.Field[string] `json:"pipeline_id,required"`
+	// Settings for pipeline execution that override pipeline defaults.
+	Settings param.Field[PipelineRunParamsSettings] `json:"settings"`
 }
 
 func (r PipelineRunParams) MarshalJSON() (data []byte, err error) {
@@ -100,6 +102,16 @@ type PipelineRunParamsInputUnion interface {
 	ImplementsPipelineRunParamsInputUnion()
 }
 
+// Settings for pipeline execution that override pipeline defaults.
+type PipelineRunParamsSettings struct {
+	// Password to decrypt password-protected documents.
+	DocumentPassword param.Field[string] `json:"document_password"`
+}
+
+func (r PipelineRunParamsSettings) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type PipelineRunJobParams struct {
 	// For parse/split/extract pipelines, the URL of the document to be processed. You
 	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
@@ -113,6 +125,8 @@ type PipelineRunJobParams struct {
 	PipelineID param.Field[string] `json:"pipeline_id,required"`
 	// The configuration options for asynchronous processing (default synchronous).
 	Async param.Field[shared.ConfigV3AsyncConfigParam] `json:"async"`
+	// Settings for pipeline execution that override pipeline defaults.
+	Settings param.Field[PipelineRunJobParamsSettings] `json:"settings"`
 }
 
 func (r PipelineRunJobParams) MarshalJSON() (data []byte, err error) {
@@ -130,4 +144,14 @@ func (r PipelineRunJobParams) MarshalJSON() (data []byte, err error) {
 // Satisfied by [shared.UnionString], [shared.UploadParam].
 type PipelineRunJobParamsInputUnion interface {
 	ImplementsPipelineRunJobParamsInputUnion()
+}
+
+// Settings for pipeline execution that override pipeline defaults.
+type PipelineRunJobParamsSettings struct {
+	// Password to decrypt password-protected documents.
+	DocumentPassword param.Field[string] `json:"document_password"`
+}
+
+func (r PipelineRunJobParamsSettings) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
