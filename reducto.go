@@ -4,7 +4,6 @@ package reducto
 
 import (
 	"bytes"
-	"io"
 	"mime/multipart"
 	"net/url"
 
@@ -16,8 +15,8 @@ import (
 type APIVersionResponse = interface{}
 
 type UploadParams struct {
-	Extension param.Field[string]    `query:"extension"`
-	File      param.Field[io.Reader] `json:"file" format:"binary"`
+	Extension param.Field[string]                `query:"extension"`
+	File      param.Field[UploadParamsFileUnion] `json:"file" format:"binary"`
 }
 
 func (r UploadParams) MarshalMultipart() (data []byte, contentType string, err error) {
@@ -41,4 +40,9 @@ func (r UploadParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+// Satisfied by [shared.UnionString], [shared.UnionString].
+type UploadParamsFileUnion interface {
+	ImplementsUploadParamsFileUnion()
 }

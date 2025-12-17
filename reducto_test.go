@@ -13,6 +13,7 @@ import (
 	"github.com/reductoai/reducto-go-sdk"
 	"github.com/reductoai/reducto-go-sdk/internal/testutil"
 	"github.com/reductoai/reducto-go-sdk/option"
+	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 func TestReductoAPIVersion(t *testing.T) {
@@ -53,7 +54,7 @@ func TestReductoUploadWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Upload(context.TODO(), reducto.UploadParams{
 		Extension: reducto.F("extension"),
-		File:      reducto.F(io.Reader(bytes.NewBuffer([]byte("some file contents")))),
+		File:      reducto.F[reducto.UploadParamsFileUnion](shared.UnionString(io.Reader(bytes.NewBuffer([]byte("some file contents"))))),
 	})
 	if err != nil {
 		var apierr *reducto.Error
