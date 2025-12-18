@@ -25,6 +25,7 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
+	t.Skip("Prism tests are disabled")
 	response, err := client.Parse.Run(context.TODO(), reducto.ParseRunParamsSyncParseConfig{
 		Input: reducto.F[reducto.ParseRunParamsSyncParseConfigInputUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),
 	})
