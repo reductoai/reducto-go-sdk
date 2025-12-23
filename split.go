@@ -75,7 +75,8 @@ type SplitRunParams struct {
 	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
 	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
 	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-	// previous /parse invocation
+	// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
 	Input param.Field[SplitRunParamsInputUnion] `json:"input,required"`
@@ -98,14 +99,20 @@ func (r SplitRunParams) MarshalJSON() (data []byte, err error) {
 // can provide one of the following: 1. A publicly available URL 2. A presigned S3
 // URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
 // directly uploading a document 4. A jobid:// prefixed URL obtained from a
-// previous /parse invocation
+// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+// API only)
 //
 //	For edit pipelines, this should be a string containing the edit instructions
 //
-// Satisfied by [shared.UnionString], [shared.UploadParam].
+// Satisfied by [shared.UnionString], [SplitRunParamsInputArray],
+// [shared.UploadParam].
 type SplitRunParamsInputUnion interface {
 	ImplementsSplitRunParamsInputUnion()
 }
+
+type SplitRunParamsInputArray []string
+
+func (r SplitRunParamsInputArray) ImplementsSplitRunParamsInputUnion() {}
 
 // The settings for split processing.
 type SplitRunParamsSettings struct {
@@ -144,7 +151,8 @@ type SplitRunJobParams struct {
 	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
 	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
 	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-	// previous /parse invocation
+	// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
 	Input param.Field[SplitRunJobParamsInputUnion] `json:"input,required"`
@@ -169,14 +177,20 @@ func (r SplitRunJobParams) MarshalJSON() (data []byte, err error) {
 // can provide one of the following: 1. A publicly available URL 2. A presigned S3
 // URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
 // directly uploading a document 4. A jobid:// prefixed URL obtained from a
-// previous /parse invocation
+// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+// API only)
 //
 //	For edit pipelines, this should be a string containing the edit instructions
 //
-// Satisfied by [shared.UnionString], [shared.UploadParam].
+// Satisfied by [shared.UnionString], [SplitRunJobParamsInputArray],
+// [shared.UploadParam].
 type SplitRunJobParamsInputUnion interface {
 	ImplementsSplitRunJobParamsInputUnion()
 }
+
+type SplitRunJobParamsInputArray []string
+
+func (r SplitRunJobParamsInputArray) ImplementsSplitRunJobParamsInputUnion() {}
 
 // The settings for split processing.
 type SplitRunJobParamsSettings struct {
