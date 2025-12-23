@@ -526,6 +526,8 @@ func (r parseResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+func (r ParseResponse) ImplementsPipelineResponseResultParseUnion() {}
+
 func (r ParseResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
 
 func (r ParseResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
@@ -992,7 +994,7 @@ func (r PipelineResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult
 
 type PipelineResponseResult struct {
 	Extract PipelineResponseResultExtractUnion `json:"extract,required,nullable"`
-	Parse   ParseResponse                      `json:"parse,required,nullable"`
+	Parse   PipelineResponseResultParseUnion   `json:"parse,required,nullable"`
 	Split   SplitResponse                      `json:"split,required,nullable"`
 	Edit    EditResponse                       `json:"edit,nullable"`
 	JSON    pipelineResponseResultJSON         `json:"-"`
@@ -1139,6 +1141,30 @@ func init() {
 		},
 	)
 }
+
+// Union satisfied by [ParseResponse] or [PipelineResponseResultParseArray].
+type PipelineResponseResultParseUnion interface {
+	ImplementsPipelineResponseResultParseUnion()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*PipelineResponseResultParseUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(ParseResponse{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(PipelineResponseResultParseArray{}),
+		},
+	)
+}
+
+type PipelineResponseResultParseArray []ParseResponse
+
+func (r PipelineResponseResultParseArray) ImplementsPipelineResponseResultParseUnion() {}
 
 type RetrievalParam struct {
 	Chunking param.Field[ChunkingParam] `json:"chunking"`

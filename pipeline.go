@@ -75,7 +75,8 @@ type PipelineRunParams struct {
 	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
 	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
 	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-	// previous /parse invocation
+	// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
 	Input param.Field[PipelineRunParamsInputUnion] `json:"input,required"`
@@ -93,14 +94,20 @@ func (r PipelineRunParams) MarshalJSON() (data []byte, err error) {
 // can provide one of the following: 1. A publicly available URL 2. A presigned S3
 // URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
 // directly uploading a document 4. A jobid:// prefixed URL obtained from a
-// previous /parse invocation
+// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+// API only)
 //
 //	For edit pipelines, this should be a string containing the edit instructions
 //
-// Satisfied by [shared.UnionString], [shared.UploadParam].
+// Satisfied by [shared.UnionString], [PipelineRunParamsInputArray],
+// [shared.UploadParam].
 type PipelineRunParamsInputUnion interface {
 	ImplementsPipelineRunParamsInputUnion()
 }
+
+type PipelineRunParamsInputArray []string
+
+func (r PipelineRunParamsInputArray) ImplementsPipelineRunParamsInputUnion() {}
 
 // Settings for pipeline execution that override pipeline defaults.
 type PipelineRunParamsSettings struct {
@@ -117,7 +124,8 @@ type PipelineRunJobParams struct {
 	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
 	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
 	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-	// previous /parse invocation
+	// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
 	Input param.Field[PipelineRunJobParamsInputUnion] `json:"input,required"`
@@ -137,14 +145,20 @@ func (r PipelineRunJobParams) MarshalJSON() (data []byte, err error) {
 // can provide one of the following: 1. A publicly available URL 2. A presigned S3
 // URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
 // directly uploading a document 4. A jobid:// prefixed URL obtained from a
-// previous /parse invocation
+// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+// API only)
 //
 //	For edit pipelines, this should be a string containing the edit instructions
 //
-// Satisfied by [shared.UnionString], [shared.UploadParam].
+// Satisfied by [shared.UnionString], [PipelineRunJobParamsInputArray],
+// [shared.UploadParam].
 type PipelineRunJobParamsInputUnion interface {
 	ImplementsPipelineRunJobParamsInputUnion()
 }
+
+type PipelineRunJobParamsInputArray []string
+
+func (r PipelineRunJobParamsInputArray) ImplementsPipelineRunJobParamsInputUnion() {}
 
 // Settings for pipeline execution that override pipeline defaults.
 type PipelineRunJobParamsSettings struct {

@@ -202,7 +202,8 @@ type ParseRunParamsBodySyncParseConfig struct {
 	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
 	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
 	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-	// previous /parse invocation
+	// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
 	Input       param.Field[ParseRunParamsBodySyncParseConfigInputUnion] `json:"input,required"`
@@ -223,13 +224,20 @@ func (r ParseRunParamsBodySyncParseConfig) implementsParseRunParamsBodyUnion() {
 // can provide one of the following: 1. A publicly available URL 2. A presigned S3
 // URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
 // directly uploading a document 4. A jobid:// prefixed URL obtained from a
-// previous /parse invocation
+// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+// API only)
 //
 //	For edit pipelines, this should be a string containing the edit instructions
 //
-// Satisfied by [shared.UnionString], [shared.UploadParam].
+// Satisfied by [shared.UnionString],
+// [ParseRunParamsBodySyncParseConfigInputArray], [shared.UploadParam].
 type ParseRunParamsBodySyncParseConfigInputUnion interface {
 	ImplementsParseRunParamsBodySyncParseConfigInputUnion()
+}
+
+type ParseRunParamsBodySyncParseConfigInputArray []string
+
+func (r ParseRunParamsBodySyncParseConfigInputArray) ImplementsParseRunParamsBodySyncParseConfigInputUnion() {
 }
 
 type ParseRunParamsBodyAsyncParseConfig struct {
@@ -237,7 +245,8 @@ type ParseRunParamsBodyAsyncParseConfig struct {
 	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
 	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
 	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-	// previous /parse invocation
+	// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
 	Input param.Field[ParseRunParamsBodyAsyncParseConfigInputUnion] `json:"input,required"`
@@ -260,13 +269,20 @@ func (r ParseRunParamsBodyAsyncParseConfig) implementsParseRunParamsBodyUnion() 
 // can provide one of the following: 1. A publicly available URL 2. A presigned S3
 // URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
 // directly uploading a document 4. A jobid:// prefixed URL obtained from a
-// previous /parse invocation
+// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+// API only)
 //
 //	For edit pipelines, this should be a string containing the edit instructions
 //
-// Satisfied by [shared.UnionString], [shared.UploadParam].
+// Satisfied by [shared.UnionString],
+// [ParseRunParamsBodyAsyncParseConfigInputArray], [shared.UploadParam].
 type ParseRunParamsBodyAsyncParseConfigInputUnion interface {
 	ImplementsParseRunParamsBodyAsyncParseConfigInputUnion()
+}
+
+type ParseRunParamsBodyAsyncParseConfigInputArray []string
+
+func (r ParseRunParamsBodyAsyncParseConfigInputArray) ImplementsParseRunParamsBodyAsyncParseConfigInputUnion() {
 }
 
 type ParseRunJobParams struct {
@@ -274,7 +290,8 @@ type ParseRunJobParams struct {
 	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
 	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
 	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-	// previous /parse invocation
+	// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
 	Input param.Field[ParseRunJobParamsInputUnion] `json:"input,required"`
@@ -295,11 +312,17 @@ func (r ParseRunJobParams) MarshalJSON() (data []byte, err error) {
 // can provide one of the following: 1. A publicly available URL 2. A presigned S3
 // URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
 // directly uploading a document 4. A jobid:// prefixed URL obtained from a
-// previous /parse invocation
+// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+// API only)
 //
 //	For edit pipelines, this should be a string containing the edit instructions
 //
-// Satisfied by [shared.UnionString], [shared.UploadParam].
+// Satisfied by [shared.UnionString], [ParseRunJobParamsInputArray],
+// [shared.UploadParam].
 type ParseRunJobParamsInputUnion interface {
 	ImplementsParseRunJobParamsInputUnion()
 }
+
+type ParseRunJobParamsInputArray []string
+
+func (r ParseRunJobParamsInputArray) ImplementsParseRunJobParamsInputUnion() {}
