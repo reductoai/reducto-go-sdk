@@ -164,13 +164,14 @@ type EditRunParamsFormSchemaType string
 const (
 	EditRunParamsFormSchemaTypeText     EditRunParamsFormSchemaType = "text"
 	EditRunParamsFormSchemaTypeCheckbox EditRunParamsFormSchemaType = "checkbox"
+	EditRunParamsFormSchemaTypeRadio    EditRunParamsFormSchemaType = "radio"
 	EditRunParamsFormSchemaTypeDropdown EditRunParamsFormSchemaType = "dropdown"
 	EditRunParamsFormSchemaTypeBarcode  EditRunParamsFormSchemaType = "barcode"
 )
 
 func (r EditRunParamsFormSchemaType) IsKnown() bool {
 	switch r {
-	case EditRunParamsFormSchemaTypeText, EditRunParamsFormSchemaTypeCheckbox, EditRunParamsFormSchemaTypeDropdown, EditRunParamsFormSchemaTypeBarcode:
+	case EditRunParamsFormSchemaTypeText, EditRunParamsFormSchemaTypeCheckbox, EditRunParamsFormSchemaTypeRadio, EditRunParamsFormSchemaTypeDropdown, EditRunParamsFormSchemaTypeBarcode:
 		return true
 	}
 	return false
@@ -271,13 +272,14 @@ type EditRunJobParamsFormSchemaType string
 const (
 	EditRunJobParamsFormSchemaTypeText     EditRunJobParamsFormSchemaType = "text"
 	EditRunJobParamsFormSchemaTypeCheckbox EditRunJobParamsFormSchemaType = "checkbox"
+	EditRunJobParamsFormSchemaTypeRadio    EditRunJobParamsFormSchemaType = "radio"
 	EditRunJobParamsFormSchemaTypeDropdown EditRunJobParamsFormSchemaType = "dropdown"
 	EditRunJobParamsFormSchemaTypeBarcode  EditRunJobParamsFormSchemaType = "barcode"
 )
 
 func (r EditRunJobParamsFormSchemaType) IsKnown() bool {
 	switch r {
-	case EditRunJobParamsFormSchemaTypeText, EditRunJobParamsFormSchemaTypeCheckbox, EditRunJobParamsFormSchemaTypeDropdown, EditRunJobParamsFormSchemaTypeBarcode:
+	case EditRunJobParamsFormSchemaTypeText, EditRunJobParamsFormSchemaTypeCheckbox, EditRunJobParamsFormSchemaTypeRadio, EditRunJobParamsFormSchemaTypeDropdown, EditRunJobParamsFormSchemaTypeBarcode:
 		return true
 	}
 	return false
