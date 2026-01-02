@@ -88,6 +88,9 @@ const EditResponseFormSchemaTypeText = shared.EditResponseFormSchemaTypeText
 const EditResponseFormSchemaTypeCheckbox = shared.EditResponseFormSchemaTypeCheckbox
 
 // This is an alias to an internal value.
+const EditResponseFormSchemaTypeRadio = shared.EditResponseFormSchemaTypeRadio
+
+// This is an alias to an internal value.
 const EditResponseFormSchemaTypeDropdown = shared.EditResponseFormSchemaTypeDropdown
 
 // This is an alias to an internal value.

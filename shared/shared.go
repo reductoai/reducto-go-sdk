@@ -247,13 +247,14 @@ type EditResponseFormSchemaType string
 const (
 	EditResponseFormSchemaTypeText     EditResponseFormSchemaType = "text"
 	EditResponseFormSchemaTypeCheckbox EditResponseFormSchemaType = "checkbox"
+	EditResponseFormSchemaTypeRadio    EditResponseFormSchemaType = "radio"
 	EditResponseFormSchemaTypeDropdown EditResponseFormSchemaType = "dropdown"
 	EditResponseFormSchemaTypeBarcode  EditResponseFormSchemaType = "barcode"
 )
 
 func (r EditResponseFormSchemaType) IsKnown() bool {
 	switch r {
-	case EditResponseFormSchemaTypeText, EditResponseFormSchemaTypeCheckbox, EditResponseFormSchemaTypeDropdown, EditResponseFormSchemaTypeBarcode:
+	case EditResponseFormSchemaTypeText, EditResponseFormSchemaTypeCheckbox, EditResponseFormSchemaTypeRadio, EditResponseFormSchemaTypeDropdown, EditResponseFormSchemaTypeBarcode:
 		return true
 	}
 	return false
