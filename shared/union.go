@@ -17,3 +17,7 @@ func (UnionString) ImplementsEditRunParamsDocumentURLUnion()                    
 func (UnionString) ImplementsEditRunJobParamsDocumentURLUnion()                 {}
 func (UnionString) ImplementsPipelineRunParamsInputUnion()                      {}
 func (UnionString) ImplementsPipelineRunJobParamsInputUnion()                   {}
+
+type UnionInt int64
+
+func (UnionInt) ImplementsSplitLargeTablesSizeUnionParam() {}

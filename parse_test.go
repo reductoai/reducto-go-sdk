@@ -73,7 +73,7 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 				Include:    reducto.F([]shared.SpreadsheetInclude{shared.SpreadsheetIncludeCellColors}),
 				SplitLargeTables: reducto.F(shared.SplitLargeTablesParam{
 					Enabled: reducto.F(true),
-					Size:    reducto.F(int64(0)),
+					Size:    reducto.F[shared.SplitLargeTablesSizeUnionParam](shared.UnionInt(int64(0))),
 				}),
 			}),
 		},
@@ -153,7 +153,7 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 			Include:    reducto.F([]shared.SpreadsheetInclude{shared.SpreadsheetIncludeCellColors}),
 			SplitLargeTables: reducto.F(shared.SplitLargeTablesParam{
 				Enabled: reducto.F(true),
-				Size:    reducto.F(int64(0)),
+				Size:    reducto.F[shared.SplitLargeTablesSizeUnionParam](shared.UnionInt(int64(0))),
 			}),
 		}),
 	})
