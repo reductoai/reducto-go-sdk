@@ -411,6 +411,16 @@ type SplitCategoryParam = shared.SplitCategoryParam
 // This is an alias to an internal type.
 type SplitLargeTablesParam = shared.SplitLargeTablesParam
 
+// The size of the tables to split into. Defaults to 50. Use 'row' and 'column' to
+// independently specify the number of rows and columns to include when splitting.
+// If you only want to split by rows or columns, set the other value to None.
+//
+// This is an alias to an internal type.
+type SplitLargeTablesSizeUnionParam = shared.SplitLargeTablesSizeUnionParam
+
+// This is an alias to an internal type.
+type SplitLargeTablesSizeSplitLargeTableSizesParam = shared.SplitLargeTablesSizeSplitLargeTableSizesParam
+
 // This is an alias to an internal type.
 type SplitResponse = shared.SplitResponse
 

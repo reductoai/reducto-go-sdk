@@ -1315,13 +1315,40 @@ func (r SplitCategoryParam) MarshalJSON() (data []byte, err error) {
 type SplitLargeTablesParam struct {
 	// If True, split large tables into smaller tables. Defaults to True.
 	Enabled param.Field[bool] `json:"enabled"`
-	// The size of the tables to split into. Defaults to 50.
-	Size param.Field[int64] `json:"size"`
+	// The size of the tables to split into. Defaults to 50. Use 'row' and 'column' to
+	// independently specify the number of rows and columns to include when splitting.
+	// If you only want to split by rows or columns, set the other value to None.
+	Size param.Field[SplitLargeTablesSizeUnionParam] `json:"size"`
 }
 
 func (r SplitLargeTablesParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
+
+// The size of the tables to split into. Defaults to 50. Use 'row' and 'column' to
+// independently specify the number of rows and columns to include when splitting.
+// If you only want to split by rows or columns, set the other value to None.
+//
+// Satisfied by [shared.UnionInt],
+// [shared.SplitLargeTablesSizeSplitLargeTableSizesParam].
+type SplitLargeTablesSizeUnionParam interface {
+	ImplementsSplitLargeTablesSizeUnionParam()
+}
+
+type SplitLargeTablesSizeSplitLargeTableSizesParam struct {
+	// The number of columns to include in each chunk when splitting large tables. Does
+	// not chunk columns if set to None.
+	Column param.Field[int64] `json:"column"`
+	// The number of rows to include in each chunk when splitting large tables. Does
+	// not chunk rows if set to None.
+	Row param.Field[int64] `json:"row"`
+}
+
+func (r SplitLargeTablesSizeSplitLargeTableSizesParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r SplitLargeTablesSizeSplitLargeTableSizesParam) ImplementsSplitLargeTablesSizeUnionParam() {}
 
 type SplitResponse struct {
 	// The split result.
