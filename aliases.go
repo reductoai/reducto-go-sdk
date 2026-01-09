@@ -499,9 +499,6 @@ const SpreadsheetIncludeCellColors = shared.SpreadsheetIncludeCellColors
 // This is an alias to an internal value.
 const SpreadsheetIncludeFormula = shared.SpreadsheetIncludeFormula
 
-// This is an alias to an internal value.
-const SpreadsheetIncludeDropdowns = shared.SpreadsheetIncludeDropdowns
-
 // This is an alias to an internal type.
 type SvixWebhookConfigParam = shared.SvixWebhookConfigParam
 
