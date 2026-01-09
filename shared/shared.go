@@ -1490,7 +1490,7 @@ type SpreadsheetParam struct {
 	Clustering param.Field[SpreadsheetClustering] `json:"clustering"`
 	// Whether to exclude hidden sheets, rows, or columns in the output.
 	Exclude param.Field[[]SpreadsheetExclude] `json:"exclude"`
-	// Whether to include cell color, formula, and dropdown information in the output.
+	// Whether to include cell color and formula information in the output.
 	Include          param.Field[[]SpreadsheetInclude]  `json:"include"`
 	SplitLargeTables param.Field[SplitLargeTablesParam] `json:"split_large_tables"`
 }
@@ -1541,12 +1541,11 @@ type SpreadsheetInclude string
 const (
 	SpreadsheetIncludeCellColors SpreadsheetInclude = "cell_colors"
 	SpreadsheetIncludeFormula    SpreadsheetInclude = "formula"
-	SpreadsheetIncludeDropdowns  SpreadsheetInclude = "dropdowns"
 )
 
 func (r SpreadsheetInclude) IsKnown() bool {
 	switch r {
-	case SpreadsheetIncludeCellColors, SpreadsheetIncludeFormula, SpreadsheetIncludeDropdowns:
+	case SpreadsheetIncludeCellColors, SpreadsheetIncludeFormula:
 		return true
 	}
 	return false
