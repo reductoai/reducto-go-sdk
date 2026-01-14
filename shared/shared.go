@@ -428,16 +428,17 @@ func (r FormattingParam) MarshalJSON() (data []byte, err error) {
 type FormattingInclude string
 
 const (
-	FormattingIncludeChangeTracking FormattingInclude = "change_tracking"
-	FormattingIncludeHighlight      FormattingInclude = "highlight"
-	FormattingIncludeComments       FormattingInclude = "comments"
-	FormattingIncludeHyperlinks     FormattingInclude = "hyperlinks"
-	FormattingIncludeSignatures     FormattingInclude = "signatures"
+	FormattingIncludeChangeTracking   FormattingInclude = "change_tracking"
+	FormattingIncludeHighlight        FormattingInclude = "highlight"
+	FormattingIncludeComments         FormattingInclude = "comments"
+	FormattingIncludeHyperlinks       FormattingInclude = "hyperlinks"
+	FormattingIncludeSignatures       FormattingInclude = "signatures"
+	FormattingIncludeIgnoreWatermarks FormattingInclude = "ignore_watermarks"
 )
 
 func (r FormattingInclude) IsKnown() bool {
 	switch r {
-	case FormattingIncludeChangeTracking, FormattingIncludeHighlight, FormattingIncludeComments, FormattingIncludeHyperlinks, FormattingIncludeSignatures:
+	case FormattingIncludeChangeTracking, FormattingIncludeHighlight, FormattingIncludeComments, FormattingIncludeHyperlinks, FormattingIncludeSignatures, FormattingIncludeIgnoreWatermarks:
 		return true
 	}
 	return false
