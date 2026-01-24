@@ -35,7 +35,8 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 					Scope:  reducto.F(shared.TableAgenticScopeTable),
 					Prompt: reducto.F("prompt"),
 				}}),
-				SummarizeFigures: reducto.F(true),
+				IntelligentOrdering: reducto.F(true),
+				SummarizeFigures:    reducto.F(true),
 			}),
 			Formatting: reducto.F(shared.FormattingParam{
 				AddPageMarkers:    reducto.F(true),
@@ -115,7 +116,8 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 				Scope:  reducto.F(shared.TableAgenticScopeTable),
 				Prompt: reducto.F("prompt"),
 			}}),
-			SummarizeFigures: reducto.F(true),
+			IntelligentOrdering: reducto.F(true),
+			SummarizeFigures:    reducto.F(true),
 		}),
 		Formatting: reducto.F(shared.FormattingParam{
 			AddPageMarkers:    reducto.F(true),

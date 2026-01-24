@@ -264,6 +264,9 @@ type EnhanceParam struct {
 	// Agentic uses vision language models to enhance the accuracy of the output of
 	// different types of extraction. This will incur a cost and latency increase.
 	Agentic param.Field[[]EnhanceAgenticUnionParam] `json:"agentic"`
+	// If True, use an advanced vision language model to improve reading order
+	// accuracy, with a small increase in latency. Defaults to False.
+	IntelligentOrdering param.Field[bool] `json:"intelligent_ordering"`
 	// If True, summarize figures using a small vision language model. Defaults to
 	// True.
 	SummarizeFigures param.Field[bool] `json:"summarize_figures"`
