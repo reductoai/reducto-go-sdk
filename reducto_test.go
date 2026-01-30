@@ -16,7 +16,7 @@ import (
 	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
-func TestReductoAPIVersion(t *testing.T) {
+func TestAPIVersion(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -39,7 +39,7 @@ func TestReductoAPIVersion(t *testing.T) {
 	}
 }
 
-func TestReductoUploadWithOptionalParams(t *testing.T) {
+func TestUploadWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
