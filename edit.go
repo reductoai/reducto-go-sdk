@@ -112,6 +112,9 @@ type EditRunParamsEditOptions struct {
 	// If True, creates overflow pages for text that doesn't fit in form fields.
 	// Defaults to False.
 	EnableOverflowPages param.Field[bool] `json:"enable_overflow_pages"`
+	// If True, flattens form fields after filling, converting them to static content.
+	// Defaults to False.
+	Flatten param.Field[bool] `json:"flatten"`
 	// The LLM provider to use for edit processing. If not specified, defaults to
 	// 'google'
 	LlmProviderPreference param.Field[EditRunParamsEditOptionsLlmProviderPreference] `json:"llm_provider_preference"`
@@ -220,6 +223,9 @@ type EditRunJobParamsEditOptions struct {
 	// If True, creates overflow pages for text that doesn't fit in form fields.
 	// Defaults to False.
 	EnableOverflowPages param.Field[bool] `json:"enable_overflow_pages"`
+	// If True, flattens form fields after filling, converting them to static content.
+	// Defaults to False.
+	Flatten param.Field[bool] `json:"flatten"`
 	// The LLM provider to use for edit processing. If not specified, defaults to
 	// 'google'
 	LlmProviderPreference param.Field[EditRunJobParamsEditOptionsLlmProviderPreference] `json:"llm_provider_preference"`
