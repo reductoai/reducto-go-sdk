@@ -216,6 +216,9 @@ type JobGetResponseAsyncJobResponseResult struct {
 	JobID      string      `json:"job_id,nullable"`
 	// The storage URL of the converted PDF file.
 	PdfURL string `json:"pdf_url,nullable"`
+	// This field can have the runtime type of
+	// [JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidence].
+	ResponseConfidence interface{} `json:"response_confidence"`
 	// This field can have the runtime type of [shared.ParseResponseResult],
 	// [[]interface{}], [shared.SplitResponseResult], [shared.PipelineResponseResult],
 	// [JobGetResponseAsyncJobResponseResultClassifyResponseResult].
@@ -232,17 +235,18 @@ type JobGetResponseAsyncJobResponseResult struct {
 // jobGetResponseAsyncJobResponseResultJSON contains the JSON metadata for the
 // struct [JobGetResponseAsyncJobResponseResult]
 type jobGetResponseAsyncJobResponseResultJSON struct {
-	Citations   apijson.Field
-	DocumentURL apijson.Field
-	Duration    apijson.Field
-	FormSchema  apijson.Field
-	JobID       apijson.Field
-	PdfURL      apijson.Field
-	Result      apijson.Field
-	StudioLink  apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Citations          apijson.Field
+	DocumentURL        apijson.Field
+	Duration           apijson.Field
+	FormSchema         apijson.Field
+	JobID              apijson.Field
+	PdfURL             apijson.Field
+	ResponseConfidence apijson.Field
+	Result             apijson.Field
+	StudioLink         apijson.Field
+	Usage              apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
 }
 
 func (r jobGetResponseAsyncJobResponseResultJSON) RawJSON() string {
@@ -318,16 +322,19 @@ func init() {
 type JobGetResponseAsyncJobResponseResultClassifyResponse struct {
 	JobID  string                                                     `json:"job_id,required"`
 	Result JobGetResponseAsyncJobResponseResultClassifyResponseResult `json:"result,required"`
-	JSON   jobGetResponseAsyncJobResponseResultClassifyResponseJSON   `json:"-"`
+	// Overall confidence breakdown for classification response.
+	ResponseConfidence JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidence `json:"response_confidence,nullable"`
+	JSON               jobGetResponseAsyncJobResponseResultClassifyResponseJSON               `json:"-"`
 }
 
 // jobGetResponseAsyncJobResponseResultClassifyResponseJSON contains the JSON
 // metadata for the struct [JobGetResponseAsyncJobResponseResultClassifyResponse]
 type jobGetResponseAsyncJobResponseResultClassifyResponseJSON struct {
-	JobID       apijson.Field
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	JobID              apijson.Field
+	Result             apijson.Field
+	ResponseConfidence apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
 }
 
 func (r *JobGetResponseAsyncJobResponseResultClassifyResponse) UnmarshalJSON(data []byte) (err error) {
@@ -361,6 +368,96 @@ func (r *JobGetResponseAsyncJobResponseResultClassifyResponseResult) UnmarshalJS
 
 func (r jobGetResponseAsyncJobResponseResultClassifyResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// Overall confidence breakdown for classification response.
+type JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidence struct {
+	Categories []JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategory `json:"categories,required"`
+	JSON       jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceJSON       `json:"-"`
+}
+
+// jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceJSON
+// contains the JSON metadata for the struct
+// [JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidence]
+type jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceJSON struct {
+	Categories  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidence) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Confidence result for a category.
+type JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategory struct {
+	Category           string                                                                                               `json:"category,required"`
+	Confidence         float64                                                                                              `json:"confidence,required"`
+	CriteriaConfidence []JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence `json:"criteria_confidence,required"`
+	JSON               jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON                   `json:"-"`
+}
+
+// jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON
+// contains the JSON metadata for the struct
+// [JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategory]
+type jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON struct {
+	Category           apijson.Field
+	Confidence         apijson.Field
+	CriteriaConfidence apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
+}
+
+func (r *JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategory) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON) RawJSON() string {
+	return r.raw
+}
+
+// Confidence result for a single criterion.
+type JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence struct {
+	Confidence JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence `json:"confidence,required"`
+	Criterion  string                                                                                                       `json:"criterion,required"`
+	JSON       jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON       `json:"-"`
+}
+
+// jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON
+// contains the JSON metadata for the struct
+// [JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence]
+type jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON struct {
+	Confidence  apijson.Field
+	Criterion   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON) RawJSON() string {
+	return r.raw
+}
+
+type JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence string
+
+const (
+	JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceHigh JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence = "high"
+	JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceLow  JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence = "low"
+)
+
+func (r JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence) IsKnown() bool {
+	switch r {
+	case JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceHigh, JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceLow:
+		return true
+	}
+	return false
 }
 
 type JobGetResponseEnhancedAsyncJobResponse struct {
@@ -439,6 +536,9 @@ type JobGetResponseEnhancedAsyncJobResponseResult struct {
 	JobID      string      `json:"job_id,nullable"`
 	// The storage URL of the converted PDF file.
 	PdfURL string `json:"pdf_url,nullable"`
+	// This field can have the runtime type of
+	// [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidence].
+	ResponseConfidence interface{} `json:"response_confidence"`
 	// This field can have the runtime type of [shared.ParseResponseResult],
 	// [[]interface{}], [shared.SplitResponseResult], [shared.PipelineResponseResult],
 	// [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResult].
@@ -455,17 +555,18 @@ type JobGetResponseEnhancedAsyncJobResponseResult struct {
 // jobGetResponseEnhancedAsyncJobResponseResultJSON contains the JSON metadata for
 // the struct [JobGetResponseEnhancedAsyncJobResponseResult]
 type jobGetResponseEnhancedAsyncJobResponseResultJSON struct {
-	Citations   apijson.Field
-	DocumentURL apijson.Field
-	Duration    apijson.Field
-	FormSchema  apijson.Field
-	JobID       apijson.Field
-	PdfURL      apijson.Field
-	Result      apijson.Field
-	StudioLink  apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Citations          apijson.Field
+	DocumentURL        apijson.Field
+	Duration           apijson.Field
+	FormSchema         apijson.Field
+	JobID              apijson.Field
+	PdfURL             apijson.Field
+	ResponseConfidence apijson.Field
+	Result             apijson.Field
+	StudioLink         apijson.Field
+	Usage              apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
 }
 
 func (r jobGetResponseEnhancedAsyncJobResponseResultJSON) RawJSON() string {
@@ -541,17 +642,20 @@ func init() {
 type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponse struct {
 	JobID  string                                                             `json:"job_id,required"`
 	Result JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResult `json:"result,required"`
-	JSON   jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseJSON   `json:"-"`
+	// Overall confidence breakdown for classification response.
+	ResponseConfidence JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidence `json:"response_confidence,nullable"`
+	JSON               jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseJSON               `json:"-"`
 }
 
 // jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseJSON contains the
 // JSON metadata for the struct
 // [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponse]
 type jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseJSON struct {
-	JobID       apijson.Field
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	JobID              apijson.Field
+	Result             apijson.Field
+	ResponseConfidence apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
 }
 
 func (r *JobGetResponseEnhancedAsyncJobResponseResultClassifyResponse) UnmarshalJSON(data []byte) (err error) {
@@ -585,6 +689,96 @@ func (r *JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResult) Unm
 
 func (r jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// Overall confidence breakdown for classification response.
+type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidence struct {
+	Categories []JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategory `json:"categories,required"`
+	JSON       jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceJSON       `json:"-"`
+}
+
+// jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceJSON
+// contains the JSON metadata for the struct
+// [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidence]
+type jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceJSON struct {
+	Categories  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidence) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Confidence result for a category.
+type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategory struct {
+	Category           string                                                                                                       `json:"category,required"`
+	Confidence         float64                                                                                                      `json:"confidence,required"`
+	CriteriaConfidence []JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence `json:"criteria_confidence,required"`
+	JSON               jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON                   `json:"-"`
+}
+
+// jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON
+// contains the JSON metadata for the struct
+// [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategory]
+type jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON struct {
+	Category           apijson.Field
+	Confidence         apijson.Field
+	CriteriaConfidence apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
+}
+
+func (r *JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategory) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON) RawJSON() string {
+	return r.raw
+}
+
+// Confidence result for a single criterion.
+type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence struct {
+	Confidence JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence `json:"confidence,required"`
+	Criterion  string                                                                                                               `json:"criterion,required"`
+	JSON       jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON       `json:"-"`
+}
+
+// jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON
+// contains the JSON metadata for the struct
+// [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence]
+type jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON struct {
+	Confidence  apijson.Field
+	Criterion   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON) RawJSON() string {
+	return r.raw
+}
+
+type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence string
+
+const (
+	JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceHigh JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence = "high"
+	JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceLow  JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence = "low"
+)
+
+func (r JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence) IsKnown() bool {
+	switch r {
+	case JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceHigh, JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceLow:
+		return true
+	}
+	return false
 }
 
 type JobGetResponseEnhancedAsyncJobResponseType string

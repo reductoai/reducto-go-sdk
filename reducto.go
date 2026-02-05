@@ -12,8 +12,6 @@ import (
 	"github.com/reductoai/reducto-go-sdk/internal/param"
 )
 
-type APIVersionResponse = interface{}
-
 type UploadParams struct {
 	Extension param.Field[string]                `query:"extension"`
 	File      param.Field[UploadParamsFileUnion] `json:"file" format:"binary"`
