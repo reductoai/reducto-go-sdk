@@ -132,7 +132,7 @@ func (r *Client) Delete(ctx context.Context, path string, params interface{}, re
 }
 
 // Get Version
-func (r *Client) APIVersion(ctx context.Context, opts ...option.RequestOption) (res *APIVersionResponse, err error) {
+func (r *Client) APIVersion(ctx context.Context, opts ...option.RequestOption) (res *string, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
