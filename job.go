@@ -210,7 +210,7 @@ type JobGetResponseAsyncJobResponseResult struct {
 	// Presigned URL to download the edited document.
 	DocumentURL string `json:"document_url"`
 	// The duration of the parse request in seconds.
-	Duration float64 `json:"duration"`
+	Duration float64 `json:"duration,nullable"`
 	// This field can have the runtime type of [[]shared.EditResponseFormSchema].
 	FormSchema interface{} `json:"form_schema"`
 	JobID      string      `json:"job_id,nullable"`
@@ -322,6 +322,8 @@ func init() {
 type JobGetResponseAsyncJobResponseResultClassifyResponse struct {
 	JobID  string                                                     `json:"job_id,required"`
 	Result JobGetResponseAsyncJobResponseResultClassifyResponseResult `json:"result,required"`
+	// The duration of the classify request in seconds.
+	Duration float64 `json:"duration,nullable"`
 	// Overall confidence breakdown for classification response.
 	ResponseConfidence JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidence `json:"response_confidence,nullable"`
 	JSON               jobGetResponseAsyncJobResponseResultClassifyResponseJSON               `json:"-"`
@@ -332,6 +334,7 @@ type JobGetResponseAsyncJobResponseResultClassifyResponse struct {
 type jobGetResponseAsyncJobResponseResultClassifyResponseJSON struct {
 	JobID              apijson.Field
 	Result             apijson.Field
+	Duration           apijson.Field
 	ResponseConfidence apijson.Field
 	raw                string
 	ExtraFields        map[string]apijson.Field
@@ -530,7 +533,7 @@ type JobGetResponseEnhancedAsyncJobResponseResult struct {
 	// Presigned URL to download the edited document.
 	DocumentURL string `json:"document_url"`
 	// The duration of the parse request in seconds.
-	Duration float64 `json:"duration"`
+	Duration float64 `json:"duration,nullable"`
 	// This field can have the runtime type of [[]shared.EditResponseFormSchema].
 	FormSchema interface{} `json:"form_schema"`
 	JobID      string      `json:"job_id,nullable"`
@@ -642,6 +645,8 @@ func init() {
 type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponse struct {
 	JobID  string                                                             `json:"job_id,required"`
 	Result JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResult `json:"result,required"`
+	// The duration of the classify request in seconds.
+	Duration float64 `json:"duration,nullable"`
 	// Overall confidence breakdown for classification response.
 	ResponseConfidence JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidence `json:"response_confidence,nullable"`
 	JSON               jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseJSON               `json:"-"`
@@ -653,6 +658,7 @@ type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponse struct {
 type jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseJSON struct {
 	JobID              apijson.Field
 	Result             apijson.Field
+	Duration           apijson.Field
 	ResponseConfidence apijson.Field
 	raw                string
 	ExtraFields        map[string]apijson.Field
