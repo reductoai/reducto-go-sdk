@@ -63,6 +63,8 @@ type ChunkingParam struct {
 	// according to pages. Page sections mode chunks first by page, then by sections
 	// within each page. Disabled returns one single chunk.
 	ChunkMode param.Field[ChunkingChunkMode] `json:"chunk_mode"`
+	// Number of characters of overlap to include from adjacent chunks. Defaults to 0.
+	ChunkOverlap param.Field[int64] `json:"chunk_overlap"`
 	// The approximate size of chunks (in characters) that the document will be split
 	// into. Defaults to null, in which case the chunk size is variable between 250 -
 	// 1500 characters.

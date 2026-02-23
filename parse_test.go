@@ -46,8 +46,9 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 			}),
 			Retrieval: reducto.F(shared.RetrievalParam{
 				Chunking: reducto.F(shared.ChunkingParam{
-					ChunkMode: reducto.F(shared.ChunkingChunkModeVariable),
-					ChunkSize: reducto.F(int64(0)),
+					ChunkMode:    reducto.F(shared.ChunkingChunkModeVariable),
+					ChunkOverlap: reducto.F(int64(0)),
+					ChunkSize:    reducto.F(int64(0)),
 				}),
 				EmbeddingOptimized: reducto.F(true),
 				FilterBlocks:       reducto.F([]shared.RetrievalFilterBlock{shared.RetrievalFilterBlockHeader}),
@@ -127,8 +128,9 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 		}),
 		Retrieval: reducto.F(shared.RetrievalParam{
 			Chunking: reducto.F(shared.ChunkingParam{
-				ChunkMode: reducto.F(shared.ChunkingChunkModeVariable),
-				ChunkSize: reducto.F(int64(0)),
+				ChunkMode:    reducto.F(shared.ChunkingChunkModeVariable),
+				ChunkOverlap: reducto.F(int64(0)),
+				ChunkSize:    reducto.F(int64(0)),
 			}),
 			EmbeddingOptimized: reducto.F(true),
 			FilterBlocks:       reducto.F([]shared.RetrievalFilterBlock{shared.RetrievalFilterBlockHeader}),
