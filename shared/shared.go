@@ -1385,39 +1385,105 @@ func (r SplitResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() 
 
 // The split result.
 type SplitResponseResult struct {
-	SectionMapping map[string][]int64         `json:"section_mapping,required,nullable"`
-	Splits         []SplitResponseResultSplit `json:"splits,required"`
-	JSON           splitResponseResultJSON    `json:"-"`
+	// This field can have the runtime type of [[]SplitResponseResultSplitResultSplit],
+	// [[]SplitResponseResultDeepSplitResultSplit].
+	Splits interface{} `json:"splits,required"`
+	// This field can have the runtime type of [map[string][]int64].
+	SectionMapping interface{}             `json:"section_mapping"`
+	JSON           splitResponseResultJSON `json:"-"`
+	union          SplitResponseResultUnion
 }
 
 // splitResponseResultJSON contains the JSON metadata for the struct
 // [SplitResponseResult]
 type splitResponseResultJSON struct {
-	SectionMapping apijson.Field
 	Splits         apijson.Field
+	SectionMapping apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
-}
-
-func (r *SplitResponseResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 func (r splitResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
-type SplitResponseResultSplit struct {
-	Name       string                               `json:"name,required"`
-	Pages      []int64                              `json:"pages,required"`
-	Conf       SplitResponseResultSplitsConf        `json:"conf"`
-	Partitions []SplitResponseResultSplitsPartition `json:"partitions,nullable"`
-	JSON       splitResponseResultSplitJSON         `json:"-"`
+func (r *SplitResponseResult) UnmarshalJSON(data []byte) (err error) {
+	*r = SplitResponseResult{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
 }
 
-// splitResponseResultSplitJSON contains the JSON metadata for the struct
-// [SplitResponseResultSplit]
-type splitResponseResultSplitJSON struct {
+// AsUnion returns a [SplitResponseResultUnion] interface which you can cast to the
+// specific types for more type safety.
+//
+// Possible runtime types of the union are [SplitResponseResultSplitResult],
+// [SplitResponseResultDeepSplitResult].
+func (r SplitResponseResult) AsUnion() SplitResponseResultUnion {
+	return r.union
+}
+
+// The split result.
+//
+// Union satisfied by [SplitResponseResultSplitResult] or
+// [SplitResponseResultDeepSplitResult].
+type SplitResponseResultUnion interface {
+	implementsSplitResponseResult()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*SplitResponseResultUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(SplitResponseResultSplitResult{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(SplitResponseResultDeepSplitResult{}),
+		},
+	)
+}
+
+type SplitResponseResultSplitResult struct {
+	SectionMapping map[string][]int64                    `json:"section_mapping,required,nullable"`
+	Splits         []SplitResponseResultSplitResultSplit `json:"splits,required"`
+	JSON           splitResponseResultSplitResultJSON    `json:"-"`
+}
+
+// splitResponseResultSplitResultJSON contains the JSON metadata for the struct
+// [SplitResponseResultSplitResult]
+type splitResponseResultSplitResultJSON struct {
+	SectionMapping apijson.Field
+	Splits         apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *SplitResponseResultSplitResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r splitResponseResultSplitResultJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r SplitResponseResultSplitResult) implementsSplitResponseResult() {}
+
+type SplitResponseResultSplitResultSplit struct {
+	Name       string                                          `json:"name,required"`
+	Pages      []int64                                         `json:"pages,required"`
+	Conf       SplitResponseResultSplitResultSplitsConf        `json:"conf"`
+	Partitions []SplitResponseResultSplitResultSplitsPartition `json:"partitions,nullable"`
+	JSON       splitResponseResultSplitResultSplitJSON         `json:"-"`
+}
+
+// splitResponseResultSplitResultSplitJSON contains the JSON metadata for the
+// struct [SplitResponseResultSplitResultSplit]
+type splitResponseResultSplitResultSplitJSON struct {
 	Name        apijson.Field
 	Pages       apijson.Field
 	Conf        apijson.Field
@@ -1426,39 +1492,39 @@ type splitResponseResultSplitJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *SplitResponseResultSplit) UnmarshalJSON(data []byte) (err error) {
+func (r *SplitResponseResultSplitResultSplit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r splitResponseResultSplitJSON) RawJSON() string {
+func (r splitResponseResultSplitResultSplitJSON) RawJSON() string {
 	return r.raw
 }
 
-type SplitResponseResultSplitsConf string
+type SplitResponseResultSplitResultSplitsConf string
 
 const (
-	SplitResponseResultSplitsConfHigh SplitResponseResultSplitsConf = "high"
-	SplitResponseResultSplitsConfLow  SplitResponseResultSplitsConf = "low"
+	SplitResponseResultSplitResultSplitsConfHigh SplitResponseResultSplitResultSplitsConf = "high"
+	SplitResponseResultSplitResultSplitsConfLow  SplitResponseResultSplitResultSplitsConf = "low"
 )
 
-func (r SplitResponseResultSplitsConf) IsKnown() bool {
+func (r SplitResponseResultSplitResultSplitsConf) IsKnown() bool {
 	switch r {
-	case SplitResponseResultSplitsConfHigh, SplitResponseResultSplitsConfLow:
+	case SplitResponseResultSplitResultSplitsConfHigh, SplitResponseResultSplitResultSplitsConfLow:
 		return true
 	}
 	return false
 }
 
-type SplitResponseResultSplitsPartition struct {
-	Name  string                                  `json:"name,required"`
-	Pages []int64                                 `json:"pages,required"`
-	Conf  SplitResponseResultSplitsPartitionsConf `json:"conf"`
-	JSON  splitResponseResultSplitsPartitionJSON  `json:"-"`
+type SplitResponseResultSplitResultSplitsPartition struct {
+	Name  string                                             `json:"name,required"`
+	Pages []int64                                            `json:"pages,required"`
+	Conf  SplitResponseResultSplitResultSplitsPartitionsConf `json:"conf"`
+	JSON  splitResponseResultSplitResultSplitsPartitionJSON  `json:"-"`
 }
 
-// splitResponseResultSplitsPartitionJSON contains the JSON metadata for the struct
-// [SplitResponseResultSplitsPartition]
-type splitResponseResultSplitsPartitionJSON struct {
+// splitResponseResultSplitResultSplitsPartitionJSON contains the JSON metadata for
+// the struct [SplitResponseResultSplitResultSplitsPartition]
+type splitResponseResultSplitResultSplitsPartitionJSON struct {
 	Name        apijson.Field
 	Pages       apijson.Field
 	Conf        apijson.Field
@@ -1466,27 +1532,144 @@ type splitResponseResultSplitsPartitionJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *SplitResponseResultSplitsPartition) UnmarshalJSON(data []byte) (err error) {
+func (r *SplitResponseResultSplitResultSplitsPartition) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r splitResponseResultSplitsPartitionJSON) RawJSON() string {
+func (r splitResponseResultSplitResultSplitsPartitionJSON) RawJSON() string {
 	return r.raw
 }
 
-type SplitResponseResultSplitsPartitionsConf string
+type SplitResponseResultSplitResultSplitsPartitionsConf string
 
 const (
-	SplitResponseResultSplitsPartitionsConfHigh SplitResponseResultSplitsPartitionsConf = "high"
-	SplitResponseResultSplitsPartitionsConfLow  SplitResponseResultSplitsPartitionsConf = "low"
+	SplitResponseResultSplitResultSplitsPartitionsConfHigh SplitResponseResultSplitResultSplitsPartitionsConf = "high"
+	SplitResponseResultSplitResultSplitsPartitionsConfLow  SplitResponseResultSplitResultSplitsPartitionsConf = "low"
 )
 
-func (r SplitResponseResultSplitsPartitionsConf) IsKnown() bool {
+func (r SplitResponseResultSplitResultSplitsPartitionsConf) IsKnown() bool {
 	switch r {
-	case SplitResponseResultSplitsPartitionsConfHigh, SplitResponseResultSplitsPartitionsConfLow:
+	case SplitResponseResultSplitResultSplitsPartitionsConfHigh, SplitResponseResultSplitResultSplitsPartitionsConfLow:
 		return true
 	}
 	return false
+}
+
+type SplitResponseResultDeepSplitResult struct {
+	Splits []SplitResponseResultDeepSplitResultSplit `json:"splits,required"`
+	JSON   splitResponseResultDeepSplitResultJSON    `json:"-"`
+}
+
+// splitResponseResultDeepSplitResultJSON contains the JSON metadata for the struct
+// [SplitResponseResultDeepSplitResult]
+type splitResponseResultDeepSplitResultJSON struct {
+	Splits      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SplitResponseResultDeepSplitResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r splitResponseResultDeepSplitResultJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r SplitResponseResultDeepSplitResult) implementsSplitResponseResult() {}
+
+type SplitResponseResultDeepSplitResultSplit struct {
+	Name       string                                              `json:"name,required"`
+	Pages      []SplitResponseResultDeepSplitResultSplitsPage      `json:"pages,required"`
+	Partitions []SplitResponseResultDeepSplitResultSplitsPartition `json:"partitions,nullable"`
+	JSON       splitResponseResultDeepSplitResultSplitJSON         `json:"-"`
+}
+
+// splitResponseResultDeepSplitResultSplitJSON contains the JSON metadata for the
+// struct [SplitResponseResultDeepSplitResultSplit]
+type splitResponseResultDeepSplitResultSplitJSON struct {
+	Name        apijson.Field
+	Pages       apijson.Field
+	Partitions  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SplitResponseResultDeepSplitResultSplit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r splitResponseResultDeepSplitResultSplitJSON) RawJSON() string {
+	return r.raw
+}
+
+type SplitResponseResultDeepSplitResultSplitsPage struct {
+	Evidence   string                                           `json:"evidence,required"`
+	PageNumber int64                                            `json:"page_number,required"`
+	JSON       splitResponseResultDeepSplitResultSplitsPageJSON `json:"-"`
+}
+
+// splitResponseResultDeepSplitResultSplitsPageJSON contains the JSON metadata for
+// the struct [SplitResponseResultDeepSplitResultSplitsPage]
+type splitResponseResultDeepSplitResultSplitsPageJSON struct {
+	Evidence    apijson.Field
+	PageNumber  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SplitResponseResultDeepSplitResultSplitsPage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r splitResponseResultDeepSplitResultSplitsPageJSON) RawJSON() string {
+	return r.raw
+}
+
+type SplitResponseResultDeepSplitResultSplitsPartition struct {
+	Name  string                                                   `json:"name,required"`
+	Pages []SplitResponseResultDeepSplitResultSplitsPartitionsPage `json:"pages,required"`
+	JSON  splitResponseResultDeepSplitResultSplitsPartitionJSON    `json:"-"`
+}
+
+// splitResponseResultDeepSplitResultSplitsPartitionJSON contains the JSON metadata
+// for the struct [SplitResponseResultDeepSplitResultSplitsPartition]
+type splitResponseResultDeepSplitResultSplitsPartitionJSON struct {
+	Name        apijson.Field
+	Pages       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SplitResponseResultDeepSplitResultSplitsPartition) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r splitResponseResultDeepSplitResultSplitsPartitionJSON) RawJSON() string {
+	return r.raw
+}
+
+type SplitResponseResultDeepSplitResultSplitsPartitionsPage struct {
+	Evidence   string                                                     `json:"evidence,required"`
+	PageNumber int64                                                      `json:"page_number,required"`
+	JSON       splitResponseResultDeepSplitResultSplitsPartitionsPageJSON `json:"-"`
+}
+
+// splitResponseResultDeepSplitResultSplitsPartitionsPageJSON contains the JSON
+// metadata for the struct [SplitResponseResultDeepSplitResultSplitsPartitionsPage]
+type splitResponseResultDeepSplitResultSplitsPartitionsPageJSON struct {
+	Evidence    apijson.Field
+	PageNumber  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SplitResponseResultDeepSplitResultSplitsPartitionsPage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r splitResponseResultDeepSplitResultSplitsPartitionsPageJSON) RawJSON() string {
+	return r.raw
 }
 
 type SpreadsheetParam struct {

@@ -433,28 +433,46 @@ type SplitResponse = shared.SplitResponse
 type SplitResponseResult = shared.SplitResponseResult
 
 // This is an alias to an internal type.
-type SplitResponseResultSplit = shared.SplitResponseResultSplit
+type SplitResponseResultSplitResult = shared.SplitResponseResultSplitResult
 
 // This is an alias to an internal type.
-type SplitResponseResultSplitsConf = shared.SplitResponseResultSplitsConf
-
-// This is an alias to an internal value.
-const SplitResponseResultSplitsConfHigh = shared.SplitResponseResultSplitsConfHigh
-
-// This is an alias to an internal value.
-const SplitResponseResultSplitsConfLow = shared.SplitResponseResultSplitsConfLow
+type SplitResponseResultSplitResultSplit = shared.SplitResponseResultSplitResultSplit
 
 // This is an alias to an internal type.
-type SplitResponseResultSplitsPartition = shared.SplitResponseResultSplitsPartition
+type SplitResponseResultSplitResultSplitsConf = shared.SplitResponseResultSplitResultSplitsConf
+
+// This is an alias to an internal value.
+const SplitResponseResultSplitResultSplitsConfHigh = shared.SplitResponseResultSplitResultSplitsConfHigh
+
+// This is an alias to an internal value.
+const SplitResponseResultSplitResultSplitsConfLow = shared.SplitResponseResultSplitResultSplitsConfLow
 
 // This is an alias to an internal type.
-type SplitResponseResultSplitsPartitionsConf = shared.SplitResponseResultSplitsPartitionsConf
+type SplitResponseResultSplitResultSplitsPartition = shared.SplitResponseResultSplitResultSplitsPartition
+
+// This is an alias to an internal type.
+type SplitResponseResultSplitResultSplitsPartitionsConf = shared.SplitResponseResultSplitResultSplitsPartitionsConf
 
 // This is an alias to an internal value.
-const SplitResponseResultSplitsPartitionsConfHigh = shared.SplitResponseResultSplitsPartitionsConfHigh
+const SplitResponseResultSplitResultSplitsPartitionsConfHigh = shared.SplitResponseResultSplitResultSplitsPartitionsConfHigh
 
 // This is an alias to an internal value.
-const SplitResponseResultSplitsPartitionsConfLow = shared.SplitResponseResultSplitsPartitionsConfLow
+const SplitResponseResultSplitResultSplitsPartitionsConfLow = shared.SplitResponseResultSplitResultSplitsPartitionsConfLow
+
+// This is an alias to an internal type.
+type SplitResponseResultDeepSplitResult = shared.SplitResponseResultDeepSplitResult
+
+// This is an alias to an internal type.
+type SplitResponseResultDeepSplitResultSplit = shared.SplitResponseResultDeepSplitResultSplit
+
+// This is an alias to an internal type.
+type SplitResponseResultDeepSplitResultSplitsPage = shared.SplitResponseResultDeepSplitResultSplitsPage
+
+// This is an alias to an internal type.
+type SplitResponseResultDeepSplitResultSplitsPartition = shared.SplitResponseResultDeepSplitResultSplitsPartition
+
+// This is an alias to an internal type.
+type SplitResponseResultDeepSplitResultSplitsPartitionsPage = shared.SplitResponseResultDeepSplitResultSplitsPartitionsPage
 
 // This is an alias to an internal type.
 type SpreadsheetParam = shared.SpreadsheetParam
