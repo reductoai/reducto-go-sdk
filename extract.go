@@ -52,11 +52,11 @@ func (r *ExtractService) RunJob(ctx context.Context, body ExtractRunJobParams, o
 }
 
 type ExtractRunResponse struct {
-	JobID string `json:"job_id,nullable"`
+	JobID string `json:"job_id" api:"nullable"`
 	// This field can have the runtime type of [[]interface{}].
 	Result interface{} `json:"result"`
 	// The link to the studio pipeline for the document.
-	StudioLink string                 `json:"studio_link,nullable"`
+	StudioLink string                 `json:"studio_link" api:"nullable"`
 	Usage      shared.ExtractUsage    `json:"usage"`
 	JSON       extractRunResponseJSON `json:"-"`
 	union      ExtractRunResponseUnion
@@ -117,7 +117,7 @@ func init() {
 }
 
 type ExtractRunResponseAsyncExtractResponse struct {
-	JobID string                                     `json:"job_id,required"`
+	JobID string                                     `json:"job_id" api:"required"`
 	JSON  extractRunResponseAsyncExtractResponseJSON `json:"-"`
 }
 
@@ -140,7 +140,7 @@ func (r extractRunResponseAsyncExtractResponseJSON) RawJSON() string {
 func (r ExtractRunResponseAsyncExtractResponse) ImplementsExtractRunResponse() {}
 
 type ExtractRunJobResponse struct {
-	JobID string                    `json:"job_id,required"`
+	JobID string                    `json:"job_id" api:"required"`
 	JSON  extractRunJobResponseJSON `json:"-"`
 }
 
@@ -161,7 +161,7 @@ func (r extractRunJobResponseJSON) RawJSON() string {
 }
 
 type ExtractRunParams struct {
-	Body ExtractRunParamsBodyUnion `json:"body,required"`
+	Body ExtractRunParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r ExtractRunParams) MarshalJSON() (data []byte, err error) {
@@ -169,7 +169,7 @@ func (r ExtractRunParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ExtractRunParamsBody struct {
-	Input param.Field[interface{}] `json:"input,required"`
+	Input param.Field[interface{}] `json:"input" api:"required"`
 	// The configuration options for asynchronous processing (default synchronous).
 	Async        param.Field[shared.ConfigV3AsyncConfigParam] `json:"async"`
 	Instructions param.Field[interface{}]                     `json:"instructions"`
@@ -200,7 +200,7 @@ type ExtractRunParamsBodySyncExtractConfig struct {
 	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
-	Input param.Field[ExtractRunParamsBodySyncExtractConfigInputUnion] `json:"input,required"`
+	Input param.Field[ExtractRunParamsBodySyncExtractConfigInputUnion] `json:"input" api:"required"`
 	// The instructions to use for the extraction.
 	Instructions param.Field[ExtractRunParamsBodySyncExtractConfigInstructions] `json:"instructions"`
 	// The configuration options for parsing the document. If you are passing in a
@@ -286,7 +286,7 @@ type ExtractRunParamsBodyAsyncExtractConfig struct {
 	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
-	Input param.Field[ExtractRunParamsBodyAsyncExtractConfigInputUnion] `json:"input,required"`
+	Input param.Field[ExtractRunParamsBodyAsyncExtractConfigInputUnion] `json:"input" api:"required"`
 	// The configuration options for asynchronous processing (default synchronous).
 	Async param.Field[shared.ConfigV3AsyncConfigParam] `json:"async"`
 	// The instructions to use for the extraction.
@@ -374,7 +374,7 @@ type ExtractRunJobParams struct {
 	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
-	Input param.Field[ExtractRunJobParamsInputUnion] `json:"input,required"`
+	Input param.Field[ExtractRunJobParamsInputUnion] `json:"input" api:"required"`
 	// The configuration options for asynchronous processing (default synchronous).
 	Async param.Field[shared.ConfigV3AsyncConfigParam] `json:"async"`
 	// The instructions to use for the extraction.

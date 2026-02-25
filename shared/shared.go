@@ -11,12 +11,12 @@ import (
 )
 
 type BoundingBox struct {
-	Height float64 `json:"height,required"`
-	Left   float64 `json:"left,required"`
+	Height float64 `json:"height" api:"required"`
+	Left   float64 `json:"left" api:"required"`
 	// The page number of the bounding box (1-indexed).
-	Page  int64   `json:"page,required"`
-	Top   float64 `json:"top,required"`
-	Width float64 `json:"width,required"`
+	Page  int64   `json:"page" api:"required"`
+	Top   float64 `json:"top" api:"required"`
+	Width float64 `json:"width" api:"required"`
 	// The page number in the original document of the bounding box (1-indexed).
 	OriginalPage int64           `json:"original_page"`
 	JSON         boundingBoxJSON `json:"-"`
@@ -43,12 +43,12 @@ func (r boundingBoxJSON) RawJSON() string {
 }
 
 type BoundingBoxParam struct {
-	Height param.Field[float64] `json:"height,required"`
-	Left   param.Field[float64] `json:"left,required"`
+	Height param.Field[float64] `json:"height" api:"required"`
+	Left   param.Field[float64] `json:"left" api:"required"`
 	// The page number of the bounding box (1-indexed).
-	Page  param.Field[int64]   `json:"page,required"`
-	Top   param.Field[float64] `json:"top,required"`
-	Width param.Field[float64] `json:"width,required"`
+	Page  param.Field[int64]   `json:"page" api:"required"`
+	Top   param.Field[float64] `json:"top" api:"required"`
+	Width param.Field[float64] `json:"width" api:"required"`
 	// The page number in the original document of the bounding box (1-indexed).
 	OriginalPage param.Field[int64] `json:"original_page"`
 }
@@ -150,7 +150,7 @@ func (r ConfigV3AsyncConfigWebhookMode) IsKnown() bool {
 }
 
 type DirectWebhookConfigParam struct {
-	URL  param.Field[string]                  `json:"url,required"`
+	URL  param.Field[string]                  `json:"url" api:"required"`
 	Mode param.Field[DirectWebhookConfigMode] `json:"mode"`
 }
 
@@ -176,13 +176,13 @@ func (r DirectWebhookConfigMode) IsKnown() bool {
 
 type EditResponse struct {
 	// Presigned URL to download the edited document.
-	DocumentURL string `json:"document_url,required"`
+	DocumentURL string `json:"document_url" api:"required"`
 	// Form schema for PDF forms. List of widgets with their types, descriptions, and
 	// bounding boxes.
-	FormSchema []EditResponseFormSchema `json:"form_schema,nullable"`
+	FormSchema []EditResponseFormSchema `json:"form_schema" api:"nullable"`
 	// Usage information for the edit operation, including number of pages and credits
 	// charged.
-	Usage ParseUsage       `json:"usage,nullable"`
+	Usage ParseUsage       `json:"usage" api:"nullable"`
 	JSON  editResponseJSON `json:"-"`
 }
 
@@ -209,17 +209,17 @@ func (r EditResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {
 
 type EditResponseFormSchema struct {
 	// Bounding box coordinates of the widget
-	Bbox BoundingBox `json:"bbox,required"`
+	Bbox BoundingBox `json:"bbox" api:"required"`
 	// Description of the widget extracted from the document
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Type of the form widget
-	Type EditResponseFormSchemaType `json:"type,required"`
+	Type EditResponseFormSchemaType `json:"type" api:"required"`
 	// If True (default), the system will attempt to fill this widget. If False, the
 	// widget will be created but intentionally left unfilled.
 	Fill bool `json:"fill"`
 	// If provided, this value will be used directly instead of attempting to
 	// intelligently determine the field value.
-	Value string                     `json:"value,nullable"`
+	Value string                     `json:"value" api:"nullable"`
 	JSON  editResponseFormSchemaJSON `json:"-"`
 }
 
@@ -279,7 +279,7 @@ func (r EnhanceParam) MarshalJSON() (data []byte, err error) {
 }
 
 type EnhanceAgenticParam struct {
-	Scope param.Field[EnhanceAgenticScope] `json:"scope,required"`
+	Scope param.Field[EnhanceAgenticScope] `json:"scope" api:"required"`
 	// If True, use the advanced chart agent. Defaults to False.
 	AdvancedChartAgent param.Field[bool] `json:"advanced_chart_agent"`
 	// Custom prompt for table agentic.
@@ -319,14 +319,14 @@ func (r EnhanceAgenticScope) IsKnown() bool {
 
 type ExtractResponse struct {
 	// The citations corresponding to the extracted response.
-	Citations []interface{} `json:"citations,required,nullable"`
+	Citations []interface{} `json:"citations" api:"required,nullable"`
 	// The extracted response in your provided schema. This is a list of dictionaries.
 	// If disable_chunking is True (default), then it will be a list of length one.
-	Result []interface{} `json:"result,required"`
-	Usage  ExtractUsage  `json:"usage,required"`
-	JobID  string        `json:"job_id,nullable"`
+	Result []interface{} `json:"result" api:"required"`
+	Usage  ExtractUsage  `json:"usage" api:"required"`
+	JobID  string        `json:"job_id" api:"nullable"`
 	// The link to the studio pipeline for the document.
-	StudioLink string              `json:"studio_link,nullable"`
+	StudioLink string              `json:"studio_link" api:"nullable"`
 	JSON       extractResponseJSON `json:"-"`
 }
 
@@ -358,9 +358,9 @@ func (r ExtractResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
 func (r ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
 
 type ExtractUsage struct {
-	NumFields int64            `json:"num_fields,required"`
-	NumPages  int64            `json:"num_pages,required"`
-	Credits   float64          `json:"credits,nullable"`
+	NumFields int64            `json:"num_fields" api:"required"`
+	NumPages  int64            `json:"num_pages" api:"required"`
+	Credits   float64          `json:"credits" api:"nullable"`
 	JSON      extractUsageJSON `json:"-"`
 }
 
@@ -382,7 +382,7 @@ func (r extractUsageJSON) RawJSON() string {
 }
 
 type FigureAgenticParam struct {
-	Scope param.Field[FigureAgenticScope] `json:"scope,required"`
+	Scope param.Field[FigureAgenticScope] `json:"scope" api:"required"`
 	// If True, use the advanced chart agent. Defaults to False.
 	AdvancedChartAgent param.Field[bool] `json:"advanced_chart_agent"`
 	// Custom prompt for figure agentic.
@@ -497,19 +497,19 @@ func (r ParseOptionsParam) MarshalJSON() (data []byte, err error) {
 
 type ParseResponse struct {
 	// The duration of the parse request in seconds.
-	Duration float64 `json:"duration,required"`
-	JobID    string  `json:"job_id,required"`
+	Duration float64 `json:"duration" api:"required"`
+	JobID    string  `json:"job_id" api:"required"`
 	// The response from the document processing service. Note that there can be two
 	// types of responses, Full Result and URL Result. This is due to limitations on
 	// the max return size on HTTPS. If the response is too large, it will be returned
 	// as a presigned URL in the URL response. You should handle this in your
 	// application.
-	Result ParseResponseResult `json:"result,required"`
-	Usage  ParseUsage          `json:"usage,required"`
+	Result ParseResponseResult `json:"result" api:"required"`
+	Usage  ParseUsage          `json:"usage" api:"required"`
 	// The storage URL of the converted PDF file.
-	PdfURL string `json:"pdf_url,nullable"`
+	PdfURL string `json:"pdf_url" api:"nullable"`
 	// The link to the studio pipeline for the document.
-	StudioLink string            `json:"studio_link,nullable"`
+	StudioLink string            `json:"studio_link" api:"nullable"`
 	JSON       parseResponseJSON `json:"-"`
 }
 
@@ -548,7 +548,7 @@ func (r ParseResponse) ImplementsParseRunResponse() {}
 // application.
 type ParseResponseResult struct {
 	// type = 'full'
-	Type ParseResponseResultType `json:"type,required"`
+	Type ParseResponseResultType `json:"type" api:"required"`
 	// This field can have the runtime type of [[]ParseResponseResultFullResultChunk].
 	Chunks interface{} `json:"chunks"`
 	// This field can have the runtime type of [interface{}].
@@ -624,11 +624,11 @@ func init() {
 }
 
 type ParseResponseResultFullResult struct {
-	Chunks []ParseResponseResultFullResultChunk `json:"chunks,required"`
+	Chunks []ParseResponseResultFullResultChunk `json:"chunks" api:"required"`
 	// type = 'full'
-	Type   ParseResponseResultFullResultType `json:"type,required"`
+	Type   ParseResponseResultFullResultType `json:"type" api:"required"`
 	Custom interface{}                       `json:"custom"`
-	Ocr    ParseResponseResultFullResultOcr  `json:"ocr,nullable"`
+	Ocr    ParseResponseResultFullResultOcr  `json:"ocr" api:"nullable"`
 	JSON   parseResponseResultFullResultJSON `json:"-"`
 }
 
@@ -654,13 +654,13 @@ func (r parseResponseResultFullResultJSON) RawJSON() string {
 func (r ParseResponseResultFullResult) implementsParseResponseResult() {}
 
 type ParseResponseResultFullResultChunk struct {
-	Blocks []ParseResponseResultFullResultChunksBlock `json:"blocks,required"`
+	Blocks []ParseResponseResultFullResultChunksBlock `json:"blocks" api:"required"`
 	// The content of the chunk extracted from the document.
-	Content string `json:"content,required"`
+	Content string `json:"content" api:"required"`
 	// Chunk content optimized for embedding and retrieval.
-	Embed string `json:"embed,required"`
+	Embed string `json:"embed" api:"required"`
 	// The enriched content of the chunk extracted from the document.
-	Enriched string `json:"enriched,required,nullable"`
+	Enriched string `json:"enriched" api:"required,nullable"`
 	// Whether the enrichment was successful.
 	EnrichmentSuccess bool                                   `json:"enrichment_success"`
 	JSON              parseResponseResultFullResultChunkJSON `json:"-"`
@@ -688,26 +688,26 @@ func (r parseResponseResultFullResultChunkJSON) RawJSON() string {
 
 type ParseResponseResultFullResultChunksBlock struct {
 	// The bounding box of the block extracted from the document.
-	Bbox BoundingBox `json:"bbox,required"`
+	Bbox BoundingBox `json:"bbox" api:"required"`
 	// The content of the block extracted from the document.
-	Content string `json:"content,required"`
+	Content string `json:"content" api:"required"`
 	// The type of block extracted from the document.
-	Type ParseResponseResultFullResultChunksBlocksType `json:"type,required"`
+	Type ParseResponseResultFullResultChunksBlocksType `json:"type" api:"required"`
 	// (Experimental) The URL/link to chart data JSON for figure blocks processed by
 	// chart agent.
-	ChartData []string `json:"chart_data,nullable"`
+	ChartData []string `json:"chart_data" api:"nullable"`
 	// The confidence for the block. It is either low or high and takes into account
 	// factors like OCR and table structure
-	Confidence string `json:"confidence,nullable"`
+	Confidence string `json:"confidence" api:"nullable"`
 	// Extra metadata fields for the block. Fields like 'is_chart' will only appear
 	// when set to True.
-	Extra map[string]interface{} `json:"extra,nullable"`
+	Extra map[string]interface{} `json:"extra" api:"nullable"`
 	// Granular confidence scores for the block. It is a dictionary of confidence
 	// scores for the block. The confidence scores will not be None if the user has
 	// enabled numeric confidence scores.
-	GranularConfidence ParseResponseResultFullResultChunksBlocksGranularConfidence `json:"granular_confidence,nullable"`
+	GranularConfidence ParseResponseResultFullResultChunksBlocksGranularConfidence `json:"granular_confidence" api:"nullable"`
 	// (Experimental) The URL of the image associated with the block.
-	ImageURL string                                       `json:"image_url,nullable"`
+	ImageURL string                                       `json:"image_url" api:"nullable"`
 	JSON     parseResponseResultFullResultChunksBlockJSON `json:"-"`
 }
 
@@ -764,8 +764,8 @@ func (r ParseResponseResultFullResultChunksBlocksType) IsKnown() bool {
 // scores for the block. The confidence scores will not be None if the user has
 // enabled numeric confidence scores.
 type ParseResponseResultFullResultChunksBlocksGranularConfidence struct {
-	ExtractConfidence float64                                                         `json:"extract_confidence,nullable"`
-	ParseConfidence   float64                                                         `json:"parse_confidence,nullable"`
+	ExtractConfidence float64                                                         `json:"extract_confidence" api:"nullable"`
+	ParseConfidence   float64                                                         `json:"parse_confidence" api:"nullable"`
 	JSON              parseResponseResultFullResultChunksBlocksGranularConfidenceJSON `json:"-"`
 }
 
@@ -803,8 +803,8 @@ func (r ParseResponseResultFullResultType) IsKnown() bool {
 }
 
 type ParseResponseResultFullResultOcr struct {
-	Lines []ParseResponseResultFullResultOcrLine `json:"lines,required"`
-	Words []ParseResponseResultFullResultOcrWord `json:"words,required"`
+	Lines []ParseResponseResultFullResultOcrLine `json:"lines" api:"required"`
+	Words []ParseResponseResultFullResultOcrWord `json:"words" api:"required"`
 	JSON  parseResponseResultFullResultOcrJSON   `json:"-"`
 }
 
@@ -826,14 +826,14 @@ func (r parseResponseResultFullResultOcrJSON) RawJSON() string {
 }
 
 type ParseResponseResultFullResultOcrLine struct {
-	Bbox BoundingBox `json:"bbox,required"`
-	Text string      `json:"text,required"`
+	Bbox BoundingBox `json:"bbox" api:"required"`
+	Text string      `json:"text" api:"required"`
 	// The index of the chunk that the line belongs to.
-	ChunkIndex int64 `json:"chunk_index,nullable"`
+	ChunkIndex int64 `json:"chunk_index" api:"nullable"`
 	// OCR confidence score between 0 and 1, where 1 indicates highest confidence
-	Confidence float64 `json:"confidence,nullable"`
+	Confidence float64 `json:"confidence" api:"nullable"`
 	// The rotation angle in degrees, from 0 to 360, counterclockwise.
-	Rotation int64                                    `json:"rotation,nullable"`
+	Rotation int64                                    `json:"rotation" api:"nullable"`
 	JSON     parseResponseResultFullResultOcrLineJSON `json:"-"`
 }
 
@@ -858,14 +858,14 @@ func (r parseResponseResultFullResultOcrLineJSON) RawJSON() string {
 }
 
 type ParseResponseResultFullResultOcrWord struct {
-	Bbox BoundingBox `json:"bbox,required"`
-	Text string      `json:"text,required"`
+	Bbox BoundingBox `json:"bbox" api:"required"`
+	Text string      `json:"text" api:"required"`
 	// The index of the chunk that the word belongs to.
-	ChunkIndex int64 `json:"chunk_index,nullable"`
+	ChunkIndex int64 `json:"chunk_index" api:"nullable"`
 	// OCR confidence score between 0 and 1, where 1 indicates highest confidence
-	Confidence float64 `json:"confidence,nullable"`
+	Confidence float64 `json:"confidence" api:"nullable"`
 	// The rotation angle in degrees, from 0 to 360, counterclockwise.
-	Rotation int64                                    `json:"rotation,nullable"`
+	Rotation int64                                    `json:"rotation" api:"nullable"`
 	JSON     parseResponseResultFullResultOcrWordJSON `json:"-"`
 }
 
@@ -890,10 +890,10 @@ func (r parseResponseResultFullResultOcrWordJSON) RawJSON() string {
 }
 
 type ParseResponseResultURLResult struct {
-	ResultID string `json:"result_id,required"`
+	ResultID string `json:"result_id" api:"required"`
 	// type = 'url'
-	Type ParseResponseResultURLResultType `json:"type,required"`
-	URL  string                           `json:"url,required"`
+	Type ParseResponseResultURLResultType `json:"type" api:"required"`
+	URL  string                           `json:"url" api:"required"`
 	JSON parseResponseResultURLResultJSON `json:"-"`
 }
 
@@ -949,8 +949,8 @@ func (r ParseResponseResultType) IsKnown() bool {
 }
 
 type ParseUsage struct {
-	NumPages int64          `json:"num_pages,required"`
-	Credits  float64        `json:"credits,nullable"`
+	NumPages int64          `json:"num_pages" api:"required"`
+	Credits  float64        `json:"credits" api:"nullable"`
 	JSON     parseUsageJSON `json:"-"`
 }
 
@@ -971,9 +971,9 @@ func (r parseUsageJSON) RawJSON() string {
 }
 
 type PipelineResponse struct {
-	JobID  string                 `json:"job_id,required"`
-	Result PipelineResponseResult `json:"result,required"`
-	Usage  ParseUsage             `json:"usage,required"`
+	JobID  string                 `json:"job_id" api:"required"`
+	Result PipelineResponseResult `json:"result" api:"required"`
+	Usage  ParseUsage             `json:"usage" api:"required"`
 	JSON   pipelineResponseJSON   `json:"-"`
 }
 
@@ -1000,10 +1000,10 @@ func (r PipelineResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
 func (r PipelineResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
 
 type PipelineResponseResult struct {
-	Extract PipelineResponseResultExtractUnion `json:"extract,required,nullable"`
-	Parse   PipelineResponseResultParseUnion   `json:"parse,required,nullable"`
-	Split   SplitResponse                      `json:"split,required,nullable"`
-	Edit    EditResponse                       `json:"edit,nullable"`
+	Extract PipelineResponseResultExtractUnion `json:"extract" api:"required,nullable"`
+	Parse   PipelineResponseResultParseUnion   `json:"parse" api:"required,nullable"`
+	Split   SplitResponse                      `json:"split" api:"required,nullable"`
+	Edit    EditResponse                       `json:"edit" api:"nullable"`
 	JSON    pipelineResponseResultJSON         `json:"-"`
 }
 
@@ -1057,10 +1057,10 @@ func (r PipelineResponseResultExtractArray) ImplementsPipelineResponseResultExtr
 
 // This is the response format for Extract -> Split Pipelines
 type PipelineResponseResultExtractArrayItem struct {
-	PageRange []int64                                    `json:"page_range,required"`
-	Result    PipelineResponseResultExtractArrayResult   `json:"result,required"`
-	SplitName string                                     `json:"split_name,required"`
-	Partition string                                     `json:"partition,nullable"`
+	PageRange []int64                                    `json:"page_range" api:"required"`
+	Result    PipelineResponseResultExtractArrayResult   `json:"result" api:"required"`
+	SplitName string                                     `json:"split_name" api:"required"`
+	Partition string                                     `json:"partition" api:"nullable"`
 	JSON      pipelineResponseResultExtractArrayItemJSON `json:"-"`
 }
 
@@ -1085,13 +1085,13 @@ func (r pipelineResponseResultExtractArrayItemJSON) RawJSON() string {
 
 type PipelineResponseResultExtractArrayResult struct {
 	// This field can have the runtime type of [[]interface{}].
-	Result interface{}  `json:"result,required"`
-	Usage  ExtractUsage `json:"usage,required"`
+	Result interface{}  `json:"result" api:"required"`
+	Usage  ExtractUsage `json:"usage" api:"required"`
 	// This field can have the runtime type of [[]interface{}].
 	Citations interface{} `json:"citations"`
-	JobID     string      `json:"job_id,nullable"`
+	JobID     string      `json:"job_id" api:"nullable"`
 	// The link to the studio pipeline for the document.
-	StudioLink string                                       `json:"studio_link,nullable"`
+	StudioLink string                                       `json:"studio_link" api:"nullable"`
 	JSON       pipelineResponseResultExtractArrayResultJSON `json:"-"`
 	union      PipelineResponseResultExtractArrayResultUnion
 }
@@ -1309,8 +1309,8 @@ func (r SettingsReturnImage) IsKnown() bool {
 }
 
 type SplitCategoryParam struct {
-	Description  param.Field[string] `json:"description,required"`
-	Name         param.Field[string] `json:"name,required"`
+	Description  param.Field[string] `json:"description" api:"required"`
+	Name         param.Field[string] `json:"name" api:"required"`
 	PartitionKey param.Field[string] `json:"partition_key"`
 }
 
@@ -1358,8 +1358,8 @@ func (r SplitLargeTablesSizeSplitLargeTableSizesParam) ImplementsSplitLargeTable
 
 type SplitResponse struct {
 	// The split result.
-	Result SplitResponseResult `json:"result,required"`
-	Usage  ParseUsage          `json:"usage,required"`
+	Result SplitResponseResult `json:"result" api:"required"`
+	Usage  ParseUsage          `json:"usage" api:"required"`
 	JSON   splitResponseJSON   `json:"-"`
 }
 
@@ -1387,7 +1387,7 @@ func (r SplitResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() 
 type SplitResponseResult struct {
 	// This field can have the runtime type of [[]SplitResponseResultSplitResultSplit],
 	// [[]SplitResponseResultDeepSplitResultSplit].
-	Splits interface{} `json:"splits,required"`
+	Splits interface{} `json:"splits" api:"required"`
 	// This field can have the runtime type of [map[string][]int64].
 	SectionMapping interface{}             `json:"section_mapping"`
 	JSON           splitResponseResultJSON `json:"-"`
@@ -1449,8 +1449,8 @@ func init() {
 }
 
 type SplitResponseResultSplitResult struct {
-	SectionMapping map[string][]int64                    `json:"section_mapping,required,nullable"`
-	Splits         []SplitResponseResultSplitResultSplit `json:"splits,required"`
+	SectionMapping map[string][]int64                    `json:"section_mapping" api:"required,nullable"`
+	Splits         []SplitResponseResultSplitResultSplit `json:"splits" api:"required"`
 	JSON           splitResponseResultSplitResultJSON    `json:"-"`
 }
 
@@ -1474,10 +1474,10 @@ func (r splitResponseResultSplitResultJSON) RawJSON() string {
 func (r SplitResponseResultSplitResult) implementsSplitResponseResult() {}
 
 type SplitResponseResultSplitResultSplit struct {
-	Name       string                                          `json:"name,required"`
-	Pages      []int64                                         `json:"pages,required"`
+	Name       string                                          `json:"name" api:"required"`
+	Pages      []int64                                         `json:"pages" api:"required"`
 	Conf       SplitResponseResultSplitResultSplitsConf        `json:"conf"`
-	Partitions []SplitResponseResultSplitResultSplitsPartition `json:"partitions,nullable"`
+	Partitions []SplitResponseResultSplitResultSplitsPartition `json:"partitions" api:"nullable"`
 	JSON       splitResponseResultSplitResultSplitJSON         `json:"-"`
 }
 
@@ -1516,8 +1516,8 @@ func (r SplitResponseResultSplitResultSplitsConf) IsKnown() bool {
 }
 
 type SplitResponseResultSplitResultSplitsPartition struct {
-	Name  string                                             `json:"name,required"`
-	Pages []int64                                            `json:"pages,required"`
+	Name  string                                             `json:"name" api:"required"`
+	Pages []int64                                            `json:"pages" api:"required"`
 	Conf  SplitResponseResultSplitResultSplitsPartitionsConf `json:"conf"`
 	JSON  splitResponseResultSplitResultSplitsPartitionJSON  `json:"-"`
 }
@@ -1556,7 +1556,7 @@ func (r SplitResponseResultSplitResultSplitsPartitionsConf) IsKnown() bool {
 }
 
 type SplitResponseResultDeepSplitResult struct {
-	Splits []SplitResponseResultDeepSplitResultSplit `json:"splits,required"`
+	Splits []SplitResponseResultDeepSplitResultSplit `json:"splits" api:"required"`
 	JSON   splitResponseResultDeepSplitResultJSON    `json:"-"`
 }
 
@@ -1579,9 +1579,9 @@ func (r splitResponseResultDeepSplitResultJSON) RawJSON() string {
 func (r SplitResponseResultDeepSplitResult) implementsSplitResponseResult() {}
 
 type SplitResponseResultDeepSplitResultSplit struct {
-	Name       string                                              `json:"name,required"`
-	Pages      []SplitResponseResultDeepSplitResultSplitsPage      `json:"pages,required"`
-	Partitions []SplitResponseResultDeepSplitResultSplitsPartition `json:"partitions,nullable"`
+	Name       string                                              `json:"name" api:"required"`
+	Pages      []SplitResponseResultDeepSplitResultSplitsPage      `json:"pages" api:"required"`
+	Partitions []SplitResponseResultDeepSplitResultSplitsPartition `json:"partitions" api:"nullable"`
 	JSON       splitResponseResultDeepSplitResultSplitJSON         `json:"-"`
 }
 
@@ -1604,8 +1604,8 @@ func (r splitResponseResultDeepSplitResultSplitJSON) RawJSON() string {
 }
 
 type SplitResponseResultDeepSplitResultSplitsPage struct {
-	Evidence   string                                           `json:"evidence,required"`
-	PageNumber int64                                            `json:"page_number,required"`
+	Evidence   string                                           `json:"evidence" api:"required"`
+	PageNumber int64                                            `json:"page_number" api:"required"`
 	JSON       splitResponseResultDeepSplitResultSplitsPageJSON `json:"-"`
 }
 
@@ -1627,8 +1627,8 @@ func (r splitResponseResultDeepSplitResultSplitsPageJSON) RawJSON() string {
 }
 
 type SplitResponseResultDeepSplitResultSplitsPartition struct {
-	Name  string                                                   `json:"name,required"`
-	Pages []SplitResponseResultDeepSplitResultSplitsPartitionsPage `json:"pages,required"`
+	Name  string                                                   `json:"name" api:"required"`
+	Pages []SplitResponseResultDeepSplitResultSplitsPartitionsPage `json:"pages" api:"required"`
 	JSON  splitResponseResultDeepSplitResultSplitsPartitionJSON    `json:"-"`
 }
 
@@ -1650,8 +1650,8 @@ func (r splitResponseResultDeepSplitResultSplitsPartitionJSON) RawJSON() string 
 }
 
 type SplitResponseResultDeepSplitResultSplitsPartitionsPage struct {
-	Evidence   string                                                     `json:"evidence,required"`
-	PageNumber int64                                                      `json:"page_number,required"`
+	Evidence   string                                                     `json:"evidence" api:"required"`
+	PageNumber int64                                                      `json:"page_number" api:"required"`
 	JSON       splitResponseResultDeepSplitResultSplitsPartitionsPageJSON `json:"-"`
 }
 
@@ -1769,7 +1769,7 @@ func (r SvixWebhookConfigMode) IsKnown() bool {
 }
 
 type TableAgenticParam struct {
-	Scope param.Field[TableAgenticScope] `json:"scope,required"`
+	Scope param.Field[TableAgenticScope] `json:"scope" api:"required"`
 	// Custom prompt for table agentic.
 	Prompt param.Field[string] `json:"prompt"`
 }
@@ -1795,7 +1795,7 @@ func (r TableAgenticScope) IsKnown() bool {
 }
 
 type TextAgenticParam struct {
-	Scope param.Field[TextAgenticScope] `json:"scope,required"`
+	Scope param.Field[TextAgenticScope] `json:"scope" api:"required"`
 	// Custom instructions for agentic text. Note: This only applies to form regions
 	// (key-value).
 	Prompt param.Field[string] `json:"prompt"`
@@ -1822,8 +1822,8 @@ func (r TextAgenticScope) IsKnown() bool {
 }
 
 type Upload struct {
-	FileID       string     `json:"file_id,required"`
-	PresignedURL string     `json:"presigned_url,nullable"`
+	FileID       string     `json:"file_id" api:"required"`
+	PresignedURL string     `json:"presigned_url" api:"nullable"`
 	JSON         uploadJSON `json:"-"`
 }
 
@@ -1844,7 +1844,7 @@ func (r uploadJSON) RawJSON() string {
 }
 
 type UploadParam struct {
-	FileID       param.Field[string] `json:"file_id,required"`
+	FileID       param.Field[string] `json:"file_id" api:"required"`
 	PresignedURL param.Field[string] `json:"presigned_url"`
 }
 
@@ -1879,11 +1879,11 @@ func (r UploadParam) ImplementsPipelineRunJobParamsInputUnion() {}
 type V3ExtractResponse struct {
 	// The extracted response in your provided schema. This is a list of dictionaries.
 	// If disable_chunking is True (default), then it will be a list of length one.
-	Result []interface{} `json:"result,required"`
-	Usage  ExtractUsage  `json:"usage,required"`
-	JobID  string        `json:"job_id,nullable"`
+	Result []interface{} `json:"result" api:"required"`
+	Usage  ExtractUsage  `json:"usage" api:"required"`
+	JobID  string        `json:"job_id" api:"nullable"`
 	// The link to the studio pipeline for the document.
-	StudioLink string                `json:"studio_link,nullable"`
+	StudioLink string                `json:"studio_link" api:"nullable"`
 	JSON       v3ExtractResponseJSON `json:"-"`
 }
 

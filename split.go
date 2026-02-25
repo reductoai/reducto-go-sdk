@@ -50,7 +50,7 @@ func (r *SplitService) RunJob(ctx context.Context, body SplitRunJobParams, opts 
 }
 
 type SplitRunJobResponse struct {
-	JobID string                  `json:"job_id,required"`
+	JobID string                  `json:"job_id" api:"required"`
 	JSON  splitRunJobResponseJSON `json:"-"`
 }
 
@@ -79,9 +79,9 @@ type SplitRunParams struct {
 	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
-	Input param.Field[SplitRunParamsInputUnion] `json:"input,required"`
+	Input param.Field[SplitRunParamsInputUnion] `json:"input" api:"required"`
 	// The configuration options for processing the document.
-	SplitDescription param.Field[[]shared.SplitCategoryParam] `json:"split_description,required"`
+	SplitDescription param.Field[[]shared.SplitCategoryParam] `json:"split_description" api:"required"`
 	// The configuration options for parsing the document. If you are passing in a
 	// jobid:// URL for the file, then this configuration will be ignored.
 	Parsing param.Field[shared.ParseOptionsParam] `json:"parsing"`
@@ -155,9 +155,9 @@ type SplitRunJobParams struct {
 	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
-	Input param.Field[SplitRunJobParamsInputUnion] `json:"input,required"`
+	Input param.Field[SplitRunJobParamsInputUnion] `json:"input" api:"required"`
 	// The configuration options for processing the document.
-	SplitDescription param.Field[[]shared.SplitCategoryParam] `json:"split_description,required"`
+	SplitDescription param.Field[[]shared.SplitCategoryParam] `json:"split_description" api:"required"`
 	// The configuration options for asynchronous processing (default synchronous).
 	Async param.Field[shared.ConfigV3AsyncConfigParam] `json:"async"`
 	// The configuration options for parsing the document. If you are passing in a

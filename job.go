@@ -75,22 +75,22 @@ func (r *JobService) GetAll(ctx context.Context, query JobGetAllParams, opts ...
 type JobCancelResponse = interface{}
 
 type JobGetResponse struct {
-	Status JobGetResponseStatus `json:"status,required"`
+	Status JobGetResponseStatus `json:"status" api:"required"`
 	// This field can have the runtime type of [interface{}].
 	Bucket    interface{} `json:"bucket"`
-	CreatedAt time.Time   `json:"created_at,nullable" format:"date-time"`
-	Duration  float64     `json:"duration,nullable"`
-	NumPages  int64       `json:"num_pages,nullable"`
-	Progress  float64     `json:"progress,nullable"`
-	RawConfig string      `json:"raw_config,nullable"`
-	Reason    string      `json:"reason,nullable"`
+	CreatedAt time.Time   `json:"created_at" api:"nullable" format:"date-time"`
+	Duration  float64     `json:"duration" api:"nullable"`
+	NumPages  int64       `json:"num_pages" api:"nullable"`
+	Progress  float64     `json:"progress" api:"nullable"`
+	RawConfig string      `json:"raw_config" api:"nullable"`
+	Reason    string      `json:"reason" api:"nullable"`
 	// This field can have the runtime type of [JobGetResponseAsyncJobResponseResult],
 	// [JobGetResponseEnhancedAsyncJobResponseResult].
 	Result interface{} `json:"result"`
 	// This field can have the runtime type of [interface{}].
 	Source     interface{}        `json:"source"`
-	TotalPages int64              `json:"total_pages,nullable"`
-	Type       JobGetResponseType `json:"type,nullable"`
+	TotalPages int64              `json:"total_pages" api:"nullable"`
+	Type       JobGetResponseType `json:"type" api:"nullable"`
 	JSON       jobGetResponseJSON `json:"-"`
 	union      JobGetResponseUnion
 }
@@ -157,11 +157,11 @@ func init() {
 }
 
 type JobGetResponseAsyncJobResponse struct {
-	Status   JobGetResponseAsyncJobResponseStatus `json:"status,required"`
-	Progress float64                              `json:"progress,nullable"`
-	Reason   string                               `json:"reason,nullable"`
+	Status   JobGetResponseAsyncJobResponseStatus `json:"status" api:"required"`
+	Progress float64                              `json:"progress" api:"nullable"`
+	Reason   string                               `json:"reason" api:"nullable"`
 	// Response from classify job - returned when polling /job/{job_id}
-	Result JobGetResponseAsyncJobResponseResult `json:"result,nullable"`
+	Result JobGetResponseAsyncJobResponseResult `json:"result" api:"nullable"`
 	JSON   jobGetResponseAsyncJobResponseJSON   `json:"-"`
 }
 
@@ -210,12 +210,12 @@ type JobGetResponseAsyncJobResponseResult struct {
 	// Presigned URL to download the edited document.
 	DocumentURL string `json:"document_url"`
 	// The duration of the parse request in seconds.
-	Duration float64 `json:"duration,nullable"`
+	Duration float64 `json:"duration" api:"nullable"`
 	// This field can have the runtime type of [[]shared.EditResponseFormSchema].
 	FormSchema interface{} `json:"form_schema"`
-	JobID      string      `json:"job_id,nullable"`
+	JobID      string      `json:"job_id" api:"nullable"`
 	// The storage URL of the converted PDF file.
-	PdfURL string `json:"pdf_url,nullable"`
+	PdfURL string `json:"pdf_url" api:"nullable"`
 	// This field can have the runtime type of
 	// [JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidence].
 	ResponseConfidence interface{} `json:"response_confidence"`
@@ -224,7 +224,7 @@ type JobGetResponseAsyncJobResponseResult struct {
 	// [JobGetResponseAsyncJobResponseResultClassifyResponseResult].
 	Result interface{} `json:"result"`
 	// The link to the studio pipeline for the document.
-	StudioLink string `json:"studio_link,nullable"`
+	StudioLink string `json:"studio_link" api:"nullable"`
 	// This field can have the runtime type of [shared.ParseUsage],
 	// [shared.ExtractUsage].
 	Usage interface{}                              `json:"usage"`
@@ -320,12 +320,12 @@ func init() {
 
 // Response from classify job - returned when polling /job/{job_id}
 type JobGetResponseAsyncJobResponseResultClassifyResponse struct {
-	JobID  string                                                     `json:"job_id,required"`
-	Result JobGetResponseAsyncJobResponseResultClassifyResponseResult `json:"result,required"`
+	JobID  string                                                     `json:"job_id" api:"required"`
+	Result JobGetResponseAsyncJobResponseResultClassifyResponseResult `json:"result" api:"required"`
 	// The duration of the classify request in seconds.
-	Duration float64 `json:"duration,nullable"`
+	Duration float64 `json:"duration" api:"nullable"`
 	// Overall confidence breakdown for classification response.
-	ResponseConfidence JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidence `json:"response_confidence,nullable"`
+	ResponseConfidence JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidence `json:"response_confidence" api:"nullable"`
 	JSON               jobGetResponseAsyncJobResponseResultClassifyResponseJSON               `json:"-"`
 }
 
@@ -352,7 +352,7 @@ func (r JobGetResponseAsyncJobResponseResultClassifyResponse) ImplementsJobGetRe
 }
 
 type JobGetResponseAsyncJobResponseResultClassifyResponseResult struct {
-	Category string                                                         `json:"category,required"`
+	Category string                                                         `json:"category" api:"required"`
 	JSON     jobGetResponseAsyncJobResponseResultClassifyResponseResultJSON `json:"-"`
 }
 
@@ -375,7 +375,7 @@ func (r jobGetResponseAsyncJobResponseResultClassifyResponseResultJSON) RawJSON(
 
 // Overall confidence breakdown for classification response.
 type JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidence struct {
-	Categories []JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategory `json:"categories,required"`
+	Categories []JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategory `json:"categories" api:"required"`
 	JSON       jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceJSON       `json:"-"`
 }
 
@@ -398,9 +398,9 @@ func (r jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceJS
 
 // Confidence result for a category.
 type JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategory struct {
-	Category           string                                                                                               `json:"category,required"`
-	Confidence         float64                                                                                              `json:"confidence,required"`
-	CriteriaConfidence []JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence `json:"criteria_confidence,required"`
+	Category           string                                                                                               `json:"category" api:"required"`
+	Confidence         float64                                                                                              `json:"confidence" api:"required"`
+	CriteriaConfidence []JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence `json:"criteria_confidence" api:"required"`
 	JSON               jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON                   `json:"-"`
 }
 
@@ -425,8 +425,8 @@ func (r jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCa
 
 // Confidence result for a single criterion.
 type JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence struct {
-	Confidence JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence `json:"confidence,required"`
-	Criterion  string                                                                                                       `json:"criterion,required"`
+	Confidence JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence `json:"confidence" api:"required"`
+	Criterion  string                                                                                                       `json:"criterion" api:"required"`
 	JSON       jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON       `json:"-"`
 }
 
@@ -464,19 +464,19 @@ func (r JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCa
 }
 
 type JobGetResponseEnhancedAsyncJobResponse struct {
-	Status    JobGetResponseEnhancedAsyncJobResponseStatus `json:"status,required"`
+	Status    JobGetResponseEnhancedAsyncJobResponseStatus `json:"status" api:"required"`
 	Bucket    interface{}                                  `json:"bucket"`
-	CreatedAt time.Time                                    `json:"created_at,nullable" format:"date-time"`
-	Duration  float64                                      `json:"duration,nullable"`
-	NumPages  int64                                        `json:"num_pages,nullable"`
-	Progress  float64                                      `json:"progress,nullable"`
-	RawConfig string                                       `json:"raw_config,nullable"`
-	Reason    string                                       `json:"reason,nullable"`
+	CreatedAt time.Time                                    `json:"created_at" api:"nullable" format:"date-time"`
+	Duration  float64                                      `json:"duration" api:"nullable"`
+	NumPages  int64                                        `json:"num_pages" api:"nullable"`
+	Progress  float64                                      `json:"progress" api:"nullable"`
+	RawConfig string                                       `json:"raw_config" api:"nullable"`
+	Reason    string                                       `json:"reason" api:"nullable"`
 	// Response from classify job - returned when polling /job/{job_id}
-	Result     JobGetResponseEnhancedAsyncJobResponseResult `json:"result,nullable"`
+	Result     JobGetResponseEnhancedAsyncJobResponseResult `json:"result" api:"nullable"`
 	Source     interface{}                                  `json:"source"`
-	TotalPages int64                                        `json:"total_pages,nullable"`
-	Type       JobGetResponseEnhancedAsyncJobResponseType   `json:"type,nullable"`
+	TotalPages int64                                        `json:"total_pages" api:"nullable"`
+	Type       JobGetResponseEnhancedAsyncJobResponseType   `json:"type" api:"nullable"`
 	JSON       jobGetResponseEnhancedAsyncJobResponseJSON   `json:"-"`
 }
 
@@ -533,12 +533,12 @@ type JobGetResponseEnhancedAsyncJobResponseResult struct {
 	// Presigned URL to download the edited document.
 	DocumentURL string `json:"document_url"`
 	// The duration of the parse request in seconds.
-	Duration float64 `json:"duration,nullable"`
+	Duration float64 `json:"duration" api:"nullable"`
 	// This field can have the runtime type of [[]shared.EditResponseFormSchema].
 	FormSchema interface{} `json:"form_schema"`
-	JobID      string      `json:"job_id,nullable"`
+	JobID      string      `json:"job_id" api:"nullable"`
 	// The storage URL of the converted PDF file.
-	PdfURL string `json:"pdf_url,nullable"`
+	PdfURL string `json:"pdf_url" api:"nullable"`
 	// This field can have the runtime type of
 	// [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidence].
 	ResponseConfidence interface{} `json:"response_confidence"`
@@ -547,7 +547,7 @@ type JobGetResponseEnhancedAsyncJobResponseResult struct {
 	// [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResult].
 	Result interface{} `json:"result"`
 	// The link to the studio pipeline for the document.
-	StudioLink string `json:"studio_link,nullable"`
+	StudioLink string `json:"studio_link" api:"nullable"`
 	// This field can have the runtime type of [shared.ParseUsage],
 	// [shared.ExtractUsage].
 	Usage interface{}                                      `json:"usage"`
@@ -643,12 +643,12 @@ func init() {
 
 // Response from classify job - returned when polling /job/{job_id}
 type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponse struct {
-	JobID  string                                                             `json:"job_id,required"`
-	Result JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResult `json:"result,required"`
+	JobID  string                                                             `json:"job_id" api:"required"`
+	Result JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResult `json:"result" api:"required"`
 	// The duration of the classify request in seconds.
-	Duration float64 `json:"duration,nullable"`
+	Duration float64 `json:"duration" api:"nullable"`
 	// Overall confidence breakdown for classification response.
-	ResponseConfidence JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidence `json:"response_confidence,nullable"`
+	ResponseConfidence JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidence `json:"response_confidence" api:"nullable"`
 	JSON               jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseJSON               `json:"-"`
 }
 
@@ -676,7 +676,7 @@ func (r JobGetResponseEnhancedAsyncJobResponseResultClassifyResponse) Implements
 }
 
 type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResult struct {
-	Category string                                                                 `json:"category,required"`
+	Category string                                                                 `json:"category" api:"required"`
 	JSON     jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResultJSON `json:"-"`
 }
 
@@ -699,7 +699,7 @@ func (r jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResultJSON) 
 
 // Overall confidence breakdown for classification response.
 type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidence struct {
-	Categories []JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategory `json:"categories,required"`
+	Categories []JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategory `json:"categories" api:"required"`
 	JSON       jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceJSON       `json:"-"`
 }
 
@@ -722,9 +722,9 @@ func (r jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConf
 
 // Confidence result for a category.
 type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategory struct {
-	Category           string                                                                                                       `json:"category,required"`
-	Confidence         float64                                                                                                      `json:"confidence,required"`
-	CriteriaConfidence []JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence `json:"criteria_confidence,required"`
+	Category           string                                                                                                       `json:"category" api:"required"`
+	Confidence         float64                                                                                                      `json:"confidence" api:"required"`
+	CriteriaConfidence []JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence `json:"criteria_confidence" api:"required"`
 	JSON               jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON                   `json:"-"`
 }
 
@@ -749,8 +749,8 @@ func (r jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConf
 
 // Confidence result for a single criterion.
 type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence struct {
-	Confidence JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence `json:"confidence,required"`
-	Criterion  string                                                                                                               `json:"criterion,required"`
+	Confidence JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence `json:"confidence" api:"required"`
+	Criterion  string                                                                                                               `json:"criterion" api:"required"`
 	JSON       jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON       `json:"-"`
 }
 
@@ -845,9 +845,9 @@ func (r JobGetResponseType) IsKnown() bool {
 type JobGetAllResponse struct {
 	// List of jobs with their job_id, status, type, raw_config, created_at, num_pages
 	// and duration
-	Jobs []JobGetAllResponseJob `json:"jobs,required"`
+	Jobs []JobGetAllResponseJob `json:"jobs" api:"required"`
 	// Cursor to fetch the next page of results. If null, there are no more results.
-	NextCursor string                `json:"next_cursor,nullable"`
+	NextCursor string                `json:"next_cursor" api:"nullable"`
 	JSON       jobGetAllResponseJSON `json:"-"`
 }
 
@@ -869,14 +869,14 @@ func (r jobGetAllResponseJSON) RawJSON() string {
 }
 
 type JobGetAllResponseJob struct {
-	CreatedAt  time.Time                   `json:"created_at,required" format:"date-time"`
-	Duration   float64                     `json:"duration,required,nullable"`
-	JobID      string                      `json:"job_id,required"`
-	NumPages   int64                       `json:"num_pages,required,nullable"`
-	RawConfig  string                      `json:"raw_config,required"`
-	Status     JobGetAllResponseJobsStatus `json:"status,required"`
-	TotalPages int64                       `json:"total_pages,required,nullable"`
-	Type       JobGetAllResponseJobsType   `json:"type,required"`
+	CreatedAt  time.Time                   `json:"created_at" api:"required" format:"date-time"`
+	Duration   float64                     `json:"duration" api:"required,nullable"`
+	JobID      string                      `json:"job_id" api:"required"`
+	NumPages   int64                       `json:"num_pages" api:"required,nullable"`
+	RawConfig  string                      `json:"raw_config" api:"required"`
+	Status     JobGetAllResponseJobsStatus `json:"status" api:"required"`
+	TotalPages int64                       `json:"total_pages" api:"required,nullable"`
+	Type       JobGetAllResponseJobsType   `json:"type" api:"required"`
 	Bucket     interface{}                 `json:"bucket"`
 	Source     interface{}                 `json:"source"`
 	JSON       jobGetAllResponseJobJSON    `json:"-"`
