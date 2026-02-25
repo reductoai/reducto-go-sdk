@@ -52,15 +52,15 @@ func (r *ParseService) RunJob(ctx context.Context, body ParseRunJobParams, opts 
 }
 
 type ParseRunResponse struct {
-	JobID string `json:"job_id,required"`
+	JobID string `json:"job_id" api:"required"`
 	// The duration of the parse request in seconds.
 	Duration float64 `json:"duration"`
 	// The storage URL of the converted PDF file.
-	PdfURL string `json:"pdf_url,nullable"`
+	PdfURL string `json:"pdf_url" api:"nullable"`
 	// This field can have the runtime type of [shared.ParseResponseResult].
 	Result interface{} `json:"result"`
 	// The link to the studio pipeline for the document.
-	StudioLink string               `json:"studio_link,nullable"`
+	StudioLink string               `json:"studio_link" api:"nullable"`
 	Usage      shared.ParseUsage    `json:"usage"`
 	JSON       parseRunResponseJSON `json:"-"`
 	union      ParseRunResponseUnion
@@ -123,7 +123,7 @@ func init() {
 }
 
 type ParseRunResponseAsyncParseResponse struct {
-	JobID string                                 `json:"job_id,required"`
+	JobID string                                 `json:"job_id" api:"required"`
 	JSON  parseRunResponseAsyncParseResponseJSON `json:"-"`
 }
 
@@ -146,7 +146,7 @@ func (r parseRunResponseAsyncParseResponseJSON) RawJSON() string {
 func (r ParseRunResponseAsyncParseResponse) ImplementsParseRunResponse() {}
 
 type ParseRunJobResponse struct {
-	JobID string                  `json:"job_id,required"`
+	JobID string                  `json:"job_id" api:"required"`
 	JSON  parseRunJobResponseJSON `json:"-"`
 }
 
@@ -167,7 +167,7 @@ func (r parseRunJobResponseJSON) RawJSON() string {
 }
 
 type ParseRunParams struct {
-	Body ParseRunParamsBodyUnion `json:"body,required"`
+	Body ParseRunParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r ParseRunParams) MarshalJSON() (data []byte, err error) {
@@ -175,7 +175,7 @@ func (r ParseRunParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ParseRunParamsBody struct {
-	Input param.Field[interface{}] `json:"input,required"`
+	Input param.Field[interface{}] `json:"input" api:"required"`
 	// The configuration options for asynchronous processing (default synchronous).
 	Async       param.Field[shared.ConfigV3AsyncConfigParam] `json:"async"`
 	Enhance     param.Field[shared.EnhanceParam]             `json:"enhance"`
@@ -206,7 +206,7 @@ type ParseRunParamsBodySyncParseConfig struct {
 	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
-	Input       param.Field[ParseRunParamsBodySyncParseConfigInputUnion] `json:"input,required"`
+	Input       param.Field[ParseRunParamsBodySyncParseConfigInputUnion] `json:"input" api:"required"`
 	Enhance     param.Field[shared.EnhanceParam]                         `json:"enhance"`
 	Formatting  param.Field[shared.FormattingParam]                      `json:"formatting"`
 	Retrieval   param.Field[shared.RetrievalParam]                       `json:"retrieval"`
@@ -249,7 +249,7 @@ type ParseRunParamsBodyAsyncParseConfig struct {
 	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
-	Input param.Field[ParseRunParamsBodyAsyncParseConfigInputUnion] `json:"input,required"`
+	Input param.Field[ParseRunParamsBodyAsyncParseConfigInputUnion] `json:"input" api:"required"`
 	// The configuration options for asynchronous processing (default synchronous).
 	Async       param.Field[shared.ConfigV3AsyncConfigParam] `json:"async"`
 	Enhance     param.Field[shared.EnhanceParam]             `json:"enhance"`
@@ -294,7 +294,7 @@ type ParseRunJobParams struct {
 	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
-	Input param.Field[ParseRunJobParamsInputUnion] `json:"input,required"`
+	Input param.Field[ParseRunJobParamsInputUnion] `json:"input" api:"required"`
 	// The configuration options for asynchronous processing (default synchronous).
 	Async       param.Field[shared.ConfigV3AsyncConfigParam] `json:"async"`
 	Enhance     param.Field[shared.EnhanceParam]             `json:"enhance"`

@@ -50,7 +50,7 @@ func (r *EditService) RunJob(ctx context.Context, body EditRunJobParams, opts ..
 }
 
 type EditRunJobResponse struct {
-	JobID string                 `json:"job_id,required"`
+	JobID string                 `json:"job_id" api:"required"`
 	JSON  editRunJobResponseJSON `json:"-"`
 }
 
@@ -77,9 +77,9 @@ type EditRunParams struct {
 	//  2. A presigned S3 URL
 	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 	//     uploading a document
-	DocumentURL param.Field[EditRunParamsDocumentURLUnion] `json:"document_url,required"`
+	DocumentURL param.Field[EditRunParamsDocumentURLUnion] `json:"document_url" api:"required"`
 	// The instructions for the edit.
-	EditInstructions param.Field[string]                   `json:"edit_instructions,required"`
+	EditInstructions param.Field[string]                   `json:"edit_instructions" api:"required"`
 	EditOptions      param.Field[EditRunParamsEditOptions] `json:"edit_options"`
 	// Form schema for PDF forms. List of widgets with their types, descriptions, and
 	// bounding boxes. Only works for PDFs.
@@ -144,11 +144,11 @@ func (r EditRunParamsEditOptionsLlmProviderPreference) IsKnown() bool {
 
 type EditRunParamsFormSchema struct {
 	// Bounding box coordinates of the widget
-	Bbox param.Field[shared.BoundingBoxParam] `json:"bbox,required"`
+	Bbox param.Field[shared.BoundingBoxParam] `json:"bbox" api:"required"`
 	// Description of the widget extracted from the document
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// Type of the form widget
-	Type param.Field[EditRunParamsFormSchemaType] `json:"type,required"`
+	Type param.Field[EditRunParamsFormSchemaType] `json:"type" api:"required"`
 	// If True (default), the system will attempt to fill this widget. If False, the
 	// widget will be created but intentionally left unfilled.
 	Fill param.Field[bool] `json:"fill"`
@@ -187,9 +187,9 @@ type EditRunJobParams struct {
 	//  2. A presigned S3 URL
 	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 	//     uploading a document
-	DocumentURL param.Field[EditRunJobParamsDocumentURLUnion] `json:"document_url,required"`
+	DocumentURL param.Field[EditRunJobParamsDocumentURLUnion] `json:"document_url" api:"required"`
 	// The instructions for the edit.
-	EditInstructions param.Field[string]                      `json:"edit_instructions,required"`
+	EditInstructions param.Field[string]                      `json:"edit_instructions" api:"required"`
 	EditOptions      param.Field[EditRunJobParamsEditOptions] `json:"edit_options"`
 	// Form schema for PDF forms. List of widgets with their types, descriptions, and
 	// bounding boxes. Only works for PDFs.
@@ -255,11 +255,11 @@ func (r EditRunJobParamsEditOptionsLlmProviderPreference) IsKnown() bool {
 
 type EditRunJobParamsFormSchema struct {
 	// Bounding box coordinates of the widget
-	Bbox param.Field[shared.BoundingBoxParam] `json:"bbox,required"`
+	Bbox param.Field[shared.BoundingBoxParam] `json:"bbox" api:"required"`
 	// Description of the widget extracted from the document
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// Type of the form widget
-	Type param.Field[EditRunJobParamsFormSchemaType] `json:"type,required"`
+	Type param.Field[EditRunJobParamsFormSchemaType] `json:"type" api:"required"`
 	// If True (default), the system will attempt to fill this widget. If False, the
 	// widget will be created but intentionally left unfilled.
 	Fill param.Field[bool] `json:"fill"`

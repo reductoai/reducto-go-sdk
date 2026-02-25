@@ -50,7 +50,7 @@ func (r *PipelineService) RunJob(ctx context.Context, body PipelineRunJobParams,
 }
 
 type PipelineRunJobResponse struct {
-	JobID string                     `json:"job_id,required"`
+	JobID string                     `json:"job_id" api:"required"`
 	JSON  pipelineRunJobResponseJSON `json:"-"`
 }
 
@@ -79,9 +79,9 @@ type PipelineRunParams struct {
 	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
-	Input param.Field[PipelineRunParamsInputUnion] `json:"input,required"`
+	Input param.Field[PipelineRunParamsInputUnion] `json:"input" api:"required"`
 	// The ID of the pipeline to use for the document.
-	PipelineID param.Field[string] `json:"pipeline_id,required"`
+	PipelineID param.Field[string] `json:"pipeline_id" api:"required"`
 	// Settings for pipeline execution that override pipeline defaults.
 	Settings param.Field[PipelineRunParamsSettings] `json:"settings"`
 }
@@ -128,9 +128,9 @@ type PipelineRunJobParams struct {
 	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
-	Input param.Field[PipelineRunJobParamsInputUnion] `json:"input,required"`
+	Input param.Field[PipelineRunJobParamsInputUnion] `json:"input" api:"required"`
 	// The ID of the pipeline to use for the document.
-	PipelineID param.Field[string] `json:"pipeline_id,required"`
+	PipelineID param.Field[string] `json:"pipeline_id" api:"required"`
 	// The configuration options for asynchronous processing (default synchronous).
 	Async param.Field[shared.ConfigV3AsyncConfigParam] `json:"async"`
 	// Settings for pipeline execution that override pipeline defaults.
