@@ -1228,7 +1228,7 @@ type SettingsParam struct {
 	// languages and is available for backwards compatibility.
 	OcrSystem param.Field[SettingsOcrSystem] `json:"ocr_system"`
 	// The page range to process (1-indexed). By default, the entire document is
-	// processed.
+	// processed. For spreadsheets, you can also provide a list of sheet names.
 	PageRange param.Field[SettingsPageRangeUnionParam] `json:"page_range"`
 	// If True, persist the results indefinitely. Defaults to False.
 	PersistResults param.Field[bool] `json:"persist_results"`
@@ -1281,10 +1281,10 @@ func (r SettingsOcrSystem) IsKnown() bool {
 }
 
 // The page range to process (1-indexed). By default, the entire document is
-// processed.
+// processed. For spreadsheets, you can also provide a list of sheet names.
 //
 // Satisfied by [shared.PageRangeParam], [shared.SettingsPageRangeArrayParam],
-// [shared.SettingsPageRangeArrayParam].
+// [shared.SettingsPageRangeArrayParam], [shared.SettingsPageRangeArrayParam].
 type SettingsPageRangeUnionParam interface {
 	ImplementsSettingsPageRangeUnionParam()
 }

@@ -391,7 +391,7 @@ const SettingsOcrSystemStandard = shared.SettingsOcrSystemStandard
 const SettingsOcrSystemLegacy = shared.SettingsOcrSystemLegacy
 
 // The page range to process (1-indexed). By default, the entire document is
-// processed.
+// processed. For spreadsheets, you can also provide a list of sheet names.
 //
 // This is an alias to an internal type.
 type SettingsPageRangeUnionParam = shared.SettingsPageRangeUnionParam
