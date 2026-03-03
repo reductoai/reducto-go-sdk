@@ -1604,9 +1604,10 @@ func (r splitResponseResultDeepSplitResultSplitJSON) RawJSON() string {
 }
 
 type SplitResponseResultDeepSplitResultSplitsPage struct {
-	Evidence   string                                           `json:"evidence" api:"required"`
-	PageNumber int64                                            `json:"page_number" api:"required"`
-	JSON       splitResponseResultDeepSplitResultSplitsPageJSON `json:"-"`
+	Evidence   string                                                  `json:"evidence" api:"required"`
+	PageNumber int64                                                   `json:"page_number" api:"required"`
+	Confidence SplitResponseResultDeepSplitResultSplitsPagesConfidence `json:"confidence" api:"nullable"`
+	JSON       splitResponseResultDeepSplitResultSplitsPageJSON        `json:"-"`
 }
 
 // splitResponseResultDeepSplitResultSplitsPageJSON contains the JSON metadata for
@@ -1614,6 +1615,7 @@ type SplitResponseResultDeepSplitResultSplitsPage struct {
 type splitResponseResultDeepSplitResultSplitsPageJSON struct {
 	Evidence    apijson.Field
 	PageNumber  apijson.Field
+	Confidence  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1624,6 +1626,22 @@ func (r *SplitResponseResultDeepSplitResultSplitsPage) UnmarshalJSON(data []byte
 
 func (r splitResponseResultDeepSplitResultSplitsPageJSON) RawJSON() string {
 	return r.raw
+}
+
+type SplitResponseResultDeepSplitResultSplitsPagesConfidence string
+
+const (
+	SplitResponseResultDeepSplitResultSplitsPagesConfidenceHigh   SplitResponseResultDeepSplitResultSplitsPagesConfidence = "high"
+	SplitResponseResultDeepSplitResultSplitsPagesConfidenceMedium SplitResponseResultDeepSplitResultSplitsPagesConfidence = "medium"
+	SplitResponseResultDeepSplitResultSplitsPagesConfidenceLow    SplitResponseResultDeepSplitResultSplitsPagesConfidence = "low"
+)
+
+func (r SplitResponseResultDeepSplitResultSplitsPagesConfidence) IsKnown() bool {
+	switch r {
+	case SplitResponseResultDeepSplitResultSplitsPagesConfidenceHigh, SplitResponseResultDeepSplitResultSplitsPagesConfidenceMedium, SplitResponseResultDeepSplitResultSplitsPagesConfidenceLow:
+		return true
+	}
+	return false
 }
 
 type SplitResponseResultDeepSplitResultSplitsPartition struct {
@@ -1650,9 +1668,10 @@ func (r splitResponseResultDeepSplitResultSplitsPartitionJSON) RawJSON() string 
 }
 
 type SplitResponseResultDeepSplitResultSplitsPartitionsPage struct {
-	Evidence   string                                                     `json:"evidence" api:"required"`
-	PageNumber int64                                                      `json:"page_number" api:"required"`
-	JSON       splitResponseResultDeepSplitResultSplitsPartitionsPageJSON `json:"-"`
+	Evidence   string                                                            `json:"evidence" api:"required"`
+	PageNumber int64                                                             `json:"page_number" api:"required"`
+	Confidence SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidence `json:"confidence" api:"nullable"`
+	JSON       splitResponseResultDeepSplitResultSplitsPartitionsPageJSON        `json:"-"`
 }
 
 // splitResponseResultDeepSplitResultSplitsPartitionsPageJSON contains the JSON
@@ -1660,6 +1679,7 @@ type SplitResponseResultDeepSplitResultSplitsPartitionsPage struct {
 type splitResponseResultDeepSplitResultSplitsPartitionsPageJSON struct {
 	Evidence    apijson.Field
 	PageNumber  apijson.Field
+	Confidence  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1670,6 +1690,22 @@ func (r *SplitResponseResultDeepSplitResultSplitsPartitionsPage) UnmarshalJSON(d
 
 func (r splitResponseResultDeepSplitResultSplitsPartitionsPageJSON) RawJSON() string {
 	return r.raw
+}
+
+type SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidence string
+
+const (
+	SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidenceHigh   SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidence = "high"
+	SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidenceMedium SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidence = "medium"
+	SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidenceLow    SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidence = "low"
+)
+
+func (r SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidence) IsKnown() bool {
+	switch r {
+	case SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidenceHigh, SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidenceMedium, SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidenceLow:
+		return true
+	}
+	return false
 }
 
 type SpreadsheetParam struct {

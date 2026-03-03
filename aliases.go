@@ -469,10 +469,34 @@ type SplitResponseResultDeepSplitResultSplit = shared.SplitResponseResultDeepSpl
 type SplitResponseResultDeepSplitResultSplitsPage = shared.SplitResponseResultDeepSplitResultSplitsPage
 
 // This is an alias to an internal type.
+type SplitResponseResultDeepSplitResultSplitsPagesConfidence = shared.SplitResponseResultDeepSplitResultSplitsPagesConfidence
+
+// This is an alias to an internal value.
+const SplitResponseResultDeepSplitResultSplitsPagesConfidenceHigh = shared.SplitResponseResultDeepSplitResultSplitsPagesConfidenceHigh
+
+// This is an alias to an internal value.
+const SplitResponseResultDeepSplitResultSplitsPagesConfidenceMedium = shared.SplitResponseResultDeepSplitResultSplitsPagesConfidenceMedium
+
+// This is an alias to an internal value.
+const SplitResponseResultDeepSplitResultSplitsPagesConfidenceLow = shared.SplitResponseResultDeepSplitResultSplitsPagesConfidenceLow
+
+// This is an alias to an internal type.
 type SplitResponseResultDeepSplitResultSplitsPartition = shared.SplitResponseResultDeepSplitResultSplitsPartition
 
 // This is an alias to an internal type.
 type SplitResponseResultDeepSplitResultSplitsPartitionsPage = shared.SplitResponseResultDeepSplitResultSplitsPartitionsPage
+
+// This is an alias to an internal type.
+type SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidence = shared.SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidence
+
+// This is an alias to an internal value.
+const SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidenceHigh = shared.SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidenceHigh
+
+// This is an alias to an internal value.
+const SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidenceMedium = shared.SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidenceMedium
+
+// This is an alias to an internal value.
+const SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidenceLow = shared.SplitResponseResultDeepSplitResultSplitsPartitionsPagesConfidenceLow
 
 // This is an alias to an internal type.
 type SpreadsheetParam = shared.SpreadsheetParam
