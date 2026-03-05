@@ -1232,8 +1232,8 @@ type SettingsParam struct {
 	PageRange param.Field[SettingsPageRangeUnionParam] `json:"page_range"`
 	// If True, persist the results indefinitely. Defaults to False.
 	PersistResults param.Field[bool] `json:"persist_results"`
-	// Whether to return images for the specified block types. By default, no images
-	// are returned.
+	// Whether to return images for the specified block types. 'page' returns full page
+	// images. By default, no images are returned.
 	ReturnImages param.Field[[]SettingsReturnImage] `json:"return_images"`
 	// If True, return OCR data in the result. Defaults to False.
 	ReturnOcrData param.Field[bool] `json:"return_ocr_data"`
@@ -1298,11 +1298,12 @@ type SettingsReturnImage string
 const (
 	SettingsReturnImageFigure SettingsReturnImage = "figure"
 	SettingsReturnImageTable  SettingsReturnImage = "table"
+	SettingsReturnImagePage   SettingsReturnImage = "page"
 )
 
 func (r SettingsReturnImage) IsKnown() bool {
 	switch r {
-	case SettingsReturnImageFigure, SettingsReturnImageTable:
+	case SettingsReturnImageFigure, SettingsReturnImageTable, SettingsReturnImagePage:
 		return true
 	}
 	return false

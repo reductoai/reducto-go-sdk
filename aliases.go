@@ -408,6 +408,9 @@ const SettingsReturnImageFigure = shared.SettingsReturnImageFigure
 // This is an alias to an internal value.
 const SettingsReturnImageTable = shared.SettingsReturnImageTable
 
+// This is an alias to an internal value.
+const SettingsReturnImagePage = shared.SettingsReturnImagePage
+
 // This is an alias to an internal type.
 type SplitCategoryParam = shared.SplitCategoryParam
 
