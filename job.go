@@ -45,11 +45,11 @@ func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.Re
 	opts = slices.Concat(r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required job_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("cancel/%s", jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve Parse
@@ -57,11 +57,11 @@ func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.Reque
 	opts = slices.Concat(r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required job_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("job/%s", jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Jobs
@@ -69,7 +69,7 @@ func (r *JobService) GetAll(ctx context.Context, query JobGetAllParams, opts ...
 	opts = slices.Concat(r.Options, opts)
 	path := "jobs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type JobCancelResponse = interface{}

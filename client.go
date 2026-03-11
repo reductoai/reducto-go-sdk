@@ -136,7 +136,7 @@ func (r *Client) APIVersion(ctx context.Context, opts ...option.RequestOption) (
 	opts = slices.Concat(r.Options, opts)
 	path := "version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Upload
@@ -144,5 +144,5 @@ func (r *Client) Upload(ctx context.Context, params UploadParams, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	path := "upload"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }

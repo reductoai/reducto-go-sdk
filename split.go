@@ -38,7 +38,7 @@ func (r *SplitService) Run(ctx context.Context, body SplitRunParams, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	path := "split"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Split Async
@@ -46,7 +46,7 @@ func (r *SplitService) RunJob(ctx context.Context, body SplitRunJobParams, opts 
 	opts = slices.Concat(r.Options, opts)
 	path := "split_async"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type SplitRunJobResponse struct {

@@ -40,7 +40,7 @@ func (r *ExtractService) Run(ctx context.Context, body ExtractRunParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "extract"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Extract Async
@@ -48,7 +48,7 @@ func (r *ExtractService) RunJob(ctx context.Context, body ExtractRunJobParams, o
 	opts = slices.Concat(r.Options, opts)
 	path := "extract_async"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ExtractRunResponse struct {
