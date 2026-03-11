@@ -39,7 +39,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Parse.Run(context.Background(), reducto.ParseRunParamsSyncParseConfig{
+	_, _ = client.Parse.Run(context.Background(), reducto.ParseRunParamsSyncParseConfig{
 		Input: reducto.F[reducto.ParseRunParamsSyncParseConfigInputUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),
 	})
 	if userAgent != fmt.Sprintf("Reducto/Go %s", internal.PackageVersion) {
