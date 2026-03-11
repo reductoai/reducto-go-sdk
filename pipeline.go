@@ -38,7 +38,7 @@ func (r *PipelineService) Run(ctx context.Context, body PipelineRunParams, opts 
 	opts = slices.Concat(r.Options, opts)
 	path := "pipeline"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Pipeline Async
@@ -46,7 +46,7 @@ func (r *PipelineService) RunJob(ctx context.Context, body PipelineRunJobParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "pipeline_async"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type PipelineRunJobResponse struct {

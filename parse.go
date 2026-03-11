@@ -40,7 +40,7 @@ func (r *ParseService) Run(ctx context.Context, body ParseRunParams, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	path := "parse"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Async Parse
@@ -48,7 +48,7 @@ func (r *ParseService) RunJob(ctx context.Context, body ParseRunJobParams, opts 
 	opts = slices.Concat(r.Options, opts)
 	path := "parse_async"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ParseRunResponse struct {

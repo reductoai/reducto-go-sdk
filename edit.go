@@ -38,7 +38,7 @@ func (r *EditService) Run(ctx context.Context, body EditRunParams, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	path := "edit"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Edit Async
@@ -46,7 +46,7 @@ func (r *EditService) RunJob(ctx context.Context, body EditRunJobParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "edit_async"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type EditRunJobResponse struct {
