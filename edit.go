@@ -115,6 +115,9 @@ type EditRunParamsEditOptions struct {
 	// If True, flattens form fields after filling, converting them to static content.
 	// Defaults to False.
 	Flatten param.Field[bool] `json:"flatten"`
+	// The font size (in points) to use for filled text fields. If not specified, font
+	// size is automatically calculated based on field dimensions.
+	FontSize param.Field[float64] `json:"font_size"`
 	// The LLM provider to use for edit processing. If not specified, defaults to
 	// 'google'
 	LlmProviderPreference param.Field[EditRunParamsEditOptionsLlmProviderPreference] `json:"llm_provider_preference"`
@@ -226,6 +229,9 @@ type EditRunJobParamsEditOptions struct {
 	// If True, flattens form fields after filling, converting them to static content.
 	// Defaults to False.
 	Flatten param.Field[bool] `json:"flatten"`
+	// The font size (in points) to use for filled text fields. If not specified, font
+	// size is automatically calculated based on field dimensions.
+	FontSize param.Field[float64] `json:"font_size"`
 	// The LLM provider to use for edit processing. If not specified, defaults to
 	// 'google'
 	LlmProviderPreference param.Field[EditRunJobParamsEditOptionsLlmProviderPreference] `json:"llm_provider_preference"`
