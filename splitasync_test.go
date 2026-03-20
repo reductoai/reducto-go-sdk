@@ -14,7 +14,7 @@ import (
 	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
-func TestSplitNewWithOptionalParams(t *testing.T) {
+func TestSplitAsyncNewWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,13 +27,21 @@ func TestSplitNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Split.New(context.TODO(), reducto.SplitNewParams{
-		Input: reducto.F[reducto.SplitNewParamsInputUnion](shared.UnionString("string")),
+	_, err := client.SplitAsync.New(context.TODO(), reducto.SplitAsyncNewParams{
+		Input: reducto.F[reducto.SplitAsyncNewParamsInputUnion](shared.UnionString("string")),
 		SplitDescription: reducto.F([]reducto.SplitCategoryParam{{
 			Description:  reducto.F("description"),
 			Name:         reducto.F("name"),
 			PartitionKey: reducto.F("partition_key"),
 		}}),
+		Async: reducto.F(reducto.AsyncConfigV3Param{
+			Metadata: reducto.F[any](map[string]interface{}{}),
+			Priority: reducto.F(true),
+			Webhook: reducto.F[reducto.AsyncConfigV3WebhookUnionParam](reducto.AsyncConfigV3WebhookSvixWebhookConfigParam{
+				Channels: reducto.F([]string{"string"}),
+				Mode:     reducto.F(reducto.AsyncConfigV3WebhookSvixWebhookConfigModeSvix),
+			}),
+		}),
 		Parsing: reducto.F(reducto.ParseOptionsParam{
 			Enhance: reducto.F(reducto.EnhanceParam{
 				Agentic: reducto.F([]reducto.EnhanceAgenticUnionParam{reducto.EnhanceAgenticTableAgenticParam{

@@ -17,7 +17,6 @@ import (
 	"github.com/reductoai/reducto-go-sdk/internal/param"
 	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
 	"github.com/reductoai/reducto-go-sdk/option"
-	"github.com/reductoai/reducto-go-sdk/shared"
 	"github.com/tidwall/gjson"
 )
 
@@ -40,18 +39,6 @@ func NewJobService(opts ...option.RequestOption) (r *JobService) {
 	return
 }
 
-// Cancel Job
-func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.RequestOption) (res *JobCancelResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if jobID == "" {
-		err = errors.New("missing required job_id parameter")
-		return nil, err
-	}
-	path := fmt.Sprintf("cancel/%s", jobID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return res, err
-}
-
 // Retrieve Parse
 func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.RequestOption) (res *JobGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -65,14 +52,52 @@ func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.Reque
 }
 
 // Get Jobs
-func (r *JobService) GetAll(ctx context.Context, query JobGetAllParams, opts ...option.RequestOption) (res *JobGetAllResponse, err error) {
+func (r *JobService) List(ctx context.Context, query JobListParams, opts ...option.RequestOption) (res *JobListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "jobs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
-type JobCancelResponse = interface{}
+type ExtractResponse struct {
+	// The citations corresponding to the extracted response.
+	Citations []interface{} `json:"citations" api:"required,nullable"`
+	// The extracted response in your provided schema. This is a list of dictionaries.
+	// If disable_chunking is True (default), then it will be a list of length one.
+	Result []interface{} `json:"result" api:"required"`
+	Usage  ExtractUsage  `json:"usage" api:"required"`
+	JobID  string        `json:"job_id" api:"nullable"`
+	// The link to the studio pipeline for the document.
+	StudioLink string              `json:"studio_link" api:"nullable"`
+	JSON       extractResponseJSON `json:"-"`
+}
+
+// extractResponseJSON contains the JSON metadata for the struct [ExtractResponse]
+type extractResponseJSON struct {
+	Citations   apijson.Field
+	Result      apijson.Field
+	Usage       apijson.Field
+	JobID       apijson.Field
+	StudioLink  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ExtractResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r extractResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r ExtractResponse) implementsPipelineResponseResultExtractUnion() {}
+
+func (r ExtractResponse) implementsPipelineResponseResultExtractArrayResult() {}
+
+func (r ExtractResponse) implementsJobGetResponseAsyncJobResponseResult() {}
+
+func (r ExtractResponse) implementsJobGetResponseEnhancedAsyncJobResponseResult() {}
 
 type JobGetResponse struct {
 	Status JobGetResponseStatus `json:"status" api:"required"`
@@ -211,22 +236,19 @@ type JobGetResponseAsyncJobResponseResult struct {
 	DocumentURL string `json:"document_url"`
 	// The duration of the parse request in seconds.
 	Duration float64 `json:"duration" api:"nullable"`
-	// This field can have the runtime type of [[]shared.EditResponseFormSchema].
+	// This field can have the runtime type of [[]EditWidget].
 	FormSchema interface{} `json:"form_schema"`
 	JobID      string      `json:"job_id" api:"nullable"`
 	// The storage URL of the converted PDF file.
 	PdfURL string `json:"pdf_url" api:"nullable"`
-	// This field can have the runtime type of
-	// [JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidence].
+	// This field can have the runtime type of [ClassifyResponseResponseConfidence].
 	ResponseConfidence interface{} `json:"response_confidence"`
-	// This field can have the runtime type of [shared.ParseResponseResult],
-	// [[]interface{}], [shared.SplitResponseResult], [shared.PipelineResponseResult],
-	// [JobGetResponseAsyncJobResponseResultClassifyResponseResult].
+	// This field can have the runtime type of [ParseResponseResult], [[]interface{}],
+	// [SplitResponseResult], [PipelineResponseResult], [ClassifyResponseResult].
 	Result interface{} `json:"result"`
 	// The link to the studio pipeline for the document.
 	StudioLink string `json:"studio_link" api:"nullable"`
-	// This field can have the runtime type of [shared.ParseUsage],
-	// [shared.ExtractUsage].
+	// This field can have the runtime type of [ParseUsage], [ExtractUsage].
 	Usage interface{}                              `json:"usage"`
 	JSON  jobGetResponseAsyncJobResponseResultJSON `json:"-"`
 	union JobGetResponseAsyncJobResponseResultUnion
@@ -265,22 +287,19 @@ func (r *JobGetResponseAsyncJobResponseResult) UnmarshalJSON(data []byte) (err e
 // AsUnion returns a [JobGetResponseAsyncJobResponseResultUnion] interface which
 // you can cast to the specific types for more type safety.
 //
-// Possible runtime types of the union are [shared.ParseResponse],
-// [shared.ExtractResponse], [shared.SplitResponse], [shared.EditResponse],
-// [shared.PipelineResponse], [shared.V3ExtractResponse],
-// [JobGetResponseAsyncJobResponseResultClassifyResponse].
+// Possible runtime types of the union are [ParseResponse], [ExtractResponse],
+// [SplitResponse], [EditResponse], [PipelineResponse], [V3Extract],
+// [ClassifyResponse].
 func (r JobGetResponseAsyncJobResponseResult) AsUnion() JobGetResponseAsyncJobResponseResultUnion {
 	return r.union
 }
 
 // Response from classify job - returned when polling /job/{job_id}
 //
-// Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
-// [shared.SplitResponse], [shared.EditResponse], [shared.PipelineResponse],
-// [shared.V3ExtractResponse] or
-// [JobGetResponseAsyncJobResponseResultClassifyResponse].
+// Union satisfied by [ParseResponse], [ExtractResponse], [SplitResponse],
+// [EditResponse], [PipelineResponse], [V3Extract] or [ClassifyResponse].
 type JobGetResponseAsyncJobResponseResultUnion interface {
-	ImplementsJobGetResponseAsyncJobResponseResult()
+	implementsJobGetResponseAsyncJobResponseResult()
 }
 
 func init() {
@@ -289,178 +308,33 @@ func init() {
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.ParseResponse{}),
+			Type:       reflect.TypeOf(ParseResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.ExtractResponse{}),
+			Type:       reflect.TypeOf(ExtractResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.SplitResponse{}),
+			Type:       reflect.TypeOf(SplitResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.EditResponse{}),
+			Type:       reflect.TypeOf(EditResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.PipelineResponse{}),
+			Type:       reflect.TypeOf(PipelineResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.V3ExtractResponse{}),
+			Type:       reflect.TypeOf(V3Extract{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(JobGetResponseAsyncJobResponseResultClassifyResponse{}),
+			Type:       reflect.TypeOf(ClassifyResponse{}),
 		},
 	)
-}
-
-// Response from classify job - returned when polling /job/{job_id}
-type JobGetResponseAsyncJobResponseResultClassifyResponse struct {
-	JobID  string                                                     `json:"job_id" api:"required"`
-	Result JobGetResponseAsyncJobResponseResultClassifyResponseResult `json:"result" api:"required"`
-	// The duration of the classify request in seconds.
-	Duration float64 `json:"duration" api:"nullable"`
-	// Overall confidence breakdown for classification response.
-	ResponseConfidence JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidence `json:"response_confidence" api:"nullable"`
-	JSON               jobGetResponseAsyncJobResponseResultClassifyResponseJSON               `json:"-"`
-}
-
-// jobGetResponseAsyncJobResponseResultClassifyResponseJSON contains the JSON
-// metadata for the struct [JobGetResponseAsyncJobResponseResultClassifyResponse]
-type jobGetResponseAsyncJobResponseResultClassifyResponseJSON struct {
-	JobID              apijson.Field
-	Result             apijson.Field
-	Duration           apijson.Field
-	ResponseConfidence apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *JobGetResponseAsyncJobResponseResultClassifyResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r jobGetResponseAsyncJobResponseResultClassifyResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r JobGetResponseAsyncJobResponseResultClassifyResponse) ImplementsJobGetResponseAsyncJobResponseResult() {
-}
-
-type JobGetResponseAsyncJobResponseResultClassifyResponseResult struct {
-	Category string                                                         `json:"category" api:"required"`
-	JSON     jobGetResponseAsyncJobResponseResultClassifyResponseResultJSON `json:"-"`
-}
-
-// jobGetResponseAsyncJobResponseResultClassifyResponseResultJSON contains the JSON
-// metadata for the struct
-// [JobGetResponseAsyncJobResponseResultClassifyResponseResult]
-type jobGetResponseAsyncJobResponseResultClassifyResponseResultJSON struct {
-	Category    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *JobGetResponseAsyncJobResponseResultClassifyResponseResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r jobGetResponseAsyncJobResponseResultClassifyResponseResultJSON) RawJSON() string {
-	return r.raw
-}
-
-// Overall confidence breakdown for classification response.
-type JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidence struct {
-	Categories []JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategory `json:"categories" api:"required"`
-	JSON       jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceJSON       `json:"-"`
-}
-
-// jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceJSON
-// contains the JSON metadata for the struct
-// [JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidence]
-type jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceJSON struct {
-	Categories  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidence) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceJSON) RawJSON() string {
-	return r.raw
-}
-
-// Confidence result for a category.
-type JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategory struct {
-	Category           string                                                                                               `json:"category" api:"required"`
-	Confidence         float64                                                                                              `json:"confidence" api:"required"`
-	CriteriaConfidence []JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence `json:"criteria_confidence" api:"required"`
-	JSON               jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON                   `json:"-"`
-}
-
-// jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON
-// contains the JSON metadata for the struct
-// [JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategory]
-type jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON struct {
-	Category           apijson.Field
-	Confidence         apijson.Field
-	CriteriaConfidence apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategory) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON) RawJSON() string {
-	return r.raw
-}
-
-// Confidence result for a single criterion.
-type JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence struct {
-	Confidence JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence `json:"confidence" api:"required"`
-	Criterion  string                                                                                                       `json:"criterion" api:"required"`
-	JSON       jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON       `json:"-"`
-}
-
-// jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON
-// contains the JSON metadata for the struct
-// [JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence]
-type jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON struct {
-	Confidence  apijson.Field
-	Criterion   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r jobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON) RawJSON() string {
-	return r.raw
-}
-
-type JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence string
-
-const (
-	JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceHigh JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence = "high"
-	JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceLow  JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence = "low"
-)
-
-func (r JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence) IsKnown() bool {
-	switch r {
-	case JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceHigh, JobGetResponseAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceLow:
-		return true
-	}
-	return false
 }
 
 type JobGetResponseEnhancedAsyncJobResponse struct {
@@ -534,22 +408,19 @@ type JobGetResponseEnhancedAsyncJobResponseResult struct {
 	DocumentURL string `json:"document_url"`
 	// The duration of the parse request in seconds.
 	Duration float64 `json:"duration" api:"nullable"`
-	// This field can have the runtime type of [[]shared.EditResponseFormSchema].
+	// This field can have the runtime type of [[]EditWidget].
 	FormSchema interface{} `json:"form_schema"`
 	JobID      string      `json:"job_id" api:"nullable"`
 	// The storage URL of the converted PDF file.
 	PdfURL string `json:"pdf_url" api:"nullable"`
-	// This field can have the runtime type of
-	// [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidence].
+	// This field can have the runtime type of [ClassifyResponseResponseConfidence].
 	ResponseConfidence interface{} `json:"response_confidence"`
-	// This field can have the runtime type of [shared.ParseResponseResult],
-	// [[]interface{}], [shared.SplitResponseResult], [shared.PipelineResponseResult],
-	// [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResult].
+	// This field can have the runtime type of [ParseResponseResult], [[]interface{}],
+	// [SplitResponseResult], [PipelineResponseResult], [ClassifyResponseResult].
 	Result interface{} `json:"result"`
 	// The link to the studio pipeline for the document.
 	StudioLink string `json:"studio_link" api:"nullable"`
-	// This field can have the runtime type of [shared.ParseUsage],
-	// [shared.ExtractUsage].
+	// This field can have the runtime type of [ParseUsage], [ExtractUsage].
 	Usage interface{}                                      `json:"usage"`
 	JSON  jobGetResponseEnhancedAsyncJobResponseResultJSON `json:"-"`
 	union JobGetResponseEnhancedAsyncJobResponseResultUnion
@@ -588,22 +459,19 @@ func (r *JobGetResponseEnhancedAsyncJobResponseResult) UnmarshalJSON(data []byte
 // AsUnion returns a [JobGetResponseEnhancedAsyncJobResponseResultUnion] interface
 // which you can cast to the specific types for more type safety.
 //
-// Possible runtime types of the union are [shared.ParseResponse],
-// [shared.ExtractResponse], [shared.SplitResponse], [shared.EditResponse],
-// [shared.PipelineResponse], [shared.V3ExtractResponse],
-// [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponse].
+// Possible runtime types of the union are [ParseResponse], [ExtractResponse],
+// [SplitResponse], [EditResponse], [PipelineResponse], [V3Extract],
+// [ClassifyResponse].
 func (r JobGetResponseEnhancedAsyncJobResponseResult) AsUnion() JobGetResponseEnhancedAsyncJobResponseResultUnion {
 	return r.union
 }
 
 // Response from classify job - returned when polling /job/{job_id}
 //
-// Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
-// [shared.SplitResponse], [shared.EditResponse], [shared.PipelineResponse],
-// [shared.V3ExtractResponse] or
-// [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponse].
+// Union satisfied by [ParseResponse], [ExtractResponse], [SplitResponse],
+// [EditResponse], [PipelineResponse], [V3Extract] or [ClassifyResponse].
 type JobGetResponseEnhancedAsyncJobResponseResultUnion interface {
-	ImplementsJobGetResponseEnhancedAsyncJobResponseResult()
+	implementsJobGetResponseEnhancedAsyncJobResponseResult()
 }
 
 func init() {
@@ -612,179 +480,33 @@ func init() {
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.ParseResponse{}),
+			Type:       reflect.TypeOf(ParseResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.ExtractResponse{}),
+			Type:       reflect.TypeOf(ExtractResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.SplitResponse{}),
+			Type:       reflect.TypeOf(SplitResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.EditResponse{}),
+			Type:       reflect.TypeOf(EditResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.PipelineResponse{}),
+			Type:       reflect.TypeOf(PipelineResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.V3ExtractResponse{}),
+			Type:       reflect.TypeOf(V3Extract{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(JobGetResponseEnhancedAsyncJobResponseResultClassifyResponse{}),
+			Type:       reflect.TypeOf(ClassifyResponse{}),
 		},
 	)
-}
-
-// Response from classify job - returned when polling /job/{job_id}
-type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponse struct {
-	JobID  string                                                             `json:"job_id" api:"required"`
-	Result JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResult `json:"result" api:"required"`
-	// The duration of the classify request in seconds.
-	Duration float64 `json:"duration" api:"nullable"`
-	// Overall confidence breakdown for classification response.
-	ResponseConfidence JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidence `json:"response_confidence" api:"nullable"`
-	JSON               jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseJSON               `json:"-"`
-}
-
-// jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseJSON contains the
-// JSON metadata for the struct
-// [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponse]
-type jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseJSON struct {
-	JobID              apijson.Field
-	Result             apijson.Field
-	Duration           apijson.Field
-	ResponseConfidence apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *JobGetResponseEnhancedAsyncJobResponseResultClassifyResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r JobGetResponseEnhancedAsyncJobResponseResultClassifyResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {
-}
-
-type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResult struct {
-	Category string                                                                 `json:"category" api:"required"`
-	JSON     jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResultJSON `json:"-"`
-}
-
-// jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResultJSON contains
-// the JSON metadata for the struct
-// [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResult]
-type jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResultJSON struct {
-	Category    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResultJSON) RawJSON() string {
-	return r.raw
-}
-
-// Overall confidence breakdown for classification response.
-type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidence struct {
-	Categories []JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategory `json:"categories" api:"required"`
-	JSON       jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceJSON       `json:"-"`
-}
-
-// jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceJSON
-// contains the JSON metadata for the struct
-// [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidence]
-type jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceJSON struct {
-	Categories  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidence) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceJSON) RawJSON() string {
-	return r.raw
-}
-
-// Confidence result for a category.
-type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategory struct {
-	Category           string                                                                                                       `json:"category" api:"required"`
-	Confidence         float64                                                                                                      `json:"confidence" api:"required"`
-	CriteriaConfidence []JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence `json:"criteria_confidence" api:"required"`
-	JSON               jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON                   `json:"-"`
-}
-
-// jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON
-// contains the JSON metadata for the struct
-// [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategory]
-type jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON struct {
-	Category           apijson.Field
-	Confidence         apijson.Field
-	CriteriaConfidence apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategory) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoryJSON) RawJSON() string {
-	return r.raw
-}
-
-// Confidence result for a single criterion.
-type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence struct {
-	Confidence JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence `json:"confidence" api:"required"`
-	Criterion  string                                                                                                               `json:"criterion" api:"required"`
-	JSON       jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON       `json:"-"`
-}
-
-// jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON
-// contains the JSON metadata for the struct
-// [JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence]
-type jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON struct {
-	Confidence  apijson.Field
-	Criterion   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidence) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r jobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON) RawJSON() string {
-	return r.raw
-}
-
-type JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence string
-
-const (
-	JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceHigh JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence = "high"
-	JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceLow  JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence = "low"
-)
-
-func (r JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence) IsKnown() bool {
-	switch r {
-	case JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceHigh, JobGetResponseEnhancedAsyncJobResponseResultClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceLow:
-		return true
-	}
-	return false
 }
 
 type JobGetResponseEnhancedAsyncJobResponseType string
@@ -842,49 +564,48 @@ func (r JobGetResponseType) IsKnown() bool {
 	return false
 }
 
-type JobGetAllResponse struct {
+type JobListResponse struct {
 	// List of jobs with their job_id, status, type, raw_config, created_at, num_pages
 	// and duration
-	Jobs []JobGetAllResponseJob `json:"jobs" api:"required"`
+	Jobs []JobListResponseJob `json:"jobs" api:"required"`
 	// Cursor to fetch the next page of results. If null, there are no more results.
-	NextCursor string                `json:"next_cursor" api:"nullable"`
-	JSON       jobGetAllResponseJSON `json:"-"`
+	NextCursor string              `json:"next_cursor" api:"nullable"`
+	JSON       jobListResponseJSON `json:"-"`
 }
 
-// jobGetAllResponseJSON contains the JSON metadata for the struct
-// [JobGetAllResponse]
-type jobGetAllResponseJSON struct {
+// jobListResponseJSON contains the JSON metadata for the struct [JobListResponse]
+type jobListResponseJSON struct {
 	Jobs        apijson.Field
 	NextCursor  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *JobGetAllResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *JobListResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r jobGetAllResponseJSON) RawJSON() string {
+func (r jobListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type JobGetAllResponseJob struct {
-	CreatedAt  time.Time                   `json:"created_at" api:"required" format:"date-time"`
-	Duration   float64                     `json:"duration" api:"required,nullable"`
-	JobID      string                      `json:"job_id" api:"required"`
-	NumPages   int64                       `json:"num_pages" api:"required,nullable"`
-	RawConfig  string                      `json:"raw_config" api:"required"`
-	Status     JobGetAllResponseJobsStatus `json:"status" api:"required"`
-	TotalPages int64                       `json:"total_pages" api:"required,nullable"`
-	Type       JobGetAllResponseJobsType   `json:"type" api:"required"`
-	Bucket     interface{}                 `json:"bucket"`
-	Source     interface{}                 `json:"source"`
-	JSON       jobGetAllResponseJobJSON    `json:"-"`
+type JobListResponseJob struct {
+	CreatedAt  time.Time                 `json:"created_at" api:"required" format:"date-time"`
+	Duration   float64                   `json:"duration" api:"required,nullable"`
+	JobID      string                    `json:"job_id" api:"required"`
+	NumPages   int64                     `json:"num_pages" api:"required,nullable"`
+	RawConfig  string                    `json:"raw_config" api:"required"`
+	Status     JobListResponseJobsStatus `json:"status" api:"required"`
+	TotalPages int64                     `json:"total_pages" api:"required,nullable"`
+	Type       JobListResponseJobsType   `json:"type" api:"required"`
+	Bucket     interface{}               `json:"bucket"`
+	Source     interface{}               `json:"source"`
+	JSON       jobListResponseJobJSON    `json:"-"`
 }
 
-// jobGetAllResponseJobJSON contains the JSON metadata for the struct
-// [JobGetAllResponseJob]
-type jobGetAllResponseJobJSON struct {
+// jobListResponseJobJSON contains the JSON metadata for the struct
+// [JobListResponseJob]
+type jobListResponseJobJSON struct {
 	CreatedAt   apijson.Field
 	Duration    apijson.Field
 	JobID       apijson.Field
@@ -899,54 +620,54 @@ type jobGetAllResponseJobJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *JobGetAllResponseJob) UnmarshalJSON(data []byte) (err error) {
+func (r *JobListResponseJob) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r jobGetAllResponseJobJSON) RawJSON() string {
+func (r jobListResponseJobJSON) RawJSON() string {
 	return r.raw
 }
 
-type JobGetAllResponseJobsStatus string
+type JobListResponseJobsStatus string
 
 const (
-	JobGetAllResponseJobsStatusPending    JobGetAllResponseJobsStatus = "Pending"
-	JobGetAllResponseJobsStatusCompleted  JobGetAllResponseJobsStatus = "Completed"
-	JobGetAllResponseJobsStatusFailed     JobGetAllResponseJobsStatus = "Failed"
-	JobGetAllResponseJobsStatusIdle       JobGetAllResponseJobsStatus = "Idle"
-	JobGetAllResponseJobsStatusInProgress JobGetAllResponseJobsStatus = "InProgress"
-	JobGetAllResponseJobsStatusCompleting JobGetAllResponseJobsStatus = "Completing"
-	JobGetAllResponseJobsStatusCancelled  JobGetAllResponseJobsStatus = "Cancelled"
+	JobListResponseJobsStatusPending    JobListResponseJobsStatus = "Pending"
+	JobListResponseJobsStatusCompleted  JobListResponseJobsStatus = "Completed"
+	JobListResponseJobsStatusFailed     JobListResponseJobsStatus = "Failed"
+	JobListResponseJobsStatusIdle       JobListResponseJobsStatus = "Idle"
+	JobListResponseJobsStatusInProgress JobListResponseJobsStatus = "InProgress"
+	JobListResponseJobsStatusCompleting JobListResponseJobsStatus = "Completing"
+	JobListResponseJobsStatusCancelled  JobListResponseJobsStatus = "Cancelled"
 )
 
-func (r JobGetAllResponseJobsStatus) IsKnown() bool {
+func (r JobListResponseJobsStatus) IsKnown() bool {
 	switch r {
-	case JobGetAllResponseJobsStatusPending, JobGetAllResponseJobsStatusCompleted, JobGetAllResponseJobsStatusFailed, JobGetAllResponseJobsStatusIdle, JobGetAllResponseJobsStatusInProgress, JobGetAllResponseJobsStatusCompleting, JobGetAllResponseJobsStatusCancelled:
+	case JobListResponseJobsStatusPending, JobListResponseJobsStatusCompleted, JobListResponseJobsStatusFailed, JobListResponseJobsStatusIdle, JobListResponseJobsStatusInProgress, JobListResponseJobsStatusCompleting, JobListResponseJobsStatusCancelled:
 		return true
 	}
 	return false
 }
 
-type JobGetAllResponseJobsType string
+type JobListResponseJobsType string
 
 const (
-	JobGetAllResponseJobsTypeParse    JobGetAllResponseJobsType = "Parse"
-	JobGetAllResponseJobsTypeExtract  JobGetAllResponseJobsType = "Extract"
-	JobGetAllResponseJobsTypeSplit    JobGetAllResponseJobsType = "Split"
-	JobGetAllResponseJobsTypeEdit     JobGetAllResponseJobsType = "Edit"
-	JobGetAllResponseJobsTypePipeline JobGetAllResponseJobsType = "Pipeline"
-	JobGetAllResponseJobsTypeClassify JobGetAllResponseJobsType = "Classify"
+	JobListResponseJobsTypeParse    JobListResponseJobsType = "Parse"
+	JobListResponseJobsTypeExtract  JobListResponseJobsType = "Extract"
+	JobListResponseJobsTypeSplit    JobListResponseJobsType = "Split"
+	JobListResponseJobsTypeEdit     JobListResponseJobsType = "Edit"
+	JobListResponseJobsTypePipeline JobListResponseJobsType = "Pipeline"
+	JobListResponseJobsTypeClassify JobListResponseJobsType = "Classify"
 )
 
-func (r JobGetAllResponseJobsType) IsKnown() bool {
+func (r JobListResponseJobsType) IsKnown() bool {
 	switch r {
-	case JobGetAllResponseJobsTypeParse, JobGetAllResponseJobsTypeExtract, JobGetAllResponseJobsTypeSplit, JobGetAllResponseJobsTypeEdit, JobGetAllResponseJobsTypePipeline, JobGetAllResponseJobsTypeClassify:
+	case JobListResponseJobsTypeParse, JobListResponseJobsTypeExtract, JobListResponseJobsTypeSplit, JobListResponseJobsTypeEdit, JobListResponseJobsTypePipeline, JobListResponseJobsTypeClassify:
 		return true
 	}
 	return false
 }
 
-type JobGetAllParams struct {
+type JobListParams struct {
 	// Cursor for pagination. Use the next_cursor from the previous response to fetch
 	// the next page.
 	Cursor param.Field[string] `query:"cursor"`
@@ -956,8 +677,8 @@ type JobGetAllParams struct {
 	Limit param.Field[int64] `query:"limit"`
 }
 
-// URLQuery serializes [JobGetAllParams]'s query parameters as `url.Values`.
-func (r JobGetAllParams) URLQuery() (v url.Values) {
+// URLQuery serializes [JobListParams]'s query parameters as `url.Values`.
+func (r JobListParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

@@ -4,20 +4,18 @@ package shared
 
 type UnionString string
 
-func (UnionString) ImplementsSplitRunParamsInputUnion()                         {}
-func (UnionString) ImplementsSplitRunJobParamsInputUnion()                      {}
-func (UnionString) ImplementsParseRunParamsBodySyncParseConfigInputUnion()      {}
-func (UnionString) ImplementsParseRunParamsBodyAsyncParseConfigInputUnion()     {}
-func (UnionString) ImplementsParseRunJobParamsInputUnion()                      {}
-func (UnionString) ImplementsExtractRunParamsBodySyncExtractConfigInputUnion()  {}
-func (UnionString) ImplementsExtractRunParamsBodyAsyncExtractConfigInputUnion() {}
-func (UnionString) ImplementsExtractRunJobParamsInputUnion()                    {}
-func (UnionString) ImplementsEditRunParamsDocumentURLUnion()                    {}
-func (UnionString) ImplementsEditRunJobParamsDocumentURLUnion()                 {}
-func (UnionString) ImplementsPipelineRunParamsInputUnion()                      {}
-func (UnionString) ImplementsPipelineRunJobParamsInputUnion()                   {}
-func (UnionString) ImplementsClassifyNewParamsInputUnion()                      {}
+func (UnionString) ImplementsAsyncParseConfigInputUnionParam()                 {}
+func (UnionString) ImplementsParseNewParamsBodySyncParseConfigInputUnion()     {}
+func (UnionString) ImplementsAsyncExtractConfigInputUnionParam()               {}
+func (UnionString) ImplementsExtractNewParamsBodySyncExtractConfigInputUnion() {}
+func (UnionString) ImplementsSplitNewParamsInputUnion()                        {}
+func (UnionString) ImplementsSplitAsyncNewParamsInputUnion()                   {}
+func (UnionString) ImplementsEditSubmitParamsDocumentURLUnion()                {}
+func (UnionString) ImplementsEditAsyncNewParamsDocumentURLUnion()              {}
+func (UnionString) ImplementsPipelineNewParamsInputUnion()                     {}
+func (UnionString) ImplementsPipelineAsyncNewParamsInputUnion()                {}
+func (UnionString) ImplementsClassifyClassifyParamsInputUnion()                {}
 
 type UnionInt int64
 
-func (UnionInt) ImplementsSplitLargeTablesSizeUnionParam() {}
+func (UnionInt) ImplementsSpreadsheetSplitLargeTablesSizeUnionParam() {}

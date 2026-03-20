@@ -10,40 +10,46 @@ import (
 
 	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
 	"github.com/reductoai/reducto-go-sdk/option"
-	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 // Client creates a struct with services and top level methods that help with
 // interacting with the reducto API. You should not instantiate this client
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options  []option.RequestOption
-	Job      *JobService
-	Split    *SplitService
-	Parse    *ParseService
-	Extract  *ExtractService
-	Edit     *EditService
-	Pipeline *PipelineService
-	Webhook  *WebhookService
-	Config   *ConfigService
-	Classify *ClassifyService
+	Options          []option.RequestOption
+	Parse            *ParseService
+	ParseAsync       *ParseAsyncService
+	Extract          *ExtractService
+	ExtractAsync     *ExtractAsyncService
+	Split            *SplitService
+	SplitAsync       *SplitAsyncService
+	Edit             *EditService
+	EditAsync        *EditAsyncService
+	Pipeline         *PipelineService
+	PipelineAsync    *PipelineAsyncService
+	Classify         *ClassifyService
+	Cancel           *CancelService
+	Upload           *UploadService
+	ConfigureWebhook *ConfigureWebhookService
+	Version          *VersionService
+	Job              *JobService
 }
 
-// DefaultClientOptions read from the environment (REDUCTO_API_KEY,
+// DefaultClientOptions read from the environment (REDUCTOAI_BEARER_TOKEN,
 // REDUCTO_BASE_URL). This should be used to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("REDUCTO_BASE_URL"); ok {
 		defaults = append(defaults, option.WithBaseURL(o))
 	}
-	if o, ok := os.LookupEnv("REDUCTO_API_KEY"); ok {
-		defaults = append(defaults, option.WithAPIKey(o))
+	if o, ok := os.LookupEnv("REDUCTOAI_BEARER_TOKEN"); ok {
+		defaults = append(defaults, option.WithBearerToken(o))
 	}
 	return defaults
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (REDUCTO_API_KEY, REDUCTO_BASE_URL). The option passed in as
+// environment (REDUCTOAI_BEARER_TOKEN, REDUCTO_BASE_URL). The option passed in as
 // arguments are applied after these default arguments, and all option will be
 // passed down to the services and requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r *Client) {
@@ -51,15 +57,22 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 
 	r = &Client{Options: opts}
 
-	r.Job = NewJobService(opts...)
-	r.Split = NewSplitService(opts...)
 	r.Parse = NewParseService(opts...)
+	r.ParseAsync = NewParseAsyncService(opts...)
 	r.Extract = NewExtractService(opts...)
+	r.ExtractAsync = NewExtractAsyncService(opts...)
+	r.Split = NewSplitService(opts...)
+	r.SplitAsync = NewSplitAsyncService(opts...)
 	r.Edit = NewEditService(opts...)
+	r.EditAsync = NewEditAsyncService(opts...)
 	r.Pipeline = NewPipelineService(opts...)
-	r.Webhook = NewWebhookService(opts...)
-	r.Config = NewConfigService(opts...)
+	r.PipelineAsync = NewPipelineAsyncService(opts...)
 	r.Classify = NewClassifyService(opts...)
+	r.Cancel = NewCancelService(opts...)
+	r.Upload = NewUploadService(opts...)
+	r.ConfigureWebhook = NewConfigureWebhookService(opts...)
+	r.Version = NewVersionService(opts...)
+	r.Job = NewJobService(opts...)
 
 	return
 }
@@ -131,20 +144,4 @@ func (r *Client) Patch(ctx context.Context, path string, params interface{}, res
 // response.
 func (r *Client) Delete(ctx context.Context, path string, params interface{}, res interface{}, opts ...option.RequestOption) error {
 	return r.Execute(ctx, http.MethodDelete, path, params, res, opts...)
-}
-
-// Get Version
-func (r *Client) APIVersion(ctx context.Context, opts ...option.RequestOption) (res *string, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "version"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
-}
-
-// Upload
-func (r *Client) Upload(ctx context.Context, params UploadParams, opts ...option.RequestOption) (res *shared.Upload, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "upload"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return res, err
 }

@@ -14,7 +14,7 @@ import (
 	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
-func TestExtractNewWithOptionalParams(t *testing.T) {
+func TestExtractAsyncNewWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,9 +27,17 @@ func TestExtractNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Extract.New(context.TODO(), reducto.ExtractNewParams{
-		Body: reducto.ExtractNewParamsBodySyncExtractConfig{
-			Input: reducto.F[reducto.ExtractNewParamsBodySyncExtractConfigInputUnion](shared.UnionString("string")),
+	_, err := client.ExtractAsync.New(context.TODO(), reducto.ExtractAsyncNewParams{
+		AsyncExtractConfig: reducto.AsyncExtractConfigParam{
+			Input: reducto.F[reducto.AsyncExtractConfigInputUnionParam](shared.UnionString("string")),
+			Async: reducto.F(reducto.AsyncConfigV3Param{
+				Metadata: reducto.F[any](map[string]interface{}{}),
+				Priority: reducto.F(true),
+				Webhook: reducto.F[reducto.AsyncConfigV3WebhookUnionParam](reducto.AsyncConfigV3WebhookSvixWebhookConfigParam{
+					Channels: reducto.F([]string{"string"}),
+					Mode:     reducto.F(reducto.AsyncConfigV3WebhookSvixWebhookConfigModeSvix),
+				}),
+			}),
 			Instructions: reducto.F(reducto.InstructionsParam{
 				Schema:       reducto.F[any](map[string]interface{}{}),
 				SystemPrompt: reducto.F("system_prompt"),

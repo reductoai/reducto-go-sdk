@@ -14,7 +14,7 @@ import (
 	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
-func TestEditSubmitWithOptionalParams(t *testing.T) {
+func TestEditAsyncNewWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,8 +27,8 @@ func TestEditSubmitWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Edit.Submit(context.TODO(), reducto.EditSubmitParams{
-		DocumentURL:      reducto.F[reducto.EditSubmitParamsDocumentURLUnion](shared.UnionString("string")),
+	_, err := client.EditAsync.New(context.TODO(), reducto.EditAsyncNewParams{
+		DocumentURL:      reducto.F[reducto.EditAsyncNewParamsDocumentURLUnion](shared.UnionString("string")),
 		EditInstructions: reducto.F("edit_instructions"),
 		EditOptions: reducto.F(reducto.EditOptionsParam{
 			Color:                 reducto.F("#e1cb97"),
@@ -53,6 +53,12 @@ func TestEditSubmitWithOptionalParams(t *testing.T) {
 			Value:       reducto.F("value"),
 		}}),
 		Priority: reducto.F(true),
+		Webhook: reducto.F(reducto.EditAsyncNewParamsWebhook{
+			Channels: reducto.F([]string{"string"}),
+			Metadata: reducto.F[any](map[string]interface{}{}),
+			Mode:     reducto.F(reducto.EditAsyncNewParamsWebhookModeDisabled),
+			URL:      reducto.F("url"),
+		}),
 	})
 	if err != nil {
 		var apierr *reducto.Error

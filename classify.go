@@ -11,7 +11,6 @@ import (
 	"github.com/reductoai/reducto-go-sdk/internal/param"
 	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
 	"github.com/reductoai/reducto-go-sdk/option"
-	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 // ClassifyService contains methods and other services that help with interacting
@@ -34,7 +33,7 @@ func NewClassifyService(opts ...option.RequestOption) (r *ClassifyService) {
 }
 
 // Classify
-func (r *ClassifyService) New(ctx context.Context, body ClassifyNewParams, opts ...option.RequestOption) (res *ClassifyNewResponse, err error) {
+func (r *ClassifyService) Classify(ctx context.Context, body ClassifyClassifyParams, opts ...option.RequestOption) (res *ClassifyResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "classify"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -42,19 +41,19 @@ func (r *ClassifyService) New(ctx context.Context, body ClassifyNewParams, opts 
 }
 
 // Response from classify job - returned when polling /job/{job_id}
-type ClassifyNewResponse struct {
-	JobID  string                    `json:"job_id" api:"required"`
-	Result ClassifyNewResponseResult `json:"result" api:"required"`
+type ClassifyResponse struct {
+	JobID  string                 `json:"job_id" api:"required"`
+	Result ClassifyResponseResult `json:"result" api:"required"`
 	// The duration of the classify request in seconds.
 	Duration float64 `json:"duration" api:"nullable"`
 	// Overall confidence breakdown for classification response.
-	ResponseConfidence ClassifyNewResponseResponseConfidence `json:"response_confidence" api:"nullable"`
-	JSON               classifyNewResponseJSON               `json:"-"`
+	ResponseConfidence ClassifyResponseResponseConfidence `json:"response_confidence" api:"nullable"`
+	JSON               classifyResponseJSON               `json:"-"`
 }
 
-// classifyNewResponseJSON contains the JSON metadata for the struct
-// [ClassifyNewResponse]
-type classifyNewResponseJSON struct {
+// classifyResponseJSON contains the JSON metadata for the struct
+// [ClassifyResponse]
+type classifyResponseJSON struct {
 	JobID              apijson.Field
 	Result             apijson.Field
 	Duration           apijson.Field
@@ -63,68 +62,72 @@ type classifyNewResponseJSON struct {
 	ExtraFields        map[string]apijson.Field
 }
 
-func (r *ClassifyNewResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *ClassifyResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r classifyNewResponseJSON) RawJSON() string {
+func (r classifyResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type ClassifyNewResponseResult struct {
-	Category string                        `json:"category" api:"required"`
-	JSON     classifyNewResponseResultJSON `json:"-"`
+func (r ClassifyResponse) implementsJobGetResponseAsyncJobResponseResult() {}
+
+func (r ClassifyResponse) implementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+
+type ClassifyResponseResult struct {
+	Category string                     `json:"category" api:"required"`
+	JSON     classifyResponseResultJSON `json:"-"`
 }
 
-// classifyNewResponseResultJSON contains the JSON metadata for the struct
-// [ClassifyNewResponseResult]
-type classifyNewResponseResultJSON struct {
+// classifyResponseResultJSON contains the JSON metadata for the struct
+// [ClassifyResponseResult]
+type classifyResponseResultJSON struct {
 	Category    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *ClassifyNewResponseResult) UnmarshalJSON(data []byte) (err error) {
+func (r *ClassifyResponseResult) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r classifyNewResponseResultJSON) RawJSON() string {
+func (r classifyResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
 // Overall confidence breakdown for classification response.
-type ClassifyNewResponseResponseConfidence struct {
-	Categories []ClassifyNewResponseResponseConfidenceCategory `json:"categories" api:"required"`
-	JSON       classifyNewResponseResponseConfidenceJSON       `json:"-"`
+type ClassifyResponseResponseConfidence struct {
+	Categories []ClassifyResponseResponseConfidenceCategory `json:"categories" api:"required"`
+	JSON       classifyResponseResponseConfidenceJSON       `json:"-"`
 }
 
-// classifyNewResponseResponseConfidenceJSON contains the JSON metadata for the
-// struct [ClassifyNewResponseResponseConfidence]
-type classifyNewResponseResponseConfidenceJSON struct {
+// classifyResponseResponseConfidenceJSON contains the JSON metadata for the struct
+// [ClassifyResponseResponseConfidence]
+type classifyResponseResponseConfidenceJSON struct {
 	Categories  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *ClassifyNewResponseResponseConfidence) UnmarshalJSON(data []byte) (err error) {
+func (r *ClassifyResponseResponseConfidence) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r classifyNewResponseResponseConfidenceJSON) RawJSON() string {
+func (r classifyResponseResponseConfidenceJSON) RawJSON() string {
 	return r.raw
 }
 
 // Confidence result for a category.
-type ClassifyNewResponseResponseConfidenceCategory struct {
-	Category           string                                                              `json:"category" api:"required"`
-	Confidence         float64                                                             `json:"confidence" api:"required"`
-	CriteriaConfidence []ClassifyNewResponseResponseConfidenceCategoriesCriteriaConfidence `json:"criteria_confidence" api:"required"`
-	JSON               classifyNewResponseResponseConfidenceCategoryJSON                   `json:"-"`
+type ClassifyResponseResponseConfidenceCategory struct {
+	Category           string                                                           `json:"category" api:"required"`
+	Confidence         float64                                                          `json:"confidence" api:"required"`
+	CriteriaConfidence []ClassifyResponseResponseConfidenceCategoriesCriteriaConfidence `json:"criteria_confidence" api:"required"`
+	JSON               classifyResponseResponseConfidenceCategoryJSON                   `json:"-"`
 }
 
-// classifyNewResponseResponseConfidenceCategoryJSON contains the JSON metadata for
-// the struct [ClassifyNewResponseResponseConfidenceCategory]
-type classifyNewResponseResponseConfidenceCategoryJSON struct {
+// classifyResponseResponseConfidenceCategoryJSON contains the JSON metadata for
+// the struct [ClassifyResponseResponseConfidenceCategory]
+type classifyResponseResponseConfidenceCategoryJSON struct {
 	Category           apijson.Field
 	Confidence         apijson.Field
 	CriteriaConfidence apijson.Field
@@ -132,55 +135,70 @@ type classifyNewResponseResponseConfidenceCategoryJSON struct {
 	ExtraFields        map[string]apijson.Field
 }
 
-func (r *ClassifyNewResponseResponseConfidenceCategory) UnmarshalJSON(data []byte) (err error) {
+func (r *ClassifyResponseResponseConfidenceCategory) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r classifyNewResponseResponseConfidenceCategoryJSON) RawJSON() string {
+func (r classifyResponseResponseConfidenceCategoryJSON) RawJSON() string {
 	return r.raw
 }
 
 // Confidence result for a single criterion.
-type ClassifyNewResponseResponseConfidenceCategoriesCriteriaConfidence struct {
-	Confidence ClassifyNewResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence `json:"confidence" api:"required"`
-	Criterion  string                                                                      `json:"criterion" api:"required"`
-	JSON       classifyNewResponseResponseConfidenceCategoriesCriteriaConfidenceJSON       `json:"-"`
+type ClassifyResponseResponseConfidenceCategoriesCriteriaConfidence struct {
+	Confidence ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence `json:"confidence" api:"required"`
+	Criterion  string                                                                   `json:"criterion" api:"required"`
+	JSON       classifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON       `json:"-"`
 }
 
-// classifyNewResponseResponseConfidenceCategoriesCriteriaConfidenceJSON contains
-// the JSON metadata for the struct
-// [ClassifyNewResponseResponseConfidenceCategoriesCriteriaConfidence]
-type classifyNewResponseResponseConfidenceCategoriesCriteriaConfidenceJSON struct {
+// classifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON contains the
+// JSON metadata for the struct
+// [ClassifyResponseResponseConfidenceCategoriesCriteriaConfidence]
+type classifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON struct {
 	Confidence  apijson.Field
 	Criterion   apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *ClassifyNewResponseResponseConfidenceCategoriesCriteriaConfidence) UnmarshalJSON(data []byte) (err error) {
+func (r *ClassifyResponseResponseConfidenceCategoriesCriteriaConfidence) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r classifyNewResponseResponseConfidenceCategoriesCriteriaConfidenceJSON) RawJSON() string {
+func (r classifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON) RawJSON() string {
 	return r.raw
 }
 
-type ClassifyNewResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence string
+type ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence string
 
 const (
-	ClassifyNewResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceHigh ClassifyNewResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence = "high"
-	ClassifyNewResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceLow  ClassifyNewResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence = "low"
+	ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceHigh ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence = "high"
+	ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceLow  ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence = "low"
 )
 
-func (r ClassifyNewResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence) IsKnown() bool {
+func (r ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence) IsKnown() bool {
 	switch r {
-	case ClassifyNewResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceHigh, ClassifyNewResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceLow:
+	case ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceHigh, ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceLow:
 		return true
 	}
 	return false
 }
 
-type ClassifyNewParams struct {
+type PageRangeParam struct {
+	// The page number to stop processing at (1-indexed).
+	End param.Field[int64] `json:"end"`
+	// The page number to start processing from (1-indexed).
+	Start param.Field[int64] `json:"start"`
+}
+
+func (r PageRangeParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r PageRangeParam) implementsSettingsPageRangeUnionParam() {}
+
+func (r PageRangeParam) implementsClassifyClassifyParamsPageRangeUnion() {}
+
+type ClassifyClassifyParams struct {
 	// For parse/split/extract pipelines, the URL of the document to be processed. You
 	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
 	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
@@ -189,20 +207,20 @@ type ClassifyNewParams struct {
 	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
-	Input param.Field[ClassifyNewParamsInputUnion] `json:"input" api:"required"`
+	Input param.Field[ClassifyClassifyParamsInputUnion] `json:"input" api:"required"`
 	// A list of classification categories and their matching criteria.
-	ClassificationSchema param.Field[[]ClassifyNewParamsClassificationSchema] `json:"classification_schema"`
+	ClassificationSchema param.Field[[]ClassifyClassifyParamsClassificationSchema] `json:"classification_schema"`
 	// Optional document-level metadata to include in classification prompts.
 	DocumentMetadata param.Field[string] `json:"document_metadata"`
 	// The page range to process (1-indexed). By default, the first 5 pages are used.
 	// If more than 25 pages are selected, only the first 25 (after sorting) are used.
 	// Only applies to PDFs; ignored for other document types.
-	PageRange param.Field[ClassifyNewParamsPageRangeUnion] `json:"page_range"`
+	PageRange param.Field[ClassifyClassifyParamsPageRangeUnion] `json:"page_range"`
 	// If True, persist the results indefinitely. Defaults to False.
 	PersistResults param.Field[bool] `json:"persist_results"`
 }
 
-func (r ClassifyNewParams) MarshalJSON() (data []byte, err error) {
+func (r ClassifyClassifyParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -215,18 +233,18 @@ func (r ClassifyNewParams) MarshalJSON() (data []byte, err error) {
 //
 //	For edit pipelines, this should be a string containing the edit instructions
 //
-// Satisfied by [shared.UnionString], [ClassifyNewParamsInputArray],
-// [shared.UploadParam].
-type ClassifyNewParamsInputUnion interface {
-	ImplementsClassifyNewParamsInputUnion()
+// Satisfied by [shared.UnionString], [ClassifyClassifyParamsInputArray],
+// [UploadResponseParam].
+type ClassifyClassifyParamsInputUnion interface {
+	ImplementsClassifyClassifyParamsInputUnion()
 }
 
-type ClassifyNewParamsInputArray []string
+type ClassifyClassifyParamsInputArray []string
 
-func (r ClassifyNewParamsInputArray) ImplementsClassifyNewParamsInputUnion() {}
+func (r ClassifyClassifyParamsInputArray) ImplementsClassifyClassifyParamsInputUnion() {}
 
 // A single classification category with its matching criteria.
-type ClassifyNewParamsClassificationSchema struct {
+type ClassifyClassifyParamsClassificationSchema struct {
 	// The category name/label that documents will be classified into (e.g., 'invoice',
 	// 'contract', 'receipt').
 	Category param.Field[string] `json:"category" api:"required"`
@@ -236,7 +254,7 @@ type ClassifyNewParamsClassificationSchema struct {
 	Criteria param.Field[[]string] `json:"criteria" api:"required"`
 }
 
-func (r ClassifyNewParamsClassificationSchema) MarshalJSON() (data []byte, err error) {
+func (r ClassifyClassifyParamsClassificationSchema) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -244,12 +262,12 @@ func (r ClassifyNewParamsClassificationSchema) MarshalJSON() (data []byte, err e
 // If more than 25 pages are selected, only the first 25 (after sorting) are used.
 // Only applies to PDFs; ignored for other document types.
 //
-// Satisfied by [shared.PageRangeParam], [ClassifyNewParamsPageRangeArray],
-// [ClassifyNewParamsPageRangeArray].
-type ClassifyNewParamsPageRangeUnion interface {
-	ImplementsClassifyNewParamsPageRangeUnion()
+// Satisfied by [PageRangeParam], [ClassifyClassifyParamsPageRangeArray],
+// [ClassifyClassifyParamsPageRangeArray].
+type ClassifyClassifyParamsPageRangeUnion interface {
+	implementsClassifyClassifyParamsPageRangeUnion()
 }
 
-type ClassifyNewParamsPageRangeArray []shared.PageRangeParam
+type ClassifyClassifyParamsPageRangeArray []PageRangeParam
 
-func (r ClassifyNewParamsPageRangeArray) ImplementsClassifyNewParamsPageRangeUnion() {}
+func (r ClassifyClassifyParamsPageRangeArray) implementsClassifyClassifyParamsPageRangeUnion() {}

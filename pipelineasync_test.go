@@ -14,7 +14,7 @@ import (
 	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
-func TestPipelineNewWithOptionalParams(t *testing.T) {
+func TestPipelineAsyncNewWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,9 +27,17 @@ func TestPipelineNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Pipeline.New(context.TODO(), reducto.PipelineNewParams{
-		Input:      reducto.F[reducto.PipelineNewParamsInputUnion](shared.UnionString("string")),
+	_, err := client.PipelineAsync.New(context.TODO(), reducto.PipelineAsyncNewParams{
+		Input:      reducto.F[reducto.PipelineAsyncNewParamsInputUnion](shared.UnionString("string")),
 		PipelineID: reducto.F("pipeline_id"),
+		Async: reducto.F(reducto.AsyncConfigV3Param{
+			Metadata: reducto.F[any](map[string]interface{}{}),
+			Priority: reducto.F(true),
+			Webhook: reducto.F[reducto.AsyncConfigV3WebhookUnionParam](reducto.AsyncConfigV3WebhookSvixWebhookConfigParam{
+				Channels: reducto.F([]string{"string"}),
+				Mode:     reducto.F(reducto.AsyncConfigV3WebhookSvixWebhookConfigModeSvix),
+			}),
+		}),
 		Settings: reducto.F(reducto.PipelineSettingsParam{
 			DocumentPassword: reducto.F("document_password"),
 		}),
