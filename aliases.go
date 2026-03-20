@@ -121,6 +121,18 @@ type ExtractResponse = shared.ExtractResponse
 type ExtractUsage = shared.ExtractUsage
 
 // This is an alias to an internal type.
+type ExtractUsageExtractMode = shared.ExtractUsageExtractMode
+
+// This is an alias to an internal value.
+const ExtractUsageExtractModeSuperAgent = shared.ExtractUsageExtractModeSuperAgent
+
+// This is an alias to an internal value.
+const ExtractUsageExtractModeExtract = shared.ExtractUsageExtractModeExtract
+
+// This is an alias to an internal value.
+const ExtractUsageExtractModeSpreadsheetAgent = shared.ExtractUsageExtractModeSpreadsheetAgent
+
+// This is an alias to an internal type.
 type FigureAgenticParam = shared.FigureAgenticParam
 
 // This is an alias to an internal type.

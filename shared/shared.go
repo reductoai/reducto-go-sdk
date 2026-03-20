@@ -358,10 +358,11 @@ func (r ExtractResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
 func (r ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
 
 type ExtractUsage struct {
-	NumFields int64            `json:"num_fields" api:"required"`
-	NumPages  int64            `json:"num_pages" api:"required"`
-	Credits   float64          `json:"credits" api:"nullable"`
-	JSON      extractUsageJSON `json:"-"`
+	NumFields   int64                   `json:"num_fields" api:"required"`
+	NumPages    int64                   `json:"num_pages" api:"required"`
+	Credits     float64                 `json:"credits" api:"nullable"`
+	ExtractMode ExtractUsageExtractMode `json:"extract_mode" api:"nullable"`
+	JSON        extractUsageJSON        `json:"-"`
 }
 
 // extractUsageJSON contains the JSON metadata for the struct [ExtractUsage]
@@ -369,6 +370,7 @@ type extractUsageJSON struct {
 	NumFields   apijson.Field
 	NumPages    apijson.Field
 	Credits     apijson.Field
+	ExtractMode apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -379,6 +381,22 @@ func (r *ExtractUsage) UnmarshalJSON(data []byte) (err error) {
 
 func (r extractUsageJSON) RawJSON() string {
 	return r.raw
+}
+
+type ExtractUsageExtractMode string
+
+const (
+	ExtractUsageExtractModeSuperAgent       ExtractUsageExtractMode = "super_agent"
+	ExtractUsageExtractModeExtract          ExtractUsageExtractMode = "extract"
+	ExtractUsageExtractModeSpreadsheetAgent ExtractUsageExtractMode = "spreadsheet_agent"
+)
+
+func (r ExtractUsageExtractMode) IsKnown() bool {
+	switch r {
+	case ExtractUsageExtractModeSuperAgent, ExtractUsageExtractModeExtract, ExtractUsageExtractModeSpreadsheetAgent:
+		return true
+	}
+	return false
 }
 
 type FigureAgenticParam struct {
@@ -949,17 +967,19 @@ func (r ParseResponseResultType) IsKnown() bool {
 }
 
 type ParseUsage struct {
-	NumPages int64          `json:"num_pages" api:"required"`
-	Credits  float64        `json:"credits" api:"nullable"`
-	JSON     parseUsageJSON `json:"-"`
+	NumPages        int64              `json:"num_pages" api:"required"`
+	CreditBreakdown map[string]float64 `json:"credit_breakdown" api:"nullable"`
+	Credits         float64            `json:"credits" api:"nullable"`
+	JSON            parseUsageJSON     `json:"-"`
 }
 
 // parseUsageJSON contains the JSON metadata for the struct [ParseUsage]
 type parseUsageJSON struct {
-	NumPages    apijson.Field
-	Credits     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	NumPages        apijson.Field
+	CreditBreakdown apijson.Field
+	Credits         apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
 }
 
 func (r *ParseUsage) UnmarshalJSON(data []byte) (err error) {
