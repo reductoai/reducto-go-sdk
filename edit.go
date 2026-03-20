@@ -155,6 +155,10 @@ type EditRunParamsFormSchema struct {
 	// If True (default), the system will attempt to fill this widget. If False, the
 	// widget will be created but intentionally left unfilled.
 	Fill param.Field[bool] `json:"fill"`
+	// Font size in points for this specific field. Takes priority over the global
+	// font_size in EditOptions. If not set, falls back to the global font_size, then
+	// to auto-calculated sizing.
+	FontSize param.Field[float64] `json:"font_size"`
 	// If provided, this value will be used directly instead of attempting to
 	// intelligently determine the field value.
 	Value param.Field[string] `json:"value"`
@@ -269,6 +273,10 @@ type EditRunJobParamsFormSchema struct {
 	// If True (default), the system will attempt to fill this widget. If False, the
 	// widget will be created but intentionally left unfilled.
 	Fill param.Field[bool] `json:"fill"`
+	// Font size in points for this specific field. Takes priority over the global
+	// font_size in EditOptions. If not set, falls back to the global font_size, then
+	// to auto-calculated sizing.
+	FontSize param.Field[float64] `json:"font_size"`
 	// If provided, this value will be used directly instead of attempting to
 	// intelligently determine the field value.
 	Value param.Field[string] `json:"value"`
