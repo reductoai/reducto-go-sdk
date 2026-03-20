@@ -25,7 +25,7 @@ func TestEditAsyncNewWithOptionalParams(t *testing.T) {
 	}
 	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.EditAsync.New(context.TODO(), reducto.EditAsyncNewParams{
 		DocumentURL:      reducto.F[reducto.EditAsyncNewParamsDocumentURLUnion](shared.UnionString("string")),

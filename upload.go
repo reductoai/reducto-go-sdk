@@ -3,14 +3,11 @@
 package reducto
 
 import (
-	"bytes"
 	"context"
-	"mime/multipart"
 	"net/http"
 	"net/url"
 	"slices"
 
-	"github.com/reductoai/reducto-go-sdk/internal/apiform"
 	"github.com/reductoai/reducto-go-sdk/internal/apijson"
 	"github.com/reductoai/reducto-go-sdk/internal/apiquery"
 	"github.com/reductoai/reducto-go-sdk/internal/param"
@@ -103,19 +100,8 @@ type UploadNewParams struct {
 	File      param.Field[string] `json:"file"`
 }
 
-func (r UploadNewParams) MarshalMultipart() (data []byte, contentType string, err error) {
-	buf := bytes.NewBuffer(nil)
-	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
-	if err != nil {
-		writer.Close()
-		return nil, "", err
-	}
-	err = writer.Close()
-	if err != nil {
-		return nil, "", err
-	}
-	return buf.Bytes(), writer.FormDataContentType(), nil
+func (r UploadNewParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 // URLQuery serializes [UploadNewParams]'s query parameters as `url.Values`.

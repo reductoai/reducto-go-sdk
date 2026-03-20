@@ -51,8 +51,8 @@ import (
 
 func main() {
 	client := reducto.NewClient(
-		option.WithBearerToken("My Bearer Token"), // defaults to os.LookupEnv("REDUCTOAI_BEARER_TOKEN")
-		option.WithEnvironmentEu(),                // or option.WithEnvironmentProduction() | option.WithEnvironmentAu(); defaults to option.WithEnvironmentProduction()
+		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("REDUCTO_API_KEY")
+		option.WithEnvironmentEu(),      // or option.WithEnvironmentProduction() | option.WithEnvironmentAu(); defaults to option.WithEnvironmentProduction()
 	)
 	parse, err := client.Parse.New(context.TODO(), reducto.ParseNewParamsSyncParseConfig{
 		Input: reducto.F[reducto.ParseNewParamsSyncParseConfigInputUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),

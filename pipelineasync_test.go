@@ -25,7 +25,7 @@ func TestPipelineAsyncNewWithOptionalParams(t *testing.T) {
 	}
 	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.PipelineAsync.New(context.TODO(), reducto.PipelineAsyncNewParams{
 		Input:      reducto.F[reducto.PipelineAsyncNewParamsInputUnion](shared.UnionString("string")),

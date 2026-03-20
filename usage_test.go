@@ -24,7 +24,7 @@ func TestUsage(t *testing.T) {
 	}
 	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	parse, err := client.Parse.New(context.TODO(), reducto.ParseNewParamsSyncParseConfig{
 		Input: reducto.F[reducto.ParseNewParamsSyncParseConfigInputUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),

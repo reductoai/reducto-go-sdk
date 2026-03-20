@@ -25,7 +25,7 @@ func TestEditSubmitWithOptionalParams(t *testing.T) {
 	}
 	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Edit.Submit(context.TODO(), reducto.EditSubmitParams{
 		DocumentURL:      reducto.F[reducto.EditSubmitParamsDocumentURLUnion](shared.UnionString("string")),

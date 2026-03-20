@@ -24,7 +24,7 @@ func TestUploadNewWithOptionalParams(t *testing.T) {
 	}
 	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Upload.New(context.TODO(), reducto.UploadNewParams{
 		Extension: reducto.F("extension"),

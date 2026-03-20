@@ -25,7 +25,7 @@ func TestParseAsyncNewWithOptionalParams(t *testing.T) {
 	}
 	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ParseAsync.New(context.TODO(), reducto.ParseAsyncNewParams{
 		AsyncParseConfig: reducto.AsyncParseConfigParam{

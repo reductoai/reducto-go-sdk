@@ -25,7 +25,7 @@ func TestClassifyClassifyWithOptionalParams(t *testing.T) {
 	}
 	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Classify.Classify(context.TODO(), reducto.ClassifyClassifyParams{
 		Input: reducto.F[reducto.ClassifyClassifyParamsInputUnion](shared.UnionString("string")),

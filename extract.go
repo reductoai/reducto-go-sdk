@@ -117,7 +117,7 @@ func (r V3Extract) implementsExtractNewResponse() {}
 
 func (r V3Extract) implementsPipelineResponseResultExtractUnion() {}
 
-func (r V3Extract) implementsPipelineResponseResultExtractArrayResult() {}
+func (r V3Extract) implementsPipelineResponseResultExtractExtractVariant0Result() {}
 
 func (r V3Extract) implementsJobGetResponseAsyncJobResponseResult() {}
 
