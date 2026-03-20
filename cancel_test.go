@@ -13,7 +13,7 @@ import (
 	"github.com/reductoai/reducto-go-sdk/option"
 )
 
-func TestWebhookRun(t *testing.T) {
+func TestCancelCancelJob(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -24,9 +24,9 @@ func TestWebhookRun(t *testing.T) {
 	}
 	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Webhook.Run(context.TODO())
+	_, err := client.Cancel.CancelJob(context.TODO(), "job_id")
 	if err != nil {
 		var apierr *reducto.Error
 		if errors.As(err, &apierr) {

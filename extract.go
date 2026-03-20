@@ -12,7 +12,6 @@ import (
 	"github.com/reductoai/reducto-go-sdk/internal/param"
 	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
 	"github.com/reductoai/reducto-go-sdk/option"
-	"github.com/reductoai/reducto-go-sdk/shared"
 	"github.com/tidwall/gjson"
 )
 
@@ -36,35 +35,108 @@ func NewExtractService(opts ...option.RequestOption) (r *ExtractService) {
 }
 
 // Extract
-func (r *ExtractService) Run(ctx context.Context, body ExtractRunParams, opts ...option.RequestOption) (res *ExtractRunResponse, err error) {
+func (r *ExtractService) New(ctx context.Context, body ExtractNewParams, opts ...option.RequestOption) (res *ExtractNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "extract"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
 
-// Extract Async
-func (r *ExtractService) RunJob(ctx context.Context, body ExtractRunJobParams, opts ...option.RequestOption) (res *ExtractRunJobResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "extract_async"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+type ExtractUsage struct {
+	NumFields   int64                   `json:"num_fields" api:"required"`
+	NumPages    int64                   `json:"num_pages" api:"required"`
+	Credits     float64                 `json:"credits" api:"nullable"`
+	ExtractMode ExtractUsageExtractMode `json:"extract_mode" api:"nullable"`
+	JSON        extractUsageJSON        `json:"-"`
 }
 
-type ExtractRunResponse struct {
+// extractUsageJSON contains the JSON metadata for the struct [ExtractUsage]
+type extractUsageJSON struct {
+	NumFields   apijson.Field
+	NumPages    apijson.Field
+	Credits     apijson.Field
+	ExtractMode apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ExtractUsage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r extractUsageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ExtractUsageExtractMode string
+
+const (
+	ExtractUsageExtractModeSuperAgent       ExtractUsageExtractMode = "super_agent"
+	ExtractUsageExtractModeExtract          ExtractUsageExtractMode = "extract"
+	ExtractUsageExtractModeSpreadsheetAgent ExtractUsageExtractMode = "spreadsheet_agent"
+)
+
+func (r ExtractUsageExtractMode) IsKnown() bool {
+	switch r {
+	case ExtractUsageExtractModeSuperAgent, ExtractUsageExtractModeExtract, ExtractUsageExtractModeSpreadsheetAgent:
+		return true
+	}
+	return false
+}
+
+type V3Extract struct {
+	// The extracted response in your provided schema. This is a list of dictionaries.
+	// If disable_chunking is True (default), then it will be a list of length one.
+	Result []interface{} `json:"result" api:"required"`
+	Usage  ExtractUsage  `json:"usage" api:"required"`
+	JobID  string        `json:"job_id" api:"nullable"`
+	// The link to the studio pipeline for the document.
+	StudioLink string        `json:"studio_link" api:"nullable"`
+	JSON       v3ExtractJSON `json:"-"`
+}
+
+// v3ExtractJSON contains the JSON metadata for the struct [V3Extract]
+type v3ExtractJSON struct {
+	Result      apijson.Field
+	Usage       apijson.Field
+	JobID       apijson.Field
+	StudioLink  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *V3Extract) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r v3ExtractJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r V3Extract) implementsExtractNewResponse() {}
+
+func (r V3Extract) implementsPipelineResponseResultExtractUnion() {}
+
+func (r V3Extract) implementsPipelineResponseResultExtractArrayResult() {}
+
+func (r V3Extract) implementsJobGetResponseAsyncJobResponseResult() {}
+
+func (r V3Extract) implementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+
+type ExtractNewResponse struct {
 	JobID string `json:"job_id" api:"nullable"`
 	// This field can have the runtime type of [[]interface{}].
 	Result interface{} `json:"result"`
 	// The link to the studio pipeline for the document.
 	StudioLink string                 `json:"studio_link" api:"nullable"`
-	Usage      shared.ExtractUsage    `json:"usage"`
-	JSON       extractRunResponseJSON `json:"-"`
-	union      ExtractRunResponseUnion
+	Usage      ExtractUsage           `json:"usage"`
+	JSON       extractNewResponseJSON `json:"-"`
+	union      ExtractNewResponseUnion
 }
 
-// extractRunResponseJSON contains the JSON metadata for the struct
-// [ExtractRunResponse]
-type extractRunResponseJSON struct {
+// extractNewResponseJSON contains the JSON metadata for the struct
+// [ExtractNewResponse]
+type extractNewResponseJSON struct {
 	JobID       apijson.Field
 	Result      apijson.Field
 	StudioLink  apijson.Field
@@ -73,12 +145,12 @@ type extractRunResponseJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r extractRunResponseJSON) RawJSON() string {
+func (r extractNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r *ExtractRunResponse) UnmarshalJSON(data []byte) (err error) {
-	*r = ExtractRunResponse{}
+func (r *ExtractNewResponse) UnmarshalJSON(data []byte) (err error) {
+	*r = ExtractNewResponse{}
 	err = apijson.UnmarshalRoot(data, &r.union)
 	if err != nil {
 		return err
@@ -86,112 +158,68 @@ func (r *ExtractRunResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.Port(r.union, &r)
 }
 
-// AsUnion returns a [ExtractRunResponseUnion] interface which you can cast to the
+// AsUnion returns a [ExtractNewResponseUnion] interface which you can cast to the
 // specific types for more type safety.
 //
-// Possible runtime types of the union are [shared.V3ExtractResponse],
-// [ExtractRunResponseAsyncExtractResponse].
-func (r ExtractRunResponse) AsUnion() ExtractRunResponseUnion {
+// Possible runtime types of the union are [V3Extract], [AsyncExtractResponse].
+func (r ExtractNewResponse) AsUnion() ExtractNewResponseUnion {
 	return r.union
 }
 
-// Union satisfied by [shared.V3ExtractResponse] or
-// [ExtractRunResponseAsyncExtractResponse].
-type ExtractRunResponseUnion interface {
-	ImplementsExtractRunResponse()
+// Union satisfied by [V3Extract] or [AsyncExtractResponse].
+type ExtractNewResponseUnion interface {
+	implementsExtractNewResponse()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*ExtractRunResponseUnion)(nil)).Elem(),
+		reflect.TypeOf((*ExtractNewResponseUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(shared.V3ExtractResponse{}),
+			Type:       reflect.TypeOf(V3Extract{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ExtractRunResponseAsyncExtractResponse{}),
+			Type:       reflect.TypeOf(AsyncExtractResponse{}),
 		},
 	)
 }
 
-type ExtractRunResponseAsyncExtractResponse struct {
-	JobID string                                     `json:"job_id" api:"required"`
-	JSON  extractRunResponseAsyncExtractResponseJSON `json:"-"`
+type ExtractNewParams struct {
+	Body ExtractNewParamsBodyUnion `json:"body" api:"required"`
 }
 
-// extractRunResponseAsyncExtractResponseJSON contains the JSON metadata for the
-// struct [ExtractRunResponseAsyncExtractResponse]
-type extractRunResponseAsyncExtractResponseJSON struct {
-	JobID       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ExtractRunResponseAsyncExtractResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r extractRunResponseAsyncExtractResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ExtractRunResponseAsyncExtractResponse) ImplementsExtractRunResponse() {}
-
-type ExtractRunJobResponse struct {
-	JobID string                    `json:"job_id" api:"required"`
-	JSON  extractRunJobResponseJSON `json:"-"`
-}
-
-// extractRunJobResponseJSON contains the JSON metadata for the struct
-// [ExtractRunJobResponse]
-type extractRunJobResponseJSON struct {
-	JobID       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ExtractRunJobResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r extractRunJobResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type ExtractRunParams struct {
-	Body ExtractRunParamsBodyUnion `json:"body" api:"required"`
-}
-
-func (r ExtractRunParams) MarshalJSON() (data []byte, err error) {
+func (r ExtractNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.Body)
 }
 
-type ExtractRunParamsBody struct {
+type ExtractNewParamsBody struct {
 	Input param.Field[interface{}] `json:"input" api:"required"`
 	// The configuration options for asynchronous processing (default synchronous).
-	Async        param.Field[shared.ConfigV3AsyncConfigParam] `json:"async"`
-	Instructions param.Field[interface{}]                     `json:"instructions"`
+	Async param.Field[AsyncConfigV3Param] `json:"async"`
+	// The instructions to use for the extraction.
+	Instructions param.Field[InstructionsParam] `json:"instructions"`
 	// The configuration options for parsing the document. If you are passing in a
 	// jobid:// URL for the file, then this configuration will be ignored.
-	Parsing  param.Field[shared.ParseOptionsParam] `json:"parsing"`
-	Settings param.Field[interface{}]              `json:"settings"`
+	Parsing param.Field[ParseOptionsParam] `json:"parsing"`
+	// The settings to use for the extraction.
+	Settings param.Field[ExtractSettingsParam] `json:"settings"`
 }
 
-func (r ExtractRunParamsBody) MarshalJSON() (data []byte, err error) {
+func (r ExtractNewParamsBody) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r ExtractRunParamsBody) implementsExtractRunParamsBodyUnion() {}
+func (r ExtractNewParamsBody) implementsExtractNewParamsBodyUnion() {}
 
-// Satisfied by [ExtractRunParamsBodySyncExtractConfig],
-// [ExtractRunParamsBodyAsyncExtractConfig], [ExtractRunParamsBody].
-type ExtractRunParamsBodyUnion interface {
-	implementsExtractRunParamsBodyUnion()
+// Satisfied by [ExtractNewParamsBodySyncExtractConfig], [AsyncExtractConfigParam],
+// [ExtractNewParamsBody].
+type ExtractNewParamsBodyUnion interface {
+	implementsExtractNewParamsBodyUnion()
 }
 
-type ExtractRunParamsBodySyncExtractConfig struct {
+type ExtractNewParamsBodySyncExtractConfig struct {
 	// For parse/split/extract pipelines, the URL of the document to be processed. You
 	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
 	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
@@ -200,21 +228,21 @@ type ExtractRunParamsBodySyncExtractConfig struct {
 	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
-	Input param.Field[ExtractRunParamsBodySyncExtractConfigInputUnion] `json:"input" api:"required"`
+	Input param.Field[ExtractNewParamsBodySyncExtractConfigInputUnion] `json:"input" api:"required"`
 	// The instructions to use for the extraction.
-	Instructions param.Field[ExtractRunParamsBodySyncExtractConfigInstructions] `json:"instructions"`
+	Instructions param.Field[InstructionsParam] `json:"instructions"`
 	// The configuration options for parsing the document. If you are passing in a
 	// jobid:// URL for the file, then this configuration will be ignored.
-	Parsing param.Field[shared.ParseOptionsParam] `json:"parsing"`
+	Parsing param.Field[ParseOptionsParam] `json:"parsing"`
 	// The settings to use for the extraction.
-	Settings param.Field[ExtractRunParamsBodySyncExtractConfigSettings] `json:"settings"`
+	Settings param.Field[ExtractSettingsParam] `json:"settings"`
 }
 
-func (r ExtractRunParamsBodySyncExtractConfig) MarshalJSON() (data []byte, err error) {
+func (r ExtractNewParamsBodySyncExtractConfig) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r ExtractRunParamsBodySyncExtractConfig) implementsExtractRunParamsBodyUnion() {}
+func (r ExtractNewParamsBodySyncExtractConfig) implementsExtractNewParamsBodyUnion() {}
 
 // For parse/split/extract pipelines, the URL of the document to be processed. You
 // can provide one of the following: 1. A publicly available URL 2. A presigned S3
@@ -226,226 +254,12 @@ func (r ExtractRunParamsBodySyncExtractConfig) implementsExtractRunParamsBodyUni
 //	For edit pipelines, this should be a string containing the edit instructions
 //
 // Satisfied by [shared.UnionString],
-// [ExtractRunParamsBodySyncExtractConfigInputArray], [shared.UploadParam].
-type ExtractRunParamsBodySyncExtractConfigInputUnion interface {
-	ImplementsExtractRunParamsBodySyncExtractConfigInputUnion()
+// [ExtractNewParamsBodySyncExtractConfigInputArray], [UploadResponseParam].
+type ExtractNewParamsBodySyncExtractConfigInputUnion interface {
+	ImplementsExtractNewParamsBodySyncExtractConfigInputUnion()
 }
 
-type ExtractRunParamsBodySyncExtractConfigInputArray []string
+type ExtractNewParamsBodySyncExtractConfigInputArray []string
 
-func (r ExtractRunParamsBodySyncExtractConfigInputArray) ImplementsExtractRunParamsBodySyncExtractConfigInputUnion() {
-}
-
-// The instructions to use for the extraction.
-type ExtractRunParamsBodySyncExtractConfigInstructions struct {
-	// The JSON schema to use for the extraction.
-	Schema param.Field[interface{}] `json:"schema"`
-	// The system prompt to use for the extraction.
-	SystemPrompt param.Field[string] `json:"system_prompt"`
-}
-
-func (r ExtractRunParamsBodySyncExtractConfigInstructions) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The settings to use for the extraction.
-type ExtractRunParamsBodySyncExtractConfigSettings struct {
-	// If True, use array extraction.
-	ArrayExtract param.Field[bool] `json:"array_extract"`
-	// The citations to use for the extraction.
-	Citations param.Field[ExtractRunParamsBodySyncExtractConfigSettingsCitations] `json:"citations"`
-	// If True, include images in the extraction.
-	IncludeImages param.Field[bool] `json:"include_images"`
-	// If True, jobs will be processed with a higher throughput and priority at a
-	// higher cost. Defaults to False.
-	OptimizeForLatency param.Field[bool] `json:"optimize_for_latency"`
-}
-
-func (r ExtractRunParamsBodySyncExtractConfigSettings) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The citations to use for the extraction.
-type ExtractRunParamsBodySyncExtractConfigSettingsCitations struct {
-	// If True, include citations in the extraction.
-	Enabled param.Field[bool] `json:"enabled"`
-	// If True, enable numeric citation confidence scores. Defaults to True.
-	NumericalConfidence param.Field[bool] `json:"numerical_confidence"`
-}
-
-func (r ExtractRunParamsBodySyncExtractConfigSettingsCitations) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type ExtractRunParamsBodyAsyncExtractConfig struct {
-	// For parse/split/extract pipelines, the URL of the document to be processed. You
-	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
-	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
-	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-	// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
-	// API only)
-	//
-	//	For edit pipelines, this should be a string containing the edit instructions
-	Input param.Field[ExtractRunParamsBodyAsyncExtractConfigInputUnion] `json:"input" api:"required"`
-	// The configuration options for asynchronous processing (default synchronous).
-	Async param.Field[shared.ConfigV3AsyncConfigParam] `json:"async"`
-	// The instructions to use for the extraction.
-	Instructions param.Field[ExtractRunParamsBodyAsyncExtractConfigInstructions] `json:"instructions"`
-	// The configuration options for parsing the document. If you are passing in a
-	// jobid:// URL for the file, then this configuration will be ignored.
-	Parsing param.Field[shared.ParseOptionsParam] `json:"parsing"`
-	// The settings to use for the extraction.
-	Settings param.Field[ExtractRunParamsBodyAsyncExtractConfigSettings] `json:"settings"`
-}
-
-func (r ExtractRunParamsBodyAsyncExtractConfig) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r ExtractRunParamsBodyAsyncExtractConfig) implementsExtractRunParamsBodyUnion() {}
-
-// For parse/split/extract pipelines, the URL of the document to be processed. You
-// can provide one of the following: 1. A publicly available URL 2. A presigned S3
-// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
-// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
-// API only)
-//
-//	For edit pipelines, this should be a string containing the edit instructions
-//
-// Satisfied by [shared.UnionString],
-// [ExtractRunParamsBodyAsyncExtractConfigInputArray], [shared.UploadParam].
-type ExtractRunParamsBodyAsyncExtractConfigInputUnion interface {
-	ImplementsExtractRunParamsBodyAsyncExtractConfigInputUnion()
-}
-
-type ExtractRunParamsBodyAsyncExtractConfigInputArray []string
-
-func (r ExtractRunParamsBodyAsyncExtractConfigInputArray) ImplementsExtractRunParamsBodyAsyncExtractConfigInputUnion() {
-}
-
-// The instructions to use for the extraction.
-type ExtractRunParamsBodyAsyncExtractConfigInstructions struct {
-	// The JSON schema to use for the extraction.
-	Schema param.Field[interface{}] `json:"schema"`
-	// The system prompt to use for the extraction.
-	SystemPrompt param.Field[string] `json:"system_prompt"`
-}
-
-func (r ExtractRunParamsBodyAsyncExtractConfigInstructions) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The settings to use for the extraction.
-type ExtractRunParamsBodyAsyncExtractConfigSettings struct {
-	// If True, use array extraction.
-	ArrayExtract param.Field[bool] `json:"array_extract"`
-	// The citations to use for the extraction.
-	Citations param.Field[ExtractRunParamsBodyAsyncExtractConfigSettingsCitations] `json:"citations"`
-	// If True, include images in the extraction.
-	IncludeImages param.Field[bool] `json:"include_images"`
-	// If True, jobs will be processed with a higher throughput and priority at a
-	// higher cost. Defaults to False.
-	OptimizeForLatency param.Field[bool] `json:"optimize_for_latency"`
-}
-
-func (r ExtractRunParamsBodyAsyncExtractConfigSettings) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The citations to use for the extraction.
-type ExtractRunParamsBodyAsyncExtractConfigSettingsCitations struct {
-	// If True, include citations in the extraction.
-	Enabled param.Field[bool] `json:"enabled"`
-	// If True, enable numeric citation confidence scores. Defaults to True.
-	NumericalConfidence param.Field[bool] `json:"numerical_confidence"`
-}
-
-func (r ExtractRunParamsBodyAsyncExtractConfigSettingsCitations) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type ExtractRunJobParams struct {
-	// For parse/split/extract pipelines, the URL of the document to be processed. You
-	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
-	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
-	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-	// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
-	// API only)
-	//
-	//	For edit pipelines, this should be a string containing the edit instructions
-	Input param.Field[ExtractRunJobParamsInputUnion] `json:"input" api:"required"`
-	// The configuration options for asynchronous processing (default synchronous).
-	Async param.Field[shared.ConfigV3AsyncConfigParam] `json:"async"`
-	// The instructions to use for the extraction.
-	Instructions param.Field[ExtractRunJobParamsInstructions] `json:"instructions"`
-	// The configuration options for parsing the document. If you are passing in a
-	// jobid:// URL for the file, then this configuration will be ignored.
-	Parsing param.Field[shared.ParseOptionsParam] `json:"parsing"`
-	// The settings to use for the extraction.
-	Settings param.Field[ExtractRunJobParamsSettings] `json:"settings"`
-}
-
-func (r ExtractRunJobParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// For parse/split/extract pipelines, the URL of the document to be processed. You
-// can provide one of the following: 1. A publicly available URL 2. A presigned S3
-// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
-// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
-// API only)
-//
-//	For edit pipelines, this should be a string containing the edit instructions
-//
-// Satisfied by [shared.UnionString], [ExtractRunJobParamsInputArray],
-// [shared.UploadParam].
-type ExtractRunJobParamsInputUnion interface {
-	ImplementsExtractRunJobParamsInputUnion()
-}
-
-type ExtractRunJobParamsInputArray []string
-
-func (r ExtractRunJobParamsInputArray) ImplementsExtractRunJobParamsInputUnion() {}
-
-// The instructions to use for the extraction.
-type ExtractRunJobParamsInstructions struct {
-	// The JSON schema to use for the extraction.
-	Schema param.Field[interface{}] `json:"schema"`
-	// The system prompt to use for the extraction.
-	SystemPrompt param.Field[string] `json:"system_prompt"`
-}
-
-func (r ExtractRunJobParamsInstructions) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The settings to use for the extraction.
-type ExtractRunJobParamsSettings struct {
-	// If True, use array extraction.
-	ArrayExtract param.Field[bool] `json:"array_extract"`
-	// The citations to use for the extraction.
-	Citations param.Field[ExtractRunJobParamsSettingsCitations] `json:"citations"`
-	// If True, include images in the extraction.
-	IncludeImages param.Field[bool] `json:"include_images"`
-	// If True, jobs will be processed with a higher throughput and priority at a
-	// higher cost. Defaults to False.
-	OptimizeForLatency param.Field[bool] `json:"optimize_for_latency"`
-}
-
-func (r ExtractRunJobParamsSettings) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The citations to use for the extraction.
-type ExtractRunJobParamsSettingsCitations struct {
-	// If True, include citations in the extraction.
-	Enabled param.Field[bool] `json:"enabled"`
-	// If True, enable numeric citation confidence scores. Defaults to True.
-	NumericalConfidence param.Field[bool] `json:"numerical_confidence"`
-}
-
-func (r ExtractRunJobParamsSettingsCitations) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+func (r ExtractNewParamsBodySyncExtractConfigInputArray) ImplementsExtractNewParamsBodySyncExtractConfigInputUnion() {
 }

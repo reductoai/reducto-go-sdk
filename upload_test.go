@@ -13,7 +13,7 @@ import (
 	"github.com/reductoai/reducto-go-sdk/option"
 )
 
-func TestAPIVersion(t *testing.T) {
+func TestUploadNewWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -24,32 +24,9 @@ func TestAPIVersion(t *testing.T) {
 	}
 	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.APIVersion(context.TODO())
-	if err != nil {
-		var apierr *reducto.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestUploadWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := reducto.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Upload(context.TODO(), reducto.UploadParams{
+	_, err := client.Upload.New(context.TODO(), reducto.UploadNewParams{
 		Extension: reducto.F("extension"),
 		File:      reducto.F("file"),
 	})
