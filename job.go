@@ -93,7 +93,7 @@ func (r extractResponseJSON) RawJSON() string {
 
 func (r ExtractResponse) implementsPipelineResponseResultExtractUnion() {}
 
-func (r ExtractResponse) implementsPipelineResponseResultExtractArrayResult() {}
+func (r ExtractResponse) implementsPipelineResponseResultExtractExtractVariant0Result() {}
 
 func (r ExtractResponse) implementsJobGetResponseAsyncJobResponseResult() {}
 

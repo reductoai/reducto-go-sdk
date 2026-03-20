@@ -25,7 +25,7 @@ func TestExtractAsyncNewWithOptionalParams(t *testing.T) {
 	}
 	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ExtractAsync.New(context.TODO(), reducto.ExtractAsyncNewParams{
 		AsyncExtractConfig: reducto.AsyncExtractConfigParam{

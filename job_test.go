@@ -24,7 +24,7 @@ func TestJobGet(t *testing.T) {
 	}
 	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Job.Get(context.TODO(), "job_id")
 	if err != nil {
@@ -47,7 +47,7 @@ func TestJobListWithOptionalParams(t *testing.T) {
 	}
 	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Job.List(context.TODO(), reducto.JobListParams{
 		Cursor:         reducto.F("cursor"),

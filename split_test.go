@@ -25,7 +25,7 @@ func TestSplitNewWithOptionalParams(t *testing.T) {
 	}
 	client := reducto.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Split.New(context.TODO(), reducto.SplitNewParams{
 		Input: reducto.F[reducto.SplitNewParamsInputUnion](shared.UnionString("string")),
