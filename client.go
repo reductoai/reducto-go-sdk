@@ -26,6 +26,7 @@ type Client struct {
 	Pipeline *PipelineService
 	Webhook  *WebhookService
 	Config   *ConfigService
+	Classify *ClassifyService
 }
 
 // DefaultClientOptions read from the environment (REDUCTO_API_KEY,
@@ -58,6 +59,7 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.Pipeline = NewPipelineService(opts...)
 	r.Webhook = NewWebhookService(opts...)
 	r.Config = NewConfigService(opts...)
+	r.Classify = NewClassifyService(opts...)
 
 	return
 }

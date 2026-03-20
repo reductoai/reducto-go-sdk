@@ -506,6 +506,8 @@ func (r PageRangeParam) MarshalJSON() (data []byte, err error) {
 
 func (r PageRangeParam) ImplementsSettingsPageRangeUnionParam() {}
 
+func (r PageRangeParam) ImplementsClassifyNewParamsPageRangeUnion() {}
+
 type ParseOptionsParam struct {
 	Enhance     param.Field[EnhanceParam]     `json:"enhance"`
 	Formatting  param.Field[FormattingParam]  `json:"formatting"`
@@ -1937,6 +1939,8 @@ func (r UploadParam) ImplementsEditRunJobParamsDocumentURLUnion() {}
 func (r UploadParam) ImplementsPipelineRunParamsInputUnion() {}
 
 func (r UploadParam) ImplementsPipelineRunJobParamsInputUnion() {}
+
+func (r UploadParam) ImplementsClassifyNewParamsInputUnion() {}
 
 type V3ExtractResponse struct {
 	// The extracted response in your provided schema. This is a list of dictionaries.
