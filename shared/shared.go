@@ -217,6 +217,10 @@ type EditResponseFormSchema struct {
 	// If True (default), the system will attempt to fill this widget. If False, the
 	// widget will be created but intentionally left unfilled.
 	Fill bool `json:"fill"`
+	// Font size in points for this specific field. Takes priority over the global
+	// font_size in EditOptions. If not set, falls back to the global font_size, then
+	// to auto-calculated sizing.
+	FontSize float64 `json:"font_size" api:"nullable"`
 	// If provided, this value will be used directly instead of attempting to
 	// intelligently determine the field value.
 	Value string                     `json:"value" api:"nullable"`
@@ -230,6 +234,7 @@ type editResponseFormSchemaJSON struct {
 	Description apijson.Field
 	Type        apijson.Field
 	Fill        apijson.Field
+	FontSize    apijson.Field
 	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
