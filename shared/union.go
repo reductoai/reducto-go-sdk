@@ -16,6 +16,7 @@ func (UnionString) ImplementsEditRunParamsDocumentURLUnion()                    
 func (UnionString) ImplementsEditRunJobParamsDocumentURLUnion()                 {}
 func (UnionString) ImplementsPipelineRunParamsInputUnion()                      {}
 func (UnionString) ImplementsPipelineRunJobParamsInputUnion()                   {}
+func (UnionString) ImplementsClassifyNewParamsInputUnion()                      {}
 
 type UnionInt int64
 

@@ -118,3 +118,13 @@ Methods:
 - <code title="post /configure_webhook">client.Webhook.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#WebhookService.Run">Run</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/builtin#string">string</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Config
+
+# Classify
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ClassifyNewResponse">ClassifyNewResponse</a>
+
+Methods:
+
+- <code title="post /classify">client.Classify.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ClassifyService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ClassifyNewParams">ClassifyNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ClassifyNewResponse">ClassifyNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
