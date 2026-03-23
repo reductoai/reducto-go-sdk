@@ -575,12 +575,15 @@ func (r ParseNewParams) MarshalJSON() (data []byte, err error) {
 type ParseNewParamsBody struct {
 	Input param.Field[interface{}] `json:"input" api:"required"`
 	// The configuration options for asynchronous processing (default synchronous).
-	Async       param.Field[AsyncConfigV3Param] `json:"async"`
-	Enhance     param.Field[EnhanceParam]       `json:"enhance"`
-	Formatting  param.Field[FormattingParam]    `json:"formatting"`
-	Retrieval   param.Field[RetrievalParam]     `json:"retrieval"`
-	Settings    param.Field[SettingsParam]      `json:"settings"`
-	Spreadsheet param.Field[SpreadsheetParam]   `json:"spreadsheet"`
+	Async      param.Field[AsyncConfigV3Param] `json:"async"`
+	Enhance    param.Field[EnhanceParam]       `json:"enhance"`
+	Formatting param.Field[FormattingParam]    `json:"formatting"`
+	// Queue priority. 'batch' for non-urgent work that processes when spare GPU
+	// capacity is available.
+	QueuePriority param.Field[ParseNewParamsBodyQueuePriority] `json:"queue_priority"`
+	Retrieval     param.Field[RetrievalParam]                  `json:"retrieval"`
+	Settings      param.Field[SettingsParam]                   `json:"settings"`
+	Spreadsheet   param.Field[SpreadsheetParam]                `json:"spreadsheet"`
 }
 
 func (r ParseNewParamsBody) MarshalJSON() (data []byte, err error) {
@@ -636,4 +639,21 @@ type ParseNewParamsBodySyncParseConfigInputUnion interface {
 type ParseNewParamsBodySyncParseConfigInputArray []string
 
 func (r ParseNewParamsBodySyncParseConfigInputArray) ImplementsParseNewParamsBodySyncParseConfigInputUnion() {
+}
+
+// Queue priority. 'batch' for non-urgent work that processes when spare GPU
+// capacity is available.
+type ParseNewParamsBodyQueuePriority string
+
+const (
+	ParseNewParamsBodyQueuePriorityAuto  ParseNewParamsBodyQueuePriority = "auto"
+	ParseNewParamsBodyQueuePriorityBatch ParseNewParamsBodyQueuePriority = "batch"
+)
+
+func (r ParseNewParamsBodyQueuePriority) IsKnown() bool {
+	switch r {
+	case ParseNewParamsBodyQueuePriorityAuto, ParseNewParamsBodyQueuePriorityBatch:
+		return true
+	}
+	return false
 }
