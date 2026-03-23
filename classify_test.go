@@ -14,7 +14,7 @@ import (
 	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
-func TestClassifyClassifyWithOptionalParams(t *testing.T) {
+func TestClassifyNewWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,14 +27,14 @@ func TestClassifyClassifyWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Classify.Classify(context.TODO(), reducto.ClassifyClassifyParams{
-		Input: reducto.F[reducto.ClassifyClassifyParamsInputUnion](shared.UnionString("string")),
-		ClassificationSchema: reducto.F([]reducto.ClassifyClassifyParamsClassificationSchema{{
+	_, err := client.Classify.New(context.TODO(), reducto.ClassifyNewParams{
+		Input: reducto.F[reducto.ClassifyNewParamsInputUnion](shared.UnionString("string")),
+		ClassificationSchema: reducto.F([]reducto.ClassifyNewParamsClassificationSchema{{
 			Category: reducto.F("category"),
 			Criteria: reducto.F([]string{"string"}),
 		}}),
 		DocumentMetadata: reducto.F("document_metadata"),
-		PageRange: reducto.F[reducto.ClassifyClassifyParamsPageRangeUnion](reducto.PageRangeParam{
+		PageRange: reducto.F[reducto.ClassifyNewParamsPageRangeUnion](reducto.PageRangeParam{
 			End:   reducto.F(int64(0)),
 			Start: reducto.F(int64(0)),
 		}),
