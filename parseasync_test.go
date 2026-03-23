@@ -52,6 +52,7 @@ func TestParseAsyncNewWithOptionalParams(t *testing.T) {
 				MergeTables:       reducto.F(true),
 				TableOutputFormat: reducto.F(reducto.FormattingTableOutputFormatHTML),
 			}),
+			QueuePriority: reducto.F(reducto.AsyncParseConfigQueuePriorityAuto),
 			Retrieval: reducto.F(reducto.RetrievalParam{
 				Chunking: reducto.F(reducto.RetrievalChunkingParam{
 					ChunkMode:    reducto.F(reducto.RetrievalChunkingChunkModeVariable),

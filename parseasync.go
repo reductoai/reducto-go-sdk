@@ -154,12 +154,15 @@ type AsyncParseConfigParam struct {
 	//	For edit pipelines, this should be a string containing the edit instructions
 	Input param.Field[AsyncParseConfigInputUnionParam] `json:"input" api:"required"`
 	// The configuration options for asynchronous processing (default synchronous).
-	Async       param.Field[AsyncConfigV3Param] `json:"async"`
-	Enhance     param.Field[EnhanceParam]       `json:"enhance"`
-	Formatting  param.Field[FormattingParam]    `json:"formatting"`
-	Retrieval   param.Field[RetrievalParam]     `json:"retrieval"`
-	Settings    param.Field[SettingsParam]      `json:"settings"`
-	Spreadsheet param.Field[SpreadsheetParam]   `json:"spreadsheet"`
+	Async      param.Field[AsyncConfigV3Param] `json:"async"`
+	Enhance    param.Field[EnhanceParam]       `json:"enhance"`
+	Formatting param.Field[FormattingParam]    `json:"formatting"`
+	// Queue priority. 'batch' for non-urgent work that processes when spare GPU
+	// capacity is available.
+	QueuePriority param.Field[AsyncParseConfigQueuePriority] `json:"queue_priority"`
+	Retrieval     param.Field[RetrievalParam]                `json:"retrieval"`
+	Settings      param.Field[SettingsParam]                 `json:"settings"`
+	Spreadsheet   param.Field[SpreadsheetParam]              `json:"spreadsheet"`
 }
 
 func (r AsyncParseConfigParam) MarshalJSON() (data []byte, err error) {
@@ -186,6 +189,23 @@ type AsyncParseConfigInputUnionParam interface {
 type AsyncParseConfigInputArrayParam []string
 
 func (r AsyncParseConfigInputArrayParam) ImplementsAsyncParseConfigInputUnionParam() {}
+
+// Queue priority. 'batch' for non-urgent work that processes when spare GPU
+// capacity is available.
+type AsyncParseConfigQueuePriority string
+
+const (
+	AsyncParseConfigQueuePriorityAuto  AsyncParseConfigQueuePriority = "auto"
+	AsyncParseConfigQueuePriorityBatch AsyncParseConfigQueuePriority = "batch"
+)
+
+func (r AsyncParseConfigQueuePriority) IsKnown() bool {
+	switch r {
+	case AsyncParseConfigQueuePriorityAuto, AsyncParseConfigQueuePriorityBatch:
+		return true
+	}
+	return false
+}
 
 type AsyncParseResponse struct {
 	JobID string                 `json:"job_id" api:"required"`
