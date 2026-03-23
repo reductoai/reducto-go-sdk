@@ -14,7 +14,7 @@ func (UnionString) ImplementsEditSubmitParamsDocumentURLUnion()                {
 func (UnionString) ImplementsEditAsyncNewParamsDocumentURLUnion()              {}
 func (UnionString) ImplementsPipelineNewParamsInputUnion()                     {}
 func (UnionString) ImplementsPipelineAsyncNewParamsInputUnion()                {}
-func (UnionString) ImplementsClassifyClassifyParamsInputUnion()                {}
+func (UnionString) ImplementsClassifyNewParamsInputUnion()                     {}
 
 type UnionInt int64
 

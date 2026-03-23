@@ -93,7 +93,7 @@ func (r UploadResponseParam) ImplementsPipelineNewParamsInputUnion() {}
 
 func (r UploadResponseParam) ImplementsPipelineAsyncNewParamsInputUnion() {}
 
-func (r UploadResponseParam) ImplementsClassifyClassifyParamsInputUnion() {}
+func (r UploadResponseParam) ImplementsClassifyNewParamsInputUnion() {}
 
 type UploadNewParams struct {
 	Extension param.Field[string] `query:"extension"`
