@@ -18,15 +18,10 @@ import (
 type Client struct {
 	Options          []option.RequestOption
 	Parse            *ParseService
-	ParseAsync       *ParseAsyncService
 	Extract          *ExtractService
-	ExtractAsync     *ExtractAsyncService
 	Split            *SplitService
-	SplitAsync       *SplitAsyncService
 	Edit             *EditService
-	EditAsync        *EditAsyncService
 	Pipeline         *PipelineService
-	PipelineAsync    *PipelineAsyncService
 	Classify         *ClassifyService
 	Cancel           *CancelService
 	Upload           *UploadService
@@ -58,15 +53,10 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r = &Client{Options: opts}
 
 	r.Parse = NewParseService(opts...)
-	r.ParseAsync = NewParseAsyncService(opts...)
 	r.Extract = NewExtractService(opts...)
-	r.ExtractAsync = NewExtractAsyncService(opts...)
 	r.Split = NewSplitService(opts...)
-	r.SplitAsync = NewSplitAsyncService(opts...)
 	r.Edit = NewEditService(opts...)
-	r.EditAsync = NewEditAsyncService(opts...)
 	r.Pipeline = NewPipelineService(opts...)
-	r.PipelineAsync = NewPipelineAsyncService(opts...)
 	r.Classify = NewClassifyService(opts...)
 	r.Cancel = NewCancelService(opts...)
 	r.Upload = NewUploadService(opts...)

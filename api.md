@@ -1,16 +1,5 @@
 # Parse
 
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ParseResponse">ParseResponse</a>
-- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ParseNewResponse">ParseNewResponse</a>
-
-Methods:
-
-- <code title="post /parse">client.Parse.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ParseService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ParseNewParams">ParseNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ParseNewResponse">ParseNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
-# ParseAsync
-
 Params Types:
 
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#AsyncConfigV3Param">AsyncConfigV3Param</a>
@@ -24,24 +13,15 @@ Params Types:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#AsyncParseResponse">AsyncParseResponse</a>
+- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ParseResponse">ParseResponse</a>
+- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ParseRunResponse">ParseRunResponse</a>
 
 Methods:
 
-- <code title="post /parse_async">client.ParseAsync.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ParseAsyncService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ParseAsyncNewParams">ParseAsyncNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#AsyncParseResponse">AsyncParseResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /parse">client.Parse.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ParseService.Run">Run</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ParseRunParams">ParseRunParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ParseRunResponse">ParseRunResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /parse_async">client.Parse.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ParseService.RunJob">RunJob</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ParseRunJobParams">ParseRunJobParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#AsyncParseResponse">AsyncParseResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Extract
-
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ExtractUsage">ExtractUsage</a>
-- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#V3Extract">V3Extract</a>
-- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ExtractNewResponse">ExtractNewResponse</a>
-
-Methods:
-
-- <code title="post /extract">client.Extract.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ExtractService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ExtractNewParams">ExtractNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ExtractNewResponse">ExtractNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
-# ExtractAsync
 
 Params Types:
 
@@ -53,10 +33,14 @@ Params Types:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#AsyncExtractResponse">AsyncExtractResponse</a>
+- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ExtractUsage">ExtractUsage</a>
+- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#V3Extract">V3Extract</a>
+- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ExtractRunResponse">ExtractRunResponse</a>
 
 Methods:
 
-- <code title="post /extract_async">client.ExtractAsync.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ExtractAsyncService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ExtractAsyncNewParams">ExtractAsyncNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#AsyncExtractResponse">AsyncExtractResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /extract">client.Extract.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ExtractService.Run">Run</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ExtractRunParams">ExtractRunParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ExtractRunResponse">ExtractRunResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /extract_async">client.Extract.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ExtractService.RunJob">RunJob</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ExtractRunJobParams">ExtractRunJobParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#AsyncExtractResponse">AsyncExtractResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Split
 
@@ -70,20 +54,12 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#DeepSplitPageEvidence">DeepSplitPageEvidence</a>
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ParseUsage">ParseUsage</a>
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitResponse">SplitResponse</a>
+- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitRunJobResponse">SplitRunJobResponse</a>
 
 Methods:
 
-- <code title="post /split">client.Split.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitNewParams">SplitNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitResponse">SplitResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
-# SplitAsync
-
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitAsyncNewResponse">SplitAsyncNewResponse</a>
-
-Methods:
-
-- <code title="post /split_async">client.SplitAsync.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitAsyncService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitAsyncNewParams">SplitAsyncNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitAsyncNewResponse">SplitAsyncNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /split">client.Split.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitService.Run">Run</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitRunParams">SplitRunParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitResponse">SplitResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /split_async">client.Split.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitService.RunJob">RunJob</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitRunJobParams">SplitRunJobParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitRunJobResponse">SplitRunJobResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Edit
 
@@ -98,20 +74,12 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#BoundingBox">BoundingBox</a>
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditResponse">EditResponse</a>
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditWidget">EditWidget</a>
+- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditRunJobResponse">EditRunJobResponse</a>
 
 Methods:
 
-- <code title="post /edit">client.Edit.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditService.Submit">Submit</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditSubmitParams">EditSubmitParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditResponse">EditResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
-# EditAsync
-
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditAsyncNewResponse">EditAsyncNewResponse</a>
-
-Methods:
-
-- <code title="post /edit_async">client.EditAsync.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditAsyncService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditAsyncNewParams">EditAsyncNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditAsyncNewResponse">EditAsyncNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /edit">client.Edit.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditService.Run">Run</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditRunParams">EditRunParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditResponse">EditResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /edit_async">client.Edit.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditService.RunJob">RunJob</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditRunJobParams">EditRunJobParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#EditRunJobResponse">EditRunJobResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Pipeline
 
@@ -122,20 +90,12 @@ Params Types:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineResponse">PipelineResponse</a>
+- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineRunJobResponse">PipelineRunJobResponse</a>
 
 Methods:
 
-- <code title="post /pipeline">client.Pipeline.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineNewParams">PipelineNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineResponse">PipelineResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
-# PipelineAsync
-
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineAsyncNewResponse">PipelineAsyncNewResponse</a>
-
-Methods:
-
-- <code title="post /pipeline_async">client.PipelineAsync.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineAsyncService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineAsyncNewParams">PipelineAsyncNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineAsyncNewResponse">PipelineAsyncNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /pipeline">client.Pipeline.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineService.Run">Run</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineRunParams">PipelineRunParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineResponse">PipelineResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /pipeline_async">client.Pipeline.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineService.RunJob">RunJob</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineRunJobParams">PipelineRunJobParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#PipelineRunJobResponse">PipelineRunJobResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Classify
 
@@ -149,7 +109,7 @@ Response Types:
 
 Methods:
 
-- <code title="post /classify">client.Classify.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ClassifyService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ClassifyNewParams">ClassifyNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ClassifyResponse">ClassifyResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /classify">client.Classify.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ClassifyService.Run">Run</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ClassifyRunParams">ClassifyRunParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ClassifyResponse">ClassifyResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Cancel
 

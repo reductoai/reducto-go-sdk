@@ -35,9 +35,17 @@ func NewSplitService(opts ...option.RequestOption) (r *SplitService) {
 }
 
 // Split
-func (r *SplitService) New(ctx context.Context, body SplitNewParams, opts ...option.RequestOption) (res *SplitResponse, err error) {
+func (r *SplitService) Run(ctx context.Context, body SplitRunParams, opts ...option.RequestOption) (res *SplitResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "split"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
+// Split Async
+func (r *SplitService) RunJob(ctx context.Context, body SplitRunJobParams, opts ...option.RequestOption) (res *SplitRunJobResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "split_async"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -418,7 +426,28 @@ func (r SplitTableOptionsTableCutoff) IsKnown() bool {
 	return false
 }
 
-type SplitNewParams struct {
+type SplitRunJobResponse struct {
+	JobID string                  `json:"job_id" api:"required"`
+	JSON  splitRunJobResponseJSON `json:"-"`
+}
+
+// splitRunJobResponseJSON contains the JSON metadata for the struct
+// [SplitRunJobResponse]
+type splitRunJobResponseJSON struct {
+	JobID       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SplitRunJobResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r splitRunJobResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type SplitRunParams struct {
 	// For parse/split/extract pipelines, the URL of the document to be processed. You
 	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
 	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
@@ -427,7 +456,7 @@ type SplitNewParams struct {
 	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
-	Input param.Field[SplitNewParamsInputUnion] `json:"input" api:"required"`
+	Input param.Field[SplitRunParamsInputUnion] `json:"input" api:"required"`
 	// The configuration options for processing the document.
 	SplitDescription param.Field[[]SplitCategoryParam] `json:"split_description" api:"required"`
 	// The configuration options for parsing the document. If you are passing in a
@@ -439,7 +468,7 @@ type SplitNewParams struct {
 	SplitRules param.Field[string] `json:"split_rules"`
 }
 
-func (r SplitNewParams) MarshalJSON() (data []byte, err error) {
+func (r SplitRunParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -452,12 +481,58 @@ func (r SplitNewParams) MarshalJSON() (data []byte, err error) {
 //
 //	For edit pipelines, this should be a string containing the edit instructions
 //
-// Satisfied by [shared.UnionString], [SplitNewParamsInputArray],
+// Satisfied by [shared.UnionString], [SplitRunParamsInputArray],
 // [UploadResponseParam].
-type SplitNewParamsInputUnion interface {
-	ImplementsSplitNewParamsInputUnion()
+type SplitRunParamsInputUnion interface {
+	ImplementsSplitRunParamsInputUnion()
 }
 
-type SplitNewParamsInputArray []string
+type SplitRunParamsInputArray []string
 
-func (r SplitNewParamsInputArray) ImplementsSplitNewParamsInputUnion() {}
+func (r SplitRunParamsInputArray) ImplementsSplitRunParamsInputUnion() {}
+
+type SplitRunJobParams struct {
+	// For parse/split/extract pipelines, the URL of the document to be processed. You
+	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+	// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+	// API only)
+	//
+	//	For edit pipelines, this should be a string containing the edit instructions
+	Input param.Field[SplitRunJobParamsInputUnion] `json:"input" api:"required"`
+	// The configuration options for processing the document.
+	SplitDescription param.Field[[]SplitCategoryParam] `json:"split_description" api:"required"`
+	// The configuration options for asynchronous processing (default synchronous).
+	Async param.Field[AsyncConfigV3Param] `json:"async"`
+	// The configuration options for parsing the document. If you are passing in a
+	// jobid:// URL for the file, then this configuration will be ignored.
+	Parsing param.Field[ParseOptionsParam] `json:"parsing"`
+	// The settings for split processing.
+	Settings param.Field[SplitTableOptionsParam] `json:"settings"`
+	// The prompt that describes rules for splitting the document.
+	SplitRules param.Field[string] `json:"split_rules"`
+}
+
+func (r SplitRunJobParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// For parse/split/extract pipelines, the URL of the document to be processed. You
+// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+// API only)
+//
+//	For edit pipelines, this should be a string containing the edit instructions
+//
+// Satisfied by [shared.UnionString], [SplitRunJobParamsInputArray],
+// [UploadResponseParam].
+type SplitRunJobParamsInputUnion interface {
+	ImplementsSplitRunJobParamsInputUnion()
+}
+
+type SplitRunJobParamsInputArray []string
+
+func (r SplitRunJobParamsInputArray) ImplementsSplitRunJobParamsInputUnion() {}
