@@ -124,6 +124,10 @@ type ExtractSettingsParam struct {
 	ArrayExtract param.Field[bool] `json:"array_extract"`
 	// The citations to use for the extraction.
 	Citations param.Field[ExtractSettingsCitationsParam] `json:"citations"`
+	// If True, use Deep Extract, an agentic extraction mode that iteratively refines
+	// its output to achieve near-perfect accuracy. Best for complex documents where
+	// accuracy is critical.
+	DeepExtract param.Field[bool] `json:"deep_extract"`
 	// If True, include images in the extraction.
 	IncludeImages param.Field[bool] `json:"include_images"`
 	// If True, jobs will be processed with a higher throughput and priority at a
