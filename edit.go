@@ -33,9 +33,17 @@ func NewEditService(opts ...option.RequestOption) (r *EditService) {
 }
 
 // Edit
-func (r *EditService) Submit(ctx context.Context, body EditSubmitParams, opts ...option.RequestOption) (res *EditResponse, err error) {
+func (r *EditService) Run(ctx context.Context, body EditRunParams, opts ...option.RequestOption) (res *EditResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "edit"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
+// Edit Async
+func (r *EditService) RunJob(ctx context.Context, body EditRunJobParams, opts ...option.RequestOption) (res *EditRunJobResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "edit_async"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -241,14 +249,35 @@ func (r EditWidgetParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type EditSubmitParams struct {
+type EditRunJobResponse struct {
+	JobID string                 `json:"job_id" api:"required"`
+	JSON  editRunJobResponseJSON `json:"-"`
+}
+
+// editRunJobResponseJSON contains the JSON metadata for the struct
+// [EditRunJobResponse]
+type editRunJobResponseJSON struct {
+	JobID       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *EditRunJobResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r editRunJobResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type EditRunParams struct {
 	// The URL of the document to be processed. You can provide one of the following:
 	//
 	//  1. A publicly available URL
 	//  2. A presigned S3 URL
 	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 	//     uploading a document
-	DocumentURL param.Field[EditSubmitParamsDocumentURLUnion] `json:"document_url" api:"required"`
+	DocumentURL param.Field[EditRunParamsDocumentURLUnion] `json:"document_url" api:"required"`
 	// The instructions for the edit.
 	EditInstructions param.Field[string]           `json:"edit_instructions" api:"required"`
 	EditOptions      param.Field[EditOptionsParam] `json:"edit_options"`
@@ -261,7 +290,7 @@ type EditSubmitParams struct {
 	Priority param.Field[bool] `json:"priority"`
 }
 
-func (r EditSubmitParams) MarshalJSON() (data []byte, err error) {
+func (r EditRunParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -273,6 +302,78 @@ func (r EditSubmitParams) MarshalJSON() (data []byte, err error) {
 //     uploading a document
 //
 // Satisfied by [shared.UnionString], [UploadResponseParam].
-type EditSubmitParamsDocumentURLUnion interface {
-	ImplementsEditSubmitParamsDocumentURLUnion()
+type EditRunParamsDocumentURLUnion interface {
+	ImplementsEditRunParamsDocumentURLUnion()
+}
+
+type EditRunJobParams struct {
+	// The URL of the document to be processed. You can provide one of the following:
+	//
+	//  1. A publicly available URL
+	//  2. A presigned S3 URL
+	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
+	//     uploading a document
+	DocumentURL param.Field[EditRunJobParamsDocumentURLUnion] `json:"document_url" api:"required"`
+	// The instructions for the edit.
+	EditInstructions param.Field[string]           `json:"edit_instructions" api:"required"`
+	EditOptions      param.Field[EditOptionsParam] `json:"edit_options"`
+	// Form schema for PDF forms. List of widgets with their types, descriptions, and
+	// bounding boxes. Only works for PDFs.
+	FormSchema param.Field[[]EditWidgetParam] `json:"form_schema"`
+	// If True, attempts to process the job with priority if the user has priority
+	// processing budget available; by default, sync jobs are prioritized above async
+	// jobs.
+	Priority param.Field[bool]                    `json:"priority"`
+	Webhook  param.Field[EditRunJobParamsWebhook] `json:"webhook"`
+}
+
+func (r EditRunJobParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The URL of the document to be processed. You can provide one of the following:
+//
+//  1. A publicly available URL
+//  2. A presigned S3 URL
+//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
+//     uploading a document
+//
+// Satisfied by [shared.UnionString], [UploadResponseParam].
+type EditRunJobParamsDocumentURLUnion interface {
+	ImplementsEditRunJobParamsDocumentURLUnion()
+}
+
+type EditRunJobParamsWebhook struct {
+	// A list of Svix channels the message will be delivered down, omit to send to all
+	// channels.
+	Channels param.Field[[]string] `json:"channels"`
+	// JSON metadata included in webhook request body
+	Metadata param.Field[interface{}] `json:"metadata"`
+	// The mode to use for webhook delivery. Defaults to 'disabled'. We recommend using
+	// 'svix' for production environments.
+	Mode param.Field[EditRunJobParamsWebhookMode] `json:"mode"`
+	// The URL to send the webhook to (if using direct webhoook).
+	URL param.Field[string] `json:"url"`
+}
+
+func (r EditRunJobParamsWebhook) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The mode to use for webhook delivery. Defaults to 'disabled'. We recommend using
+// 'svix' for production environments.
+type EditRunJobParamsWebhookMode string
+
+const (
+	EditRunJobParamsWebhookModeDisabled EditRunJobParamsWebhookMode = "disabled"
+	EditRunJobParamsWebhookModeSvix     EditRunJobParamsWebhookMode = "svix"
+	EditRunJobParamsWebhookModeDirect   EditRunJobParamsWebhookMode = "direct"
+)
+
+func (r EditRunJobParamsWebhookMode) IsKnown() bool {
+	switch r {
+	case EditRunJobParamsWebhookModeDisabled, EditRunJobParamsWebhookModeSvix, EditRunJobParamsWebhookModeDirect:
+		return true
+	}
+	return false
 }

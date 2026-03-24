@@ -75,25 +75,25 @@ func (r UploadResponseParam) MarshalJSON() (data []byte, err error) {
 
 func (r UploadResponseParam) ImplementsAsyncParseConfigInputUnionParam() {}
 
-func (r UploadResponseParam) ImplementsParseNewParamsBodySyncParseConfigInputUnion() {}
+func (r UploadResponseParam) ImplementsParseRunParamsBodySyncParseConfigInputUnion() {}
 
 func (r UploadResponseParam) ImplementsAsyncExtractConfigInputUnionParam() {}
 
-func (r UploadResponseParam) ImplementsExtractNewParamsBodySyncExtractConfigInputUnion() {}
+func (r UploadResponseParam) ImplementsExtractRunParamsBodySyncExtractConfigInputUnion() {}
 
-func (r UploadResponseParam) ImplementsSplitNewParamsInputUnion() {}
+func (r UploadResponseParam) ImplementsSplitRunParamsInputUnion() {}
 
-func (r UploadResponseParam) ImplementsSplitAsyncNewParamsInputUnion() {}
+func (r UploadResponseParam) ImplementsSplitRunJobParamsInputUnion() {}
 
-func (r UploadResponseParam) ImplementsEditSubmitParamsDocumentURLUnion() {}
+func (r UploadResponseParam) ImplementsEditRunParamsDocumentURLUnion() {}
 
-func (r UploadResponseParam) ImplementsEditAsyncNewParamsDocumentURLUnion() {}
+func (r UploadResponseParam) ImplementsEditRunJobParamsDocumentURLUnion() {}
 
-func (r UploadResponseParam) ImplementsPipelineNewParamsInputUnion() {}
+func (r UploadResponseParam) ImplementsPipelineRunParamsInputUnion() {}
 
-func (r UploadResponseParam) ImplementsPipelineAsyncNewParamsInputUnion() {}
+func (r UploadResponseParam) ImplementsPipelineRunJobParamsInputUnion() {}
 
-func (r UploadResponseParam) ImplementsClassifyNewParamsInputUnion() {}
+func (r UploadResponseParam) ImplementsClassifyRunParamsInputUnion() {}
 
 type UploadNewParams struct {
 	Extension param.Field[string] `query:"extension"`

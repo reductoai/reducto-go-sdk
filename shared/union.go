@@ -5,16 +5,16 @@ package shared
 type UnionString string
 
 func (UnionString) ImplementsAsyncParseConfigInputUnionParam()                 {}
-func (UnionString) ImplementsParseNewParamsBodySyncParseConfigInputUnion()     {}
+func (UnionString) ImplementsParseRunParamsBodySyncParseConfigInputUnion()     {}
 func (UnionString) ImplementsAsyncExtractConfigInputUnionParam()               {}
-func (UnionString) ImplementsExtractNewParamsBodySyncExtractConfigInputUnion() {}
-func (UnionString) ImplementsSplitNewParamsInputUnion()                        {}
-func (UnionString) ImplementsSplitAsyncNewParamsInputUnion()                   {}
-func (UnionString) ImplementsEditSubmitParamsDocumentURLUnion()                {}
-func (UnionString) ImplementsEditAsyncNewParamsDocumentURLUnion()              {}
-func (UnionString) ImplementsPipelineNewParamsInputUnion()                     {}
-func (UnionString) ImplementsPipelineAsyncNewParamsInputUnion()                {}
-func (UnionString) ImplementsClassifyNewParamsInputUnion()                     {}
+func (UnionString) ImplementsExtractRunParamsBodySyncExtractConfigInputUnion() {}
+func (UnionString) ImplementsSplitRunParamsInputUnion()                        {}
+func (UnionString) ImplementsSplitRunJobParamsInputUnion()                     {}
+func (UnionString) ImplementsEditRunParamsDocumentURLUnion()                   {}
+func (UnionString) ImplementsEditRunJobParamsDocumentURLUnion()                {}
+func (UnionString) ImplementsPipelineRunParamsInputUnion()                     {}
+func (UnionString) ImplementsPipelineRunJobParamsInputUnion()                  {}
+func (UnionString) ImplementsClassifyRunParamsInputUnion()                     {}
 
 type UnionInt int64
 

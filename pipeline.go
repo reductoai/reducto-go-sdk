@@ -35,9 +35,17 @@ func NewPipelineService(opts ...option.RequestOption) (r *PipelineService) {
 }
 
 // Pipeline
-func (r *PipelineService) New(ctx context.Context, body PipelineNewParams, opts ...option.RequestOption) (res *PipelineResponse, err error) {
+func (r *PipelineService) Run(ctx context.Context, body PipelineRunParams, opts ...option.RequestOption) (res *PipelineResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "pipeline"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
+// Pipeline Async
+func (r *PipelineService) RunJob(ctx context.Context, body PipelineRunJobParams, opts ...option.RequestOption) (res *PipelineRunJobResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "pipeline_async"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -256,7 +264,28 @@ func (r PipelineSettingsParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type PipelineNewParams struct {
+type PipelineRunJobResponse struct {
+	JobID string                     `json:"job_id" api:"required"`
+	JSON  pipelineRunJobResponseJSON `json:"-"`
+}
+
+// pipelineRunJobResponseJSON contains the JSON metadata for the struct
+// [PipelineRunJobResponse]
+type pipelineRunJobResponseJSON struct {
+	JobID       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *PipelineRunJobResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r pipelineRunJobResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type PipelineRunParams struct {
 	// For parse/split/extract pipelines, the URL of the document to be processed. You
 	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
 	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
@@ -265,14 +294,14 @@ type PipelineNewParams struct {
 	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
-	Input param.Field[PipelineNewParamsInputUnion] `json:"input" api:"required"`
+	Input param.Field[PipelineRunParamsInputUnion] `json:"input" api:"required"`
 	// The ID of the pipeline to use for the document.
 	PipelineID param.Field[string] `json:"pipeline_id" api:"required"`
 	// Settings for pipeline execution that override pipeline defaults.
 	Settings param.Field[PipelineSettingsParam] `json:"settings"`
 }
 
-func (r PipelineNewParams) MarshalJSON() (data []byte, err error) {
+func (r PipelineRunParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -285,12 +314,53 @@ func (r PipelineNewParams) MarshalJSON() (data []byte, err error) {
 //
 //	For edit pipelines, this should be a string containing the edit instructions
 //
-// Satisfied by [shared.UnionString], [PipelineNewParamsInputArray],
+// Satisfied by [shared.UnionString], [PipelineRunParamsInputArray],
 // [UploadResponseParam].
-type PipelineNewParamsInputUnion interface {
-	ImplementsPipelineNewParamsInputUnion()
+type PipelineRunParamsInputUnion interface {
+	ImplementsPipelineRunParamsInputUnion()
 }
 
-type PipelineNewParamsInputArray []string
+type PipelineRunParamsInputArray []string
 
-func (r PipelineNewParamsInputArray) ImplementsPipelineNewParamsInputUnion() {}
+func (r PipelineRunParamsInputArray) ImplementsPipelineRunParamsInputUnion() {}
+
+type PipelineRunJobParams struct {
+	// For parse/split/extract pipelines, the URL of the document to be processed. You
+	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+	// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+	// API only)
+	//
+	//	For edit pipelines, this should be a string containing the edit instructions
+	Input param.Field[PipelineRunJobParamsInputUnion] `json:"input" api:"required"`
+	// The ID of the pipeline to use for the document.
+	PipelineID param.Field[string] `json:"pipeline_id" api:"required"`
+	// The configuration options for asynchronous processing (default synchronous).
+	Async param.Field[AsyncConfigV3Param] `json:"async"`
+	// Settings for pipeline execution that override pipeline defaults.
+	Settings param.Field[PipelineSettingsParam] `json:"settings"`
+}
+
+func (r PipelineRunJobParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// For parse/split/extract pipelines, the URL of the document to be processed. You
+// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+// API only)
+//
+//	For edit pipelines, this should be a string containing the edit instructions
+//
+// Satisfied by [shared.UnionString], [PipelineRunJobParamsInputArray],
+// [UploadResponseParam].
+type PipelineRunJobParamsInputUnion interface {
+	ImplementsPipelineRunJobParamsInputUnion()
+}
+
+type PipelineRunJobParamsInputArray []string
+
+func (r PipelineRunJobParamsInputArray) ImplementsPipelineRunJobParamsInputUnion() {}

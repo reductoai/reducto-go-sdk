@@ -26,12 +26,12 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	parse, err := client.Parse.New(context.TODO(), reducto.ParseNewParamsSyncParseConfig{
-		Input: reducto.F[reducto.ParseNewParamsSyncParseConfigInputUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),
+	response, err := client.Parse.Run(context.TODO(), reducto.ParseRunParamsSyncParseConfig{
+		Input: reducto.F[reducto.ParseRunParamsSyncParseConfigInputUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),
 	})
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	t.Logf("%+v\n", parse)
+	t.Logf("%+v\n", response)
 }

@@ -33,7 +33,7 @@ func NewClassifyService(opts ...option.RequestOption) (r *ClassifyService) {
 }
 
 // Classify
-func (r *ClassifyService) New(ctx context.Context, body ClassifyNewParams, opts ...option.RequestOption) (res *ClassifyResponse, err error) {
+func (r *ClassifyService) Run(ctx context.Context, body ClassifyRunParams, opts ...option.RequestOption) (res *ClassifyResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "classify"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -196,9 +196,9 @@ func (r PageRangeParam) MarshalJSON() (data []byte, err error) {
 
 func (r PageRangeParam) implementsSettingsPageRangeUnionParam() {}
 
-func (r PageRangeParam) implementsClassifyNewParamsPageRangeUnion() {}
+func (r PageRangeParam) implementsClassifyRunParamsPageRangeUnion() {}
 
-type ClassifyNewParams struct {
+type ClassifyRunParams struct {
 	// For parse/split/extract pipelines, the URL of the document to be processed. You
 	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
 	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
@@ -207,20 +207,20 @@ type ClassifyNewParams struct {
 	// API only)
 	//
 	//	For edit pipelines, this should be a string containing the edit instructions
-	Input param.Field[ClassifyNewParamsInputUnion] `json:"input" api:"required"`
+	Input param.Field[ClassifyRunParamsInputUnion] `json:"input" api:"required"`
 	// A list of classification categories and their matching criteria.
-	ClassificationSchema param.Field[[]ClassifyNewParamsClassificationSchema] `json:"classification_schema"`
+	ClassificationSchema param.Field[[]ClassifyRunParamsClassificationSchema] `json:"classification_schema"`
 	// Optional document-level metadata to include in classification prompts.
 	DocumentMetadata param.Field[string] `json:"document_metadata"`
 	// The page range to process (1-indexed). By default, the first 5 pages are used.
 	// If more than 25 pages are selected, only the first 25 (after sorting) are used.
 	// Only applies to PDFs; ignored for other document types.
-	PageRange param.Field[ClassifyNewParamsPageRangeUnion] `json:"page_range"`
+	PageRange param.Field[ClassifyRunParamsPageRangeUnion] `json:"page_range"`
 	// If True, persist the results indefinitely. Defaults to False.
 	PersistResults param.Field[bool] `json:"persist_results"`
 }
 
-func (r ClassifyNewParams) MarshalJSON() (data []byte, err error) {
+func (r ClassifyRunParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -233,18 +233,18 @@ func (r ClassifyNewParams) MarshalJSON() (data []byte, err error) {
 //
 //	For edit pipelines, this should be a string containing the edit instructions
 //
-// Satisfied by [shared.UnionString], [ClassifyNewParamsInputArray],
+// Satisfied by [shared.UnionString], [ClassifyRunParamsInputArray],
 // [UploadResponseParam].
-type ClassifyNewParamsInputUnion interface {
-	ImplementsClassifyNewParamsInputUnion()
+type ClassifyRunParamsInputUnion interface {
+	ImplementsClassifyRunParamsInputUnion()
 }
 
-type ClassifyNewParamsInputArray []string
+type ClassifyRunParamsInputArray []string
 
-func (r ClassifyNewParamsInputArray) ImplementsClassifyNewParamsInputUnion() {}
+func (r ClassifyRunParamsInputArray) ImplementsClassifyRunParamsInputUnion() {}
 
 // A single classification category with its matching criteria.
-type ClassifyNewParamsClassificationSchema struct {
+type ClassifyRunParamsClassificationSchema struct {
 	// The category name/label that documents will be classified into (e.g., 'invoice',
 	// 'contract', 'receipt').
 	Category param.Field[string] `json:"category" api:"required"`
@@ -254,7 +254,7 @@ type ClassifyNewParamsClassificationSchema struct {
 	Criteria param.Field[[]string] `json:"criteria" api:"required"`
 }
 
-func (r ClassifyNewParamsClassificationSchema) MarshalJSON() (data []byte, err error) {
+func (r ClassifyRunParamsClassificationSchema) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -262,12 +262,12 @@ func (r ClassifyNewParamsClassificationSchema) MarshalJSON() (data []byte, err e
 // If more than 25 pages are selected, only the first 25 (after sorting) are used.
 // Only applies to PDFs; ignored for other document types.
 //
-// Satisfied by [PageRangeParam], [ClassifyNewParamsPageRangeArray],
-// [ClassifyNewParamsPageRangeArray].
-type ClassifyNewParamsPageRangeUnion interface {
-	implementsClassifyNewParamsPageRangeUnion()
+// Satisfied by [PageRangeParam], [ClassifyRunParamsPageRangeArray],
+// [ClassifyRunParamsPageRangeArray].
+type ClassifyRunParamsPageRangeUnion interface {
+	implementsClassifyRunParamsPageRangeUnion()
 }
 
-type ClassifyNewParamsPageRangeArray []PageRangeParam
+type ClassifyRunParamsPageRangeArray []PageRangeParam
 
-func (r ClassifyNewParamsPageRangeArray) implementsClassifyNewParamsPageRangeUnion() {}
+func (r ClassifyRunParamsPageRangeArray) implementsClassifyRunParamsPageRangeUnion() {}

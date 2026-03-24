@@ -54,13 +54,13 @@ func main() {
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("REDUCTO_API_KEY")
 		option.WithEnvironmentEu(),      // or option.WithEnvironmentProduction() | option.WithEnvironmentAu(); defaults to option.WithEnvironmentProduction()
 	)
-	parse, err := client.Parse.New(context.TODO(), reducto.ParseNewParamsSyncParseConfig{
-		Input: reducto.F[reducto.ParseNewParamsSyncParseConfigInputUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),
+	response, err := client.Parse.Run(context.TODO(), reducto.ParseRunParamsSyncParseConfig{
+		Input: reducto.F[reducto.ParseRunParamsSyncParseConfigInputUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),
 	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", parse)
+	fmt.Printf("%+v\n", response)
 }
 
 ```
@@ -149,7 +149,7 @@ client := reducto.NewClient(
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-client.Parse.New(context.TODO(), ...,
+client.Parse.Run(context.TODO(), ...,
 	// Override the header
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
 	// Add an undocumented field to the request body, using sjson syntax
@@ -178,9 +178,9 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Parse.New(context.TODO(), reducto.ParseNewParams{
-	Body: reducto.ParseNewParamsBodySyncParseConfig{
-		Input: reducto.F[reducto.ParseNewParamsBodySyncParseConfigInputUnion](shared.UnionString("string")),
+_, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
+	Body: reducto.ParseRunParamsBodySyncParseConfig{
+		Input: reducto.F[reducto.ParseRunParamsBodySyncParseConfigInputUnion](shared.UnionString("string")),
 	},
 })
 if err != nil {
@@ -207,11 +207,11 @@ To set a per-retry timeout, use `option.WithRequestTimeout()`.
 // This sets the timeout for the request, including all the retries.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
-client.Parse.New(
+client.Parse.Run(
 	ctx,
-	reducto.ParseNewParams{
-		Body: reducto.ParseNewParamsBodySyncParseConfig{
-			Input: reducto.F[reducto.ParseNewParamsBodySyncParseConfigInputUnion](shared.UnionString("string")),
+	reducto.ParseRunParams{
+		Body: reducto.ParseRunParamsBodySyncParseConfig{
+			Input: reducto.F[reducto.ParseRunParamsBodySyncParseConfigInputUnion](shared.UnionString("string")),
 		},
 	},
 	// This sets the per-retry timeout
@@ -247,11 +247,11 @@ client := reducto.NewClient(
 )
 
 // Override per-request:
-client.Parse.New(
+client.Parse.Run(
 	context.TODO(),
-	reducto.ParseNewParams{
-		Body: reducto.ParseNewParamsBodySyncParseConfig{
-			Input: reducto.F[reducto.ParseNewParamsBodySyncParseConfigInputUnion](shared.UnionString("string")),
+	reducto.ParseRunParams{
+		Body: reducto.ParseRunParamsBodySyncParseConfig{
+			Input: reducto.F[reducto.ParseRunParamsBodySyncParseConfigInputUnion](shared.UnionString("string")),
 		},
 	},
 	option.WithMaxRetries(5),
@@ -266,11 +266,11 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-parse, err := client.Parse.New(
+response, err := client.Parse.Run(
 	context.TODO(),
-	reducto.ParseNewParams{
-		Body: reducto.ParseNewParamsBodySyncParseConfig{
-			Input: reducto.F[reducto.ParseNewParamsBodySyncParseConfigInputUnion](shared.UnionString("string")),
+	reducto.ParseRunParams{
+		Body: reducto.ParseRunParamsBodySyncParseConfig{
+			Input: reducto.F[reducto.ParseRunParamsBodySyncParseConfigInputUnion](shared.UnionString("string")),
 		},
 	},
 	option.WithResponseInto(&response),
@@ -278,7 +278,7 @@ parse, err := client.Parse.New(
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", parse)
+fmt.Printf("%+v\n", response)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)
