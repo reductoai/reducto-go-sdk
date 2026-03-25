@@ -315,7 +315,7 @@ func (r PipelineRunParams) MarshalJSON() (data []byte, err error) {
 //	For edit pipelines, this should be a string containing the edit instructions
 //
 // Satisfied by [shared.UnionString], [PipelineRunParamsInputArray],
-// [UploadResponseParam].
+// [shared.UploadParam].
 type PipelineRunParamsInputUnion interface {
 	ImplementsPipelineRunParamsInputUnion()
 }
@@ -356,7 +356,7 @@ func (r PipelineRunJobParams) MarshalJSON() (data []byte, err error) {
 //	For edit pipelines, this should be a string containing the edit instructions
 //
 // Satisfied by [shared.UnionString], [PipelineRunJobParamsInputArray],
-// [UploadResponseParam].
+// [shared.UploadParam].
 type PipelineRunJobParamsInputUnion interface {
 	ImplementsPipelineRunJobParamsInputUnion()
 }

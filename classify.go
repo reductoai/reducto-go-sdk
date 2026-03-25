@@ -234,7 +234,7 @@ func (r ClassifyRunParams) MarshalJSON() (data []byte, err error) {
 //	For edit pipelines, this should be a string containing the edit instructions
 //
 // Satisfied by [shared.UnionString], [ClassifyRunParamsInputArray],
-// [UploadResponseParam].
+// [shared.UploadParam].
 type ClassifyRunParamsInputUnion interface {
 	ImplementsClassifyRunParamsInputUnion()
 }

@@ -482,7 +482,7 @@ func (r SplitRunParams) MarshalJSON() (data []byte, err error) {
 //	For edit pipelines, this should be a string containing the edit instructions
 //
 // Satisfied by [shared.UnionString], [SplitRunParamsInputArray],
-// [UploadResponseParam].
+// [shared.UploadParam].
 type SplitRunParamsInputUnion interface {
 	ImplementsSplitRunParamsInputUnion()
 }
@@ -528,7 +528,7 @@ func (r SplitRunJobParams) MarshalJSON() (data []byte, err error) {
 //	For edit pipelines, this should be a string containing the edit instructions
 //
 // Satisfied by [shared.UnionString], [SplitRunJobParamsInputArray],
-// [UploadResponseParam].
+// [shared.UploadParam].
 type SplitRunJobParamsInputUnion interface {
 	ImplementsSplitRunJobParamsInputUnion()
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/reductoai/reducto-go-sdk/option"
 )
 
-func TestUploadNewWithOptionalParams(t *testing.T) {
+func TestUploadWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestUploadNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Upload.New(context.TODO(), reducto.UploadNewParams{
+	_, err := client.Upload(context.TODO(), reducto.UploadParams{
 		Extension: reducto.F("extension"),
 		File:      reducto.F("file"),
 	})

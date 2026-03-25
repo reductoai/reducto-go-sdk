@@ -301,7 +301,7 @@ func (r EditRunParams) MarshalJSON() (data []byte, err error) {
 //  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 //     uploading a document
 //
-// Satisfied by [shared.UnionString], [UploadResponseParam].
+// Satisfied by [shared.UnionString], [shared.UploadParam].
 type EditRunParamsDocumentURLUnion interface {
 	ImplementsEditRunParamsDocumentURLUnion()
 }
@@ -338,7 +338,7 @@ func (r EditRunJobParams) MarshalJSON() (data []byte, err error) {
 //  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 //     uploading a document
 //
-// Satisfied by [shared.UnionString], [UploadResponseParam].
+// Satisfied by [shared.UnionString], [shared.UploadParam].
 type EditRunJobParamsDocumentURLUnion interface {
 	ImplementsEditRunJobParamsDocumentURLUnion()
 }

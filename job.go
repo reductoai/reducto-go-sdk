@@ -52,7 +52,7 @@ func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.Reque
 }
 
 // Get Jobs
-func (r *JobService) List(ctx context.Context, query JobListParams, opts ...option.RequestOption) (res *JobListResponse, err error) {
+func (r *JobService) GetAll(ctx context.Context, query JobGetAllParams, opts ...option.RequestOption) (res *JobGetAllResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "jobs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -564,48 +564,49 @@ func (r JobGetResponseType) IsKnown() bool {
 	return false
 }
 
-type JobListResponse struct {
+type JobGetAllResponse struct {
 	// List of jobs with their job_id, status, type, raw_config, created_at, num_pages
 	// and duration
-	Jobs []JobListResponseJob `json:"jobs" api:"required"`
+	Jobs []JobGetAllResponseJob `json:"jobs" api:"required"`
 	// Cursor to fetch the next page of results. If null, there are no more results.
-	NextCursor string              `json:"next_cursor" api:"nullable"`
-	JSON       jobListResponseJSON `json:"-"`
+	NextCursor string                `json:"next_cursor" api:"nullable"`
+	JSON       jobGetAllResponseJSON `json:"-"`
 }
 
-// jobListResponseJSON contains the JSON metadata for the struct [JobListResponse]
-type jobListResponseJSON struct {
+// jobGetAllResponseJSON contains the JSON metadata for the struct
+// [JobGetAllResponse]
+type jobGetAllResponseJSON struct {
 	Jobs        apijson.Field
 	NextCursor  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *JobListResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *JobGetAllResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r jobListResponseJSON) RawJSON() string {
+func (r jobGetAllResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type JobListResponseJob struct {
-	CreatedAt  time.Time                 `json:"created_at" api:"required" format:"date-time"`
-	Duration   float64                   `json:"duration" api:"required,nullable"`
-	JobID      string                    `json:"job_id" api:"required"`
-	NumPages   int64                     `json:"num_pages" api:"required,nullable"`
-	RawConfig  string                    `json:"raw_config" api:"required"`
-	Status     JobListResponseJobsStatus `json:"status" api:"required"`
-	TotalPages int64                     `json:"total_pages" api:"required,nullable"`
-	Type       JobListResponseJobsType   `json:"type" api:"required"`
-	Bucket     interface{}               `json:"bucket"`
-	Source     interface{}               `json:"source"`
-	JSON       jobListResponseJobJSON    `json:"-"`
+type JobGetAllResponseJob struct {
+	CreatedAt  time.Time                   `json:"created_at" api:"required" format:"date-time"`
+	Duration   float64                     `json:"duration" api:"required,nullable"`
+	JobID      string                      `json:"job_id" api:"required"`
+	NumPages   int64                       `json:"num_pages" api:"required,nullable"`
+	RawConfig  string                      `json:"raw_config" api:"required"`
+	Status     JobGetAllResponseJobsStatus `json:"status" api:"required"`
+	TotalPages int64                       `json:"total_pages" api:"required,nullable"`
+	Type       JobGetAllResponseJobsType   `json:"type" api:"required"`
+	Bucket     interface{}                 `json:"bucket"`
+	Source     interface{}                 `json:"source"`
+	JSON       jobGetAllResponseJobJSON    `json:"-"`
 }
 
-// jobListResponseJobJSON contains the JSON metadata for the struct
-// [JobListResponseJob]
-type jobListResponseJobJSON struct {
+// jobGetAllResponseJobJSON contains the JSON metadata for the struct
+// [JobGetAllResponseJob]
+type jobGetAllResponseJobJSON struct {
 	CreatedAt   apijson.Field
 	Duration    apijson.Field
 	JobID       apijson.Field
@@ -620,54 +621,54 @@ type jobListResponseJobJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *JobListResponseJob) UnmarshalJSON(data []byte) (err error) {
+func (r *JobGetAllResponseJob) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r jobListResponseJobJSON) RawJSON() string {
+func (r jobGetAllResponseJobJSON) RawJSON() string {
 	return r.raw
 }
 
-type JobListResponseJobsStatus string
+type JobGetAllResponseJobsStatus string
 
 const (
-	JobListResponseJobsStatusPending    JobListResponseJobsStatus = "Pending"
-	JobListResponseJobsStatusCompleted  JobListResponseJobsStatus = "Completed"
-	JobListResponseJobsStatusFailed     JobListResponseJobsStatus = "Failed"
-	JobListResponseJobsStatusIdle       JobListResponseJobsStatus = "Idle"
-	JobListResponseJobsStatusInProgress JobListResponseJobsStatus = "InProgress"
-	JobListResponseJobsStatusCompleting JobListResponseJobsStatus = "Completing"
-	JobListResponseJobsStatusCancelled  JobListResponseJobsStatus = "Cancelled"
+	JobGetAllResponseJobsStatusPending    JobGetAllResponseJobsStatus = "Pending"
+	JobGetAllResponseJobsStatusCompleted  JobGetAllResponseJobsStatus = "Completed"
+	JobGetAllResponseJobsStatusFailed     JobGetAllResponseJobsStatus = "Failed"
+	JobGetAllResponseJobsStatusIdle       JobGetAllResponseJobsStatus = "Idle"
+	JobGetAllResponseJobsStatusInProgress JobGetAllResponseJobsStatus = "InProgress"
+	JobGetAllResponseJobsStatusCompleting JobGetAllResponseJobsStatus = "Completing"
+	JobGetAllResponseJobsStatusCancelled  JobGetAllResponseJobsStatus = "Cancelled"
 )
 
-func (r JobListResponseJobsStatus) IsKnown() bool {
+func (r JobGetAllResponseJobsStatus) IsKnown() bool {
 	switch r {
-	case JobListResponseJobsStatusPending, JobListResponseJobsStatusCompleted, JobListResponseJobsStatusFailed, JobListResponseJobsStatusIdle, JobListResponseJobsStatusInProgress, JobListResponseJobsStatusCompleting, JobListResponseJobsStatusCancelled:
+	case JobGetAllResponseJobsStatusPending, JobGetAllResponseJobsStatusCompleted, JobGetAllResponseJobsStatusFailed, JobGetAllResponseJobsStatusIdle, JobGetAllResponseJobsStatusInProgress, JobGetAllResponseJobsStatusCompleting, JobGetAllResponseJobsStatusCancelled:
 		return true
 	}
 	return false
 }
 
-type JobListResponseJobsType string
+type JobGetAllResponseJobsType string
 
 const (
-	JobListResponseJobsTypeParse    JobListResponseJobsType = "Parse"
-	JobListResponseJobsTypeExtract  JobListResponseJobsType = "Extract"
-	JobListResponseJobsTypeSplit    JobListResponseJobsType = "Split"
-	JobListResponseJobsTypeEdit     JobListResponseJobsType = "Edit"
-	JobListResponseJobsTypePipeline JobListResponseJobsType = "Pipeline"
-	JobListResponseJobsTypeClassify JobListResponseJobsType = "Classify"
+	JobGetAllResponseJobsTypeParse    JobGetAllResponseJobsType = "Parse"
+	JobGetAllResponseJobsTypeExtract  JobGetAllResponseJobsType = "Extract"
+	JobGetAllResponseJobsTypeSplit    JobGetAllResponseJobsType = "Split"
+	JobGetAllResponseJobsTypeEdit     JobGetAllResponseJobsType = "Edit"
+	JobGetAllResponseJobsTypePipeline JobGetAllResponseJobsType = "Pipeline"
+	JobGetAllResponseJobsTypeClassify JobGetAllResponseJobsType = "Classify"
 )
 
-func (r JobListResponseJobsType) IsKnown() bool {
+func (r JobGetAllResponseJobsType) IsKnown() bool {
 	switch r {
-	case JobListResponseJobsTypeParse, JobListResponseJobsTypeExtract, JobListResponseJobsTypeSplit, JobListResponseJobsTypeEdit, JobListResponseJobsTypePipeline, JobListResponseJobsTypeClassify:
+	case JobGetAllResponseJobsTypeParse, JobGetAllResponseJobsTypeExtract, JobGetAllResponseJobsTypeSplit, JobGetAllResponseJobsTypeEdit, JobGetAllResponseJobsTypePipeline, JobGetAllResponseJobsTypeClassify:
 		return true
 	}
 	return false
 }
 
-type JobListParams struct {
+type JobGetAllParams struct {
 	// Cursor for pagination. Use the next_cursor from the previous response to fetch
 	// the next page.
 	Cursor param.Field[string] `query:"cursor"`
@@ -677,8 +678,8 @@ type JobListParams struct {
 	Limit param.Field[int64] `query:"limit"`
 }
 
-// URLQuery serializes [JobListParams]'s query parameters as `url.Values`.
-func (r JobListParams) URLQuery() (v url.Values) {
+// URLQuery serializes [JobGetAllParams]'s query parameters as `url.Values`.
+func (r JobGetAllParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
