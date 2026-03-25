@@ -39,6 +39,18 @@ func NewJobService(opts ...option.RequestOption) (r *JobService) {
 	return
 }
 
+// Cancel Job
+func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.RequestOption) (res *JobCancelResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if jobID == "" {
+		err = errors.New("missing required job_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("cancel/%s", jobID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	return res, err
+}
+
 // Retrieve Parse
 func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.RequestOption) (res *JobGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -98,6 +110,8 @@ func (r ExtractResponse) implementsPipelineResponseResultExtractExtractVariant0R
 func (r ExtractResponse) implementsJobGetResponseAsyncJobResponseResult() {}
 
 func (r ExtractResponse) implementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+
+type JobCancelResponse = interface{}
 
 type JobGetResponse struct {
 	Status JobGetResponseStatus `json:"status" api:"required"`
