@@ -191,7 +191,7 @@ func (r AsyncParseConfigParam) implementsParseRunParamsBodyUnion() {}
 //	For edit pipelines, this should be a string containing the edit instructions
 //
 // Satisfied by [shared.UnionString], [AsyncParseConfigInputArrayParam],
-// [UploadResponseParam].
+// [shared.UploadParam].
 type AsyncParseConfigInputUnionParam interface {
 	ImplementsAsyncParseConfigInputUnionParam()
 }
@@ -1312,7 +1312,7 @@ func (r ParseRunParamsBodySyncParseConfig) implementsParseRunParamsBodyUnion() {
 //	For edit pipelines, this should be a string containing the edit instructions
 //
 // Satisfied by [shared.UnionString],
-// [ParseRunParamsBodySyncParseConfigInputArray], [UploadResponseParam].
+// [ParseRunParamsBodySyncParseConfigInputArray], [shared.UploadParam].
 type ParseRunParamsBodySyncParseConfigInputUnion interface {
 	ImplementsParseRunParamsBodySyncParseConfigInputUnion()
 }

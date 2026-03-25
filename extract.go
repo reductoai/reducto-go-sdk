@@ -87,7 +87,7 @@ func (r AsyncExtractConfigParam) implementsExtractRunParamsBodyUnion() {}
 //	For edit pipelines, this should be a string containing the edit instructions
 //
 // Satisfied by [shared.UnionString], [AsyncExtractConfigInputArrayParam],
-// [UploadResponseParam].
+// [shared.UploadParam].
 type AsyncExtractConfigInputUnionParam interface {
 	ImplementsAsyncExtractConfigInputUnionParam()
 }
@@ -386,7 +386,7 @@ func (r ExtractRunParamsBodySyncExtractConfig) implementsExtractRunParamsBodyUni
 //	For edit pipelines, this should be a string containing the edit instructions
 //
 // Satisfied by [shared.UnionString],
-// [ExtractRunParamsBodySyncExtractConfigInputArray], [UploadResponseParam].
+// [ExtractRunParamsBodySyncExtractConfigInputArray], [shared.UploadParam].
 type ExtractRunParamsBodySyncExtractConfigInputUnion interface {
 	ImplementsExtractRunParamsBodySyncExtractConfigInputUnion()
 }

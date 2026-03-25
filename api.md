@@ -1,3 +1,17 @@
+# Shared Params Types
+
+- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared">shared</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared#UploadParam">UploadParam</a>
+
+# Shared Response Types
+
+- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared">shared</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared#Upload">Upload</a>
+
+# reducto
+
+Methods:
+
+- <code title="post /upload">client.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ReductoService.Upload">Upload</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#UploadParams">UploadParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared">shared</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/shared#Upload">Upload</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # Parse
 
 Params Types:
@@ -121,20 +135,6 @@ Methods:
 
 - <code title="post /cancel/{job_id}">client.Cancel.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#CancelService.CancelJob">CancelJob</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, jobID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#CancelCancelJobResponse">CancelCancelJobResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
-# Upload
-
-Params Types:
-
-- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#UploadResponseParam">UploadResponseParam</a>
-
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#UploadResponse">UploadResponse</a>
-
-Methods:
-
-- <code title="post /upload">client.Upload.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#UploadService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, params <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#UploadNewParams">UploadNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#UploadResponse">UploadResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
 # ConfigureWebhook
 
 Methods:
@@ -153,9 +153,9 @@ Response Types:
 
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#ExtractResponse">ExtractResponse</a>
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#JobGetResponse">JobGetResponse</a>
-- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#JobListResponse">JobListResponse</a>
+- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#JobGetAllResponse">JobGetAllResponse</a>
 
 Methods:
 
 - <code title="get /job/{job_id}">client.Job.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#JobService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, jobID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#JobGetResponse">JobGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /jobs">client.Job.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#JobService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#JobListParams">JobListParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#JobListResponse">JobListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /jobs">client.Job.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#JobService.GetAll">GetAll</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#JobGetAllParams">JobGetAllParams</a>) (\*<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#JobGetAllResponse">JobGetAllResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>

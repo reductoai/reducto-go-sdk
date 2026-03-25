@@ -10,6 +10,7 @@ import (
 
 	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
 	"github.com/reductoai/reducto-go-sdk/option"
+	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 // Client creates a struct with services and top level methods that help with
@@ -24,7 +25,6 @@ type Client struct {
 	Pipeline         *PipelineService
 	Classify         *ClassifyService
 	Cancel           *CancelService
-	Upload           *UploadService
 	ConfigureWebhook *ConfigureWebhookService
 	Version          *VersionService
 	Job              *JobService
@@ -59,7 +59,6 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.Pipeline = NewPipelineService(opts...)
 	r.Classify = NewClassifyService(opts...)
 	r.Cancel = NewCancelService(opts...)
-	r.Upload = NewUploadService(opts...)
 	r.ConfigureWebhook = NewConfigureWebhookService(opts...)
 	r.Version = NewVersionService(opts...)
 	r.Job = NewJobService(opts...)
@@ -134,4 +133,12 @@ func (r *Client) Patch(ctx context.Context, path string, params interface{}, res
 // response.
 func (r *Client) Delete(ctx context.Context, path string, params interface{}, res interface{}, opts ...option.RequestOption) error {
 	return r.Execute(ctx, http.MethodDelete, path, params, res, opts...)
+}
+
+// Upload
+func (r *Client) Upload(ctx context.Context, params UploadParams, opts ...option.RequestOption) (res *shared.Upload, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "upload"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return res, err
 }

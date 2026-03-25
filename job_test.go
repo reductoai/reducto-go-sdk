@@ -36,7 +36,7 @@ func TestJobGet(t *testing.T) {
 	}
 }
 
-func TestJobListWithOptionalParams(t *testing.T) {
+func TestJobGetAllWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -49,7 +49,7 @@ func TestJobListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Job.List(context.TODO(), reducto.JobListParams{
+	_, err := client.Job.GetAll(context.TODO(), reducto.JobGetAllParams{
 		Cursor:         reducto.F("cursor"),
 		ExcludeConfigs: reducto.F(true),
 		Limit:          reducto.F(int64(1)),
