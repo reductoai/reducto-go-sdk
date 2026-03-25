@@ -17,17 +17,15 @@ import (
 // interacting with the reducto API. You should not instantiate this client
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options          []option.RequestOption
-	Parse            *ParseService
-	Extract          *ExtractService
-	Split            *SplitService
-	Edit             *EditService
-	Pipeline         *PipelineService
-	Classify         *ClassifyService
-	Cancel           *CancelService
-	ConfigureWebhook *ConfigureWebhookService
-	Version          *VersionService
-	Job              *JobService
+	Options  []option.RequestOption
+	Parse    *ParseService
+	Extract  *ExtractService
+	Split    *SplitService
+	Edit     *EditService
+	Pipeline *PipelineService
+	Classify *ClassifyService
+	Webhook  *WebhookService
+	Job      *JobService
 }
 
 // DefaultClientOptions read from the environment (REDUCTO_API_KEY,
@@ -58,9 +56,7 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.Edit = NewEditService(opts...)
 	r.Pipeline = NewPipelineService(opts...)
 	r.Classify = NewClassifyService(opts...)
-	r.Cancel = NewCancelService(opts...)
-	r.ConfigureWebhook = NewConfigureWebhookService(opts...)
-	r.Version = NewVersionService(opts...)
+	r.Webhook = NewWebhookService(opts...)
 	r.Job = NewJobService(opts...)
 
 	return
@@ -133,6 +129,14 @@ func (r *Client) Patch(ctx context.Context, path string, params interface{}, res
 // response.
 func (r *Client) Delete(ctx context.Context, path string, params interface{}, res interface{}, opts ...option.RequestOption) error {
 	return r.Execute(ctx, http.MethodDelete, path, params, res, opts...)
+}
+
+// Get Version
+func (r *Client) APIVersion(ctx context.Context, opts ...option.RequestOption) (res *string, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "version"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
 }
 
 // Upload

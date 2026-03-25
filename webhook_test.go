@@ -13,7 +13,7 @@ import (
 	"github.com/reductoai/reducto-go-sdk/option"
 )
 
-func TestConfigureWebhookNew(t *testing.T) {
+func TestWebhookRun(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestConfigureWebhookNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ConfigureWebhook.New(context.TODO())
+	_, err := client.Webhook.Run(context.TODO())
 	if err != nil {
 		var apierr *reducto.Error
 		if errors.As(err, &apierr) {
