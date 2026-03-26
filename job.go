@@ -17,6 +17,7 @@ import (
 	"github.com/reductoai/reducto-go-sdk/internal/param"
 	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
 	"github.com/reductoai/reducto-go-sdk/option"
+	"github.com/reductoai/reducto-go-sdk/shared"
 	"github.com/tidwall/gjson"
 )
 
@@ -70,46 +71,6 @@ func (r *JobService) GetAll(ctx context.Context, query JobGetAllParams, opts ...
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
-
-type ExtractResponse struct {
-	// The citations corresponding to the extracted response.
-	Citations []interface{} `json:"citations" api:"required,nullable"`
-	// The extracted response in your provided schema. This is a list of dictionaries.
-	// If disable_chunking is True (default), then it will be a list of length one.
-	Result []interface{} `json:"result" api:"required"`
-	Usage  ExtractUsage  `json:"usage" api:"required"`
-	JobID  string        `json:"job_id" api:"nullable"`
-	// The link to the studio pipeline for the document.
-	StudioLink string              `json:"studio_link" api:"nullable"`
-	JSON       extractResponseJSON `json:"-"`
-}
-
-// extractResponseJSON contains the JSON metadata for the struct [ExtractResponse]
-type extractResponseJSON struct {
-	Citations   apijson.Field
-	Result      apijson.Field
-	Usage       apijson.Field
-	JobID       apijson.Field
-	StudioLink  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ExtractResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r extractResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ExtractResponse) implementsPipelineResponseResultExtractUnion() {}
-
-func (r ExtractResponse) implementsPipelineResponseResultExtractExtractVariant0Result() {}
-
-func (r ExtractResponse) implementsJobGetResponseAsyncJobResponseResult() {}
-
-func (r ExtractResponse) implementsJobGetResponseEnhancedAsyncJobResponseResult() {}
 
 type JobCancelResponse = interface{}
 
@@ -255,10 +216,12 @@ type JobGetResponseAsyncJobResponseResult struct {
 	JobID      string      `json:"job_id" api:"nullable"`
 	// The storage URL of the converted PDF file.
 	PdfURL string `json:"pdf_url" api:"nullable"`
-	// This field can have the runtime type of [ClassifyResponseResponseConfidence].
+	// This field can have the runtime type of
+	// [shared.ClassifyResponseResponseConfidence].
 	ResponseConfidence interface{} `json:"response_confidence"`
-	// This field can have the runtime type of [ParseResponseResult], [[]interface{}],
-	// [SplitResponseResult], [PipelineResponseResult], [ClassifyResponseResult].
+	// This field can have the runtime type of [shared.ParseResponseResult],
+	// [[]interface{}], [shared.SplitResponseResult], [shared.PipelineResponseResult],
+	// [shared.ClassifyResponseResult].
 	Result interface{} `json:"result"`
 	// The link to the studio pipeline for the document.
 	StudioLink string `json:"studio_link" api:"nullable"`
@@ -301,19 +264,20 @@ func (r *JobGetResponseAsyncJobResponseResult) UnmarshalJSON(data []byte) (err e
 // AsUnion returns a [JobGetResponseAsyncJobResponseResultUnion] interface which
 // you can cast to the specific types for more type safety.
 //
-// Possible runtime types of the union are [ParseResponse], [ExtractResponse],
-// [SplitResponse], [EditResponse], [PipelineResponse], [V3Extract],
-// [ClassifyResponse].
+// Possible runtime types of the union are [shared.ParseResponse],
+// [shared.ExtractResponse], [shared.SplitResponse], [shared.EditResponse],
+// [shared.PipelineResponse], [V3Extract], [shared.ClassifyResponse].
 func (r JobGetResponseAsyncJobResponseResult) AsUnion() JobGetResponseAsyncJobResponseResultUnion {
 	return r.union
 }
 
 // Response from classify job - returned when polling /job/{job_id}
 //
-// Union satisfied by [ParseResponse], [ExtractResponse], [SplitResponse],
-// [EditResponse], [PipelineResponse], [V3Extract] or [ClassifyResponse].
+// Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
+// [shared.SplitResponse], [shared.EditResponse], [shared.PipelineResponse],
+// [V3Extract] or [shared.ClassifyResponse].
 type JobGetResponseAsyncJobResponseResultUnion interface {
-	implementsJobGetResponseAsyncJobResponseResult()
+	ImplementsJobGetResponseAsyncJobResponseResult()
 }
 
 func init() {
@@ -322,23 +286,23 @@ func init() {
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ParseResponse{}),
+			Type:       reflect.TypeOf(shared.ParseResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ExtractResponse{}),
+			Type:       reflect.TypeOf(shared.ExtractResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(SplitResponse{}),
+			Type:       reflect.TypeOf(shared.SplitResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(EditResponse{}),
+			Type:       reflect.TypeOf(shared.EditResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(PipelineResponse{}),
+			Type:       reflect.TypeOf(shared.PipelineResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
@@ -346,7 +310,7 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ClassifyResponse{}),
+			Type:       reflect.TypeOf(shared.ClassifyResponse{}),
 		},
 	)
 }
@@ -427,10 +391,12 @@ type JobGetResponseEnhancedAsyncJobResponseResult struct {
 	JobID      string      `json:"job_id" api:"nullable"`
 	// The storage URL of the converted PDF file.
 	PdfURL string `json:"pdf_url" api:"nullable"`
-	// This field can have the runtime type of [ClassifyResponseResponseConfidence].
+	// This field can have the runtime type of
+	// [shared.ClassifyResponseResponseConfidence].
 	ResponseConfidence interface{} `json:"response_confidence"`
-	// This field can have the runtime type of [ParseResponseResult], [[]interface{}],
-	// [SplitResponseResult], [PipelineResponseResult], [ClassifyResponseResult].
+	// This field can have the runtime type of [shared.ParseResponseResult],
+	// [[]interface{}], [shared.SplitResponseResult], [shared.PipelineResponseResult],
+	// [shared.ClassifyResponseResult].
 	Result interface{} `json:"result"`
 	// The link to the studio pipeline for the document.
 	StudioLink string `json:"studio_link" api:"nullable"`
@@ -473,19 +439,20 @@ func (r *JobGetResponseEnhancedAsyncJobResponseResult) UnmarshalJSON(data []byte
 // AsUnion returns a [JobGetResponseEnhancedAsyncJobResponseResultUnion] interface
 // which you can cast to the specific types for more type safety.
 //
-// Possible runtime types of the union are [ParseResponse], [ExtractResponse],
-// [SplitResponse], [EditResponse], [PipelineResponse], [V3Extract],
-// [ClassifyResponse].
+// Possible runtime types of the union are [shared.ParseResponse],
+// [shared.ExtractResponse], [shared.SplitResponse], [shared.EditResponse],
+// [shared.PipelineResponse], [V3Extract], [shared.ClassifyResponse].
 func (r JobGetResponseEnhancedAsyncJobResponseResult) AsUnion() JobGetResponseEnhancedAsyncJobResponseResultUnion {
 	return r.union
 }
 
 // Response from classify job - returned when polling /job/{job_id}
 //
-// Union satisfied by [ParseResponse], [ExtractResponse], [SplitResponse],
-// [EditResponse], [PipelineResponse], [V3Extract] or [ClassifyResponse].
+// Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
+// [shared.SplitResponse], [shared.EditResponse], [shared.PipelineResponse],
+// [V3Extract] or [shared.ClassifyResponse].
 type JobGetResponseEnhancedAsyncJobResponseResultUnion interface {
-	implementsJobGetResponseEnhancedAsyncJobResponseResult()
+	ImplementsJobGetResponseEnhancedAsyncJobResponseResult()
 }
 
 func init() {
@@ -494,23 +461,23 @@ func init() {
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ParseResponse{}),
+			Type:       reflect.TypeOf(shared.ParseResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ExtractResponse{}),
+			Type:       reflect.TypeOf(shared.ExtractResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(SplitResponse{}),
+			Type:       reflect.TypeOf(shared.SplitResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(EditResponse{}),
+			Type:       reflect.TypeOf(shared.EditResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(PipelineResponse{}),
+			Type:       reflect.TypeOf(shared.PipelineResponse{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
@@ -518,7 +485,7 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ClassifyResponse{}),
+			Type:       reflect.TypeOf(shared.ClassifyResponse{}),
 		},
 	)
 }

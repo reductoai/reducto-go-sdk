@@ -31,8 +31,8 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 		Body: reducto.ParseRunParamsBodySyncParseConfig{
 			Input: reducto.F[reducto.ParseRunParamsBodySyncParseConfigInputUnion](shared.UnionString("string")),
 			Enhance: reducto.F(reducto.EnhanceParam{
-				Agentic: reducto.F([]reducto.EnhanceAgenticUnionParam{reducto.EnhanceAgenticTableAgenticParam{
-					Scope:  reducto.F(reducto.EnhanceAgenticTableAgenticScopeTable),
+				Agentic: reducto.F([]reducto.EnhanceAgenticUnionParam{shared.TableAgenticParam{
+					Scope:  reducto.F(shared.TableAgenticScopeTable),
 					Prompt: reducto.F("prompt"),
 				}}),
 				IntelligentOrdering: reducto.F(true),
@@ -45,8 +45,8 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 				TableOutputFormat: reducto.F(reducto.FormattingTableOutputFormatHTML),
 			}),
 			Retrieval: reducto.F(reducto.RetrievalParam{
-				Chunking: reducto.F(reducto.RetrievalChunkingParam{
-					ChunkMode:    reducto.F(reducto.RetrievalChunkingChunkModeVariable),
+				Chunking: reducto.F(shared.ChunkingParam{
+					ChunkMode:    reducto.F(shared.ChunkingChunkModeVariable),
 					ChunkOverlap: reducto.F(int64(0)),
 					ChunkSize:    reducto.F(int64(0)),
 				}),
@@ -73,9 +73,9 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 				Clustering: reducto.F(reducto.SpreadsheetClusteringAccurate),
 				Exclude:    reducto.F([]reducto.SpreadsheetExclude{reducto.SpreadsheetExcludeHiddenSheets}),
 				Include:    reducto.F([]reducto.SpreadsheetInclude{reducto.SpreadsheetIncludeCellColors}),
-				SplitLargeTables: reducto.F(reducto.SpreadsheetSplitLargeTablesParam{
+				SplitLargeTables: reducto.F(shared.SplitLargeTablesParam{
 					Enabled: reducto.F(true),
-					Size:    reducto.F[reducto.SpreadsheetSplitLargeTablesSizeUnionParam](shared.UnionInt(int64(0))),
+					Size:    reducto.F[shared.SplitLargeTablesSizeUnionParam](shared.UnionInt(int64(0))),
 				}),
 			}),
 		},
@@ -108,14 +108,14 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 			Async: reducto.F(reducto.AsyncConfigV3Param{
 				Metadata: reducto.F[any](map[string]interface{}{}),
 				Priority: reducto.F(true),
-				Webhook: reducto.F[reducto.AsyncConfigV3WebhookUnionParam](reducto.AsyncConfigV3WebhookSvixWebhookConfigParam{
+				Webhook: reducto.F[reducto.AsyncConfigV3WebhookUnionParam](shared.SvixWebhookConfigParam{
 					Channels: reducto.F([]string{"string"}),
-					Mode:     reducto.F(reducto.AsyncConfigV3WebhookSvixWebhookConfigModeSvix),
+					Mode:     reducto.F(shared.SvixWebhookConfigModeSvix),
 				}),
 			}),
 			Enhance: reducto.F(reducto.EnhanceParam{
-				Agentic: reducto.F([]reducto.EnhanceAgenticUnionParam{reducto.EnhanceAgenticTableAgenticParam{
-					Scope:  reducto.F(reducto.EnhanceAgenticTableAgenticScopeTable),
+				Agentic: reducto.F([]reducto.EnhanceAgenticUnionParam{shared.TableAgenticParam{
+					Scope:  reducto.F(shared.TableAgenticScopeTable),
 					Prompt: reducto.F("prompt"),
 				}}),
 				IntelligentOrdering: reducto.F(true),
@@ -129,8 +129,8 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 			}),
 			QueuePriority: reducto.F(reducto.AsyncParseConfigQueuePriorityAuto),
 			Retrieval: reducto.F(reducto.RetrievalParam{
-				Chunking: reducto.F(reducto.RetrievalChunkingParam{
-					ChunkMode:    reducto.F(reducto.RetrievalChunkingChunkModeVariable),
+				Chunking: reducto.F(shared.ChunkingParam{
+					ChunkMode:    reducto.F(shared.ChunkingChunkModeVariable),
 					ChunkOverlap: reducto.F(int64(0)),
 					ChunkSize:    reducto.F(int64(0)),
 				}),
@@ -157,9 +157,9 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 				Clustering: reducto.F(reducto.SpreadsheetClusteringAccurate),
 				Exclude:    reducto.F([]reducto.SpreadsheetExclude{reducto.SpreadsheetExcludeHiddenSheets}),
 				Include:    reducto.F([]reducto.SpreadsheetInclude{reducto.SpreadsheetIncludeCellColors}),
-				SplitLargeTables: reducto.F(reducto.SpreadsheetSplitLargeTablesParam{
+				SplitLargeTables: reducto.F(shared.SplitLargeTablesParam{
 					Enabled: reducto.F(true),
-					Size:    reducto.F[reducto.SpreadsheetSplitLargeTablesSizeUnionParam](shared.UnionInt(int64(0))),
+					Size:    reducto.F[shared.SplitLargeTablesSizeUnionParam](shared.UnionInt(int64(0))),
 				}),
 			}),
 		},

@@ -18,4 +18,4 @@ func (UnionString) ImplementsClassifyRunParamsInputUnion()                     {
 
 type UnionInt int64
 
-func (UnionInt) ImplementsSpreadsheetSplitLargeTablesSizeUnionParam() {}
+func (UnionInt) ImplementsSplitLargeTablesSizeUnionParam() {}

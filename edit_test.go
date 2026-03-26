@@ -102,10 +102,10 @@ func TestEditRunJobWithOptionalParams(t *testing.T) {
 			Value:       reducto.F("value"),
 		}}),
 		Priority: reducto.F(true),
-		Webhook: reducto.F(reducto.EditRunJobParamsWebhook{
+		Webhook: reducto.F(shared.WebhookConfigNewParam{
 			Channels: reducto.F([]string{"string"}),
 			Metadata: reducto.F[any](map[string]interface{}{}),
-			Mode:     reducto.F(reducto.EditRunJobParamsWebhookModeDisabled),
+			Mode:     reducto.F(shared.WebhookConfigNewModeDisabled),
 			URL:      reducto.F("url"),
 		}),
 	})

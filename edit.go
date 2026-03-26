@@ -11,6 +11,7 @@ import (
 	"github.com/reductoai/reducto-go-sdk/internal/param"
 	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
 	"github.com/reductoai/reducto-go-sdk/option"
+	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 // EditService contains methods and other services that help with interacting with
@@ -33,7 +34,7 @@ func NewEditService(opts ...option.RequestOption) (r *EditService) {
 }
 
 // Edit
-func (r *EditService) Run(ctx context.Context, body EditRunParams, opts ...option.RequestOption) (res *EditResponse, err error) {
+func (r *EditService) Run(ctx context.Context, body EditRunParams, opts ...option.RequestOption) (res *shared.EditResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "edit"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -41,7 +42,7 @@ func (r *EditService) Run(ctx context.Context, body EditRunParams, opts ...optio
 }
 
 // Edit Async
-func (r *EditService) RunJob(ctx context.Context, body EditRunJobParams, opts ...option.RequestOption) (res *EditRunJobResponse, err error) {
+func (r *EditService) RunJob(ctx context.Context, body EditRunJobParams, opts ...option.RequestOption) (res *shared.AsyncEditResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "edit_async"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -134,39 +135,6 @@ func (r EditOptionsLlmProviderPreference) IsKnown() bool {
 	return false
 }
 
-type EditResponse struct {
-	// Presigned URL to download the edited document.
-	DocumentURL string `json:"document_url" api:"required"`
-	// Form schema for PDF forms. List of widgets with their types, descriptions, and
-	// bounding boxes.
-	FormSchema []EditWidget `json:"form_schema" api:"nullable"`
-	// Usage information for the edit operation, including number of pages and credits
-	// charged.
-	Usage ParseUsage       `json:"usage" api:"nullable"`
-	JSON  editResponseJSON `json:"-"`
-}
-
-// editResponseJSON contains the JSON metadata for the struct [EditResponse]
-type editResponseJSON struct {
-	DocumentURL apijson.Field
-	FormSchema  apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *EditResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r editResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r EditResponse) implementsJobGetResponseAsyncJobResponseResult() {}
-
-func (r EditResponse) implementsJobGetResponseEnhancedAsyncJobResponseResult() {}
-
 type EditWidget struct {
 	// Bounding box coordinates of the widget
 	Bbox BoundingBox `json:"bbox" api:"required"`
@@ -249,27 +217,6 @@ func (r EditWidgetParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type EditRunJobResponse struct {
-	JobID string                 `json:"job_id" api:"required"`
-	JSON  editRunJobResponseJSON `json:"-"`
-}
-
-// editRunJobResponseJSON contains the JSON metadata for the struct
-// [EditRunJobResponse]
-type editRunJobResponseJSON struct {
-	JobID       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *EditRunJobResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r editRunJobResponseJSON) RawJSON() string {
-	return r.raw
-}
-
 type EditRunParams struct {
 	// The URL of the document to be processed. You can provide one of the following:
 	//
@@ -323,8 +270,8 @@ type EditRunJobParams struct {
 	// If True, attempts to process the job with priority if the user has priority
 	// processing budget available; by default, sync jobs are prioritized above async
 	// jobs.
-	Priority param.Field[bool]                    `json:"priority"`
-	Webhook  param.Field[EditRunJobParamsWebhook] `json:"webhook"`
+	Priority param.Field[bool]                         `json:"priority"`
+	Webhook  param.Field[shared.WebhookConfigNewParam] `json:"webhook"`
 }
 
 func (r EditRunJobParams) MarshalJSON() (data []byte, err error) {
@@ -341,39 +288,4 @@ func (r EditRunJobParams) MarshalJSON() (data []byte, err error) {
 // Satisfied by [shared.UnionString], [shared.UploadParam].
 type EditRunJobParamsDocumentURLUnion interface {
 	ImplementsEditRunJobParamsDocumentURLUnion()
-}
-
-type EditRunJobParamsWebhook struct {
-	// A list of Svix channels the message will be delivered down, omit to send to all
-	// channels.
-	Channels param.Field[[]string] `json:"channels"`
-	// JSON metadata included in webhook request body
-	Metadata param.Field[interface{}] `json:"metadata"`
-	// The mode to use for webhook delivery. Defaults to 'disabled'. We recommend using
-	// 'svix' for production environments.
-	Mode param.Field[EditRunJobParamsWebhookMode] `json:"mode"`
-	// The URL to send the webhook to (if using direct webhoook).
-	URL param.Field[string] `json:"url"`
-}
-
-func (r EditRunJobParamsWebhook) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The mode to use for webhook delivery. Defaults to 'disabled'. We recommend using
-// 'svix' for production environments.
-type EditRunJobParamsWebhookMode string
-
-const (
-	EditRunJobParamsWebhookModeDisabled EditRunJobParamsWebhookMode = "disabled"
-	EditRunJobParamsWebhookModeSvix     EditRunJobParamsWebhookMode = "svix"
-	EditRunJobParamsWebhookModeDirect   EditRunJobParamsWebhookMode = "direct"
-)
-
-func (r EditRunJobParamsWebhookMode) IsKnown() bool {
-	switch r {
-	case EditRunJobParamsWebhookModeDisabled, EditRunJobParamsWebhookModeSvix, EditRunJobParamsWebhookModeDirect:
-		return true
-	}
-	return false
 }
