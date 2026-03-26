@@ -12,6 +12,7 @@ import (
 	"github.com/reductoai/reducto-go-sdk/internal/param"
 	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
 	"github.com/reductoai/reducto-go-sdk/option"
+	"github.com/reductoai/reducto-go-sdk/shared"
 	"github.com/tidwall/gjson"
 )
 
@@ -43,7 +44,7 @@ func (r *ExtractService) Run(ctx context.Context, body ExtractRunParams, opts ..
 }
 
 // Extract Async
-func (r *ExtractService) RunJob(ctx context.Context, body ExtractRunJobParams, opts ...option.RequestOption) (res *AsyncExtractResponse, err error) {
+func (r *ExtractService) RunJob(ctx context.Context, body ExtractRunJobParams, opts ...option.RequestOption) (res *shared.AsyncExtractResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "extract_async"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -95,29 +96,6 @@ type AsyncExtractConfigInputUnionParam interface {
 type AsyncExtractConfigInputArrayParam []string
 
 func (r AsyncExtractConfigInputArrayParam) ImplementsAsyncExtractConfigInputUnionParam() {}
-
-type AsyncExtractResponse struct {
-	JobID string                   `json:"job_id" api:"required"`
-	JSON  asyncExtractResponseJSON `json:"-"`
-}
-
-// asyncExtractResponseJSON contains the JSON metadata for the struct
-// [AsyncExtractResponse]
-type asyncExtractResponseJSON struct {
-	JobID       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AsyncExtractResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r asyncExtractResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AsyncExtractResponse) implementsExtractRunResponse() {}
 
 type ExtractSettingsParam struct {
 	// If True, use array extraction.
@@ -245,15 +223,15 @@ func (r v3ExtractJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r V3Extract) implementsExtractRunResponse() {}
+func (r V3Extract) ImplementsPipelineResponseResultExtractUnion() {}
 
-func (r V3Extract) implementsPipelineResponseResultExtractUnion() {}
+func (r V3Extract) ImplementsPipelineResponseResultExtractExtractVariant0Result() {}
 
-func (r V3Extract) implementsPipelineResponseResultExtractExtractVariant0Result() {}
+func (r V3Extract) ImplementsExtractRunResponse() {}
 
-func (r V3Extract) implementsJobGetResponseAsyncJobResponseResult() {}
+func (r V3Extract) ImplementsJobGetResponseAsyncJobResponseResult() {}
 
-func (r V3Extract) implementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+func (r V3Extract) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
 
 type ExtractRunResponse struct {
 	JobID string `json:"job_id" api:"nullable"`
@@ -293,14 +271,15 @@ func (r *ExtractRunResponse) UnmarshalJSON(data []byte) (err error) {
 // AsUnion returns a [ExtractRunResponseUnion] interface which you can cast to the
 // specific types for more type safety.
 //
-// Possible runtime types of the union are [V3Extract], [AsyncExtractResponse].
+// Possible runtime types of the union are [V3Extract],
+// [shared.AsyncExtractResponse].
 func (r ExtractRunResponse) AsUnion() ExtractRunResponseUnion {
 	return r.union
 }
 
-// Union satisfied by [V3Extract] or [AsyncExtractResponse].
+// Union satisfied by [V3Extract] or [shared.AsyncExtractResponse].
 type ExtractRunResponseUnion interface {
-	implementsExtractRunResponse()
+	ImplementsExtractRunResponse()
 }
 
 func init() {
@@ -313,7 +292,7 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AsyncExtractResponse{}),
+			Type:       reflect.TypeOf(shared.AsyncExtractResponse{}),
 		},
 	)
 }

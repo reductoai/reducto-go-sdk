@@ -5,14 +5,13 @@ package reducto
 import (
 	"context"
 	"net/http"
-	"reflect"
 	"slices"
 
 	"github.com/reductoai/reducto-go-sdk/internal/apijson"
 	"github.com/reductoai/reducto-go-sdk/internal/param"
 	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
 	"github.com/reductoai/reducto-go-sdk/option"
-	"github.com/tidwall/gjson"
+	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 // SplitService contains methods and other services that help with interacting with
@@ -35,7 +34,7 @@ func NewSplitService(opts ...option.RequestOption) (r *SplitService) {
 }
 
 // Split
-func (r *SplitService) Run(ctx context.Context, body SplitRunParams, opts ...option.RequestOption) (res *SplitResponse, err error) {
+func (r *SplitService) Run(ctx context.Context, body SplitRunParams, opts ...option.RequestOption) (res *shared.SplitResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "split"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -43,7 +42,7 @@ func (r *SplitService) Run(ctx context.Context, body SplitRunParams, opts ...opt
 }
 
 // Split Async
-func (r *SplitService) RunJob(ctx context.Context, body SplitRunJobParams, opts ...option.RequestOption) (res *SplitRunJobResponse, err error) {
+func (r *SplitService) RunJob(ctx context.Context, body SplitRunJobParams, opts ...option.RequestOption) (res *shared.AsyncSplitResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "split_async"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -125,276 +124,6 @@ func (r SplitCategoryParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type SplitResponse struct {
-	// The split result.
-	Result SplitResponseResult `json:"result" api:"required"`
-	Usage  ParseUsage          `json:"usage" api:"required"`
-	JSON   splitResponseJSON   `json:"-"`
-}
-
-// splitResponseJSON contains the JSON metadata for the struct [SplitResponse]
-type splitResponseJSON struct {
-	Result      apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SplitResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r splitResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r SplitResponse) implementsJobGetResponseAsyncJobResponseResult() {}
-
-func (r SplitResponse) implementsJobGetResponseEnhancedAsyncJobResponseResult() {}
-
-// The split result.
-type SplitResponseResult struct {
-	// This field can have the runtime type of [[]SplitResponseResultSplitResultSplit],
-	// [[]SplitResponseResultDeepSplitResultSplit].
-	Splits interface{} `json:"splits" api:"required"`
-	// This field can have the runtime type of [map[string][]int64].
-	SectionMapping interface{}             `json:"section_mapping"`
-	JSON           splitResponseResultJSON `json:"-"`
-	union          SplitResponseResultUnion
-}
-
-// splitResponseResultJSON contains the JSON metadata for the struct
-// [SplitResponseResult]
-type splitResponseResultJSON struct {
-	Splits         apijson.Field
-	SectionMapping apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
-}
-
-func (r splitResponseResultJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *SplitResponseResult) UnmarshalJSON(data []byte) (err error) {
-	*r = SplitResponseResult{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a [SplitResponseResultUnion] interface which you can cast to the
-// specific types for more type safety.
-//
-// Possible runtime types of the union are [SplitResponseResultSplitResult],
-// [SplitResponseResultDeepSplitResult].
-func (r SplitResponseResult) AsUnion() SplitResponseResultUnion {
-	return r.union
-}
-
-// The split result.
-//
-// Union satisfied by [SplitResponseResultSplitResult] or
-// [SplitResponseResultDeepSplitResult].
-type SplitResponseResultUnion interface {
-	implementsSplitResponseResult()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*SplitResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(SplitResponseResultSplitResult{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(SplitResponseResultDeepSplitResult{}),
-		},
-	)
-}
-
-type SplitResponseResultSplitResult struct {
-	SectionMapping map[string][]int64                    `json:"section_mapping" api:"required,nullable"`
-	Splits         []SplitResponseResultSplitResultSplit `json:"splits" api:"required"`
-	JSON           splitResponseResultSplitResultJSON    `json:"-"`
-}
-
-// splitResponseResultSplitResultJSON contains the JSON metadata for the struct
-// [SplitResponseResultSplitResult]
-type splitResponseResultSplitResultJSON struct {
-	SectionMapping apijson.Field
-	Splits         apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
-}
-
-func (r *SplitResponseResultSplitResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r splitResponseResultSplitResultJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r SplitResponseResultSplitResult) implementsSplitResponseResult() {}
-
-type SplitResponseResultSplitResultSplit struct {
-	Name       string                                          `json:"name" api:"required"`
-	Pages      []int64                                         `json:"pages" api:"required"`
-	Conf       SplitResponseResultSplitResultSplitsConf        `json:"conf"`
-	Partitions []SplitResponseResultSplitResultSplitsPartition `json:"partitions" api:"nullable"`
-	JSON       splitResponseResultSplitResultSplitJSON         `json:"-"`
-}
-
-// splitResponseResultSplitResultSplitJSON contains the JSON metadata for the
-// struct [SplitResponseResultSplitResultSplit]
-type splitResponseResultSplitResultSplitJSON struct {
-	Name        apijson.Field
-	Pages       apijson.Field
-	Conf        apijson.Field
-	Partitions  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SplitResponseResultSplitResultSplit) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r splitResponseResultSplitResultSplitJSON) RawJSON() string {
-	return r.raw
-}
-
-type SplitResponseResultSplitResultSplitsConf string
-
-const (
-	SplitResponseResultSplitResultSplitsConfHigh SplitResponseResultSplitResultSplitsConf = "high"
-	SplitResponseResultSplitResultSplitsConfLow  SplitResponseResultSplitResultSplitsConf = "low"
-)
-
-func (r SplitResponseResultSplitResultSplitsConf) IsKnown() bool {
-	switch r {
-	case SplitResponseResultSplitResultSplitsConfHigh, SplitResponseResultSplitResultSplitsConfLow:
-		return true
-	}
-	return false
-}
-
-type SplitResponseResultSplitResultSplitsPartition struct {
-	Name  string                                             `json:"name" api:"required"`
-	Pages []int64                                            `json:"pages" api:"required"`
-	Conf  SplitResponseResultSplitResultSplitsPartitionsConf `json:"conf"`
-	JSON  splitResponseResultSplitResultSplitsPartitionJSON  `json:"-"`
-}
-
-// splitResponseResultSplitResultSplitsPartitionJSON contains the JSON metadata for
-// the struct [SplitResponseResultSplitResultSplitsPartition]
-type splitResponseResultSplitResultSplitsPartitionJSON struct {
-	Name        apijson.Field
-	Pages       apijson.Field
-	Conf        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SplitResponseResultSplitResultSplitsPartition) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r splitResponseResultSplitResultSplitsPartitionJSON) RawJSON() string {
-	return r.raw
-}
-
-type SplitResponseResultSplitResultSplitsPartitionsConf string
-
-const (
-	SplitResponseResultSplitResultSplitsPartitionsConfHigh SplitResponseResultSplitResultSplitsPartitionsConf = "high"
-	SplitResponseResultSplitResultSplitsPartitionsConfLow  SplitResponseResultSplitResultSplitsPartitionsConf = "low"
-)
-
-func (r SplitResponseResultSplitResultSplitsPartitionsConf) IsKnown() bool {
-	switch r {
-	case SplitResponseResultSplitResultSplitsPartitionsConfHigh, SplitResponseResultSplitResultSplitsPartitionsConfLow:
-		return true
-	}
-	return false
-}
-
-type SplitResponseResultDeepSplitResult struct {
-	Splits []SplitResponseResultDeepSplitResultSplit `json:"splits" api:"required"`
-	JSON   splitResponseResultDeepSplitResultJSON    `json:"-"`
-}
-
-// splitResponseResultDeepSplitResultJSON contains the JSON metadata for the struct
-// [SplitResponseResultDeepSplitResult]
-type splitResponseResultDeepSplitResultJSON struct {
-	Splits      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SplitResponseResultDeepSplitResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r splitResponseResultDeepSplitResultJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r SplitResponseResultDeepSplitResult) implementsSplitResponseResult() {}
-
-type SplitResponseResultDeepSplitResultSplit struct {
-	Name       string                                              `json:"name" api:"required"`
-	Pages      []DeepSplitPageEvidence                             `json:"pages" api:"required"`
-	Partitions []SplitResponseResultDeepSplitResultSplitsPartition `json:"partitions" api:"nullable"`
-	JSON       splitResponseResultDeepSplitResultSplitJSON         `json:"-"`
-}
-
-// splitResponseResultDeepSplitResultSplitJSON contains the JSON metadata for the
-// struct [SplitResponseResultDeepSplitResultSplit]
-type splitResponseResultDeepSplitResultSplitJSON struct {
-	Name        apijson.Field
-	Pages       apijson.Field
-	Partitions  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SplitResponseResultDeepSplitResultSplit) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r splitResponseResultDeepSplitResultSplitJSON) RawJSON() string {
-	return r.raw
-}
-
-type SplitResponseResultDeepSplitResultSplitsPartition struct {
-	Name  string                                                `json:"name" api:"required"`
-	Pages []DeepSplitPageEvidence                               `json:"pages" api:"required"`
-	JSON  splitResponseResultDeepSplitResultSplitsPartitionJSON `json:"-"`
-}
-
-// splitResponseResultDeepSplitResultSplitsPartitionJSON contains the JSON metadata
-// for the struct [SplitResponseResultDeepSplitResultSplitsPartition]
-type splitResponseResultDeepSplitResultSplitsPartitionJSON struct {
-	Name        apijson.Field
-	Pages       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SplitResponseResultDeepSplitResultSplitsPartition) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r splitResponseResultDeepSplitResultSplitsPartitionJSON) RawJSON() string {
-	return r.raw
-}
-
 type SplitTableOptionsParam struct {
 	// If tables should be truncated to the first few rows or if all content should be
 	// preserved. truncate improves latency, preserve is recommended for cases where
@@ -424,27 +153,6 @@ func (r SplitTableOptionsTableCutoff) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type SplitRunJobResponse struct {
-	JobID string                  `json:"job_id" api:"required"`
-	JSON  splitRunJobResponseJSON `json:"-"`
-}
-
-// splitRunJobResponseJSON contains the JSON metadata for the struct
-// [SplitRunJobResponse]
-type splitRunJobResponseJSON struct {
-	JobID       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SplitRunJobResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r splitRunJobResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type SplitRunParams struct {

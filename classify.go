@@ -11,6 +11,7 @@ import (
 	"github.com/reductoai/reducto-go-sdk/internal/param"
 	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
 	"github.com/reductoai/reducto-go-sdk/option"
+	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
 // ClassifyService contains methods and other services that help with interacting
@@ -33,154 +34,11 @@ func NewClassifyService(opts ...option.RequestOption) (r *ClassifyService) {
 }
 
 // Classify
-func (r *ClassifyService) Run(ctx context.Context, body ClassifyRunParams, opts ...option.RequestOption) (res *ClassifyResponse, err error) {
+func (r *ClassifyService) Run(ctx context.Context, body ClassifyRunParams, opts ...option.RequestOption) (res *shared.ClassifyResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "classify"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
-}
-
-// Response from classify job - returned when polling /job/{job_id}
-type ClassifyResponse struct {
-	JobID  string                 `json:"job_id" api:"required"`
-	Result ClassifyResponseResult `json:"result" api:"required"`
-	// The duration of the classify request in seconds.
-	Duration float64 `json:"duration" api:"nullable"`
-	// Overall confidence breakdown for classification response.
-	ResponseConfidence ClassifyResponseResponseConfidence `json:"response_confidence" api:"nullable"`
-	JSON               classifyResponseJSON               `json:"-"`
-}
-
-// classifyResponseJSON contains the JSON metadata for the struct
-// [ClassifyResponse]
-type classifyResponseJSON struct {
-	JobID              apijson.Field
-	Result             apijson.Field
-	Duration           apijson.Field
-	ResponseConfidence apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *ClassifyResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r classifyResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ClassifyResponse) implementsJobGetResponseAsyncJobResponseResult() {}
-
-func (r ClassifyResponse) implementsJobGetResponseEnhancedAsyncJobResponseResult() {}
-
-type ClassifyResponseResult struct {
-	Category string                     `json:"category" api:"required"`
-	JSON     classifyResponseResultJSON `json:"-"`
-}
-
-// classifyResponseResultJSON contains the JSON metadata for the struct
-// [ClassifyResponseResult]
-type classifyResponseResultJSON struct {
-	Category    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ClassifyResponseResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r classifyResponseResultJSON) RawJSON() string {
-	return r.raw
-}
-
-// Overall confidence breakdown for classification response.
-type ClassifyResponseResponseConfidence struct {
-	Categories []ClassifyResponseResponseConfidenceCategory `json:"categories" api:"required"`
-	JSON       classifyResponseResponseConfidenceJSON       `json:"-"`
-}
-
-// classifyResponseResponseConfidenceJSON contains the JSON metadata for the struct
-// [ClassifyResponseResponseConfidence]
-type classifyResponseResponseConfidenceJSON struct {
-	Categories  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ClassifyResponseResponseConfidence) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r classifyResponseResponseConfidenceJSON) RawJSON() string {
-	return r.raw
-}
-
-// Confidence result for a category.
-type ClassifyResponseResponseConfidenceCategory struct {
-	Category           string                                                           `json:"category" api:"required"`
-	Confidence         float64                                                          `json:"confidence" api:"required"`
-	CriteriaConfidence []ClassifyResponseResponseConfidenceCategoriesCriteriaConfidence `json:"criteria_confidence" api:"required"`
-	JSON               classifyResponseResponseConfidenceCategoryJSON                   `json:"-"`
-}
-
-// classifyResponseResponseConfidenceCategoryJSON contains the JSON metadata for
-// the struct [ClassifyResponseResponseConfidenceCategory]
-type classifyResponseResponseConfidenceCategoryJSON struct {
-	Category           apijson.Field
-	Confidence         apijson.Field
-	CriteriaConfidence apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r *ClassifyResponseResponseConfidenceCategory) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r classifyResponseResponseConfidenceCategoryJSON) RawJSON() string {
-	return r.raw
-}
-
-// Confidence result for a single criterion.
-type ClassifyResponseResponseConfidenceCategoriesCriteriaConfidence struct {
-	Confidence ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence `json:"confidence" api:"required"`
-	Criterion  string                                                                   `json:"criterion" api:"required"`
-	JSON       classifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON       `json:"-"`
-}
-
-// classifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON contains the
-// JSON metadata for the struct
-// [ClassifyResponseResponseConfidenceCategoriesCriteriaConfidence]
-type classifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON struct {
-	Confidence  apijson.Field
-	Criterion   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ClassifyResponseResponseConfidenceCategoriesCriteriaConfidence) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r classifyResponseResponseConfidenceCategoriesCriteriaConfidenceJSON) RawJSON() string {
-	return r.raw
-}
-
-type ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence string
-
-const (
-	ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceHigh ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence = "high"
-	ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceLow  ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence = "low"
-)
-
-func (r ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence) IsKnown() bool {
-	switch r {
-	case ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceHigh, ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceLow:
-		return true
-	}
-	return false
 }
 
 type PageRangeParam struct {

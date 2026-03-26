@@ -62,9 +62,9 @@ func TestPipelineRunJobWithOptionalParams(t *testing.T) {
 		Async: reducto.F(reducto.AsyncConfigV3Param{
 			Metadata: reducto.F[any](map[string]interface{}{}),
 			Priority: reducto.F(true),
-			Webhook: reducto.F[reducto.AsyncConfigV3WebhookUnionParam](reducto.AsyncConfigV3WebhookSvixWebhookConfigParam{
+			Webhook: reducto.F[reducto.AsyncConfigV3WebhookUnionParam](shared.SvixWebhookConfigParam{
 				Channels: reducto.F([]string{"string"}),
-				Mode:     reducto.F(reducto.AsyncConfigV3WebhookSvixWebhookConfigModeSvix),
+				Mode:     reducto.F(shared.SvixWebhookConfigModeSvix),
 			}),
 		}),
 		Settings: reducto.F(reducto.PipelineSettingsParam{
