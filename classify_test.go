@@ -34,7 +34,7 @@ func TestClassifyRunWithOptionalParams(t *testing.T) {
 			Criteria: reducto.F([]string{"string"}),
 		}}),
 		DocumentMetadata: reducto.F("document_metadata"),
-		PageRange: reducto.F[reducto.ClassifyRunParamsPageRangeUnion](reducto.PageRangeParam{
+		PageRange: reducto.F[reducto.ClassifyRunParamsPageRangeUnion](shared.PageRangeParam{
 			End:   reducto.F(int64(0)),
 			Start: reducto.F(int64(0)),
 		}),

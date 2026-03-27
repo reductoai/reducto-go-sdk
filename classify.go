@@ -41,21 +41,6 @@ func (r *ClassifyService) Run(ctx context.Context, body ClassifyRunParams, opts 
 	return res, err
 }
 
-type PageRangeParam struct {
-	// The page number to stop processing at (1-indexed).
-	End param.Field[int64] `json:"end"`
-	// The page number to start processing from (1-indexed).
-	Start param.Field[int64] `json:"start"`
-}
-
-func (r PageRangeParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r PageRangeParam) implementsSettingsPageRangeUnionParam() {}
-
-func (r PageRangeParam) implementsClassifyRunParamsPageRangeUnion() {}
-
 type ClassifyRunParams struct {
 	// For parse/split/extract pipelines, the URL of the document to be processed. You
 	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
@@ -120,12 +105,12 @@ func (r ClassifyRunParamsClassificationSchema) MarshalJSON() (data []byte, err e
 // If more than 25 pages are selected, only the first 25 (after sorting) are used.
 // Only applies to PDFs; ignored for other document types.
 //
-// Satisfied by [PageRangeParam], [ClassifyRunParamsPageRangeArray],
+// Satisfied by [shared.PageRangeParam], [ClassifyRunParamsPageRangeArray],
 // [ClassifyRunParamsPageRangeArray].
 type ClassifyRunParamsPageRangeUnion interface {
-	implementsClassifyRunParamsPageRangeUnion()
+	ImplementsClassifyRunParamsPageRangeUnion()
 }
 
-type ClassifyRunParamsPageRangeArray []PageRangeParam
+type ClassifyRunParamsPageRangeArray []shared.PageRangeParam
 
-func (r ClassifyRunParamsPageRangeArray) implementsClassifyRunParamsPageRangeUnion() {}
+func (r ClassifyRunParamsPageRangeArray) ImplementsClassifyRunParamsPageRangeUnion() {}

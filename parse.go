@@ -389,15 +389,15 @@ func (r SettingsOcrSystem) IsKnown() bool {
 // The page range to process (1-indexed). By default, the entire document is
 // processed. For spreadsheets, you can also provide a list of sheet names.
 //
-// Satisfied by [PageRangeParam], [SettingsPageRangeArrayParam],
+// Satisfied by [shared.PageRangeParam], [SettingsPageRangeArrayParam],
 // [SettingsPageRangeArrayParam], [SettingsPageRangeArrayParam].
 type SettingsPageRangeUnionParam interface {
-	implementsSettingsPageRangeUnionParam()
+	ImplementsSettingsPageRangeUnionParam()
 }
 
-type SettingsPageRangeArrayParam []PageRangeParam
+type SettingsPageRangeArrayParam []shared.PageRangeParam
 
-func (r SettingsPageRangeArrayParam) implementsSettingsPageRangeUnionParam() {}
+func (r SettingsPageRangeArrayParam) ImplementsSettingsPageRangeUnionParam() {}
 
 type SettingsReturnImage string
 

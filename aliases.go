@@ -110,6 +110,9 @@ type FigureAgenticScope = shared.FigureAgenticScope
 const FigureAgenticScopeFigure = shared.FigureAgenticScopeFigure
 
 // This is an alias to an internal type.
+type PageRangeParam = shared.PageRangeParam
+
+// This is an alias to an internal type.
 type ParseResponse = shared.ParseResponse
 
 // The response from the document processing service. Note that there can be two
