@@ -225,7 +225,7 @@ func (r v3ExtractJSON) RawJSON() string {
 
 func (r V3Extract) ImplementsPipelineResponseResultExtractUnion() {}
 
-func (r V3Extract) ImplementsPipelineResponseResultExtractExtractVariant0Result() {}
+func (r V3Extract) ImplementsPipelineResponseResultExtractArrayResult() {}
 
 func (r V3Extract) ImplementsExtractRunResponse() {}
 
