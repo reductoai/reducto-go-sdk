@@ -227,15 +227,15 @@ type PipelineResponseResult = shared.PipelineResponseResult
 type PipelineResponseResultExtractUnion = shared.PipelineResponseResultExtractUnion
 
 // This is an alias to an internal type.
-type PipelineResponseResultExtractExtractVariant0 = shared.PipelineResponseResultExtractExtractVariant0
+type PipelineResponseResultExtractArray = shared.PipelineResponseResultExtractArray
 
 // This is the response format for Extract -> Split Pipelines
 //
 // This is an alias to an internal type.
-type PipelineResponseResultExtractExtractVariant0Item = shared.PipelineResponseResultExtractExtractVariant0Item
+type PipelineResponseResultExtractArrayItem = shared.PipelineResponseResultExtractArrayItem
 
 // This is an alias to an internal type.
-type PipelineResponseResultExtractExtractVariant0Result = shared.PipelineResponseResultExtractExtractVariant0Result
+type PipelineResponseResultExtractArrayResult = shared.PipelineResponseResultExtractArrayResult
 
 // This is an alias to an internal type.
 type PipelineResponseResultParseUnion = shared.PipelineResponseResultParseUnion

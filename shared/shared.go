@@ -396,7 +396,7 @@ func (r extractResponseJSON) RawJSON() string {
 
 func (r ExtractResponse) ImplementsPipelineResponseResultExtractUnion() {}
 
-func (r ExtractResponse) ImplementsPipelineResponseResultExtractExtractVariant0Result() {}
+func (r ExtractResponse) ImplementsPipelineResponseResultExtractArrayResult() {}
 
 func (r ExtractResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
 
@@ -942,8 +942,8 @@ func (r pipelineResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
-// Union satisfied by [PipelineResponseResultExtractExtractVariant0],
-// [ExtractResponse] or [reducto.V3Extract].
+// Union satisfied by [PipelineResponseResultExtractArray], [ExtractResponse] or
+// [reducto.V3Extract].
 type PipelineResponseResultExtractUnion interface {
 	ImplementsPipelineResponseResultExtractUnion()
 }
@@ -954,7 +954,7 @@ func init() {
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(PipelineResponseResultExtractExtractVariant0{}),
+			Type:       reflect.TypeOf(PipelineResponseResultExtractArray{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
@@ -967,23 +967,22 @@ func init() {
 	)
 }
 
-type PipelineResponseResultExtractExtractVariant0 []PipelineResponseResultExtractExtractVariant0Item
+type PipelineResponseResultExtractArray []PipelineResponseResultExtractArrayItem
 
-func (r PipelineResponseResultExtractExtractVariant0) ImplementsPipelineResponseResultExtractUnion() {
-}
+func (r PipelineResponseResultExtractArray) ImplementsPipelineResponseResultExtractUnion() {}
 
 // This is the response format for Extract -> Split Pipelines
-type PipelineResponseResultExtractExtractVariant0Item struct {
-	PageRange []int64                                              `json:"page_range" api:"required"`
-	Result    PipelineResponseResultExtractExtractVariant0Result   `json:"result" api:"required"`
-	SplitName string                                               `json:"split_name" api:"required"`
-	Partition string                                               `json:"partition" api:"nullable"`
-	JSON      pipelineResponseResultExtractExtractVariant0ItemJSON `json:"-"`
+type PipelineResponseResultExtractArrayItem struct {
+	PageRange []int64                                    `json:"page_range" api:"required"`
+	Result    PipelineResponseResultExtractArrayResult   `json:"result" api:"required"`
+	SplitName string                                     `json:"split_name" api:"required"`
+	Partition string                                     `json:"partition" api:"nullable"`
+	JSON      pipelineResponseResultExtractArrayItemJSON `json:"-"`
 }
 
-// pipelineResponseResultExtractExtractVariant0ItemJSON contains the JSON metadata
-// for the struct [PipelineResponseResultExtractExtractVariant0Item]
-type pipelineResponseResultExtractExtractVariant0ItemJSON struct {
+// pipelineResponseResultExtractArrayItemJSON contains the JSON metadata for the
+// struct [PipelineResponseResultExtractArrayItem]
+type pipelineResponseResultExtractArrayItemJSON struct {
 	PageRange   apijson.Field
 	Result      apijson.Field
 	SplitName   apijson.Field
@@ -992,15 +991,15 @@ type pipelineResponseResultExtractExtractVariant0ItemJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *PipelineResponseResultExtractExtractVariant0Item) UnmarshalJSON(data []byte) (err error) {
+func (r *PipelineResponseResultExtractArrayItem) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r pipelineResponseResultExtractExtractVariant0ItemJSON) RawJSON() string {
+func (r pipelineResponseResultExtractArrayItemJSON) RawJSON() string {
 	return r.raw
 }
 
-type PipelineResponseResultExtractExtractVariant0Result struct {
+type PipelineResponseResultExtractArrayResult struct {
 	// This field can have the runtime type of [[]interface{}].
 	Result interface{}          `json:"result" api:"required"`
 	Usage  reducto.ExtractUsage `json:"usage" api:"required"`
@@ -1008,14 +1007,14 @@ type PipelineResponseResultExtractExtractVariant0Result struct {
 	Citations interface{} `json:"citations"`
 	JobID     string      `json:"job_id" api:"nullable"`
 	// The link to the studio pipeline for the document.
-	StudioLink string                                                 `json:"studio_link" api:"nullable"`
-	JSON       pipelineResponseResultExtractExtractVariant0ResultJSON `json:"-"`
-	union      PipelineResponseResultExtractExtractVariant0ResultUnion
+	StudioLink string                                       `json:"studio_link" api:"nullable"`
+	JSON       pipelineResponseResultExtractArrayResultJSON `json:"-"`
+	union      PipelineResponseResultExtractArrayResultUnion
 }
 
-// pipelineResponseResultExtractExtractVariant0ResultJSON contains the JSON
-// metadata for the struct [PipelineResponseResultExtractExtractVariant0Result]
-type pipelineResponseResultExtractExtractVariant0ResultJSON struct {
+// pipelineResponseResultExtractArrayResultJSON contains the JSON metadata for the
+// struct [PipelineResponseResultExtractArrayResult]
+type pipelineResponseResultExtractArrayResultJSON struct {
 	Result      apijson.Field
 	Usage       apijson.Field
 	Citations   apijson.Field
@@ -1025,12 +1024,12 @@ type pipelineResponseResultExtractExtractVariant0ResultJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r pipelineResponseResultExtractExtractVariant0ResultJSON) RawJSON() string {
+func (r pipelineResponseResultExtractArrayResultJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r *PipelineResponseResultExtractExtractVariant0Result) UnmarshalJSON(data []byte) (err error) {
-	*r = PipelineResponseResultExtractExtractVariant0Result{}
+func (r *PipelineResponseResultExtractArrayResult) UnmarshalJSON(data []byte) (err error) {
+	*r = PipelineResponseResultExtractArrayResult{}
 	err = apijson.UnmarshalRoot(data, &r.union)
 	if err != nil {
 		return err
@@ -1038,22 +1037,22 @@ func (r *PipelineResponseResultExtractExtractVariant0Result) UnmarshalJSON(data 
 	return apijson.Port(r.union, &r)
 }
 
-// AsUnion returns a [PipelineResponseResultExtractExtractVariant0ResultUnion]
-// interface which you can cast to the specific types for more type safety.
+// AsUnion returns a [PipelineResponseResultExtractArrayResultUnion] interface
+// which you can cast to the specific types for more type safety.
 //
 // Possible runtime types of the union are [ExtractResponse], [reducto.V3Extract].
-func (r PipelineResponseResultExtractExtractVariant0Result) AsUnion() PipelineResponseResultExtractExtractVariant0ResultUnion {
+func (r PipelineResponseResultExtractArrayResult) AsUnion() PipelineResponseResultExtractArrayResultUnion {
 	return r.union
 }
 
 // Union satisfied by [ExtractResponse] or [reducto.V3Extract].
-type PipelineResponseResultExtractExtractVariant0ResultUnion interface {
-	ImplementsPipelineResponseResultExtractExtractVariant0Result()
+type PipelineResponseResultExtractArrayResultUnion interface {
+	ImplementsPipelineResponseResultExtractArrayResult()
 }
 
 func init() {
 	apijson.RegisterUnion(
-		reflect.TypeOf((*PipelineResponseResultExtractExtractVariant0ResultUnion)(nil)).Elem(),
+		reflect.TypeOf((*PipelineResponseResultExtractArrayResultUnion)(nil)).Elem(),
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
