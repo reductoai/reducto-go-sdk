@@ -140,9 +140,9 @@ func (r *Client) APIVersion(ctx context.Context, opts ...option.RequestOption) (
 }
 
 // Upload
-func (r *Client) Upload(ctx context.Context, body UploadParams, opts ...option.RequestOption) (res *shared.Upload, err error) {
+func (r *Client) Upload(ctx context.Context, params UploadParams, opts ...option.RequestOption) (res *shared.Upload, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "upload"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }

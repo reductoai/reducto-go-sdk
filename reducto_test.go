@@ -51,6 +51,7 @@ func TestUploadWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Upload(context.TODO(), reducto.UploadParams{
 		Extension: reducto.F("extension"),
+		File:      reducto.F("file"),
 	})
 	if err != nil {
 		var apierr *reducto.Error
