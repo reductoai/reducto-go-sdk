@@ -60,7 +60,7 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 				ForceFileExtension: reducto.F("force_file_extension"),
 				ForceURLResult:     reducto.F(true),
 				OcrSystem:          reducto.F(reducto.SettingsOcrSystemStandard),
-				PageRange: reducto.F[reducto.SettingsPageRangeUnionParam](reducto.PageRangeParam{
+				PageRange: reducto.F[reducto.SettingsPageRangeUnionParam](shared.PageRangeParam{
 					End:   reducto.F(int64(0)),
 					Start: reducto.F(int64(0)),
 				}),
@@ -144,7 +144,7 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 				ForceFileExtension: reducto.F("force_file_extension"),
 				ForceURLResult:     reducto.F(true),
 				OcrSystem:          reducto.F(reducto.SettingsOcrSystemStandard),
-				PageRange: reducto.F[reducto.SettingsPageRangeUnionParam](reducto.PageRangeParam{
+				PageRange: reducto.F[reducto.SettingsPageRangeUnionParam](shared.PageRangeParam{
 					End:   reducto.F(int64(0)),
 					Start: reducto.F(int64(0)),
 				}),

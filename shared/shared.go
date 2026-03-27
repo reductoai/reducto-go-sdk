@@ -433,6 +433,21 @@ func (r FigureAgenticScope) IsKnown() bool {
 	return false
 }
 
+type PageRangeParam struct {
+	// The page number to stop processing at (1-indexed).
+	End param.Field[int64] `json:"end"`
+	// The page number to start processing from (1-indexed).
+	Start param.Field[int64] `json:"start"`
+}
+
+func (r PageRangeParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r PageRangeParam) ImplementsSettingsPageRangeUnionParam() {}
+
+func (r PageRangeParam) ImplementsClassifyRunParamsPageRangeUnion() {}
+
 type ParseResponse struct {
 	// The duration of the parse request in seconds.
 	Duration float64 `json:"duration" api:"required"`
