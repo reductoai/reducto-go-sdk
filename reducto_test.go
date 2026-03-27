@@ -50,8 +50,7 @@ func TestUploadWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Upload(context.TODO(), reducto.UploadParams{
-		QueryExtension: reducto.F("extension"),
-		BodyExtension:  reducto.F("extension"),
+		Extension: reducto.F("extension"),
 	})
 	if err != nil {
 		var apierr *reducto.Error
