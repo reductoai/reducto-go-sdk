@@ -4,6 +4,7 @@ package reducto
 
 import (
 	"bytes"
+	"io"
 	"mime/multipart"
 	"net/url"
 
@@ -13,8 +14,8 @@ import (
 )
 
 type UploadParams struct {
-	Extension param.Field[string] `query:"extension"`
-	File      param.Field[string] `json:"file"`
+	Extension param.Field[string]    `query:"extension"`
+	File      param.Field[io.Reader] `json:"file" format:"binary"`
 }
 
 func (r UploadParams) MarshalMultipart() (data []byte, contentType string, err error) {
