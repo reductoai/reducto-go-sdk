@@ -3,10 +3,8 @@
 package reducto_test
 
 import (
-	"bytes"
 	"context"
 	"errors"
-	"io"
 	"os"
 	"testing"
 
@@ -53,7 +51,6 @@ func TestUploadWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Upload(context.TODO(), reducto.UploadParams{
 		Extension: reducto.F("extension"),
-		File:      reducto.F(io.Reader(bytes.NewBuffer([]byte("Example data")))),
 	})
 	if err != nil {
 		var apierr *reducto.Error
