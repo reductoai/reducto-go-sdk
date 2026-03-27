@@ -11,8 +11,7 @@ import (
 )
 
 type UploadParams struct {
-	QueryExtension param.Field[string] `query:"extension"`
-	BodyExtension  param.Field[string] `json:"extension"`
+	Extension param.Field[string] `query:"extension"`
 }
 
 func (r UploadParams) MarshalJSON() (data []byte, err error) {
