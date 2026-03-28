@@ -4,6 +4,7 @@ package shared
 
 type UnionString string
 
+func (UnionString) ImplementsUploadParamsFileUnion()                           {}
 func (UnionString) ImplementsAsyncParseConfigInputUnionParam()                 {}
 func (UnionString) ImplementsParseRunParamsBodySyncParseConfigInputUnion()     {}
 func (UnionString) ImplementsAsyncExtractConfigInputUnionParam()               {}
