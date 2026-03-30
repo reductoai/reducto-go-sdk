@@ -85,7 +85,8 @@ func TestSplitRunWithOptionalParams(t *testing.T) {
 			}),
 		}),
 		Settings: reducto.F(reducto.SplitTableOptionsParam{
-			TableCutoff: reducto.F(reducto.SplitTableOptionsTableCutoffTruncate),
+			AllowPageOverlap: reducto.F(true),
+			TableCutoff:      reducto.F(reducto.SplitTableOptionsTableCutoffTruncate),
 		}),
 		SplitRules: reducto.F("split_rules"),
 	})
@@ -177,7 +178,8 @@ func TestSplitRunJobWithOptionalParams(t *testing.T) {
 			}),
 		}),
 		Settings: reducto.F(reducto.SplitTableOptionsParam{
-			TableCutoff: reducto.F(reducto.SplitTableOptionsTableCutoffTruncate),
+			AllowPageOverlap: reducto.F(true),
+			TableCutoff:      reducto.F(reducto.SplitTableOptionsTableCutoffTruncate),
 		}),
 		SplitRules: reducto.F("split_rules"),
 	})
