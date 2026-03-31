@@ -94,16 +94,21 @@ type ParseUsage struct {
 	NumPages        int64              `json:"num_pages" api:"required"`
 	CreditBreakdown map[string]float64 `json:"credit_breakdown" api:"nullable"`
 	Credits         float64            `json:"credits" api:"nullable"`
-	JSON            parseUsageJSON     `json:"-"`
+	// Per-page breakdown of features used. Maps 1-indexed page numbers (as strings) to
+	// the list of billing features applied on that page (e.g. 'page', 'complex',
+	// 'chart_agent').
+	PageBillingBreakdown map[string][]ParseUsagePageBillingBreakdown `json:"page_billing_breakdown" api:"nullable"`
+	JSON                 parseUsageJSON                              `json:"-"`
 }
 
 // parseUsageJSON contains the JSON metadata for the struct [ParseUsage]
 type parseUsageJSON struct {
-	NumPages        apijson.Field
-	CreditBreakdown apijson.Field
-	Credits         apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
+	NumPages             apijson.Field
+	CreditBreakdown      apijson.Field
+	Credits              apijson.Field
+	PageBillingBreakdown apijson.Field
+	raw                  string
+	ExtraFields          map[string]apijson.Field
 }
 
 func (r *ParseUsage) UnmarshalJSON(data []byte) (err error) {
@@ -112,6 +117,26 @@ func (r *ParseUsage) UnmarshalJSON(data []byte) (err error) {
 
 func (r parseUsageJSON) RawJSON() string {
 	return r.raw
+}
+
+type ParseUsagePageBillingBreakdown string
+
+const (
+	ParseUsagePageBillingBreakdownPage             ParseUsagePageBillingBreakdown = "page"
+	ParseUsagePageBillingBreakdownHTMLPage         ParseUsagePageBillingBreakdown = "html_page"
+	ParseUsagePageBillingBreakdownDocxNativePage   ParseUsagePageBillingBreakdown = "docx_native_page"
+	ParseUsagePageBillingBreakdownAgentic          ParseUsagePageBillingBreakdown = "agentic"
+	ParseUsagePageBillingBreakdownComplex          ParseUsagePageBillingBreakdown = "complex"
+	ParseUsagePageBillingBreakdownChartAgent       ParseUsagePageBillingBreakdown = "chart_agent"
+	ParseUsagePageBillingBreakdownSpreadsheetCells ParseUsagePageBillingBreakdown = "spreadsheet_cells"
+)
+
+func (r ParseUsagePageBillingBreakdown) IsKnown() bool {
+	switch r {
+	case ParseUsagePageBillingBreakdownPage, ParseUsagePageBillingBreakdownHTMLPage, ParseUsagePageBillingBreakdownDocxNativePage, ParseUsagePageBillingBreakdownAgentic, ParseUsagePageBillingBreakdownComplex, ParseUsagePageBillingBreakdownChartAgent, ParseUsagePageBillingBreakdownSpreadsheetCells:
+		return true
+	}
+	return false
 }
 
 type SplitCategoryParam struct {
