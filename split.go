@@ -122,18 +122,19 @@ func (r parseUsageJSON) RawJSON() string {
 type ParseUsagePageBillingBreakdown string
 
 const (
-	ParseUsagePageBillingBreakdownPage             ParseUsagePageBillingBreakdown = "page"
-	ParseUsagePageBillingBreakdownHTMLPage         ParseUsagePageBillingBreakdown = "html_page"
-	ParseUsagePageBillingBreakdownDocxNativePage   ParseUsagePageBillingBreakdown = "docx_native_page"
-	ParseUsagePageBillingBreakdownAgentic          ParseUsagePageBillingBreakdown = "agentic"
-	ParseUsagePageBillingBreakdownComplex          ParseUsagePageBillingBreakdown = "complex"
-	ParseUsagePageBillingBreakdownChartAgent       ParseUsagePageBillingBreakdown = "chart_agent"
-	ParseUsagePageBillingBreakdownSpreadsheetCells ParseUsagePageBillingBreakdown = "spreadsheet_cells"
+	ParseUsagePageBillingBreakdownPage                     ParseUsagePageBillingBreakdown = "page"
+	ParseUsagePageBillingBreakdownHTMLPage                 ParseUsagePageBillingBreakdown = "html_page"
+	ParseUsagePageBillingBreakdownDocxNativePage           ParseUsagePageBillingBreakdown = "docx_native_page"
+	ParseUsagePageBillingBreakdownAgentic                  ParseUsagePageBillingBreakdown = "agentic"
+	ParseUsagePageBillingBreakdownComplex                  ParseUsagePageBillingBreakdown = "complex"
+	ParseUsagePageBillingBreakdownChartAgent               ParseUsagePageBillingBreakdown = "chart_agent"
+	ParseUsagePageBillingBreakdownSpreadsheetCells         ParseUsagePageBillingBreakdown = "spreadsheet_cells"
+	ParseUsagePageBillingBreakdownBillableSpreadsheetPages ParseUsagePageBillingBreakdown = "billable_spreadsheet_pages"
 )
 
 func (r ParseUsagePageBillingBreakdown) IsKnown() bool {
 	switch r {
-	case ParseUsagePageBillingBreakdownPage, ParseUsagePageBillingBreakdownHTMLPage, ParseUsagePageBillingBreakdownDocxNativePage, ParseUsagePageBillingBreakdownAgentic, ParseUsagePageBillingBreakdownComplex, ParseUsagePageBillingBreakdownChartAgent, ParseUsagePageBillingBreakdownSpreadsheetCells:
+	case ParseUsagePageBillingBreakdownPage, ParseUsagePageBillingBreakdownHTMLPage, ParseUsagePageBillingBreakdownDocxNativePage, ParseUsagePageBillingBreakdownAgentic, ParseUsagePageBillingBreakdownComplex, ParseUsagePageBillingBreakdownChartAgent, ParseUsagePageBillingBreakdownSpreadsheetCells, ParseUsagePageBillingBreakdownBillableSpreadsheetPages:
 		return true
 	}
 	return false
