@@ -2,20 +2,58 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - '**'
+      - '!integrated/**'
+      - '!stl-preview-head/**'
+      - '!stl-preview-base/**'
+      - '!generated'
+      - '!codegen/**'
+      - 'codegen/stl/**'
   pull_request:
-    branches:
-      - main
-      - next
+    branches-ignore:
+      - 'stl-preview-head/**'
+      - 'stl-preview-base/**'
 
 jobs:
+  build:
+    timeout-minutes: 10
+    name: build
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ${{ github.repository == 'stainless-sdks/reductoai-go' && 'depot-ubuntu-24.04' || 'ubuntu-latest' }}
+    if: |-
+      github.repository == 'stainless-sdks/reductoai-go' &&
+      (github.event_name == 'push' || github.event.pull_request.head.repo.fork) && (github.event_name != 'push' || github.event.head_commit.message != 'codegen metadata')
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Get GitHub OIDC Token
+        if: |-
+          github.repository == 'stainless-sdks/reductoai-go' &&
+          !startsWith(github.ref, 'refs/heads/stl/')
+        id: github-oidc
+        uses: actions/github-script@v8
+        with:
+          script: core.setOutput('github_token', await core.getIDToken());
+
+      - name: Upload tarball
+        if: |-
+          github.repository == 'stainless-sdks/reductoai-go' &&
+          !startsWith(github.ref, 'refs/heads/stl/')
+        env:
+          URL: https://pkg.stainless.com/s
+          AUTH: ${{ steps.github-oidc.outputs.github_token }}
+          SHA: ${{ github.sha }}
+        run: ./scripts/utils/upload-artifact.sh
   lint:
+    timeout-minutes: 10
     name: lint
-    runs-on: ubuntu-latest
-    
+    runs-on: ${{ github.repository == 'stainless-sdks/reductoai-go' && 'depot-ubuntu-24.04' || 'ubuntu-latest' }}
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.fork
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup go
         uses: actions/setup-go@v5
@@ -25,11 +63,12 @@ jobs:
       - name: Run lints
         run: ./scripts/lint
   test:
+    timeout-minutes: 10
     name: test
-    runs-on: ubuntu-latest
-
+    runs-on: ${{ github.repository == 'stainless-sdks/reductoai-go' && 'depot-ubuntu-24.04' || 'ubuntu-latest' }}
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.fork
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup go
         uses: actions/setup-go@v5
@@ -41,4 +80,3 @@ jobs:
 
       - name: Run tests
         run: ./scripts/test
-

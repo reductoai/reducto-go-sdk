@@ -14,6 +14,7 @@ import (
 )
 
 func TestUsage(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,13 +26,12 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	parseResponse, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
-		ParseConfig: reducto.ParseConfigParam{
-			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
-		},
+	response, err := client.Parse.Run(context.TODO(), reducto.ParseRunParamsSyncParseConfig{
+		Input: reducto.F[reducto.ParseRunParamsSyncParseConfigInputUnion](shared.UnionString("https://pdfobject.com/pdf/sample.pdf")),
 	})
 	if err != nil {
 		t.Error(err)
+		return
 	}
-	t.Logf("%+v\n", parseResponse.JobID)
+	t.Logf("%+v\n", response)
 }

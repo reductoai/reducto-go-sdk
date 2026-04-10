@@ -5,6 +5,7 @@ package reducto
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/reductoai/reducto-go-sdk/internal/apijson"
 	"github.com/reductoai/reducto-go-sdk/internal/param"
@@ -34,55 +35,173 @@ func NewSplitService(opts ...option.RequestOption) (r *SplitService) {
 
 // Split
 func (r *SplitService) Run(ctx context.Context, body SplitRunParams, opts ...option.RequestOption) (res *shared.SplitResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "split"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Split Async
-func (r *SplitService) RunJob(ctx context.Context, body SplitRunJobParams, opts ...option.RequestOption) (res *SplitRunJobResponse, err error) {
-	opts = append(r.Options[:], opts...)
+func (r *SplitService) RunJob(ctx context.Context, body SplitRunJobParams, opts ...option.RequestOption) (res *shared.AsyncSplitResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
 	path := "split_async"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
-type SplitRunJobResponse struct {
-	JobID string                  `json:"job_id,required"`
-	JSON  splitRunJobResponseJSON `json:"-"`
+type DeepSplitPageEvidence struct {
+	Evidence   string                          `json:"evidence" api:"required"`
+	PageNumber int64                           `json:"page_number" api:"required"`
+	Confidence DeepSplitPageEvidenceConfidence `json:"confidence" api:"nullable"`
+	JSON       deepSplitPageEvidenceJSON       `json:"-"`
 }
 
-// splitRunJobResponseJSON contains the JSON metadata for the struct
-// [SplitRunJobResponse]
-type splitRunJobResponseJSON struct {
-	JobID       apijson.Field
+// deepSplitPageEvidenceJSON contains the JSON metadata for the struct
+// [DeepSplitPageEvidence]
+type deepSplitPageEvidenceJSON struct {
+	Evidence    apijson.Field
+	PageNumber  apijson.Field
+	Confidence  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *SplitRunJobResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *DeepSplitPageEvidence) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r splitRunJobResponseJSON) RawJSON() string {
+func (r deepSplitPageEvidenceJSON) RawJSON() string {
 	return r.raw
 }
 
+type DeepSplitPageEvidenceConfidence string
+
+const (
+	DeepSplitPageEvidenceConfidenceHigh   DeepSplitPageEvidenceConfidence = "high"
+	DeepSplitPageEvidenceConfidenceMedium DeepSplitPageEvidenceConfidence = "medium"
+	DeepSplitPageEvidenceConfidenceLow    DeepSplitPageEvidenceConfidence = "low"
+)
+
+func (r DeepSplitPageEvidenceConfidence) IsKnown() bool {
+	switch r {
+	case DeepSplitPageEvidenceConfidenceHigh, DeepSplitPageEvidenceConfidenceMedium, DeepSplitPageEvidenceConfidenceLow:
+		return true
+	}
+	return false
+}
+
+type ParseUsage struct {
+	NumPages        int64              `json:"num_pages" api:"required"`
+	CreditBreakdown map[string]float64 `json:"credit_breakdown" api:"nullable"`
+	Credits         float64            `json:"credits" api:"nullable"`
+	// Per-page breakdown of features used. Maps 1-indexed page numbers (as strings) to
+	// the list of billing features applied on that page (e.g. 'page', 'complex',
+	// 'chart_agent').
+	PageBillingBreakdown map[string][]ParseUsagePageBillingBreakdown `json:"page_billing_breakdown" api:"nullable"`
+	JSON                 parseUsageJSON                              `json:"-"`
+}
+
+// parseUsageJSON contains the JSON metadata for the struct [ParseUsage]
+type parseUsageJSON struct {
+	NumPages             apijson.Field
+	CreditBreakdown      apijson.Field
+	Credits              apijson.Field
+	PageBillingBreakdown apijson.Field
+	raw                  string
+	ExtraFields          map[string]apijson.Field
+}
+
+func (r *ParseUsage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r parseUsageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ParseUsagePageBillingBreakdown string
+
+const (
+	ParseUsagePageBillingBreakdownPage                     ParseUsagePageBillingBreakdown = "page"
+	ParseUsagePageBillingBreakdownHTMLPage                 ParseUsagePageBillingBreakdown = "html_page"
+	ParseUsagePageBillingBreakdownDocxNativePage           ParseUsagePageBillingBreakdown = "docx_native_page"
+	ParseUsagePageBillingBreakdownAgentic                  ParseUsagePageBillingBreakdown = "agentic"
+	ParseUsagePageBillingBreakdownComplex                  ParseUsagePageBillingBreakdown = "complex"
+	ParseUsagePageBillingBreakdownChartAgent               ParseUsagePageBillingBreakdown = "chart_agent"
+	ParseUsagePageBillingBreakdownSpreadsheetCells         ParseUsagePageBillingBreakdown = "spreadsheet_cells"
+	ParseUsagePageBillingBreakdownBillableSpreadsheetPages ParseUsagePageBillingBreakdown = "billable_spreadsheet_pages"
+)
+
+func (r ParseUsagePageBillingBreakdown) IsKnown() bool {
+	switch r {
+	case ParseUsagePageBillingBreakdownPage, ParseUsagePageBillingBreakdownHTMLPage, ParseUsagePageBillingBreakdownDocxNativePage, ParseUsagePageBillingBreakdownAgentic, ParseUsagePageBillingBreakdownComplex, ParseUsagePageBillingBreakdownChartAgent, ParseUsagePageBillingBreakdownSpreadsheetCells, ParseUsagePageBillingBreakdownBillableSpreadsheetPages:
+		return true
+	}
+	return false
+}
+
+type SplitCategoryParam struct {
+	Description  param.Field[string] `json:"description" api:"required"`
+	Name         param.Field[string] `json:"name" api:"required"`
+	PartitionKey param.Field[string] `json:"partition_key"`
+}
+
+func (r SplitCategoryParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type SplitTableOptionsParam struct {
+	// If True, a page can belong to multiple categories/partitions. If False, each
+	// page must belong to exactly one category. Defaults to True.
+	AllowPageOverlap param.Field[bool] `json:"allow_page_overlap"`
+	// If tables should be truncated to the first few rows or if all content should be
+	// preserved. truncate improves latency, preserve is recommended for cases where
+	// partition_key is being used and the partition_key may be included within the
+	// table. Defaults to truncate
+	TableCutoff param.Field[SplitTableOptionsTableCutoff] `json:"table_cutoff"`
+}
+
+func (r SplitTableOptionsParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// If tables should be truncated to the first few rows or if all content should be
+// preserved. truncate improves latency, preserve is recommended for cases where
+// partition_key is being used and the partition_key may be included within the
+// table. Defaults to truncate
+type SplitTableOptionsTableCutoff string
+
+const (
+	SplitTableOptionsTableCutoffTruncate SplitTableOptionsTableCutoff = "truncate"
+	SplitTableOptionsTableCutoffPreserve SplitTableOptionsTableCutoff = "preserve"
+)
+
+func (r SplitTableOptionsTableCutoff) IsKnown() bool {
+	switch r {
+	case SplitTableOptionsTableCutoffTruncate, SplitTableOptionsTableCutoffPreserve:
+		return true
+	}
+	return false
+}
+
 type SplitRunParams struct {
-	// The URL of the document to be processed. You can provide one of the following:
+	// For parse/split/extract pipelines, the URL of the document to be processed. You
+	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+	// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+	// API only)
 	//
-	//  1. A publicly available URL
-	//  2. A presigned S3 URL
-	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-	//     uploading a document
-	DocumentURL param.Field[SplitRunParamsDocumentURLUnion] `json:"document_url,required"`
+	//	For edit pipelines, this should be a string containing the edit instructions
+	Input param.Field[SplitRunParamsInputUnion] `json:"input" api:"required"`
 	// The configuration options for processing the document.
-	SplitDescription    param.Field[[]shared.SplitCategoryParam]               `json:"split_description,required"`
-	AdvancedOptions     param.Field[shared.AdvancedProcessingOptionsParam]     `json:"advanced_options"`
-	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
-	Options             param.Field[shared.BaseProcessingOptionsParam]         `json:"options"`
-	// The rules for splitting the document.
+	SplitDescription param.Field[[]SplitCategoryParam] `json:"split_description" api:"required"`
+	// The configuration options for parsing the document. If you are passing in a
+	// jobid:// URL for the file, then this configuration will be ignored.
+	Parsing param.Field[ParseOptionsParam] `json:"parsing"`
+	// The settings for split processing.
+	Settings param.Field[SplitTableOptionsParam] `json:"settings"`
+	// The prompt that describes rules for splitting the document.
 	SplitRules param.Field[string] `json:"split_rules"`
 }
 
@@ -90,52 +209,67 @@ func (r SplitRunParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The URL of the document to be processed. You can provide one of the following:
+// For parse/split/extract pipelines, the URL of the document to be processed. You
+// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+// API only)
 //
-//  1. A publicly available URL
-//  2. A presigned S3 URL
-//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-//     uploading a document
+//	For edit pipelines, this should be a string containing the edit instructions
 //
-// Satisfied by [shared.UnionString], [shared.UploadParam].
-type SplitRunParamsDocumentURLUnion interface {
-	ImplementsSplitRunParamsDocumentURLUnion()
+// Satisfied by [shared.UnionString], [SplitRunParamsInputArray],
+// [shared.UploadParam].
+type SplitRunParamsInputUnion interface {
+	ImplementsSplitRunParamsInputUnion()
 }
 
+type SplitRunParamsInputArray []string
+
+func (r SplitRunParamsInputArray) ImplementsSplitRunParamsInputUnion() {}
+
 type SplitRunJobParams struct {
-	// The URL of the document to be processed. You can provide one of the following:
+	// For parse/split/extract pipelines, the URL of the document to be processed. You
+	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+	// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+	// API only)
 	//
-	//  1. A publicly available URL
-	//  2. A presigned S3 URL
-	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-	//     uploading a document
-	DocumentURL param.Field[SplitRunJobParamsDocumentURLUnion] `json:"document_url,required"`
+	//	For edit pipelines, this should be a string containing the edit instructions
+	Input param.Field[SplitRunJobParamsInputUnion] `json:"input" api:"required"`
 	// The configuration options for processing the document.
-	SplitDescription    param.Field[[]shared.SplitCategoryParam]               `json:"split_description,required"`
-	AdvancedOptions     param.Field[shared.AdvancedProcessingOptionsParam]     `json:"advanced_options"`
-	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
-	Options             param.Field[shared.BaseProcessingOptionsParam]         `json:"options"`
-	// If True, attempts to process the job with priority if the user has priority
-	// processing budget available; by default, sync jobs are prioritized above async
-	// jobs.
-	Priority param.Field[bool] `json:"priority"`
-	// The rules for splitting the document.
-	SplitRules param.Field[string]                       `json:"split_rules"`
-	Webhook    param.Field[shared.WebhookConfigNewParam] `json:"webhook"`
+	SplitDescription param.Field[[]SplitCategoryParam] `json:"split_description" api:"required"`
+	// The configuration options for asynchronous processing (default synchronous).
+	Async param.Field[AsyncConfigV3Param] `json:"async"`
+	// The configuration options for parsing the document. If you are passing in a
+	// jobid:// URL for the file, then this configuration will be ignored.
+	Parsing param.Field[ParseOptionsParam] `json:"parsing"`
+	// The settings for split processing.
+	Settings param.Field[SplitTableOptionsParam] `json:"settings"`
+	// The prompt that describes rules for splitting the document.
+	SplitRules param.Field[string] `json:"split_rules"`
 }
 
 func (r SplitRunJobParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The URL of the document to be processed. You can provide one of the following:
+// For parse/split/extract pipelines, the URL of the document to be processed. You
+// can provide one of the following: 1. A publicly available URL 2. A presigned S3
+// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
+// directly uploading a document 4. A jobid:// prefixed URL obtained from a
+// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
+// API only)
 //
-//  1. A publicly available URL
-//  2. A presigned S3 URL
-//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-//     uploading a document
+//	For edit pipelines, this should be a string containing the edit instructions
 //
-// Satisfied by [shared.UnionString], [shared.UploadParam].
-type SplitRunJobParamsDocumentURLUnion interface {
-	ImplementsSplitRunJobParamsDocumentURLUnion()
+// Satisfied by [shared.UnionString], [SplitRunJobParamsInputArray],
+// [shared.UploadParam].
+type SplitRunJobParamsInputUnion interface {
+	ImplementsSplitRunJobParamsInputUnion()
 }
+
+type SplitRunJobParamsInputArray []string
+
+func (r SplitRunJobParamsInputArray) ImplementsSplitRunJobParamsInputUnion() {}

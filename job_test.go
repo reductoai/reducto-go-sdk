@@ -14,7 +14,7 @@ import (
 )
 
 func TestJobCancel(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -37,7 +37,7 @@ func TestJobCancel(t *testing.T) {
 }
 
 func TestJobGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -50,6 +50,33 @@ func TestJobGet(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Job.Get(context.TODO(), "job_id")
+	if err != nil {
+		var apierr *reducto.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestJobGetAllWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := reducto.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Job.GetAll(context.TODO(), reducto.JobGetAllParams{
+		Cursor:         reducto.F("cursor"),
+		ExcludeConfigs: reducto.F(true),
+		Limit:          reducto.F(int64(1)),
+	})
 	if err != nil {
 		var apierr *reducto.Error
 		if errors.As(err, &apierr) {

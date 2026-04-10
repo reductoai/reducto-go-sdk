@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"os"
+	"slices"
 
 	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
 	"github.com/reductoai/reducto-go-sdk/option"
@@ -16,34 +17,47 @@ import (
 // interacting with the reducto API. You should not instantiate this client
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options []option.RequestOption
-	Job     *JobService
-	Split   *SplitService
-	Parse   *ParseService
-	Extract *ExtractService
-	Webhook *WebhookService
-	Config  *ConfigService
+	Options  []option.RequestOption
+	Parse    *ParseService
+	Extract  *ExtractService
+	Split    *SplitService
+	Edit     *EditService
+	Pipeline *PipelineService
+	Classify *ClassifyService
+	Webhook  *WebhookService
+	Job      *JobService
 }
 
-// NewClient generates a new client with the default option read from the
-// environment (REDUCTO_API_KEY). The option passed in as arguments are applied
-// after these default arguments, and all option will be passed down to the
-// services and requests that this client makes.
-func NewClient(opts ...option.RequestOption) (r *Client) {
+// DefaultClientOptions read from the environment (REDUCTO_API_KEY,
+// REDUCTO_BASE_URL). This should be used to initialize new clients.
+func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
+	if o, ok := os.LookupEnv("REDUCTO_BASE_URL"); ok {
+		defaults = append(defaults, option.WithBaseURL(o))
+	}
 	if o, ok := os.LookupEnv("REDUCTO_API_KEY"); ok {
 		defaults = append(defaults, option.WithAPIKey(o))
 	}
-	opts = append(defaults, opts...)
+	return defaults
+}
+
+// NewClient generates a new client with the default option read from the
+// environment (REDUCTO_API_KEY, REDUCTO_BASE_URL). The option passed in as
+// arguments are applied after these default arguments, and all option will be
+// passed down to the services and requests that this client makes.
+func NewClient(opts ...option.RequestOption) (r *Client) {
+	opts = append(DefaultClientOptions(), opts...)
 
 	r = &Client{Options: opts}
 
-	r.Job = NewJobService(opts...)
-	r.Split = NewSplitService(opts...)
 	r.Parse = NewParseService(opts...)
 	r.Extract = NewExtractService(opts...)
+	r.Split = NewSplitService(opts...)
+	r.Edit = NewEditService(opts...)
+	r.Pipeline = NewPipelineService(opts...)
+	r.Classify = NewClassifyService(opts...)
 	r.Webhook = NewWebhookService(opts...)
-	r.Config = NewConfigService(opts...)
+	r.Job = NewJobService(opts...)
 
 	return
 }
@@ -80,7 +94,7 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 // For even greater flexibility, see [option.WithResponseInto] and
 // [option.WithResponseBodyInto].
 func (r *Client) Execute(ctx context.Context, method string, path string, params interface{}, res interface{}, opts ...option.RequestOption) error {
-	opts = append(r.Options, opts...)
+	opts = slices.Concat(r.Options, opts)
 	return requestconfig.ExecuteNewRequest(ctx, method, path, params, res, opts...)
 }
 
@@ -118,17 +132,17 @@ func (r *Client) Delete(ctx context.Context, path string, params interface{}, re
 }
 
 // Get Version
-func (r *Client) APIVersion(ctx context.Context, opts ...option.RequestOption) (res *APIVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+func (r *Client) APIVersion(ctx context.Context, opts ...option.RequestOption) (res *string, err error) {
+	opts = slices.Concat(r.Options, opts)
 	path := "version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Upload
 func (r *Client) Upload(ctx context.Context, params UploadParams, opts ...option.RequestOption) (res *shared.Upload, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "upload"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }

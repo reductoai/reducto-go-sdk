@@ -3,19 +3,18 @@
 package reducto_test
 
 import (
-	"bytes"
 	"context"
 	"errors"
-	"io"
 	"os"
 	"testing"
 
 	"github.com/reductoai/reducto-go-sdk"
 	"github.com/reductoai/reducto-go-sdk/internal/testutil"
 	"github.com/reductoai/reducto-go-sdk/option"
+	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
-func TestAPIVersion(t *testing.T) {
+func TestPipelineRunWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -28,7 +27,13 @@ func TestAPIVersion(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.APIVersion(context.TODO())
+	_, err := client.Pipeline.Run(context.TODO(), reducto.PipelineRunParams{
+		Input:      reducto.F[reducto.PipelineRunParamsInputUnion](shared.UnionString("string")),
+		PipelineID: reducto.F("pipeline_id"),
+		Settings: reducto.F(reducto.PipelineSettingsParam{
+			DocumentPassword: reducto.F("document_password"),
+		}),
+	})
 	if err != nil {
 		var apierr *reducto.Error
 		if errors.As(err, &apierr) {
@@ -38,7 +43,7 @@ func TestAPIVersion(t *testing.T) {
 	}
 }
 
-func TestUploadWithOptionalParams(t *testing.T) {
+func TestPipelineRunJobWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -51,9 +56,20 @@ func TestUploadWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Upload(context.TODO(), reducto.UploadParams{
-		Extension: reducto.F("extension"),
-		File:      reducto.F(io.Reader(bytes.NewBuffer([]byte("Example data")))),
+	_, err := client.Pipeline.RunJob(context.TODO(), reducto.PipelineRunJobParams{
+		Input:      reducto.F[reducto.PipelineRunJobParamsInputUnion](shared.UnionString("string")),
+		PipelineID: reducto.F("pipeline_id"),
+		Async: reducto.F(reducto.AsyncConfigV3Param{
+			Metadata: reducto.F[any](map[string]interface{}{}),
+			Priority: reducto.F(true),
+			Webhook: reducto.F[reducto.AsyncConfigV3WebhookUnionParam](shared.SvixWebhookConfigParam{
+				Channels: reducto.F([]string{"string"}),
+				Mode:     reducto.F(shared.SvixWebhookConfigModeSvix),
+			}),
+		}),
+		Settings: reducto.F(reducto.PipelineSettingsParam{
+			DocumentPassword: reducto.F("document_password"),
+		}),
 	})
 	if err != nil {
 		var apierr *reducto.Error

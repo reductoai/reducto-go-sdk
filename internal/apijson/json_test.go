@@ -40,12 +40,12 @@ type DateTime struct {
 
 type AdditionalProperties struct {
 	A           bool                   `json:"a"`
-	ExtraFields map[string]interface{} `json:"-,extras"`
+	ExtraFields map[string]interface{} `json:"-" api:"extrafields"`
 }
 
 type TypedAdditionalProperties struct {
 	A           bool           `json:"a"`
-	ExtraFields map[string]int `json:"-,extras"`
+	ExtraFields map[string]int `json:"-" api:"extrafields"`
 }
 
 type EmbeddedStruct struct {
@@ -65,7 +65,7 @@ type EmbeddedStructJSON struct {
 type EmbeddedStructs struct {
 	EmbeddedStruct
 	A           *int                   `json:"a"`
-	ExtraFields map[string]interface{} `json:"-,extras"`
+	ExtraFields map[string]interface{} `json:"-" api:"extrafields"`
 
 	JSON EmbeddedStructsJSON
 }
@@ -86,7 +86,7 @@ type JSONFieldStruct struct {
 	B           int64               `json:"b"`
 	C           string              `json:"c"`
 	D           string              `json:"d"`
-	ExtraFields map[string]int64    `json:"-,extras"`
+	ExtraFields map[string]int64    `json:"-" api:"extrafields"`
 	JSON        JSONFieldStructJSON `json:"-,metadata"`
 }
 
@@ -268,7 +268,7 @@ type MarshallingUnionStruct struct {
 func (r *MarshallingUnionStruct) UnmarshalJSON(data []byte) (err error) {
 	*r = MarshallingUnionStruct{}
 	err = UnmarshalRoot(data, &r.Union)
-	return
+	return err
 }
 
 func (r MarshallingUnionStruct) MarshalJSON() (data []byte, err error) {
@@ -362,7 +362,7 @@ var tests = map[string]struct {
 	"date_time_nano_missing_t_coerce":         {`"2007-03-01 13:03:05.123456789Z"`, time.Date(2007, time.March, 1, 13, 3, 5, 123456789, time.UTC)},
 
 	"map_string":                       {`{"foo":"bar"}`, map[string]string{"foo": "bar"}},
-	"map_string_with_sjson_path_chars": {`{":a.b.c*:d*-1e.f":"bar"}`, map[string]string{":a.b.c*:d*-1e.f": "bar"}},
+	"map_string_with_sjson_path_chars": {`{":a.b.c*:d*-1e.f@g?h":"bar"}`, map[string]string{":a.b.c*:d*-1e.f@g?h": "bar"}},
 	"map_interface":                    {`{"a":1,"b":"str","c":false}`, map[string]interface{}{"a": float64(1), "b": "str", "c": false}},
 
 	"primitive_struct": {

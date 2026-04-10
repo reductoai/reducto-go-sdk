@@ -9,7 +9,7 @@ $ ./scripts/build
 
 This will install all the required dependencies and build the SDK.
 
-You can also [install go 1.18+ manually](https://go.dev/doc/install).
+You can also [install go 1.22+ manually](https://go.dev/doc/install).
 
 ## Modifying/Adding code
 
@@ -45,13 +45,6 @@ $ go mod edit -replace github.com/reductoai/reducto-go-sdk=/path/to/reducto-go-s
 ```
 
 ## Running tests
-
-Most tests require you to [set up a mock server](https://github.com/stoplightio/prism) against the OpenAPI spec to run the tests.
-
-```sh
-# you will need npm installed
-$ npx prism mock path/to/your/openapi.yml
-```
 
 ```sh
 $ ./scripts/test
