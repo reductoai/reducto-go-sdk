@@ -36,11 +36,16 @@ func NewExtractService(opts ...option.RequestOption) (r *ExtractService) {
 }
 
 // Extract
-func (r *ExtractService) Run(ctx context.Context, body ExtractRunParams, opts ...option.RequestOption) (res *ExtractRunResponse, err error) {
+func (r *ExtractService) Run(ctx context.Context, body ExtractRunParams, opts ...option.RequestOption) (res *ExtractRunResponseUnion, err error) {
+	var env apijson.UnionUnmarshaler[ExtractRunResponseUnion]
 	opts = slices.Concat(r.Options, opts)
 	path := "extract"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
+	if err != nil {
+		return nil, err
+	}
+	res = &env.Value
+	return res, nil
 }
 
 // Extract Async
@@ -129,48 +134,6 @@ func (r ExtractSettingsCitationsParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type ExtractUsage struct {
-	NumFields   int64                   `json:"num_fields" api:"required"`
-	NumPages    int64                   `json:"num_pages" api:"required"`
-	Credits     float64                 `json:"credits" api:"nullable"`
-	ExtractMode ExtractUsageExtractMode `json:"extract_mode" api:"nullable"`
-	JSON        extractUsageJSON        `json:"-"`
-}
-
-// extractUsageJSON contains the JSON metadata for the struct [ExtractUsage]
-type extractUsageJSON struct {
-	NumFields   apijson.Field
-	NumPages    apijson.Field
-	Credits     apijson.Field
-	ExtractMode apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ExtractUsage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r extractUsageJSON) RawJSON() string {
-	return r.raw
-}
-
-type ExtractUsageExtractMode string
-
-const (
-	ExtractUsageExtractModeSuperAgent       ExtractUsageExtractMode = "super_agent"
-	ExtractUsageExtractModeExtract          ExtractUsageExtractMode = "extract"
-	ExtractUsageExtractModeSpreadsheetAgent ExtractUsageExtractMode = "spreadsheet_agent"
-)
-
-func (r ExtractUsageExtractMode) IsKnown() bool {
-	switch r {
-	case ExtractUsageExtractModeSuperAgent, ExtractUsageExtractModeExtract, ExtractUsageExtractModeSpreadsheetAgent:
-		return true
-	}
-	return false
-}
-
 type InstructionsParam struct {
 	// The JSON schema to use for the extraction.
 	Schema param.Field[interface{}] `json:"schema"`
@@ -194,92 +157,21 @@ func (r ParseOptionsParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type V3Extract struct {
-	// The extracted response in your provided schema. This is a list of dictionaries.
-	// If disable_chunking is True (default), then it will be a list of length one.
-	Result []interface{} `json:"result" api:"required"`
-	Usage  ExtractUsage  `json:"usage" api:"required"`
-	JobID  string        `json:"job_id" api:"nullable"`
-	// The link to the studio pipeline for the document.
-	StudioLink string        `json:"studio_link" api:"nullable"`
-	JSON       v3ExtractJSON `json:"-"`
-}
-
-// v3ExtractJSON contains the JSON metadata for the struct [V3Extract]
-type v3ExtractJSON struct {
-	Result      apijson.Field
-	Usage       apijson.Field
-	JobID       apijson.Field
-	StudioLink  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *V3Extract) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r v3ExtractJSON) RawJSON() string {
-	return r.raw
-}
+type V3Extract map[string]interface{}
 
 func (r V3Extract) ImplementsPipelineResponseResultExtractUnion() {}
 
-func (r V3Extract) ImplementsPipelineResponseResultExtractArrayResult() {}
+func (r V3Extract) ImplementsPipelineResponseResultExtractArrayResultUnion() {}
 
-func (r V3Extract) ImplementsExtractRunResponse() {}
+func (r V3Extract) ImplementsExtractRunResponseUnion() {}
 
-func (r V3Extract) ImplementsJobGetResponseAsyncJobResponseResult() {}
+func (r V3Extract) ImplementsJobGetResponseAsyncJobResponseResultUnion() {}
 
-func (r V3Extract) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
-
-type ExtractRunResponse struct {
-	JobID string `json:"job_id" api:"nullable"`
-	// This field can have the runtime type of [[]interface{}].
-	Result interface{} `json:"result"`
-	// The link to the studio pipeline for the document.
-	StudioLink string                 `json:"studio_link" api:"nullable"`
-	Usage      ExtractUsage           `json:"usage"`
-	JSON       extractRunResponseJSON `json:"-"`
-	union      ExtractRunResponseUnion
-}
-
-// extractRunResponseJSON contains the JSON metadata for the struct
-// [ExtractRunResponse]
-type extractRunResponseJSON struct {
-	JobID       apijson.Field
-	Result      apijson.Field
-	StudioLink  apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r extractRunResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *ExtractRunResponse) UnmarshalJSON(data []byte) (err error) {
-	*r = ExtractRunResponse{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a [ExtractRunResponseUnion] interface which you can cast to the
-// specific types for more type safety.
-//
-// Possible runtime types of the union are [V3Extract],
-// [shared.AsyncExtractResponse].
-func (r ExtractRunResponse) AsUnion() ExtractRunResponseUnion {
-	return r.union
-}
+func (r V3Extract) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
 
 // Union satisfied by [V3Extract] or [shared.AsyncExtractResponse].
 type ExtractRunResponseUnion interface {
-	ImplementsExtractRunResponse()
+	ImplementsExtractRunResponseUnion()
 }
 
 func init() {

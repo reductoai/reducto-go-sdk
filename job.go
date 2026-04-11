@@ -84,8 +84,9 @@ type JobGetResponse struct {
 	Progress  float64     `json:"progress" api:"nullable"`
 	RawConfig string      `json:"raw_config" api:"nullable"`
 	Reason    string      `json:"reason" api:"nullable"`
-	// This field can have the runtime type of [JobGetResponseAsyncJobResponseResult],
-	// [JobGetResponseEnhancedAsyncJobResponseResult].
+	// This field can have the runtime type of
+	// [JobGetResponseAsyncJobResponseResultUnion],
+	// [JobGetResponseEnhancedAsyncJobResponseResultUnion].
 	Result interface{} `json:"result"`
 	// This field can have the runtime type of [interface{}].
 	Source     interface{}        `json:"source"`
@@ -161,8 +162,8 @@ type JobGetResponseAsyncJobResponse struct {
 	Progress float64                              `json:"progress" api:"nullable"`
 	Reason   string                               `json:"reason" api:"nullable"`
 	// Response from classify job - returned when polling /job/{job_id}
-	Result JobGetResponseAsyncJobResponseResult `json:"result" api:"nullable"`
-	JSON   jobGetResponseAsyncJobResponseJSON   `json:"-"`
+	Result JobGetResponseAsyncJobResponseResultUnion `json:"result" api:"nullable"`
+	JSON   jobGetResponseAsyncJobResponseJSON        `json:"-"`
 }
 
 // jobGetResponseAsyncJobResponseJSON contains the JSON metadata for the struct
@@ -204,80 +205,12 @@ func (r JobGetResponseAsyncJobResponseStatus) IsKnown() bool {
 }
 
 // Response from classify job - returned when polling /job/{job_id}
-type JobGetResponseAsyncJobResponseResult struct {
-	// This field can have the runtime type of [[]interface{}].
-	Citations interface{} `json:"citations"`
-	// Presigned URL to download the edited document.
-	DocumentURL string `json:"document_url"`
-	// The duration of the parse request in seconds.
-	Duration float64 `json:"duration" api:"nullable"`
-	// This field can have the runtime type of [[]EditWidget].
-	FormSchema interface{} `json:"form_schema"`
-	JobID      string      `json:"job_id" api:"nullable"`
-	// The storage URL of the converted PDF file.
-	PdfURL string `json:"pdf_url" api:"nullable"`
-	// This field can have the runtime type of
-	// [shared.ClassifyResponseResponseConfidence].
-	ResponseConfidence interface{} `json:"response_confidence"`
-	// This field can have the runtime type of [shared.ParseResponseResult],
-	// [[]interface{}], [shared.SplitResponseResult], [shared.PipelineResponseResult],
-	// [shared.ClassifyResponseResult].
-	Result interface{} `json:"result"`
-	// The link to the studio pipeline for the document.
-	StudioLink string `json:"studio_link" api:"nullable"`
-	// This field can have the runtime type of [ParseUsage], [ExtractUsage].
-	Usage interface{}                              `json:"usage"`
-	JSON  jobGetResponseAsyncJobResponseResultJSON `json:"-"`
-	union JobGetResponseAsyncJobResponseResultUnion
-}
-
-// jobGetResponseAsyncJobResponseResultJSON contains the JSON metadata for the
-// struct [JobGetResponseAsyncJobResponseResult]
-type jobGetResponseAsyncJobResponseResultJSON struct {
-	Citations          apijson.Field
-	DocumentURL        apijson.Field
-	Duration           apijson.Field
-	FormSchema         apijson.Field
-	JobID              apijson.Field
-	PdfURL             apijson.Field
-	ResponseConfidence apijson.Field
-	Result             apijson.Field
-	StudioLink         apijson.Field
-	Usage              apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r jobGetResponseAsyncJobResponseResultJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *JobGetResponseAsyncJobResponseResult) UnmarshalJSON(data []byte) (err error) {
-	*r = JobGetResponseAsyncJobResponseResult{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a [JobGetResponseAsyncJobResponseResultUnion] interface which
-// you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are [shared.ParseResponse],
-// [shared.ExtractResponse], [shared.SplitResponse], [shared.EditResponse],
-// [shared.PipelineResponse], [V3Extract], [shared.ClassifyResponse].
-func (r JobGetResponseAsyncJobResponseResult) AsUnion() JobGetResponseAsyncJobResponseResultUnion {
-	return r.union
-}
-
-// Response from classify job - returned when polling /job/{job_id}
 //
 // Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
 // [shared.SplitResponse], [shared.EditResponse], [shared.PipelineResponse],
 // [V3Extract] or [shared.ClassifyResponse].
 type JobGetResponseAsyncJobResponseResultUnion interface {
-	ImplementsJobGetResponseAsyncJobResponseResult()
+	ImplementsJobGetResponseAsyncJobResponseResultUnion()
 }
 
 func init() {
@@ -325,11 +258,11 @@ type JobGetResponseEnhancedAsyncJobResponse struct {
 	RawConfig string                                       `json:"raw_config" api:"nullable"`
 	Reason    string                                       `json:"reason" api:"nullable"`
 	// Response from classify job - returned when polling /job/{job_id}
-	Result     JobGetResponseEnhancedAsyncJobResponseResult `json:"result" api:"nullable"`
-	Source     interface{}                                  `json:"source"`
-	TotalPages int64                                        `json:"total_pages" api:"nullable"`
-	Type       JobGetResponseEnhancedAsyncJobResponseType   `json:"type" api:"nullable"`
-	JSON       jobGetResponseEnhancedAsyncJobResponseJSON   `json:"-"`
+	Result     JobGetResponseEnhancedAsyncJobResponseResultUnion `json:"result" api:"nullable"`
+	Source     interface{}                                       `json:"source"`
+	TotalPages int64                                             `json:"total_pages" api:"nullable"`
+	Type       JobGetResponseEnhancedAsyncJobResponseType        `json:"type" api:"nullable"`
+	JSON       jobGetResponseEnhancedAsyncJobResponseJSON        `json:"-"`
 }
 
 // jobGetResponseEnhancedAsyncJobResponseJSON contains the JSON metadata for the
@@ -379,80 +312,12 @@ func (r JobGetResponseEnhancedAsyncJobResponseStatus) IsKnown() bool {
 }
 
 // Response from classify job - returned when polling /job/{job_id}
-type JobGetResponseEnhancedAsyncJobResponseResult struct {
-	// This field can have the runtime type of [[]interface{}].
-	Citations interface{} `json:"citations"`
-	// Presigned URL to download the edited document.
-	DocumentURL string `json:"document_url"`
-	// The duration of the parse request in seconds.
-	Duration float64 `json:"duration" api:"nullable"`
-	// This field can have the runtime type of [[]EditWidget].
-	FormSchema interface{} `json:"form_schema"`
-	JobID      string      `json:"job_id" api:"nullable"`
-	// The storage URL of the converted PDF file.
-	PdfURL string `json:"pdf_url" api:"nullable"`
-	// This field can have the runtime type of
-	// [shared.ClassifyResponseResponseConfidence].
-	ResponseConfidence interface{} `json:"response_confidence"`
-	// This field can have the runtime type of [shared.ParseResponseResult],
-	// [[]interface{}], [shared.SplitResponseResult], [shared.PipelineResponseResult],
-	// [shared.ClassifyResponseResult].
-	Result interface{} `json:"result"`
-	// The link to the studio pipeline for the document.
-	StudioLink string `json:"studio_link" api:"nullable"`
-	// This field can have the runtime type of [ParseUsage], [ExtractUsage].
-	Usage interface{}                                      `json:"usage"`
-	JSON  jobGetResponseEnhancedAsyncJobResponseResultJSON `json:"-"`
-	union JobGetResponseEnhancedAsyncJobResponseResultUnion
-}
-
-// jobGetResponseEnhancedAsyncJobResponseResultJSON contains the JSON metadata for
-// the struct [JobGetResponseEnhancedAsyncJobResponseResult]
-type jobGetResponseEnhancedAsyncJobResponseResultJSON struct {
-	Citations          apijson.Field
-	DocumentURL        apijson.Field
-	Duration           apijson.Field
-	FormSchema         apijson.Field
-	JobID              apijson.Field
-	PdfURL             apijson.Field
-	ResponseConfidence apijson.Field
-	Result             apijson.Field
-	StudioLink         apijson.Field
-	Usage              apijson.Field
-	raw                string
-	ExtraFields        map[string]apijson.Field
-}
-
-func (r jobGetResponseEnhancedAsyncJobResponseResultJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *JobGetResponseEnhancedAsyncJobResponseResult) UnmarshalJSON(data []byte) (err error) {
-	*r = JobGetResponseEnhancedAsyncJobResponseResult{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a [JobGetResponseEnhancedAsyncJobResponseResultUnion] interface
-// which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are [shared.ParseResponse],
-// [shared.ExtractResponse], [shared.SplitResponse], [shared.EditResponse],
-// [shared.PipelineResponse], [V3Extract], [shared.ClassifyResponse].
-func (r JobGetResponseEnhancedAsyncJobResponseResult) AsUnion() JobGetResponseEnhancedAsyncJobResponseResultUnion {
-	return r.union
-}
-
-// Response from classify job - returned when polling /job/{job_id}
 //
 // Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
 // [shared.SplitResponse], [shared.EditResponse], [shared.PipelineResponse],
 // [V3Extract] or [shared.ClassifyResponse].
 type JobGetResponseEnhancedAsyncJobResponseResultUnion interface {
-	ImplementsJobGetResponseEnhancedAsyncJobResponseResult()
+	ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion()
 }
 
 func init() {
