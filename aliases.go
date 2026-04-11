@@ -238,7 +238,7 @@ type PipelineResponseResultExtractArray = shared.PipelineResponseResultExtractAr
 type PipelineResponseResultExtractArrayItem = shared.PipelineResponseResultExtractArrayItem
 
 // This is an alias to an internal type.
-type PipelineResponseResultExtractArrayResult = shared.PipelineResponseResultExtractArrayResult
+type PipelineResponseResultExtractArrayResultUnion = shared.PipelineResponseResultExtractArrayResultUnion
 
 // This is an alias to an internal type.
 type PipelineResponseResultParseUnion = shared.PipelineResponseResultParseUnion

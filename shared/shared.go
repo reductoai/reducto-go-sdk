@@ -53,7 +53,7 @@ func (r asyncExtractResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r AsyncExtractResponse) ImplementsExtractRunResponse() {}
+func (r AsyncExtractResponse) ImplementsExtractRunResponseUnion() {}
 
 type AsyncParseResponse struct {
 	JobID string                 `json:"job_id" api:"required"`
@@ -191,9 +191,9 @@ func (r classifyResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r ClassifyResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+func (r ClassifyResponse) ImplementsJobGetResponseAsyncJobResponseResultUnion() {}
 
-func (r ClassifyResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+func (r ClassifyResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
 
 type ClassifyResponseResult struct {
 	Category string                     `json:"category" api:"required"`
@@ -358,49 +358,19 @@ func (r editResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r EditResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+func (r EditResponse) ImplementsJobGetResponseAsyncJobResponseResultUnion() {}
 
-func (r EditResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+func (r EditResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
 
-type ExtractResponse struct {
-	// The citations corresponding to the extracted response.
-	Citations []interface{} `json:"citations" api:"required,nullable"`
-	// The extracted response in your provided schema. This is a list of dictionaries.
-	// If disable_chunking is True (default), then it will be a list of length one.
-	Result []interface{}        `json:"result" api:"required"`
-	Usage  reducto.ExtractUsage `json:"usage" api:"required"`
-	JobID  string               `json:"job_id" api:"nullable"`
-	// The link to the studio pipeline for the document.
-	StudioLink string              `json:"studio_link" api:"nullable"`
-	JSON       extractResponseJSON `json:"-"`
-}
-
-// extractResponseJSON contains the JSON metadata for the struct [ExtractResponse]
-type extractResponseJSON struct {
-	Citations   apijson.Field
-	Result      apijson.Field
-	Usage       apijson.Field
-	JobID       apijson.Field
-	StudioLink  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ExtractResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r extractResponseJSON) RawJSON() string {
-	return r.raw
-}
+type ExtractResponse map[string]interface{}
 
 func (r ExtractResponse) ImplementsPipelineResponseResultExtractUnion() {}
 
-func (r ExtractResponse) ImplementsPipelineResponseResultExtractArrayResult() {}
+func (r ExtractResponse) ImplementsPipelineResponseResultExtractArrayResultUnion() {}
 
-func (r ExtractResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+func (r ExtractResponse) ImplementsJobGetResponseAsyncJobResponseResultUnion() {}
 
-func (r ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+func (r ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
 
 type FigureAgenticParam struct {
 	Scope param.Field[FigureAgenticScope] `json:"scope" api:"required"`
@@ -490,9 +460,9 @@ func (r ParseResponse) ImplementsPipelineResponseResultParseUnion() {}
 
 func (r ParseResponse) ImplementsParseRunResponse() {}
 
-func (r ParseResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+func (r ParseResponse) ImplementsJobGetResponseAsyncJobResponseResultUnion() {}
 
-func (r ParseResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+func (r ParseResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
 
 // The response from the document processing service. Note that there can be two
 // types of responses, Full Result and URL Result. This is due to limitations on
@@ -926,9 +896,9 @@ func (r pipelineResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r PipelineResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+func (r PipelineResponse) ImplementsJobGetResponseAsyncJobResponseResultUnion() {}
 
-func (r PipelineResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+func (r PipelineResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
 
 type PipelineResponseResult struct {
 	Extract PipelineResponseResultExtractUnion `json:"extract" api:"required,nullable"`
@@ -988,11 +958,11 @@ func (r PipelineResponseResultExtractArray) ImplementsPipelineResponseResultExtr
 
 // This is the response format for Extract -> Split Pipelines
 type PipelineResponseResultExtractArrayItem struct {
-	PageRange []int64                                    `json:"page_range" api:"required"`
-	Result    PipelineResponseResultExtractArrayResult   `json:"result" api:"required"`
-	SplitName string                                     `json:"split_name" api:"required"`
-	Partition string                                     `json:"partition" api:"nullable"`
-	JSON      pipelineResponseResultExtractArrayItemJSON `json:"-"`
+	PageRange []int64                                       `json:"page_range" api:"required"`
+	Result    PipelineResponseResultExtractArrayResultUnion `json:"result" api:"required"`
+	SplitName string                                        `json:"split_name" api:"required"`
+	Partition string                                        `json:"partition" api:"nullable"`
+	JSON      pipelineResponseResultExtractArrayItemJSON    `json:"-"`
 }
 
 // pipelineResponseResultExtractArrayItemJSON contains the JSON metadata for the
@@ -1014,55 +984,9 @@ func (r pipelineResponseResultExtractArrayItemJSON) RawJSON() string {
 	return r.raw
 }
 
-type PipelineResponseResultExtractArrayResult struct {
-	// This field can have the runtime type of [[]interface{}].
-	Result interface{}          `json:"result" api:"required"`
-	Usage  reducto.ExtractUsage `json:"usage" api:"required"`
-	// This field can have the runtime type of [[]interface{}].
-	Citations interface{} `json:"citations"`
-	JobID     string      `json:"job_id" api:"nullable"`
-	// The link to the studio pipeline for the document.
-	StudioLink string                                       `json:"studio_link" api:"nullable"`
-	JSON       pipelineResponseResultExtractArrayResultJSON `json:"-"`
-	union      PipelineResponseResultExtractArrayResultUnion
-}
-
-// pipelineResponseResultExtractArrayResultJSON contains the JSON metadata for the
-// struct [PipelineResponseResultExtractArrayResult]
-type pipelineResponseResultExtractArrayResultJSON struct {
-	Result      apijson.Field
-	Usage       apijson.Field
-	Citations   apijson.Field
-	JobID       apijson.Field
-	StudioLink  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r pipelineResponseResultExtractArrayResultJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *PipelineResponseResultExtractArrayResult) UnmarshalJSON(data []byte) (err error) {
-	*r = PipelineResponseResultExtractArrayResult{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a [PipelineResponseResultExtractArrayResultUnion] interface
-// which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are [ExtractResponse], [reducto.V3Extract].
-func (r PipelineResponseResultExtractArrayResult) AsUnion() PipelineResponseResultExtractArrayResultUnion {
-	return r.union
-}
-
 // Union satisfied by [ExtractResponse] or [reducto.V3Extract].
 type PipelineResponseResultExtractArrayResultUnion interface {
-	ImplementsPipelineResponseResultExtractArrayResult()
+	ImplementsPipelineResponseResultExtractArrayResultUnion()
 }
 
 func init() {
@@ -1165,9 +1089,9 @@ func (r splitResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r SplitResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+func (r SplitResponse) ImplementsJobGetResponseAsyncJobResponseResultUnion() {}
 
-func (r SplitResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+func (r SplitResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
 
 // The split result.
 type SplitResponseResult struct {
