@@ -31,7 +31,7 @@ type Client struct {
 // DefaultClientOptions read from the environment (REDUCTO_API_KEY,
 // REDUCTO_BASE_URL). This should be used to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
-	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
+	defaults := []option.RequestOption{option.WithHTTPClient(defaultHTTPClient()), option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("REDUCTO_BASE_URL"); ok {
 		defaults = append(defaults, option.WithBaseURL(o))
 	}
