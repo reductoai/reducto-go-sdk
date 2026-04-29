@@ -488,6 +488,11 @@ type ParseRunResponse struct {
 	JobID string `json:"job_id" api:"required"`
 	// The duration of the parse request in seconds.
 	Duration float64 `json:"duration"`
+	// Which pipeline produced this response. `lite` means Reducto Flash Lite served
+	// the request; `base` is the standard pipeline. Optional / nullable for forward
+	// compatibility — older API instances or persisted responses written before this
+	// field existed will leave it `None`; treat `None` as `base`.
+	ParseMode ParseRunResponseParseMode `json:"parse_mode" api:"nullable"`
 	// The storage URL of the converted PDF file.
 	PdfURL string `json:"pdf_url" api:"nullable"`
 	// This field can have the runtime type of [shared.ParseResponseResult].
@@ -504,6 +509,7 @@ type ParseRunResponse struct {
 type parseRunResponseJSON struct {
 	JobID       apijson.Field
 	Duration    apijson.Field
+	ParseMode   apijson.Field
 	PdfURL      apijson.Field
 	Result      apijson.Field
 	StudioLink  apijson.Field
@@ -552,6 +558,25 @@ func init() {
 			Type:       reflect.TypeOf(shared.AsyncParseResponse{}),
 		},
 	)
+}
+
+// Which pipeline produced this response. `lite` means Reducto Flash Lite served
+// the request; `base` is the standard pipeline. Optional / nullable for forward
+// compatibility — older API instances or persisted responses written before this
+// field existed will leave it `None`; treat `None` as `base`.
+type ParseRunResponseParseMode string
+
+const (
+	ParseRunResponseParseModeBase ParseRunResponseParseMode = "base"
+	ParseRunResponseParseModeLite ParseRunResponseParseMode = "lite"
+)
+
+func (r ParseRunResponseParseMode) IsKnown() bool {
+	switch r {
+	case ParseRunResponseParseModeBase, ParseRunResponseParseModeLite:
+		return true
+	}
+	return false
 }
 
 type ParseRunParams struct {
