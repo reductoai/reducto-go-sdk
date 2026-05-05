@@ -186,6 +186,9 @@ type EnhanceAgenticParam struct {
 	Scope param.Field[EnhanceAgenticScope] `json:"scope" api:"required"`
 	// If True, use the advanced chart agent. Defaults to False.
 	AdvancedChartAgent param.Field[bool] `json:"advanced_chart_agent"`
+	// Routing mode for table agentic: 'default' runs enrichment on all tables, 'auto'
+	// uses the router to skip tables where enrichment is unlikely to help.
+	Mode param.Field[EnhanceAgenticMode] `json:"mode"`
 	// Custom prompt for table agentic.
 	Prompt param.Field[string] `json:"prompt"`
 	// If True, return overlays for the figure. This is so you can use the overlays to
@@ -216,6 +219,23 @@ const (
 func (r EnhanceAgenticScope) IsKnown() bool {
 	switch r {
 	case EnhanceAgenticScopeTable, EnhanceAgenticScopeFigure, EnhanceAgenticScopeText:
+		return true
+	}
+	return false
+}
+
+// Routing mode for table agentic: 'default' runs enrichment on all tables, 'auto'
+// uses the router to skip tables where enrichment is unlikely to help.
+type EnhanceAgenticMode string
+
+const (
+	EnhanceAgenticModeDefault EnhanceAgenticMode = "default"
+	EnhanceAgenticModeAuto    EnhanceAgenticMode = "auto"
+)
+
+func (r EnhanceAgenticMode) IsKnown() bool {
+	switch r {
+	case EnhanceAgenticModeDefault, EnhanceAgenticModeAuto:
 		return true
 	}
 	return false

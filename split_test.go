@@ -38,6 +38,7 @@ func TestSplitRunWithOptionalParams(t *testing.T) {
 			Enhance: reducto.F(reducto.EnhanceParam{
 				Agentic: reducto.F([]reducto.EnhanceAgenticUnionParam{shared.TableAgenticParam{
 					Scope:  reducto.F(shared.TableAgenticScopeTable),
+					Mode:   reducto.F(shared.TableAgenticModeDefault),
 					Prompt: reducto.F("prompt"),
 				}}),
 				IntelligentOrdering: reducto.F(true),
@@ -131,6 +132,7 @@ func TestSplitRunJobWithOptionalParams(t *testing.T) {
 			Enhance: reducto.F(reducto.EnhanceParam{
 				Agentic: reducto.F([]reducto.EnhanceAgenticUnionParam{shared.TableAgenticParam{
 					Scope:  reducto.F(shared.TableAgenticScopeTable),
+					Mode:   reducto.F(shared.TableAgenticModeDefault),
 					Prompt: reducto.F("prompt"),
 				}}),
 				IntelligentOrdering: reducto.F(true),
