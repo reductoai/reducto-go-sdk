@@ -169,6 +169,7 @@ type ClassifyResponse struct {
 	Duration float64 `json:"duration" api:"nullable"`
 	// Overall confidence breakdown for classification response.
 	ResponseConfidence ClassifyResponseResponseConfidence `json:"response_confidence" api:"nullable"`
+	ResponseType       ClassifyResponseResponseType       `json:"response_type"`
 	JSON               classifyResponseJSON               `json:"-"`
 }
 
@@ -179,6 +180,7 @@ type classifyResponseJSON struct {
 	Result             apijson.Field
 	Duration           apijson.Field
 	ResponseConfidence apijson.Field
+	ResponseType       apijson.Field
 	raw                string
 	ExtraFields        map[string]apijson.Field
 }
@@ -304,6 +306,20 @@ func (r ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidence
 	return false
 }
 
+type ClassifyResponseResponseType string
+
+const (
+	ClassifyResponseResponseTypeClassify ClassifyResponseResponseType = "classify"
+)
+
+func (r ClassifyResponseResponseType) IsKnown() bool {
+	switch r {
+	case ClassifyResponseResponseTypeClassify:
+		return true
+	}
+	return false
+}
+
 type DirectWebhookConfigParam struct {
 	URL  param.Field[string]                  `json:"url" api:"required"`
 	Mode param.Field[DirectWebhookConfigMode] `json:"mode"`
@@ -334,7 +350,8 @@ type EditResponse struct {
 	DocumentURL string `json:"document_url" api:"required"`
 	// Form schema for PDF forms. List of widgets with their types, descriptions, and
 	// bounding boxes.
-	FormSchema []reducto.EditWidget `json:"form_schema" api:"nullable"`
+	FormSchema   []reducto.EditWidget     `json:"form_schema" api:"nullable"`
+	ResponseType EditResponseResponseType `json:"response_type"`
 	// Usage information for the edit operation, including number of pages and credits
 	// charged.
 	Usage reducto.ParseUsage `json:"usage" api:"nullable"`
@@ -343,11 +360,12 @@ type EditResponse struct {
 
 // editResponseJSON contains the JSON metadata for the struct [EditResponse]
 type editResponseJSON struct {
-	DocumentURL apijson.Field
-	FormSchema  apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	DocumentURL  apijson.Field
+	FormSchema   apijson.Field
+	ResponseType apijson.Field
+	Usage        apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
 }
 
 func (r *EditResponse) UnmarshalJSON(data []byte) (err error) {
@@ -361,6 +379,20 @@ func (r editResponseJSON) RawJSON() string {
 func (r EditResponse) ImplementsJobGetResponseAsyncJobResponseResultUnion() {}
 
 func (r EditResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
+
+type EditResponseResponseType string
+
+const (
+	EditResponseResponseTypeEdit EditResponseResponseType = "edit"
+)
+
+func (r EditResponseResponseType) IsKnown() bool {
+	switch r {
+	case EditResponseResponseTypeEdit:
+		return true
+	}
+	return false
+}
 
 type ExtractResponse map[string]interface{}
 
@@ -435,7 +467,8 @@ type ParseResponse struct {
 	// field existed will leave it `None`; treat `None` as `base`.
 	ParseMode ParseResponseParseMode `json:"parse_mode" api:"nullable"`
 	// The storage URL of the converted PDF file.
-	PdfURL string `json:"pdf_url" api:"nullable"`
+	PdfURL       string                    `json:"pdf_url" api:"nullable"`
+	ResponseType ParseResponseResponseType `json:"response_type"`
 	// The link to the studio pipeline for the document.
 	StudioLink string            `json:"studio_link" api:"nullable"`
 	JSON       parseResponseJSON `json:"-"`
@@ -443,15 +476,16 @@ type ParseResponse struct {
 
 // parseResponseJSON contains the JSON metadata for the struct [ParseResponse]
 type parseResponseJSON struct {
-	Duration    apijson.Field
-	JobID       apijson.Field
-	Result      apijson.Field
-	Usage       apijson.Field
-	ParseMode   apijson.Field
-	PdfURL      apijson.Field
-	StudioLink  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Duration     apijson.Field
+	JobID        apijson.Field
+	Result       apijson.Field
+	Usage        apijson.Field
+	ParseMode    apijson.Field
+	PdfURL       apijson.Field
+	ResponseType apijson.Field
+	StudioLink   apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
 }
 
 func (r *ParseResponse) UnmarshalJSON(data []byte) (err error) {
@@ -896,21 +930,37 @@ func (r ParseResponseParseMode) IsKnown() bool {
 	return false
 }
 
+type ParseResponseResponseType string
+
+const (
+	ParseResponseResponseTypeParse ParseResponseResponseType = "parse"
+)
+
+func (r ParseResponseResponseType) IsKnown() bool {
+	switch r {
+	case ParseResponseResponseTypeParse:
+		return true
+	}
+	return false
+}
+
 type PipelineResponse struct {
-	JobID  string                 `json:"job_id" api:"required"`
-	Result PipelineResponseResult `json:"result" api:"required"`
-	Usage  reducto.ParseUsage     `json:"usage" api:"required"`
-	JSON   pipelineResponseJSON   `json:"-"`
+	JobID        string                       `json:"job_id" api:"required"`
+	Result       PipelineResponseResult       `json:"result" api:"required"`
+	Usage        reducto.ParseUsage           `json:"usage" api:"required"`
+	ResponseType PipelineResponseResponseType `json:"response_type"`
+	JSON         pipelineResponseJSON         `json:"-"`
 }
 
 // pipelineResponseJSON contains the JSON metadata for the struct
 // [PipelineResponse]
 type pipelineResponseJSON struct {
-	JobID       apijson.Field
-	Result      apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	JobID        apijson.Field
+	Result       apijson.Field
+	Usage        apijson.Field
+	ResponseType apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
 }
 
 func (r *PipelineResponse) UnmarshalJSON(data []byte) (err error) {
@@ -1053,6 +1103,20 @@ type PipelineResponseResultParseArray []ParseResponse
 
 func (r PipelineResponseResultParseArray) ImplementsPipelineResponseResultParseUnion() {}
 
+type PipelineResponseResponseType string
+
+const (
+	PipelineResponseResponseTypePipeline PipelineResponseResponseType = "pipeline"
+)
+
+func (r PipelineResponseResponseType) IsKnown() bool {
+	switch r {
+	case PipelineResponseResponseTypePipeline:
+		return true
+	}
+	return false
+}
+
 type SplitLargeTablesParam struct {
 	// If True, split large tables into smaller tables. Defaults to True.
 	Enabled param.Field[bool] `json:"enabled"`
@@ -1093,17 +1157,19 @@ func (r SplitLargeTablesSizeSplitLargeTableSizesParam) ImplementsSplitLargeTable
 
 type SplitResponse struct {
 	// The split result.
-	Result SplitResponseResult `json:"result" api:"required"`
-	Usage  reducto.ParseUsage  `json:"usage" api:"required"`
-	JSON   splitResponseJSON   `json:"-"`
+	Result       SplitResponseResult       `json:"result" api:"required"`
+	Usage        reducto.ParseUsage        `json:"usage" api:"required"`
+	ResponseType SplitResponseResponseType `json:"response_type"`
+	JSON         splitResponseJSON         `json:"-"`
 }
 
 // splitResponseJSON contains the JSON metadata for the struct [SplitResponse]
 type splitResponseJSON struct {
-	Result      apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Result       apijson.Field
+	Usage        apijson.Field
+	ResponseType apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
 }
 
 func (r *SplitResponse) UnmarshalJSON(data []byte) (err error) {
@@ -1359,6 +1425,20 @@ func (r *SplitResponseResultDeepSplitResultSplitsPartition) UnmarshalJSON(data [
 
 func (r splitResponseResultDeepSplitResultSplitsPartitionJSON) RawJSON() string {
 	return r.raw
+}
+
+type SplitResponseResponseType string
+
+const (
+	SplitResponseResponseTypeSplit SplitResponseResponseType = "split"
+)
+
+func (r SplitResponseResponseType) IsKnown() bool {
+	switch r {
+	case SplitResponseResponseTypeSplit:
+		return true
+	}
+	return false
 }
 
 type SvixWebhookConfigParam struct {
