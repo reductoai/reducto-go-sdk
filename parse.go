@@ -514,7 +514,8 @@ type ParseRunResponse struct {
 	// field existed will leave it `None`; treat `None` as `base`.
 	ParseMode ParseRunResponseParseMode `json:"parse_mode" api:"nullable"`
 	// The storage URL of the converted PDF file.
-	PdfURL string `json:"pdf_url" api:"nullable"`
+	PdfURL       string                       `json:"pdf_url" api:"nullable"`
+	ResponseType ParseRunResponseResponseType `json:"response_type"`
 	// This field can have the runtime type of [shared.ParseResponseResult].
 	Result interface{} `json:"result"`
 	// The link to the studio pipeline for the document.
@@ -527,15 +528,16 @@ type ParseRunResponse struct {
 // parseRunResponseJSON contains the JSON metadata for the struct
 // [ParseRunResponse]
 type parseRunResponseJSON struct {
-	JobID       apijson.Field
-	Duration    apijson.Field
-	ParseMode   apijson.Field
-	PdfURL      apijson.Field
-	Result      apijson.Field
-	StudioLink  apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	JobID        apijson.Field
+	Duration     apijson.Field
+	ParseMode    apijson.Field
+	PdfURL       apijson.Field
+	ResponseType apijson.Field
+	Result       apijson.Field
+	StudioLink   apijson.Field
+	Usage        apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
 }
 
 func (r parseRunResponseJSON) RawJSON() string {
@@ -594,6 +596,20 @@ const (
 func (r ParseRunResponseParseMode) IsKnown() bool {
 	switch r {
 	case ParseRunResponseParseModeBase, ParseRunResponseParseModeLite:
+		return true
+	}
+	return false
+}
+
+type ParseRunResponseResponseType string
+
+const (
+	ParseRunResponseResponseTypeParse ParseRunResponseResponseType = "parse"
+)
+
+func (r ParseRunResponseResponseType) IsKnown() bool {
+	switch r {
+	case ParseRunResponseResponseTypeParse:
 		return true
 	}
 	return false

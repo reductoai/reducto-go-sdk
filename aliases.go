@@ -86,6 +86,12 @@ const ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceHi
 const ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceLow = shared.ClassifyResponseResponseConfidenceCategoriesCriteriaConfidenceConfidenceLow
 
 // This is an alias to an internal type.
+type ClassifyResponseResponseType = shared.ClassifyResponseResponseType
+
+// This is an alias to an internal value.
+const ClassifyResponseResponseTypeClassify = shared.ClassifyResponseResponseTypeClassify
+
+// This is an alias to an internal type.
 type DirectWebhookConfigParam = shared.DirectWebhookConfigParam
 
 // This is an alias to an internal type.
@@ -96,6 +102,12 @@ const DirectWebhookConfigModeDirect = shared.DirectWebhookConfigModeDirect
 
 // This is an alias to an internal type.
 type EditResponse = shared.EditResponse
+
+// This is an alias to an internal type.
+type EditResponseResponseType = shared.EditResponseResponseType
+
+// This is an alias to an internal value.
+const EditResponseResponseTypeEdit = shared.EditResponseResponseTypeEdit
 
 // This is an alias to an internal type.
 type ExtractResponse = shared.ExtractResponse
@@ -235,6 +247,12 @@ const ParseResponseParseModeBase = shared.ParseResponseParseModeBase
 const ParseResponseParseModeLite = shared.ParseResponseParseModeLite
 
 // This is an alias to an internal type.
+type ParseResponseResponseType = shared.ParseResponseResponseType
+
+// This is an alias to an internal value.
+const ParseResponseResponseTypeParse = shared.ParseResponseResponseTypeParse
+
+// This is an alias to an internal type.
 type PipelineResponse = shared.PipelineResponse
 
 // This is an alias to an internal type.
@@ -259,6 +277,12 @@ type PipelineResponseResultParseUnion = shared.PipelineResponseResultParseUnion
 
 // This is an alias to an internal type.
 type PipelineResponseResultParseArray = shared.PipelineResponseResultParseArray
+
+// This is an alias to an internal type.
+type PipelineResponseResponseType = shared.PipelineResponseResponseType
+
+// This is an alias to an internal value.
+const PipelineResponseResponseTypePipeline = shared.PipelineResponseResponseTypePipeline
 
 // This is an alias to an internal type.
 type SplitLargeTablesParam = shared.SplitLargeTablesParam
@@ -316,6 +340,12 @@ type SplitResponseResultDeepSplitResultSplit = shared.SplitResponseResultDeepSpl
 
 // This is an alias to an internal type.
 type SplitResponseResultDeepSplitResultSplitsPartition = shared.SplitResponseResultDeepSplitResultSplitsPartition
+
+// This is an alias to an internal type.
+type SplitResponseResponseType = shared.SplitResponseResponseType
+
+// This is an alias to an internal value.
+const SplitResponseResponseTypeSplit = shared.SplitResponseResponseTypeSplit
 
 // This is an alias to an internal type.
 type SvixWebhookConfigParam = shared.SvixWebhookConfigParam
