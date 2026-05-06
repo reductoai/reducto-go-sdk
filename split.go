@@ -130,11 +130,17 @@ const (
 	ParseUsagePageBillingBreakdownChartAgent               ParseUsagePageBillingBreakdown = "chart_agent"
 	ParseUsagePageBillingBreakdownSpreadsheetCells         ParseUsagePageBillingBreakdown = "spreadsheet_cells"
 	ParseUsagePageBillingBreakdownBillableSpreadsheetPages ParseUsagePageBillingBreakdown = "billable_spreadsheet_pages"
+	ParseUsagePageBillingBreakdownEnrichTable              ParseUsagePageBillingBreakdown = "enrich_table"
+	ParseUsagePageBillingBreakdownFigureSummary            ParseUsagePageBillingBreakdown = "figure_summary"
+	ParseUsagePageBillingBreakdownTableSummary             ParseUsagePageBillingBreakdown = "table_summary"
+	ParseUsagePageBillingBreakdownKeyValue                 ParseUsagePageBillingBreakdown = "key_value"
+	ParseUsagePageBillingBreakdownAgenticText              ParseUsagePageBillingBreakdown = "agentic_text"
+	ParseUsagePageBillingBreakdownPromptableAgenticText    ParseUsagePageBillingBreakdown = "promptable_agentic_text"
 )
 
 func (r ParseUsagePageBillingBreakdown) IsKnown() bool {
 	switch r {
-	case ParseUsagePageBillingBreakdownPage, ParseUsagePageBillingBreakdownHTMLPage, ParseUsagePageBillingBreakdownDocxNativePage, ParseUsagePageBillingBreakdownAgentic, ParseUsagePageBillingBreakdownComplex, ParseUsagePageBillingBreakdownChartAgent, ParseUsagePageBillingBreakdownSpreadsheetCells, ParseUsagePageBillingBreakdownBillableSpreadsheetPages:
+	case ParseUsagePageBillingBreakdownPage, ParseUsagePageBillingBreakdownHTMLPage, ParseUsagePageBillingBreakdownDocxNativePage, ParseUsagePageBillingBreakdownAgentic, ParseUsagePageBillingBreakdownComplex, ParseUsagePageBillingBreakdownChartAgent, ParseUsagePageBillingBreakdownSpreadsheetCells, ParseUsagePageBillingBreakdownBillableSpreadsheetPages, ParseUsagePageBillingBreakdownEnrichTable, ParseUsagePageBillingBreakdownFigureSummary, ParseUsagePageBillingBreakdownTableSummary, ParseUsagePageBillingBreakdownKeyValue, ParseUsagePageBillingBreakdownAgenticText, ParseUsagePageBillingBreakdownPromptableAgenticText:
 		return true
 	}
 	return false
