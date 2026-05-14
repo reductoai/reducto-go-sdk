@@ -34,6 +34,7 @@ func TestSplitRunWithOptionalParams(t *testing.T) {
 			Name:         reducto.F("name"),
 			PartitionKey: reducto.F("partition_key"),
 		}}),
+		DeepSplit: reducto.F(true),
 		Parsing: reducto.F(reducto.ParseOptionsParam{
 			Enhance: reducto.F(reducto.EnhanceParam{
 				Agentic: reducto.F([]reducto.EnhanceAgenticUnionParam{shared.TableAgenticParam{
@@ -128,6 +129,7 @@ func TestSplitRunJobWithOptionalParams(t *testing.T) {
 				Mode:     reducto.F(shared.SvixWebhookConfigModeSvix),
 			}),
 		}),
+		DeepSplit: reducto.F(true),
 		Parsing: reducto.F(reducto.ParseOptionsParam{
 			Enhance: reducto.F(reducto.EnhanceParam{
 				Agentic: reducto.F([]reducto.EnhanceAgenticUnionParam{shared.TableAgenticParam{
