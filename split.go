@@ -202,6 +202,9 @@ type SplitRunParams struct {
 	Input param.Field[SplitRunParamsInputUnion] `json:"input" api:"required"`
 	// The configuration options for processing the document.
 	SplitDescription param.Field[[]SplitCategoryParam] `json:"split_description" api:"required"`
+	// If True, uses the deep split agent for higher-quality document splitting. Off by
+	// default.
+	DeepSplit param.Field[bool] `json:"deep_split"`
 	// The configuration options for parsing the document. If you are passing in a
 	// jobid:// URL for the file, then this configuration will be ignored.
 	Parsing param.Field[ParseOptionsParam] `json:"parsing"`
@@ -248,6 +251,9 @@ type SplitRunJobParams struct {
 	SplitDescription param.Field[[]SplitCategoryParam] `json:"split_description" api:"required"`
 	// The configuration options for asynchronous processing (default synchronous).
 	Async param.Field[AsyncConfigV3Param] `json:"async"`
+	// If True, uses the deep split agent for higher-quality document splitting. Off by
+	// default.
+	DeepSplit param.Field[bool] `json:"deep_split"`
 	// The configuration options for parsing the document. If you are passing in a
 	// jobid:// URL for the file, then this configuration will be ignored.
 	Parsing param.Field[ParseOptionsParam] `json:"parsing"`
