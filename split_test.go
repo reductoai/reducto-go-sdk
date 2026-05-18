@@ -34,7 +34,6 @@ func TestSplitRunWithOptionalParams(t *testing.T) {
 			Name:         reducto.F("name"),
 			PartitionKey: reducto.F("partition_key"),
 		}}),
-		DeepSplit: reducto.F(true),
 		Parsing: reducto.F(reducto.ParseOptionsParam{
 			Enhance: reducto.F(reducto.EnhanceParam{
 				Agentic: reducto.F([]reducto.EnhanceAgenticUnionParam{shared.TableAgenticParam{
@@ -86,9 +85,10 @@ func TestSplitRunWithOptionalParams(t *testing.T) {
 				}),
 			}),
 		}),
-		Settings: reducto.F(reducto.SplitTableOptionsParam{
+		Settings: reducto.F(reducto.SplitRunParamsSettings{
 			AllowPageOverlap: reducto.F(true),
-			TableCutoff:      reducto.F(reducto.SplitTableOptionsTableCutoffTruncate),
+			DeepSplit:        reducto.F(true),
+			TableCutoff:      reducto.F(reducto.SplitRunParamsSettingsTableCutoffTruncate),
 		}),
 		SplitRules: reducto.F("split_rules"),
 	})
@@ -129,7 +129,6 @@ func TestSplitRunJobWithOptionalParams(t *testing.T) {
 				Mode:     reducto.F(shared.SvixWebhookConfigModeSvix),
 			}),
 		}),
-		DeepSplit: reducto.F(true),
 		Parsing: reducto.F(reducto.ParseOptionsParam{
 			Enhance: reducto.F(reducto.EnhanceParam{
 				Agentic: reducto.F([]reducto.EnhanceAgenticUnionParam{shared.TableAgenticParam{
@@ -181,9 +180,10 @@ func TestSplitRunJobWithOptionalParams(t *testing.T) {
 				}),
 			}),
 		}),
-		Settings: reducto.F(reducto.SplitTableOptionsParam{
+		Settings: reducto.F(reducto.SplitRunJobParamsSettings{
 			AllowPageOverlap: reducto.F(true),
-			TableCutoff:      reducto.F(reducto.SplitTableOptionsTableCutoffTruncate),
+			DeepSplit:        reducto.F(true),
+			TableCutoff:      reducto.F(reducto.SplitRunJobParamsSettingsTableCutoffTruncate),
 		}),
 		SplitRules: reducto.F("split_rules"),
 	})

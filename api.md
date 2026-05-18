@@ -78,7 +78,6 @@ Methods:
 Params Types:
 
 - <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitCategoryParam">SplitCategoryParam</a>
-- <a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk">reducto</a>.<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk#SplitTableOptionsParam">SplitTableOptionsParam</a>
 
 Response Types:
 
