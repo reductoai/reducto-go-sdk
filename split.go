@@ -156,40 +156,6 @@ func (r SplitCategoryParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type SplitTableOptionsParam struct {
-	// If True, a page can belong to multiple categories/partitions. If False, each
-	// page must belong to exactly one category. Defaults to True.
-	AllowPageOverlap param.Field[bool] `json:"allow_page_overlap"`
-	// If tables should be truncated to the first few rows or if all content should be
-	// preserved. truncate improves latency, preserve is recommended for cases where
-	// partition_key is being used and the partition_key may be included within the
-	// table. Defaults to truncate
-	TableCutoff param.Field[SplitTableOptionsTableCutoff] `json:"table_cutoff"`
-}
-
-func (r SplitTableOptionsParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// If tables should be truncated to the first few rows or if all content should be
-// preserved. truncate improves latency, preserve is recommended for cases where
-// partition_key is being used and the partition_key may be included within the
-// table. Defaults to truncate
-type SplitTableOptionsTableCutoff string
-
-const (
-	SplitTableOptionsTableCutoffTruncate SplitTableOptionsTableCutoff = "truncate"
-	SplitTableOptionsTableCutoffPreserve SplitTableOptionsTableCutoff = "preserve"
-)
-
-func (r SplitTableOptionsTableCutoff) IsKnown() bool {
-	switch r {
-	case SplitTableOptionsTableCutoffTruncate, SplitTableOptionsTableCutoffPreserve:
-		return true
-	}
-	return false
-}
-
 type SplitRunParams struct {
 	// For parse/split/extract pipelines, the URL of the document to be processed. You
 	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
@@ -202,14 +168,11 @@ type SplitRunParams struct {
 	Input param.Field[SplitRunParamsInputUnion] `json:"input" api:"required"`
 	// The configuration options for processing the document.
 	SplitDescription param.Field[[]SplitCategoryParam] `json:"split_description" api:"required"`
-	// If True, uses the deep split agent for higher-quality document splitting. Off by
-	// default.
-	DeepSplit param.Field[bool] `json:"deep_split"`
 	// The configuration options for parsing the document. If you are passing in a
 	// jobid:// URL for the file, then this configuration will be ignored.
 	Parsing param.Field[ParseOptionsParam] `json:"parsing"`
 	// The settings for split processing.
-	Settings param.Field[SplitTableOptionsParam] `json:"settings"`
+	Settings param.Field[SplitRunParamsSettings] `json:"settings"`
 	// The prompt that describes rules for splitting the document.
 	SplitRules param.Field[string] `json:"split_rules"`
 }
@@ -237,6 +200,44 @@ type SplitRunParamsInputArray []string
 
 func (r SplitRunParamsInputArray) ImplementsSplitRunParamsInputUnion() {}
 
+// The settings for split processing.
+type SplitRunParamsSettings struct {
+	// If True, a page can belong to multiple categories/partitions. If False, each
+	// page must belong to exactly one category. Defaults to True.
+	AllowPageOverlap param.Field[bool] `json:"allow_page_overlap"`
+	// If True, uses the deep split agent for higher-quality document splitting. Off by
+	// default.
+	DeepSplit param.Field[bool] `json:"deep_split"`
+	// If tables should be truncated to the first few rows or if all content should be
+	// preserved. truncate improves latency, preserve is recommended for cases where
+	// partition_key is being used and the partition_key may be included within the
+	// table. Defaults to truncate
+	TableCutoff param.Field[SplitRunParamsSettingsTableCutoff] `json:"table_cutoff"`
+}
+
+func (r SplitRunParamsSettings) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// If tables should be truncated to the first few rows or if all content should be
+// preserved. truncate improves latency, preserve is recommended for cases where
+// partition_key is being used and the partition_key may be included within the
+// table. Defaults to truncate
+type SplitRunParamsSettingsTableCutoff string
+
+const (
+	SplitRunParamsSettingsTableCutoffTruncate SplitRunParamsSettingsTableCutoff = "truncate"
+	SplitRunParamsSettingsTableCutoffPreserve SplitRunParamsSettingsTableCutoff = "preserve"
+)
+
+func (r SplitRunParamsSettingsTableCutoff) IsKnown() bool {
+	switch r {
+	case SplitRunParamsSettingsTableCutoffTruncate, SplitRunParamsSettingsTableCutoffPreserve:
+		return true
+	}
+	return false
+}
+
 type SplitRunJobParams struct {
 	// For parse/split/extract pipelines, the URL of the document to be processed. You
 	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
@@ -251,14 +252,11 @@ type SplitRunJobParams struct {
 	SplitDescription param.Field[[]SplitCategoryParam] `json:"split_description" api:"required"`
 	// The configuration options for asynchronous processing (default synchronous).
 	Async param.Field[AsyncConfigV3Param] `json:"async"`
-	// If True, uses the deep split agent for higher-quality document splitting. Off by
-	// default.
-	DeepSplit param.Field[bool] `json:"deep_split"`
 	// The configuration options for parsing the document. If you are passing in a
 	// jobid:// URL for the file, then this configuration will be ignored.
 	Parsing param.Field[ParseOptionsParam] `json:"parsing"`
 	// The settings for split processing.
-	Settings param.Field[SplitTableOptionsParam] `json:"settings"`
+	Settings param.Field[SplitRunJobParamsSettings] `json:"settings"`
 	// The prompt that describes rules for splitting the document.
 	SplitRules param.Field[string] `json:"split_rules"`
 }
@@ -285,3 +283,41 @@ type SplitRunJobParamsInputUnion interface {
 type SplitRunJobParamsInputArray []string
 
 func (r SplitRunJobParamsInputArray) ImplementsSplitRunJobParamsInputUnion() {}
+
+// The settings for split processing.
+type SplitRunJobParamsSettings struct {
+	// If True, a page can belong to multiple categories/partitions. If False, each
+	// page must belong to exactly one category. Defaults to True.
+	AllowPageOverlap param.Field[bool] `json:"allow_page_overlap"`
+	// If True, uses the deep split agent for higher-quality document splitting. Off by
+	// default.
+	DeepSplit param.Field[bool] `json:"deep_split"`
+	// If tables should be truncated to the first few rows or if all content should be
+	// preserved. truncate improves latency, preserve is recommended for cases where
+	// partition_key is being used and the partition_key may be included within the
+	// table. Defaults to truncate
+	TableCutoff param.Field[SplitRunJobParamsSettingsTableCutoff] `json:"table_cutoff"`
+}
+
+func (r SplitRunJobParamsSettings) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// If tables should be truncated to the first few rows or if all content should be
+// preserved. truncate improves latency, preserve is recommended for cases where
+// partition_key is being used and the partition_key may be included within the
+// table. Defaults to truncate
+type SplitRunJobParamsSettingsTableCutoff string
+
+const (
+	SplitRunJobParamsSettingsTableCutoffTruncate SplitRunJobParamsSettingsTableCutoff = "truncate"
+	SplitRunJobParamsSettingsTableCutoffPreserve SplitRunJobParamsSettingsTableCutoff = "preserve"
+)
+
+func (r SplitRunJobParamsSettingsTableCutoff) IsKnown() bool {
+	switch r {
+	case SplitRunJobParamsSettingsTableCutoffTruncate, SplitRunJobParamsSettingsTableCutoffPreserve:
+		return true
+	}
+	return false
+}
