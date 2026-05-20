@@ -342,6 +342,12 @@ type SettingsParam struct {
 	DocumentPassword param.Field[string] `json:"document_password"`
 	// If True, embed OCR metadata into the returned PDF. Defaults to False.
 	EmbedPdfMetadata param.Field[bool] `json:"embed_pdf_metadata"`
+	// Render DPI used when rasterizing the source PDF before embedding the OCR text
+	// layer (only applies when `embed_pdf_metadata` is True). Lower values produce
+	// dramatically smaller output PDFs; higher values preserve more detail when zoomed
+	// past 200%. Defaults to 100 (good for on-screen viewing); raise toward the source
+	// scan DPI for crisper output. Min 50, max 250.
+	EmbedPdfMetadataDpi param.Field[int64] `json:"embed_pdf_metadata_dpi"`
 	// The mode to use for text extraction from PDFs. OCR mode uses optical character
 	// recognition only. Hybrid mode combines OCR with embedded PDF text for best
 	// accuracy (default).
