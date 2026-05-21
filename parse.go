@@ -117,7 +117,7 @@ type AsyncParseConfigParam struct {
 	Enhance    param.Field[EnhanceParam]       `json:"enhance"`
 	Formatting param.Field[FormattingParam]    `json:"formatting"`
 	// Queue priority. 'batch' for non-urgent work that processes when spare GPU
-	// capacity is available.
+	// capacity is available. 'auto' (alias: 'standard') uses the default queue.
 	QueuePriority param.Field[AsyncParseConfigQueuePriority] `json:"queue_priority"`
 	Retrieval     param.Field[RetrievalParam]                `json:"retrieval"`
 	Settings      param.Field[SettingsParam]                 `json:"settings"`
@@ -150,17 +150,18 @@ type AsyncParseConfigInputArrayParam []string
 func (r AsyncParseConfigInputArrayParam) ImplementsAsyncParseConfigInputUnionParam() {}
 
 // Queue priority. 'batch' for non-urgent work that processes when spare GPU
-// capacity is available.
+// capacity is available. 'auto' (alias: 'standard') uses the default queue.
 type AsyncParseConfigQueuePriority string
 
 const (
-	AsyncParseConfigQueuePriorityAuto  AsyncParseConfigQueuePriority = "auto"
-	AsyncParseConfigQueuePriorityBatch AsyncParseConfigQueuePriority = "batch"
+	AsyncParseConfigQueuePriorityAuto     AsyncParseConfigQueuePriority = "auto"
+	AsyncParseConfigQueuePriorityStandard AsyncParseConfigQueuePriority = "standard"
+	AsyncParseConfigQueuePriorityBatch    AsyncParseConfigQueuePriority = "batch"
 )
 
 func (r AsyncParseConfigQueuePriority) IsKnown() bool {
 	switch r {
-	case AsyncParseConfigQueuePriorityAuto, AsyncParseConfigQueuePriorityBatch:
+	case AsyncParseConfigQueuePriorityAuto, AsyncParseConfigQueuePriorityStandard, AsyncParseConfigQueuePriorityBatch:
 		return true
 	}
 	return false
@@ -636,7 +637,7 @@ type ParseRunParamsBody struct {
 	Enhance    param.Field[EnhanceParam]       `json:"enhance"`
 	Formatting param.Field[FormattingParam]    `json:"formatting"`
 	// Queue priority. 'batch' for non-urgent work that processes when spare GPU
-	// capacity is available.
+	// capacity is available. 'auto' (alias: 'standard') uses the default queue.
 	QueuePriority param.Field[ParseRunParamsBodyQueuePriority] `json:"queue_priority"`
 	Retrieval     param.Field[RetrievalParam]                  `json:"retrieval"`
 	Settings      param.Field[SettingsParam]                   `json:"settings"`
@@ -699,17 +700,18 @@ func (r ParseRunParamsBodySyncParseConfigInputArray) ImplementsParseRunParamsBod
 }
 
 // Queue priority. 'batch' for non-urgent work that processes when spare GPU
-// capacity is available.
+// capacity is available. 'auto' (alias: 'standard') uses the default queue.
 type ParseRunParamsBodyQueuePriority string
 
 const (
-	ParseRunParamsBodyQueuePriorityAuto  ParseRunParamsBodyQueuePriority = "auto"
-	ParseRunParamsBodyQueuePriorityBatch ParseRunParamsBodyQueuePriority = "batch"
+	ParseRunParamsBodyQueuePriorityAuto     ParseRunParamsBodyQueuePriority = "auto"
+	ParseRunParamsBodyQueuePriorityStandard ParseRunParamsBodyQueuePriority = "standard"
+	ParseRunParamsBodyQueuePriorityBatch    ParseRunParamsBodyQueuePriority = "batch"
 )
 
 func (r ParseRunParamsBodyQueuePriority) IsKnown() bool {
 	switch r {
-	case ParseRunParamsBodyQueuePriorityAuto, ParseRunParamsBodyQueuePriorityBatch:
+	case ParseRunParamsBodyQueuePriorityAuto, ParseRunParamsBodyQueuePriorityStandard, ParseRunParamsBodyQueuePriorityBatch:
 		return true
 	}
 	return false
