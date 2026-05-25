@@ -170,6 +170,7 @@ type ClassifyResponse struct {
 	// Overall confidence breakdown for classification response.
 	ResponseConfidence ClassifyResponseResponseConfidence `json:"response_confidence" api:"nullable"`
 	ResponseType       ClassifyResponseResponseType       `json:"response_type"`
+	Usage              ClassifyResponseUsage              `json:"usage" api:"nullable"`
 	JSON               classifyResponseJSON               `json:"-"`
 }
 
@@ -181,6 +182,7 @@ type classifyResponseJSON struct {
 	Duration           apijson.Field
 	ResponseConfidence apijson.Field
 	ResponseType       apijson.Field
+	Usage              apijson.Field
 	raw                string
 	ExtraFields        map[string]apijson.Field
 }
@@ -318,6 +320,31 @@ func (r ClassifyResponseResponseType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type ClassifyResponseUsage struct {
+	NumCategories int64                     `json:"num_categories" api:"required"`
+	NumPages      int64                     `json:"num_pages" api:"required"`
+	Credits       float64                   `json:"credits" api:"nullable"`
+	JSON          classifyResponseUsageJSON `json:"-"`
+}
+
+// classifyResponseUsageJSON contains the JSON metadata for the struct
+// [ClassifyResponseUsage]
+type classifyResponseUsageJSON struct {
+	NumCategories apijson.Field
+	NumPages      apijson.Field
+	Credits       apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *ClassifyResponseUsage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r classifyResponseUsageJSON) RawJSON() string {
+	return r.raw
 }
 
 type DirectWebhookConfigParam struct {

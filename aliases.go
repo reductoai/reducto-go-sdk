@@ -92,6 +92,9 @@ type ClassifyResponseResponseType = shared.ClassifyResponseResponseType
 const ClassifyResponseResponseTypeClassify = shared.ClassifyResponseResponseTypeClassify
 
 // This is an alias to an internal type.
+type ClassifyResponseUsage = shared.ClassifyResponseUsage
+
+// This is an alias to an internal type.
 type DirectWebhookConfigParam = shared.DirectWebhookConfigParam
 
 // This is an alias to an internal type.
