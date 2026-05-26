@@ -72,9 +72,10 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 				Timeout:        reducto.F(0.000000),
 			}),
 			Spreadsheet: reducto.F(reducto.SpreadsheetParam{
-				Clustering: reducto.F(reducto.SpreadsheetClusteringAccurate),
-				Exclude:    reducto.F([]reducto.SpreadsheetExclude{reducto.SpreadsheetExcludeHiddenSheets}),
-				Include:    reducto.F([]reducto.SpreadsheetInclude{reducto.SpreadsheetIncludeCellColors}),
+				Clustering:   reducto.F(reducto.SpreadsheetClusteringAccurate),
+				Exclude:      reducto.F([]reducto.SpreadsheetExclude{reducto.SpreadsheetExcludeHiddenSheets}),
+				Include:      reducto.F([]reducto.SpreadsheetInclude{reducto.SpreadsheetIncludeCellColors}),
+				MaxCellCount: reducto.F(int64(1)),
 				SplitLargeTables: reducto.F(shared.SplitLargeTablesParam{
 					Enabled: reducto.F(true),
 					Size:    reducto.F[shared.SplitLargeTablesSizeUnionParam](shared.UnionInt(int64(0))),
@@ -158,9 +159,10 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 				Timeout:        reducto.F(0.000000),
 			}),
 			Spreadsheet: reducto.F(reducto.SpreadsheetParam{
-				Clustering: reducto.F(reducto.SpreadsheetClusteringAccurate),
-				Exclude:    reducto.F([]reducto.SpreadsheetExclude{reducto.SpreadsheetExcludeHiddenSheets}),
-				Include:    reducto.F([]reducto.SpreadsheetInclude{reducto.SpreadsheetIncludeCellColors}),
+				Clustering:   reducto.F(reducto.SpreadsheetClusteringAccurate),
+				Exclude:      reducto.F([]reducto.SpreadsheetExclude{reducto.SpreadsheetExcludeHiddenSheets}),
+				Include:      reducto.F([]reducto.SpreadsheetInclude{reducto.SpreadsheetIncludeCellColors}),
+				MaxCellCount: reducto.F(int64(1)),
 				SplitLargeTables: reducto.F(shared.SplitLargeTablesParam{
 					Enabled: reducto.F(true),
 					Size:    reducto.F[shared.SplitLargeTablesSizeUnionParam](shared.UnionInt(int64(0))),

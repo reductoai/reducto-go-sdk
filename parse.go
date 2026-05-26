@@ -450,7 +450,11 @@ type SpreadsheetParam struct {
 	// Whether to exclude hidden sheets, rows, or columns in the output.
 	Exclude param.Field[[]SpreadsheetExclude] `json:"exclude"`
 	// Whether to include cell color, formula, and dropdown information in the output.
-	Include          param.Field[[]SpreadsheetInclude]         `json:"include"`
+	Include param.Field[[]SpreadsheetInclude] `json:"include"`
+	// Maximum total non-empty cells allowed across all sheets. If exceeded, the
+	// request is rejected with a 422 error. Set to null to disable the limit. Defaults
+	// to null.
+	MaxCellCount     param.Field[int64]                        `json:"max_cell_count"`
 	SplitLargeTables param.Field[shared.SplitLargeTablesParam] `json:"split_large_tables"`
 }
 
