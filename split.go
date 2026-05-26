@@ -94,6 +94,8 @@ type ParseUsage struct {
 	NumPages        int64              `json:"num_pages" api:"required"`
 	CreditBreakdown map[string]float64 `json:"credit_breakdown" api:"nullable"`
 	Credits         float64            `json:"credits" api:"nullable"`
+	// Total non-empty cells across all sheets. Only set for spreadsheet inputs.
+	NonEmptyCellCount int64 `json:"non_empty_cell_count" api:"nullable"`
 	// Per-page breakdown of features used. Maps 1-indexed page numbers (as strings) to
 	// the list of billing features applied on that page (e.g. 'page', 'complex',
 	// 'chart_agent').
@@ -106,6 +108,7 @@ type parseUsageJSON struct {
 	NumPages             apijson.Field
 	CreditBreakdown      apijson.Field
 	Credits              apijson.Field
+	NonEmptyCellCount    apijson.Field
 	PageBillingBreakdown apijson.Field
 	raw                  string
 	ExtraFields          map[string]apijson.Field
