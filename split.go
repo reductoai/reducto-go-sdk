@@ -139,11 +139,12 @@ const (
 	ParseUsagePageBillingBreakdownKeyValue                 ParseUsagePageBillingBreakdown = "key_value"
 	ParseUsagePageBillingBreakdownAgenticText              ParseUsagePageBillingBreakdown = "agentic_text"
 	ParseUsagePageBillingBreakdownPromptableAgenticText    ParseUsagePageBillingBreakdown = "promptable_agentic_text"
+	ParseUsagePageBillingBreakdownReductoLitePage          ParseUsagePageBillingBreakdown = "reducto_lite_page"
 )
 
 func (r ParseUsagePageBillingBreakdown) IsKnown() bool {
 	switch r {
-	case ParseUsagePageBillingBreakdownPage, ParseUsagePageBillingBreakdownHTMLPage, ParseUsagePageBillingBreakdownDocxNativePage, ParseUsagePageBillingBreakdownAgentic, ParseUsagePageBillingBreakdownComplex, ParseUsagePageBillingBreakdownChartAgent, ParseUsagePageBillingBreakdownSpreadsheetCells, ParseUsagePageBillingBreakdownBillableSpreadsheetPages, ParseUsagePageBillingBreakdownEnrichTable, ParseUsagePageBillingBreakdownFigureSummary, ParseUsagePageBillingBreakdownTableSummary, ParseUsagePageBillingBreakdownKeyValue, ParseUsagePageBillingBreakdownAgenticText, ParseUsagePageBillingBreakdownPromptableAgenticText:
+	case ParseUsagePageBillingBreakdownPage, ParseUsagePageBillingBreakdownHTMLPage, ParseUsagePageBillingBreakdownDocxNativePage, ParseUsagePageBillingBreakdownAgentic, ParseUsagePageBillingBreakdownComplex, ParseUsagePageBillingBreakdownChartAgent, ParseUsagePageBillingBreakdownSpreadsheetCells, ParseUsagePageBillingBreakdownBillableSpreadsheetPages, ParseUsagePageBillingBreakdownEnrichTable, ParseUsagePageBillingBreakdownFigureSummary, ParseUsagePageBillingBreakdownTableSummary, ParseUsagePageBillingBreakdownKeyValue, ParseUsagePageBillingBreakdownAgenticText, ParseUsagePageBillingBreakdownPromptableAgenticText, ParseUsagePageBillingBreakdownReductoLitePage:
 		return true
 	}
 	return false
