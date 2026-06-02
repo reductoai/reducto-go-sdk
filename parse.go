@@ -360,6 +360,8 @@ type SettingsParam struct {
 	ForceFileExtension param.Field[string] `json:"force_file_extension"`
 	// Force the result to be returned in URL form.
 	ForceURLResult param.Field[bool] `json:"force_url_result"`
+	// Hybrid VPC request-scoped settings.
+	HybridVpc param.Field[SettingsHybridVpcParam] `json:"hybrid_vpc"`
 	// Standard is our best multilingual OCR system. Legacy only supports germanic
 	// languages and is available for backwards compatibility.
 	OcrSystem param.Field[SettingsOcrSystem] `json:"ocr_system"`
@@ -397,6 +399,17 @@ func (r SettingsExtractionMode) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+// Hybrid VPC request-scoped settings.
+type SettingsHybridVpcParam struct {
+	// Named Hybrid VPC environment to use for this request. Only applies when your
+	// organization has Hybrid VPC environments configured.
+	Environment param.Field[string] `json:"environment"`
+}
+
+func (r SettingsHybridVpcParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 // Standard is our best multilingual OCR system. Legacy only supports germanic

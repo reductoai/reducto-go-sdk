@@ -66,7 +66,10 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 					ExtractionMode:      reducto.F(reducto.SettingsExtractionModeOcr),
 					ForceFileExtension:  reducto.F("force_file_extension"),
 					ForceURLResult:      reducto.F(true),
-					OcrSystem:           reducto.F(reducto.SettingsOcrSystemStandard),
+					HybridVpc: reducto.F(reducto.SettingsHybridVpcParam{
+						Environment: reducto.F("environment"),
+					}),
+					OcrSystem: reducto.F(reducto.SettingsOcrSystemStandard),
 					PageRange: reducto.F[reducto.SettingsPageRangeUnionParam](shared.PageRangeParam{
 						End:   reducto.F(int64(0)),
 						Start: reducto.F(int64(0)),
@@ -168,7 +171,10 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 					ExtractionMode:      reducto.F(reducto.SettingsExtractionModeOcr),
 					ForceFileExtension:  reducto.F("force_file_extension"),
 					ForceURLResult:      reducto.F(true),
-					OcrSystem:           reducto.F(reducto.SettingsOcrSystemStandard),
+					HybridVpc: reducto.F(reducto.SettingsHybridVpcParam{
+						Environment: reducto.F("environment"),
+					}),
+					OcrSystem: reducto.F(reducto.SettingsOcrSystemStandard),
 					PageRange: reducto.F[reducto.SettingsPageRangeUnionParam](shared.PageRangeParam{
 						End:   reducto.F(int64(0)),
 						Start: reducto.F(int64(0)),
