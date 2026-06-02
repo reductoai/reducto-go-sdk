@@ -1497,9 +1497,8 @@ func (r SvixWebhookConfigMode) IsKnown() bool {
 
 type TableAgenticParam struct {
 	Scope param.Field[TableAgenticScope] `json:"scope" api:"required"`
-	// Routing mode for table agentic: 'default' and 'max' run enrichment on all
-	// tables, 'auto' uses the router to skip tables where enrichment is unlikely to
-	// help.
+	// Mode for table agentic: 'default' selectively applies enrichment only to tables
+	// likely to benefit, and 'max' runs enrichment on all tables.
 	Mode param.Field[TableAgenticMode] `json:"mode"`
 	// Custom prompt for table agentic.
 	Prompt param.Field[string] `json:"prompt"`
@@ -1525,9 +1524,8 @@ func (r TableAgenticScope) IsKnown() bool {
 	return false
 }
 
-// Routing mode for table agentic: 'default' and 'max' run enrichment on all
-// tables, 'auto' uses the router to skip tables where enrichment is unlikely to
-// help.
+// Mode for table agentic: 'default' selectively applies enrichment only to tables
+// likely to benefit, and 'max' runs enrichment on all tables.
 type TableAgenticMode string
 
 const (
