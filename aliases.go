@@ -368,9 +368,8 @@ type TableAgenticScope = shared.TableAgenticScope
 // This is an alias to an internal value.
 const TableAgenticScopeTable = shared.TableAgenticScopeTable
 
-// Routing mode for table agentic: 'default' and 'max' run enrichment on all
-// tables, 'auto' uses the router to skip tables where enrichment is unlikely to
-// help.
+// Mode for table agentic: 'default' selectively applies enrichment only to tables
+// likely to benefit, and 'max' runs enrichment on all tables.
 //
 // This is an alias to an internal type.
 type TableAgenticMode = shared.TableAgenticMode

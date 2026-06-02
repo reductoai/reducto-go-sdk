@@ -187,9 +187,8 @@ type EnhanceAgenticParam struct {
 	Scope param.Field[EnhanceAgenticScope] `json:"scope" api:"required"`
 	// If True, use the advanced chart agent. Defaults to False.
 	AdvancedChartAgent param.Field[bool] `json:"advanced_chart_agent"`
-	// Routing mode for table agentic: 'default' and 'max' run enrichment on all
-	// tables, 'auto' uses the router to skip tables where enrichment is unlikely to
-	// help.
+	// Mode for table agentic: 'default' selectively applies enrichment only to tables
+	// likely to benefit, and 'max' runs enrichment on all tables.
 	Mode param.Field[EnhanceAgenticMode] `json:"mode"`
 	// Custom prompt for table agentic.
 	Prompt param.Field[string] `json:"prompt"`
@@ -226,9 +225,8 @@ func (r EnhanceAgenticScope) IsKnown() bool {
 	return false
 }
 
-// Routing mode for table agentic: 'default' and 'max' run enrichment on all
-// tables, 'auto' uses the router to skip tables where enrichment is unlikely to
-// help.
+// Mode for table agentic: 'default' selectively applies enrichment only to tables
+// likely to benefit, and 'max' runs enrichment on all tables.
 type EnhanceAgenticMode string
 
 const (
