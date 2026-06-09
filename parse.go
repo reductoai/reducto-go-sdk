@@ -373,6 +373,10 @@ type SettingsParam struct {
 	ReturnImages param.Field[[]SettingsReturnImage] `json:"return_images"`
 	// If True, return OCR data in the result. Defaults to False.
 	ReturnOcrData param.Field[bool] `json:"return_ocr_data"`
+	// Per-tenant throttling for multi-tenant applications. Tag each request with your
+	// tenant's id to bound how much of your account's concurrency a single tenant can
+	// consume. Account-level throttles still apply.
+	TenantThrottling param.Field[SettingsTenantThrottlingParam] `json:"tenant_throttling"`
 	// The timeout for the job in seconds.
 	Timeout param.Field[float64] `json:"timeout"`
 }
@@ -454,6 +458,22 @@ func (r SettingsReturnImage) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+// Per-tenant throttling for multi-tenant applications. Tag each request with your
+// tenant's id to bound how much of your account's concurrency a single tenant can
+// consume. Account-level throttles still apply.
+type SettingsTenantThrottlingParam struct {
+	// Your identifier for the tenant (customer, workspace, organization) this request
+	// belongs to. Used only for noisy-neighbor throttling inside your account.
+	TenantID param.Field[string] `json:"tenant_id" api:"required"`
+	// Maximum fraction of your account's concurrency ceiling this tenant may use,
+	// between 0 (exclusive) and 1. Defaults to 0.5.
+	MaxShare param.Field[float64] `json:"max_share"`
+}
+
+func (r SettingsTenantThrottlingParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type SpreadsheetParam struct {

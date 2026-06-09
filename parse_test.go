@@ -72,7 +72,11 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 				PersistResults: reducto.F(true),
 				ReturnImages:   reducto.F([]reducto.SettingsReturnImage{reducto.SettingsReturnImageFigure}),
 				ReturnOcrData:  reducto.F(true),
-				Timeout:        reducto.F(0.000000),
+				TenantThrottling: reducto.F(reducto.SettingsTenantThrottlingParam{
+					TenantID: reducto.F("x"),
+					MaxShare: reducto.F(1.000000),
+				}),
+				Timeout: reducto.F(0.000000),
 			}),
 			Spreadsheet: reducto.F(reducto.SpreadsheetParam{
 				Clustering:   reducto.F(reducto.SpreadsheetClusteringAccurate),
@@ -162,7 +166,11 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 				PersistResults: reducto.F(true),
 				ReturnImages:   reducto.F([]reducto.SettingsReturnImage{reducto.SettingsReturnImageFigure}),
 				ReturnOcrData:  reducto.F(true),
-				Timeout:        reducto.F(0.000000),
+				TenantThrottling: reducto.F(reducto.SettingsTenantThrottlingParam{
+					TenantID: reducto.F("x"),
+					MaxShare: reducto.F(1.000000),
+				}),
+				Timeout: reducto.F(0.000000),
 			}),
 			Spreadsheet: reducto.F(reducto.SpreadsheetParam{
 				Clustering:   reducto.F(reducto.SpreadsheetClusteringAccurate),
