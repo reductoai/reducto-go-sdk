@@ -128,10 +128,38 @@ type ExtractSettingsCitationsParam struct {
 	Enabled param.Field[bool] `json:"enabled"`
 	// If True, enable numeric citation confidence scores. Defaults to True.
 	NumericalConfidence param.Field[bool] `json:"numerical_confidence"`
+	// How much of the source parse block to embed on each citation's parentBlock.
+	// 'full' (default) embeds the verbatim source-block HTML in parentBlock.content.
+	// 'bbox_only' suppresses parentBlock.content (returned as an empty string) while
+	// keeping parentBlock.bbox and all citation-level fields — this can drastically
+	// shrink responses on table-heavy schemas where the same source block is cited
+	// many times.
+	ParentBlock param.Field[ExtractSettingsCitationsParentBlock] `json:"parent_block"`
 }
 
 func (r ExtractSettingsCitationsParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// How much of the source parse block to embed on each citation's parentBlock.
+// 'full' (default) embeds the verbatim source-block HTML in parentBlock.content.
+// 'bbox_only' suppresses parentBlock.content (returned as an empty string) while
+// keeping parentBlock.bbox and all citation-level fields — this can drastically
+// shrink responses on table-heavy schemas where the same source block is cited
+// many times.
+type ExtractSettingsCitationsParentBlock string
+
+const (
+	ExtractSettingsCitationsParentBlockFull     ExtractSettingsCitationsParentBlock = "full"
+	ExtractSettingsCitationsParentBlockBboxOnly ExtractSettingsCitationsParentBlock = "bbox_only"
+)
+
+func (r ExtractSettingsCitationsParentBlock) IsKnown() bool {
+	switch r {
+	case ExtractSettingsCitationsParentBlockFull, ExtractSettingsCitationsParentBlockBboxOnly:
+		return true
+	}
+	return false
 }
 
 type InstructionsParam struct {
