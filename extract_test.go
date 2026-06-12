@@ -99,6 +99,7 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 				Citations: reducto.F(reducto.ExtractSettingsCitationsParam{
 					Enabled:             reducto.F(true),
 					NumericalConfidence: reducto.F(true),
+					ParentBlock:         reducto.F(reducto.ExtractSettingsCitationsParentBlockFull),
 				}),
 				DeepExtract:        reducto.F(true),
 				IncludeImages:      reducto.F(true),
@@ -208,6 +209,7 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 				Citations: reducto.F(reducto.ExtractSettingsCitationsParam{
 					Enabled:             reducto.F(true),
 					NumericalConfidence: reducto.F(true),
+					ParentBlock:         reducto.F(reducto.ExtractSettingsCitationsParentBlockFull),
 				}),
 				DeepExtract:        reducto.F(true),
 				IncludeImages:      reducto.F(true),
