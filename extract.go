@@ -111,6 +111,8 @@ type ExtractSettingsParam struct {
 	// its output to achieve near-perfect accuracy. Best for complex documents where
 	// accuracy is critical.
 	DeepExtract param.Field[bool] `json:"deep_extract"`
+	// Force the endpoint result to be returned in URL form.
+	ForceURLResult param.Field[bool] `json:"force_url_result"`
 	// If True, include images in the extraction.
 	IncludeImages param.Field[bool] `json:"include_images"`
 	// If True, jobs will be processed with a higher throughput and priority at a

@@ -212,6 +212,8 @@ type SplitRunParamsSettings struct {
 	// If True, uses the deep split agent for higher-quality document splitting. Off by
 	// default.
 	DeepSplit param.Field[bool] `json:"deep_split"`
+	// Force the endpoint result to be returned in URL form.
+	ForceURLResult param.Field[bool] `json:"force_url_result"`
 	// If tables should be truncated to the first few rows or if all content should be
 	// preserved. truncate improves latency, preserve is recommended for cases where
 	// partition_key is being used and the partition_key may be included within the
@@ -296,6 +298,8 @@ type SplitRunJobParamsSettings struct {
 	// If True, uses the deep split agent for higher-quality document splitting. Off by
 	// default.
 	DeepSplit param.Field[bool] `json:"deep_split"`
+	// Force the endpoint result to be returned in URL form.
+	ForceURLResult param.Field[bool] `json:"force_url_result"`
 	// If tables should be truncated to the first few rows or if all content should be
 	// preserved. truncate improves latency, preserve is recommended for cases where
 	// partition_key is being used and the partition_key may be included within the

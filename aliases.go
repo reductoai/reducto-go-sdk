@@ -61,6 +61,28 @@ type ClassifyResponse = shared.ClassifyResponse
 // This is an alias to an internal type.
 type ClassifyResponseResult = shared.ClassifyResponseResult
 
+// This is an alias to an internal type.
+type ClassifyResponseResultClassifyResponseCategory = shared.ClassifyResponseResultClassifyResponseCategory
+
+// This is an alias to an internal type.
+type ClassifyResponseResultURLResult = shared.ClassifyResponseResultURLResult
+
+// type = 'url'
+//
+// This is an alias to an internal type.
+type ClassifyResponseResultURLResultType = shared.ClassifyResponseResultURLResultType
+
+// This is an alias to an internal value.
+const ClassifyResponseResultURLResultTypeURL = shared.ClassifyResponseResultURLResultTypeURL
+
+// type = 'url'
+//
+// This is an alias to an internal type.
+type ClassifyResponseResultType = shared.ClassifyResponseResultType
+
+// This is an alias to an internal value.
+const ClassifyResponseResultTypeURL = shared.ClassifyResponseResultTypeURL
+
 // Overall confidence breakdown for classification response.
 //
 // This is an alias to an internal type.
@@ -252,7 +274,7 @@ type SplitLargeTablesSizeSplitLargeTableSizesParam = shared.SplitLargeTablesSize
 // This is an alias to an internal type.
 type SplitResponse = shared.SplitResponse
 
-// The split result.
+// The split result. If force_url_result is True, this is returned as a URL result.
 //
 // This is an alias to an internal type.
 type SplitResponseResult = shared.SplitResponseResult
@@ -292,6 +314,25 @@ type SplitResponseResultDeepSplitResultSplit = shared.SplitResponseResultDeepSpl
 
 // This is an alias to an internal type.
 type SplitResponseResultDeepSplitResultSplitsPartition = shared.SplitResponseResultDeepSplitResultSplitsPartition
+
+// This is an alias to an internal type.
+type SplitResponseResultURLResult = shared.SplitResponseResultURLResult
+
+// type = 'url'
+//
+// This is an alias to an internal type.
+type SplitResponseResultURLResultType = shared.SplitResponseResultURLResultType
+
+// This is an alias to an internal value.
+const SplitResponseResultURLResultTypeURL = shared.SplitResponseResultURLResultTypeURL
+
+// type = 'url'
+//
+// This is an alias to an internal type.
+type SplitResponseResultType = shared.SplitResponseResultType
+
+// This is an alias to an internal value.
+const SplitResponseResultTypeURL = shared.SplitResponseResultTypeURL
 
 // This is an alias to an internal type.
 type SplitResponseResponseType = shared.SplitResponseResponseType
