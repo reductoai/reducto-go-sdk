@@ -200,24 +200,149 @@ func (r ClassifyResponse) ImplementsJobGetResponseAsyncJobResponseResultUnion() 
 func (r ClassifyResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
 
 type ClassifyResponseResult struct {
-	Category string                     `json:"category" api:"required"`
-	JSON     classifyResponseResultJSON `json:"-"`
+	Category string `json:"category"`
+	ResultID string `json:"result_id"`
+	// type = 'url'
+	Type  ClassifyResponseResultType `json:"type"`
+	URL   string                     `json:"url"`
+	JSON  classifyResponseResultJSON `json:"-"`
+	union ClassifyResponseResultUnion
 }
 
 // classifyResponseResultJSON contains the JSON metadata for the struct
 // [ClassifyResponseResult]
 type classifyResponseResultJSON struct {
 	Category    apijson.Field
+	ResultID    apijson.Field
+	Type        apijson.Field
+	URL         apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
+func (r classifyResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
 func (r *ClassifyResponseResult) UnmarshalJSON(data []byte) (err error) {
+	*r = ClassifyResponseResult{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [ClassifyResponseResultUnion] interface which you can cast to
+// the specific types for more type safety.
+//
+// Possible runtime types of the union are
+// [ClassifyResponseResultClassifyResponseCategory],
+// [ClassifyResponseResultURLResult].
+func (r ClassifyResponseResult) AsUnion() ClassifyResponseResultUnion {
+	return r.union
+}
+
+// Union satisfied by [ClassifyResponseResultClassifyResponseCategory] or
+// [ClassifyResponseResultURLResult].
+type ClassifyResponseResultUnion interface {
+	implementsClassifyResponseResult()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*ClassifyResponseResultUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(ClassifyResponseResultClassifyResponseCategory{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(ClassifyResponseResultURLResult{}),
+		},
+	)
+}
+
+type ClassifyResponseResultClassifyResponseCategory struct {
+	Category string                                             `json:"category" api:"required"`
+	JSON     classifyResponseResultClassifyResponseCategoryJSON `json:"-"`
+}
+
+// classifyResponseResultClassifyResponseCategoryJSON contains the JSON metadata
+// for the struct [ClassifyResponseResultClassifyResponseCategory]
+type classifyResponseResultClassifyResponseCategoryJSON struct {
+	Category    apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ClassifyResponseResultClassifyResponseCategory) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r classifyResponseResultJSON) RawJSON() string {
+func (r classifyResponseResultClassifyResponseCategoryJSON) RawJSON() string {
 	return r.raw
+}
+
+func (r ClassifyResponseResultClassifyResponseCategory) implementsClassifyResponseResult() {}
+
+type ClassifyResponseResultURLResult struct {
+	ResultID string `json:"result_id" api:"required"`
+	// type = 'url'
+	Type ClassifyResponseResultURLResultType `json:"type" api:"required"`
+	URL  string                              `json:"url" api:"required"`
+	JSON classifyResponseResultURLResultJSON `json:"-"`
+}
+
+// classifyResponseResultURLResultJSON contains the JSON metadata for the struct
+// [ClassifyResponseResultURLResult]
+type classifyResponseResultURLResultJSON struct {
+	ResultID    apijson.Field
+	Type        apijson.Field
+	URL         apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ClassifyResponseResultURLResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r classifyResponseResultURLResultJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r ClassifyResponseResultURLResult) implementsClassifyResponseResult() {}
+
+// type = 'url'
+type ClassifyResponseResultURLResultType string
+
+const (
+	ClassifyResponseResultURLResultTypeURL ClassifyResponseResultURLResultType = "url"
+)
+
+func (r ClassifyResponseResultURLResultType) IsKnown() bool {
+	switch r {
+	case ClassifyResponseResultURLResultTypeURL:
+		return true
+	}
+	return false
+}
+
+// type = 'url'
+type ClassifyResponseResultType string
+
+const (
+	ClassifyResponseResultTypeURL ClassifyResponseResultType = "url"
+)
+
+func (r ClassifyResponseResultType) IsKnown() bool {
+	switch r {
+	case ClassifyResponseResultTypeURL:
+		return true
+	}
+	return false
 }
 
 // Overall confidence breakdown for classification response.
@@ -1082,7 +1207,7 @@ func (r SplitLargeTablesSizeSplitLargeTableSizesParam) MarshalJSON() (data []byt
 func (r SplitLargeTablesSizeSplitLargeTableSizesParam) ImplementsSplitLargeTablesSizeUnionParam() {}
 
 type SplitResponse struct {
-	// The split result.
+	// The split result. If force_url_result is True, this is returned as a URL result.
 	Result       SplitResponseResult       `json:"result" api:"required"`
 	Usage        reducto.ParseUsage        `json:"usage" api:"required"`
 	ResponseType SplitResponseResponseType `json:"response_type"`
@@ -1110,22 +1235,29 @@ func (r SplitResponse) ImplementsJobGetResponseAsyncJobResponseResultUnion() {}
 
 func (r SplitResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
 
-// The split result.
+// The split result. If force_url_result is True, this is returned as a URL result.
 type SplitResponseResult struct {
+	ResultID string `json:"result_id"`
+	// This field can have the runtime type of [map[string][]int64].
+	SectionMapping interface{} `json:"section_mapping"`
 	// This field can have the runtime type of [[]SplitResponseResultSplitResultSplit],
 	// [[]SplitResponseResultDeepSplitResultSplit].
-	Splits interface{} `json:"splits" api:"required"`
-	// This field can have the runtime type of [map[string][]int64].
-	SectionMapping interface{}             `json:"section_mapping"`
-	JSON           splitResponseResultJSON `json:"-"`
-	union          SplitResponseResultUnion
+	Splits interface{} `json:"splits"`
+	// type = 'url'
+	Type  SplitResponseResultType `json:"type"`
+	URL   string                  `json:"url"`
+	JSON  splitResponseResultJSON `json:"-"`
+	union SplitResponseResultUnion
 }
 
 // splitResponseResultJSON contains the JSON metadata for the struct
 // [SplitResponseResult]
 type splitResponseResultJSON struct {
-	Splits         apijson.Field
+	ResultID       apijson.Field
 	SectionMapping apijson.Field
+	Splits         apijson.Field
+	Type           apijson.Field
+	URL            apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -1147,15 +1279,15 @@ func (r *SplitResponseResult) UnmarshalJSON(data []byte) (err error) {
 // specific types for more type safety.
 //
 // Possible runtime types of the union are [SplitResponseResultSplitResult],
-// [SplitResponseResultDeepSplitResult].
+// [SplitResponseResultDeepSplitResult], [SplitResponseResultURLResult].
 func (r SplitResponseResult) AsUnion() SplitResponseResultUnion {
 	return r.union
 }
 
-// The split result.
+// The split result. If force_url_result is True, this is returned as a URL result.
 //
-// Union satisfied by [SplitResponseResultSplitResult] or
-// [SplitResponseResultDeepSplitResult].
+// Union satisfied by [SplitResponseResultSplitResult],
+// [SplitResponseResultDeepSplitResult] or [SplitResponseResultURLResult].
 type SplitResponseResultUnion interface {
 	implementsSplitResponseResult()
 }
@@ -1171,6 +1303,10 @@ func init() {
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(SplitResponseResultDeepSplitResult{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(SplitResponseResultURLResult{}),
 		},
 	)
 }
@@ -1351,6 +1487,64 @@ func (r *SplitResponseResultDeepSplitResultSplitsPartition) UnmarshalJSON(data [
 
 func (r splitResponseResultDeepSplitResultSplitsPartitionJSON) RawJSON() string {
 	return r.raw
+}
+
+type SplitResponseResultURLResult struct {
+	ResultID string `json:"result_id" api:"required"`
+	// type = 'url'
+	Type SplitResponseResultURLResultType `json:"type" api:"required"`
+	URL  string                           `json:"url" api:"required"`
+	JSON splitResponseResultURLResultJSON `json:"-"`
+}
+
+// splitResponseResultURLResultJSON contains the JSON metadata for the struct
+// [SplitResponseResultURLResult]
+type splitResponseResultURLResultJSON struct {
+	ResultID    apijson.Field
+	Type        apijson.Field
+	URL         apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SplitResponseResultURLResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r splitResponseResultURLResultJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r SplitResponseResultURLResult) implementsSplitResponseResult() {}
+
+// type = 'url'
+type SplitResponseResultURLResultType string
+
+const (
+	SplitResponseResultURLResultTypeURL SplitResponseResultURLResultType = "url"
+)
+
+func (r SplitResponseResultURLResultType) IsKnown() bool {
+	switch r {
+	case SplitResponseResultURLResultTypeURL:
+		return true
+	}
+	return false
+}
+
+// type = 'url'
+type SplitResponseResultType string
+
+const (
+	SplitResponseResultTypeURL SplitResponseResultType = "url"
+)
+
+func (r SplitResponseResultType) IsKnown() bool {
+	switch r {
+	case SplitResponseResultTypeURL:
+		return true
+	}
+	return false
 }
 
 type SplitResponseResponseType string

@@ -55,6 +55,8 @@ type ClassifyRunParams struct {
 	ClassificationSchema param.Field[[]ClassifyRunParamsClassificationSchema] `json:"classification_schema"`
 	// Optional document-level metadata to include in classification prompts.
 	DocumentMetadata param.Field[string] `json:"document_metadata"`
+	// Force the endpoint result to be returned in URL form.
+	ForceURLResult param.Field[bool] `json:"force_url_result"`
 	// The page range to process (1-indexed). By default, the first 5 pages are used.
 	// If more than 25 pages are selected, only the first 25 (after sorting) are used.
 	// Only applies to PDFs; ignored for other document types.
