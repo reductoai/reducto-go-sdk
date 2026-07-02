@@ -61,8 +61,6 @@ type ClassifyRunParams struct {
 	// If more than 25 pages are selected, only the first 25 (after sorting) are used.
 	// Only applies to PDFs; ignored for other document types.
 	PageRange param.Field[ClassifyRunParamsPageRangeUnion] `json:"page_range"`
-	// If True, persist the results indefinitely. Defaults to False.
-	PersistResults param.Field[bool] `json:"persist_results"`
 }
 
 func (r ClassifyRunParams) MarshalJSON() (data []byte, err error) {
