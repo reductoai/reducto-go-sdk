@@ -600,6 +600,8 @@ func (r PageRangeParam) MarshalJSON() (data []byte, err error) {
 
 func (r PageRangeParam) ImplementsSettingsPageRangeUnionParam() {}
 
+func (r PageRangeParam) ImplementsExtractSettingsPageRangeUnionParam() {}
+
 func (r PageRangeParam) ImplementsClassifyRunParamsPageRangeUnion() {}
 
 type ParseResponse struct {
