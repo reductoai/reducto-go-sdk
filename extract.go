@@ -118,6 +118,9 @@ type ExtractSettingsParam struct {
 	// If True, jobs will be processed with a higher throughput and priority at a
 	// higher cost. Defaults to False.
 	OptimizeForLatency param.Field[bool] `json:"optimize_for_latency"`
+	// The page range to extract from (1-indexed). By default, the entire document is
+	// used. For spreadsheets, you can also provide a list of sheet names.
+	PageRange param.Field[ExtractSettingsPageRangeUnionParam] `json:"page_range"`
 }
 
 func (r ExtractSettingsParam) MarshalJSON() (data []byte, err error) {
@@ -163,6 +166,19 @@ func (r ExtractSettingsCitationsParentBlock) IsKnown() bool {
 	}
 	return false
 }
+
+// The page range to extract from (1-indexed). By default, the entire document is
+// used. For spreadsheets, you can also provide a list of sheet names.
+//
+// Satisfied by [shared.PageRangeParam], [ExtractSettingsPageRangeArrayParam],
+// [ExtractSettingsPageRangeArrayParam], [ExtractSettingsPageRangeArrayParam].
+type ExtractSettingsPageRangeUnionParam interface {
+	ImplementsExtractSettingsPageRangeUnionParam()
+}
+
+type ExtractSettingsPageRangeArrayParam []shared.PageRangeParam
+
+func (r ExtractSettingsPageRangeArrayParam) ImplementsExtractSettingsPageRangeUnionParam() {}
 
 type InstructionsParam struct {
 	// The JSON schema to use for the extraction.

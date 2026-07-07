@@ -105,6 +105,10 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 				ForceURLResult:     reducto.F(true),
 				IncludeImages:      reducto.F(true),
 				OptimizeForLatency: reducto.F(true),
+				PageRange: reducto.F[reducto.ExtractSettingsPageRangeUnionParam](shared.PageRangeParam{
+					End:   reducto.F(int64(0)),
+					Start: reducto.F(int64(0)),
+				}),
 			}),
 		},
 	})
@@ -216,6 +220,10 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 				ForceURLResult:     reducto.F(true),
 				IncludeImages:      reducto.F(true),
 				OptimizeForLatency: reducto.F(true),
+				PageRange: reducto.F[reducto.ExtractSettingsPageRangeUnionParam](shared.PageRangeParam{
+					End:   reducto.F(int64(0)),
+					Start: reducto.F(int64(0)),
+				}),
 			}),
 		},
 	})
