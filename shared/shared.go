@@ -615,11 +615,6 @@ type ParseResponse struct {
 	// application.
 	Result ParseResponseResult `json:"result" api:"required"`
 	Usage  reducto.ParseUsage  `json:"usage" api:"required"`
-	// Which pipeline produced this response. `lite` means Reducto Flash Lite served
-	// the request; `base` is the standard pipeline. Optional / nullable for forward
-	// compatibility — older API instances or persisted responses written before this
-	// field existed will leave it `None`; treat `None` as `base`.
-	ParseMode ParseResponseParseMode `json:"parse_mode" api:"nullable"`
 	// The storage URL of the converted PDF file.
 	PdfURL       string                    `json:"pdf_url" api:"nullable"`
 	ResponseType ParseResponseResponseType `json:"response_type"`
@@ -634,7 +629,6 @@ type parseResponseJSON struct {
 	JobID        apijson.Field
 	Result       apijson.Field
 	Usage        apijson.Field
-	ParseMode    apijson.Field
 	PdfURL       apijson.Field
 	ResponseType apijson.Field
 	StudioLink   apijson.Field
@@ -959,25 +953,6 @@ const (
 func (r ParseResponseResultType) IsKnown() bool {
 	switch r {
 	case ParseResponseResultTypeFull, ParseResponseResultTypeURL:
-		return true
-	}
-	return false
-}
-
-// Which pipeline produced this response. `lite` means Reducto Flash Lite served
-// the request; `base` is the standard pipeline. Optional / nullable for forward
-// compatibility — older API instances or persisted responses written before this
-// field existed will leave it `None`; treat `None` as `base`.
-type ParseResponseParseMode string
-
-const (
-	ParseResponseParseModeBase ParseResponseParseMode = "base"
-	ParseResponseParseModeLite ParseResponseParseMode = "lite"
-)
-
-func (r ParseResponseParseMode) IsKnown() bool {
-	switch r {
-	case ParseResponseParseModeBase, ParseResponseParseModeLite:
 		return true
 	}
 	return false

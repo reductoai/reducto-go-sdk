@@ -206,20 +206,6 @@ const ParseResponseResultTypeFull = shared.ParseResponseResultTypeFull
 // This is an alias to an internal value.
 const ParseResponseResultTypeURL = shared.ParseResponseResultTypeURL
 
-// Which pipeline produced this response. `lite` means Reducto Flash Lite served
-// the request; `base` is the standard pipeline. Optional / nullable for forward
-// compatibility — older API instances or persisted responses written before this
-// field existed will leave it `None`; treat `None` as `base`.
-//
-// This is an alias to an internal type.
-type ParseResponseParseMode = shared.ParseResponseParseMode
-
-// This is an alias to an internal value.
-const ParseResponseParseModeBase = shared.ParseResponseParseModeBase
-
-// This is an alias to an internal value.
-const ParseResponseParseModeLite = shared.ParseResponseParseModeLite
-
 // This is an alias to an internal type.
 type ParseResponseResponseType = shared.ParseResponseResponseType
 
