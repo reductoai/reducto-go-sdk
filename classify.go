@@ -42,14 +42,12 @@ func (r *ClassifyService) Run(ctx context.Context, body ClassifyRunParams, opts 
 }
 
 type ClassifyRunParams struct {
-	// For parse/split/extract pipelines, the URL of the document to be processed. You
-	// can provide one of the following: 1. A publicly available URL 2. A presigned S3
-	// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
-	// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-	// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
-	// API only)
+	// The URL of the document to be classified. You can provide one of the following:
 	//
-	//	For edit pipelines, this should be a string containing the edit instructions
+	//  1. A publicly available URL
+	//  2. A presigned S3 URL
+	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
+	//     uploading a document
 	Input param.Field[ClassifyRunParamsInputUnion] `json:"input" api:"required"`
 	// A list of classification categories and their matching criteria.
 	ClassificationSchema param.Field[[]ClassifyRunParamsClassificationSchema] `json:"classification_schema"`
@@ -67,14 +65,12 @@ func (r ClassifyRunParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// For parse/split/extract pipelines, the URL of the document to be processed. You
-// can provide one of the following: 1. A publicly available URL 2. A presigned S3
-// URL 3. A reducto:// prefixed URL obtained from the /upload endpoint after
-// directly uploading a document 4. A jobid:// prefixed URL obtained from a
-// previous /parse invocation 5. A list of URLs (for multi-document pipelines, V3
-// API only)
+// The URL of the document to be classified. You can provide one of the following:
 //
-//	For edit pipelines, this should be a string containing the edit instructions
+//  1. A publicly available URL
+//  2. A presigned S3 URL
+//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
+//     uploading a document
 //
 // Satisfied by [shared.UnionString], [ClassifyRunParamsInputArray],
 // [shared.UploadParam].
