@@ -103,7 +103,9 @@ type AsyncExtractConfigInputArrayParam []string
 func (r AsyncExtractConfigInputArrayParam) ImplementsAsyncExtractConfigInputUnionParam() {}
 
 type ExtractSettingsParam struct {
-	// If True, use array extraction.
+	// Deprecated: prefer deep_extract, which supersedes array extraction for complex
+	// and long (array-heavy) extractions via an agentic loop (at higher cost and
+	// latency). If True, use array extraction.
 	ArrayExtract param.Field[bool] `json:"array_extract"`
 	// The citations to use for the extraction.
 	Citations param.Field[ExtractSettingsCitationsParam] `json:"citations"`
