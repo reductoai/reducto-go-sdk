@@ -96,6 +96,7 @@ func TestSplitRunWithOptionalParams(t *testing.T) {
 		}),
 		Settings: reducto.F(reducto.SplitRunParamsSettings{
 			AllowPageOverlap: reducto.F(true),
+			AutoPartition:    reducto.F(true),
 			DeepSplit:        reducto.F(true),
 			ForceURLResult:   reducto.F(true),
 			TableCutoff:      reducto.F(reducto.SplitRunParamsSettingsTableCutoffTruncate),
@@ -201,6 +202,7 @@ func TestSplitRunJobWithOptionalParams(t *testing.T) {
 		}),
 		Settings: reducto.F(reducto.SplitRunJobParamsSettings{
 			AllowPageOverlap: reducto.F(true),
+			AutoPartition:    reducto.F(true),
 			DeepSplit:        reducto.F(true),
 			ForceURLResult:   reducto.F(true),
 			TableCutoff:      reducto.F(reducto.SplitRunJobParamsSettingsTableCutoffTruncate),

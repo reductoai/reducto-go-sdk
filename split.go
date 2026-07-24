@@ -209,6 +209,11 @@ type SplitRunParamsSettings struct {
 	// If True, a page can belong to multiple categories/partitions. If False, each
 	// page must belong to exactly one category. Defaults to True.
 	AllowPageOverlap param.Field[bool] `json:"allow_page_overlap"`
+	// If True (default), deep split may split a category into partitions even when
+	// that category has no configured partition_key. If False, categories without a
+	// partition_key are never partitioned, so partitioning happens only where you
+	// explicitly configured a partition_key.
+	AutoPartition param.Field[bool] `json:"auto_partition"`
 	// If True, uses the deep split agent for higher-quality document splitting. Off by
 	// default.
 	DeepSplit param.Field[bool] `json:"deep_split"`
@@ -295,6 +300,11 @@ type SplitRunJobParamsSettings struct {
 	// If True, a page can belong to multiple categories/partitions. If False, each
 	// page must belong to exactly one category. Defaults to True.
 	AllowPageOverlap param.Field[bool] `json:"allow_page_overlap"`
+	// If True (default), deep split may split a category into partitions even when
+	// that category has no configured partition_key. If False, categories without a
+	// partition_key are never partitioned, so partitioning happens only where you
+	// explicitly configured a partition_key.
+	AutoPartition param.Field[bool] `json:"auto_partition"`
 	// If True, uses the deep split agent for higher-quality document splitting. Off by
 	// default.
 	DeepSplit param.Field[bool] `json:"deep_split"`
