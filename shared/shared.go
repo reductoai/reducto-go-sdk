@@ -195,10 +195,6 @@ func (r classifyResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r ClassifyResponse) ImplementsJobGetResponseAsyncJobResponseResultUnion() {}
-
-func (r ClassifyResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
-
 type ClassifyResponseResult struct {
 	Category string `json:"category"`
 	ResultID string `json:"result_id"`
@@ -528,10 +524,6 @@ func (r editResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r EditResponse) ImplementsJobGetResponseAsyncJobResponseResultUnion() {}
-
-func (r EditResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
-
 type EditResponseResponseType string
 
 const (
@@ -551,10 +543,6 @@ type ExtractResponse map[string]interface{}
 func (r ExtractResponse) ImplementsPipelineResponseResultExtractUnion() {}
 
 func (r ExtractResponse) ImplementsPipelineResponseResultExtractArrayResultUnion() {}
-
-func (r ExtractResponse) ImplementsJobGetResponseAsyncJobResponseResultUnion() {}
-
-func (r ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
 
 type FigureAgenticParam struct {
 	Scope param.Field[FigureAgenticScope] `json:"scope" api:"required"`
@@ -647,10 +635,6 @@ func (r parseResponseJSON) RawJSON() string {
 func (r ParseResponse) ImplementsPipelineResponseResultParseUnion() {}
 
 func (r ParseResponse) ImplementsParseRunResponse() {}
-
-func (r ParseResponse) ImplementsJobGetResponseAsyncJobResponseResultUnion() {}
-
-func (r ParseResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
 
 // The response from the document processing service. Note that there can be two
 // types of responses, Full Result and URL Result. This is due to limitations on
@@ -999,10 +983,6 @@ func (r pipelineResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r PipelineResponse) ImplementsJobGetResponseAsyncJobResponseResultUnion() {}
-
-func (r PipelineResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
-
 type PipelineResponseResult struct {
 	Extract PipelineResponseResultExtractUnion `json:"extract" api:"required,nullable"`
 	Parse   PipelineResponseResultParseUnion   `json:"parse" api:"required,nullable"`
@@ -1207,10 +1187,6 @@ func (r *SplitResponse) UnmarshalJSON(data []byte) (err error) {
 func (r splitResponseJSON) RawJSON() string {
 	return r.raw
 }
-
-func (r SplitResponse) ImplementsJobGetResponseAsyncJobResponseResultUnion() {}
-
-func (r SplitResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
 
 // The split result. If force_url_result is True, this is returned as a URL result.
 type SplitResponseResult struct {

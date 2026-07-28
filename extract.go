@@ -213,10 +213,6 @@ func (r V3Extract) ImplementsPipelineResponseResultExtractArrayResultUnion() {}
 
 func (r V3Extract) ImplementsExtractRunResponseUnion() {}
 
-func (r V3Extract) ImplementsJobGetResponseAsyncJobResponseResultUnion() {}
-
-func (r V3Extract) ImplementsJobGetResponseEnhancedAsyncJobResponseResultUnion() {}
-
 // Union satisfied by [V3Extract] or [shared.AsyncExtractResponse].
 type ExtractRunResponseUnion interface {
 	ImplementsExtractRunResponseUnion()
