@@ -53,7 +53,7 @@ func (r asyncExtractResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r AsyncExtractResponse) ImplementsExtractRunResponseUnion() {}
+func (r AsyncExtractResponse) ImplementsExtractRunResponse() {}
 
 type AsyncParseResponse struct {
 	JobID string                 `json:"job_id" api:"required"`
@@ -194,6 +194,10 @@ func (r *ClassifyResponse) UnmarshalJSON(data []byte) (err error) {
 func (r classifyResponseJSON) RawJSON() string {
 	return r.raw
 }
+
+func (r ClassifyResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+
+func (r ClassifyResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
 
 type ClassifyResponseResult struct {
 	Category string `json:"category"`
@@ -524,6 +528,10 @@ func (r editResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+func (r EditResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+
+func (r EditResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+
 type EditResponseResponseType string
 
 const (
@@ -538,11 +546,210 @@ func (r EditResponseResponseType) IsKnown() bool {
 	return false
 }
 
-type ExtractResponse map[string]interface{}
+type ExtractResponse struct {
+	// The citations corresponding to the extracted response. If force_url_result is
+	// True and citations are present, this is returned as a URL result.
+	Citations ExtractResponseCitationsUnion `json:"citations" api:"required,nullable"`
+	// The extracted response in your provided schema. This is a list of dictionaries.
+	// If disable_chunking is True (default), then it will be a list of length one. If
+	// force_url_result is True, this is returned as a URL result.
+	Result ExtractResponseResultUnion `json:"result" api:"required"`
+	Usage  reducto.ExtractUsage       `json:"usage" api:"required"`
+	JobID  string                     `json:"job_id" api:"nullable"`
+	// Optional deep extract confidence metadata containing document-level confidence
+	// plus a mirrored leaf-level confidence tree.
+	ResponseConfidence map[string]interface{}      `json:"response_confidence" api:"nullable"`
+	ResponseType       ExtractResponseResponseType `json:"response_type"`
+	// The link to the studio pipeline for the document.
+	StudioLink string              `json:"studio_link" api:"nullable"`
+	JSON       extractResponseJSON `json:"-"`
+}
+
+// extractResponseJSON contains the JSON metadata for the struct [ExtractResponse]
+type extractResponseJSON struct {
+	Citations          apijson.Field
+	Result             apijson.Field
+	Usage              apijson.Field
+	JobID              apijson.Field
+	ResponseConfidence apijson.Field
+	ResponseType       apijson.Field
+	StudioLink         apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
+}
+
+func (r *ExtractResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r extractResponseJSON) RawJSON() string {
+	return r.raw
+}
 
 func (r ExtractResponse) ImplementsPipelineResponseResultExtractUnion() {}
 
-func (r ExtractResponse) ImplementsPipelineResponseResultExtractArrayResultUnion() {}
+func (r ExtractResponse) ImplementsPipelineResponseResultExtractArrayResult() {}
+
+func (r ExtractResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+
+func (r ExtractResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+
+// The citations corresponding to the extracted response. If force_url_result is
+// True and citations are present, this is returned as a URL result.
+//
+// Union satisfied by [ExtractResponseCitationsArray] or
+// [ExtractResponseCitationsURLResult].
+type ExtractResponseCitationsUnion interface {
+	implementsExtractResponseCitationsUnion()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*ExtractResponseCitationsUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(ExtractResponseCitationsArray{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(ExtractResponseCitationsURLResult{}),
+		},
+	)
+}
+
+type ExtractResponseCitationsArray []interface{}
+
+func (r ExtractResponseCitationsArray) implementsExtractResponseCitationsUnion() {}
+
+type ExtractResponseCitationsURLResult struct {
+	ResultID string `json:"result_id" api:"required"`
+	// type = 'url'
+	Type ExtractResponseCitationsURLResultType `json:"type" api:"required"`
+	URL  string                                `json:"url" api:"required"`
+	JSON extractResponseCitationsURLResultJSON `json:"-"`
+}
+
+// extractResponseCitationsURLResultJSON contains the JSON metadata for the struct
+// [ExtractResponseCitationsURLResult]
+type extractResponseCitationsURLResultJSON struct {
+	ResultID    apijson.Field
+	Type        apijson.Field
+	URL         apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ExtractResponseCitationsURLResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r extractResponseCitationsURLResultJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r ExtractResponseCitationsURLResult) implementsExtractResponseCitationsUnion() {}
+
+// type = 'url'
+type ExtractResponseCitationsURLResultType string
+
+const (
+	ExtractResponseCitationsURLResultTypeURL ExtractResponseCitationsURLResultType = "url"
+)
+
+func (r ExtractResponseCitationsURLResultType) IsKnown() bool {
+	switch r {
+	case ExtractResponseCitationsURLResultTypeURL:
+		return true
+	}
+	return false
+}
+
+// The extracted response in your provided schema. This is a list of dictionaries.
+// If disable_chunking is True (default), then it will be a list of length one. If
+// force_url_result is True, this is returned as a URL result.
+//
+// Union satisfied by [ExtractResponseResultArray] or
+// [ExtractResponseResultURLResult].
+type ExtractResponseResultUnion interface {
+	implementsExtractResponseResultUnion()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*ExtractResponseResultUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(ExtractResponseResultArray{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(ExtractResponseResultURLResult{}),
+		},
+	)
+}
+
+type ExtractResponseResultArray []interface{}
+
+func (r ExtractResponseResultArray) implementsExtractResponseResultUnion() {}
+
+type ExtractResponseResultURLResult struct {
+	ResultID string `json:"result_id" api:"required"`
+	// type = 'url'
+	Type ExtractResponseResultURLResultType `json:"type" api:"required"`
+	URL  string                             `json:"url" api:"required"`
+	JSON extractResponseResultURLResultJSON `json:"-"`
+}
+
+// extractResponseResultURLResultJSON contains the JSON metadata for the struct
+// [ExtractResponseResultURLResult]
+type extractResponseResultURLResultJSON struct {
+	ResultID    apijson.Field
+	Type        apijson.Field
+	URL         apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ExtractResponseResultURLResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r extractResponseResultURLResultJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r ExtractResponseResultURLResult) implementsExtractResponseResultUnion() {}
+
+// type = 'url'
+type ExtractResponseResultURLResultType string
+
+const (
+	ExtractResponseResultURLResultTypeURL ExtractResponseResultURLResultType = "url"
+)
+
+func (r ExtractResponseResultURLResultType) IsKnown() bool {
+	switch r {
+	case ExtractResponseResultURLResultTypeURL:
+		return true
+	}
+	return false
+}
+
+type ExtractResponseResponseType string
+
+const (
+	ExtractResponseResponseTypeExtract ExtractResponseResponseType = "extract"
+)
+
+func (r ExtractResponseResponseType) IsKnown() bool {
+	switch r {
+	case ExtractResponseResponseTypeExtract:
+		return true
+	}
+	return false
+}
 
 type FigureAgenticParam struct {
 	Scope param.Field[FigureAgenticScope] `json:"scope" api:"required"`
@@ -635,6 +842,10 @@ func (r parseResponseJSON) RawJSON() string {
 func (r ParseResponse) ImplementsPipelineResponseResultParseUnion() {}
 
 func (r ParseResponse) ImplementsParseRunResponse() {}
+
+func (r ParseResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+
+func (r ParseResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
 
 // The response from the document processing service. Note that there can be two
 // types of responses, Full Result and URL Result. This is due to limitations on
@@ -749,7 +960,7 @@ func (r parseResponseResultFullResultJSON) RawJSON() string {
 func (r ParseResponseResultFullResult) implementsParseResponseResult() {}
 
 type ParseResponseResultFullResultChunk struct {
-	Blocks []map[string]interface{} `json:"blocks" api:"required"`
+	Blocks []ParseResponseResultFullResultChunksBlock `json:"blocks" api:"required"`
 	// The content of the chunk extracted from the document.
 	Content string `json:"content" api:"required"`
 	// Chunk content optimized for embedding and retrieval.
@@ -778,6 +989,139 @@ func (r *ParseResponseResultFullResultChunk) UnmarshalJSON(data []byte) (err err
 }
 
 func (r parseResponseResultFullResultChunkJSON) RawJSON() string {
+	return r.raw
+}
+
+type ParseResponseResultFullResultChunksBlock struct {
+	// The bounding box of the block extracted from the document.
+	Bbox reducto.BoundingBox `json:"bbox" api:"required"`
+	// The content of the block extracted from the document.
+	Content string `json:"content" api:"required"`
+	// The type of block extracted from the document.
+	Type ParseResponseResultFullResultChunksBlocksType `json:"type" api:"required"`
+	// (Experimental) The URL/link to chart data JSON for figure blocks processed by
+	// chart agent.
+	ChartData []string `json:"chart_data" api:"nullable"`
+	// The confidence for the block. It is either low or high and takes into account
+	// factors like OCR and table structure
+	Confidence string `json:"confidence" api:"nullable"`
+	// Extra metadata fields for the block. Fields like 'is_chart' will only appear
+	// when set to True.
+	Extra map[string]interface{} `json:"extra" api:"nullable"`
+	// Granular confidence scores for the block. It is a dictionary of confidence
+	// scores for the block. The confidence scores will not be None if the user has
+	// enabled numeric confidence scores.
+	GranularConfidence ParseResponseResultFullResultChunksBlocksGranularConfidence `json:"granular_confidence" api:"nullable"`
+	// (Experimental) The URL of the image associated with the block.
+	ImageURL string `json:"image_url" api:"nullable"`
+	// Original table fragments that were combined into this table by merge_tables.
+	MergedTables []ParseResponseResultFullResultChunksBlocksMergedTable `json:"merged_tables" api:"nullable"`
+	JSON         parseResponseResultFullResultChunksBlockJSON           `json:"-"`
+}
+
+// parseResponseResultFullResultChunksBlockJSON contains the JSON metadata for the
+// struct [ParseResponseResultFullResultChunksBlock]
+type parseResponseResultFullResultChunksBlockJSON struct {
+	Bbox               apijson.Field
+	Content            apijson.Field
+	Type               apijson.Field
+	ChartData          apijson.Field
+	Confidence         apijson.Field
+	Extra              apijson.Field
+	GranularConfidence apijson.Field
+	ImageURL           apijson.Field
+	MergedTables       apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
+}
+
+func (r *ParseResponseResultFullResultChunksBlock) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r parseResponseResultFullResultChunksBlockJSON) RawJSON() string {
+	return r.raw
+}
+
+// The type of block extracted from the document.
+type ParseResponseResultFullResultChunksBlocksType string
+
+const (
+	ParseResponseResultFullResultChunksBlocksTypeHeader        ParseResponseResultFullResultChunksBlocksType = "Header"
+	ParseResponseResultFullResultChunksBlocksTypeFooter        ParseResponseResultFullResultChunksBlocksType = "Footer"
+	ParseResponseResultFullResultChunksBlocksTypeTitle         ParseResponseResultFullResultChunksBlocksType = "Title"
+	ParseResponseResultFullResultChunksBlocksTypeSectionHeader ParseResponseResultFullResultChunksBlocksType = "Section Header"
+	ParseResponseResultFullResultChunksBlocksTypePageNumber    ParseResponseResultFullResultChunksBlocksType = "Page Number"
+	ParseResponseResultFullResultChunksBlocksTypeListItem      ParseResponseResultFullResultChunksBlocksType = "List Item"
+	ParseResponseResultFullResultChunksBlocksTypeFigure        ParseResponseResultFullResultChunksBlocksType = "Figure"
+	ParseResponseResultFullResultChunksBlocksTypeTable         ParseResponseResultFullResultChunksBlocksType = "Table"
+	ParseResponseResultFullResultChunksBlocksTypeKeyValue      ParseResponseResultFullResultChunksBlocksType = "Key Value"
+	ParseResponseResultFullResultChunksBlocksTypeText          ParseResponseResultFullResultChunksBlocksType = "Text"
+	ParseResponseResultFullResultChunksBlocksTypeComment       ParseResponseResultFullResultChunksBlocksType = "Comment"
+	ParseResponseResultFullResultChunksBlocksTypeSignature     ParseResponseResultFullResultChunksBlocksType = "Signature"
+)
+
+func (r ParseResponseResultFullResultChunksBlocksType) IsKnown() bool {
+	switch r {
+	case ParseResponseResultFullResultChunksBlocksTypeHeader, ParseResponseResultFullResultChunksBlocksTypeFooter, ParseResponseResultFullResultChunksBlocksTypeTitle, ParseResponseResultFullResultChunksBlocksTypeSectionHeader, ParseResponseResultFullResultChunksBlocksTypePageNumber, ParseResponseResultFullResultChunksBlocksTypeListItem, ParseResponseResultFullResultChunksBlocksTypeFigure, ParseResponseResultFullResultChunksBlocksTypeTable, ParseResponseResultFullResultChunksBlocksTypeKeyValue, ParseResponseResultFullResultChunksBlocksTypeText, ParseResponseResultFullResultChunksBlocksTypeComment, ParseResponseResultFullResultChunksBlocksTypeSignature:
+		return true
+	}
+	return false
+}
+
+// Granular confidence scores for the block. It is a dictionary of confidence
+// scores for the block. The confidence scores will not be None if the user has
+// enabled numeric confidence scores.
+type ParseResponseResultFullResultChunksBlocksGranularConfidence struct {
+	ExtractConfidence float64                                                         `json:"extract_confidence" api:"nullable"`
+	ParseConfidence   float64                                                         `json:"parse_confidence" api:"nullable"`
+	JSON              parseResponseResultFullResultChunksBlocksGranularConfidenceJSON `json:"-"`
+}
+
+// parseResponseResultFullResultChunksBlocksGranularConfidenceJSON contains the
+// JSON metadata for the struct
+// [ParseResponseResultFullResultChunksBlocksGranularConfidence]
+type parseResponseResultFullResultChunksBlocksGranularConfidenceJSON struct {
+	ExtractConfidence apijson.Field
+	ParseConfidence   apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
+}
+
+func (r *ParseResponseResultFullResultChunksBlocksGranularConfidence) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r parseResponseResultFullResultChunksBlocksGranularConfidenceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ParseResponseResultFullResultChunksBlocksMergedTable struct {
+	// The original bounding box of a table before merge_tables merged it.
+	Bbox reducto.BoundingBox `json:"bbox" api:"required"`
+	// The original content of a table before merge_tables merged it.
+	Content string `json:"content" api:"required"`
+	// (Experimental) The URL of the image for this original table fragment. Only
+	// populated when settings.return_images includes 'table'.
+	ImageURL string                                                   `json:"image_url" api:"nullable"`
+	JSON     parseResponseResultFullResultChunksBlocksMergedTableJSON `json:"-"`
+}
+
+// parseResponseResultFullResultChunksBlocksMergedTableJSON contains the JSON
+// metadata for the struct [ParseResponseResultFullResultChunksBlocksMergedTable]
+type parseResponseResultFullResultChunksBlocksMergedTableJSON struct {
+	Bbox        apijson.Field
+	Content     apijson.Field
+	ImageURL    apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ParseResponseResultFullResultChunksBlocksMergedTable) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r parseResponseResultFullResultChunksBlocksMergedTableJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -983,6 +1327,10 @@ func (r pipelineResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+func (r PipelineResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+
+func (r PipelineResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
+
 type PipelineResponseResult struct {
 	Extract PipelineResponseResultExtractUnion `json:"extract" api:"required,nullable"`
 	Parse   PipelineResponseResultParseUnion   `json:"parse" api:"required,nullable"`
@@ -1041,11 +1389,11 @@ func (r PipelineResponseResultExtractArray) ImplementsPipelineResponseResultExtr
 
 // This is the response format for Extract -> Split Pipelines
 type PipelineResponseResultExtractArrayItem struct {
-	PageRange []int64                                       `json:"page_range" api:"required"`
-	Result    PipelineResponseResultExtractArrayResultUnion `json:"result" api:"required"`
-	SplitName string                                        `json:"split_name" api:"required"`
-	Partition string                                        `json:"partition" api:"nullable"`
-	JSON      pipelineResponseResultExtractArrayItemJSON    `json:"-"`
+	PageRange []int64                                    `json:"page_range" api:"required"`
+	Result    PipelineResponseResultExtractArrayResult   `json:"result" api:"required"`
+	SplitName string                                     `json:"split_name" api:"required"`
+	Partition string                                     `json:"partition" api:"nullable"`
+	JSON      pipelineResponseResultExtractArrayItemJSON `json:"-"`
 }
 
 // pipelineResponseResultExtractArrayItemJSON contains the JSON metadata for the
@@ -1067,9 +1415,67 @@ func (r pipelineResponseResultExtractArrayItemJSON) RawJSON() string {
 	return r.raw
 }
 
+type PipelineResponseResultExtractArrayResult struct {
+	// This field can have the runtime type of [ExtractResponseResultUnion],
+	// [[]interface{}].
+	Result interface{}          `json:"result" api:"required"`
+	Usage  reducto.ExtractUsage `json:"usage" api:"required"`
+	// This field can have the runtime type of [ExtractResponseCitationsUnion].
+	Citations interface{} `json:"citations"`
+	// Optional document-level deep extract confidence label.
+	Confidence PipelineResponseResultExtractArrayResultConfidence `json:"confidence" api:"nullable"`
+	// Optional explanation for the document-level confidence label.
+	ConfidenceReason string `json:"confidence_reason" api:"nullable"`
+	JobID            string `json:"job_id" api:"nullable"`
+	// This field can have the runtime type of [map[string]interface{}].
+	ResponseConfidence interface{}                                          `json:"response_confidence"`
+	ResponseType       PipelineResponseResultExtractArrayResultResponseType `json:"response_type"`
+	// The link to the studio pipeline for the document.
+	StudioLink string                                       `json:"studio_link" api:"nullable"`
+	JSON       pipelineResponseResultExtractArrayResultJSON `json:"-"`
+	union      PipelineResponseResultExtractArrayResultUnion
+}
+
+// pipelineResponseResultExtractArrayResultJSON contains the JSON metadata for the
+// struct [PipelineResponseResultExtractArrayResult]
+type pipelineResponseResultExtractArrayResultJSON struct {
+	Result             apijson.Field
+	Usage              apijson.Field
+	Citations          apijson.Field
+	Confidence         apijson.Field
+	ConfidenceReason   apijson.Field
+	JobID              apijson.Field
+	ResponseConfidence apijson.Field
+	ResponseType       apijson.Field
+	StudioLink         apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
+}
+
+func (r pipelineResponseResultExtractArrayResultJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r *PipelineResponseResultExtractArrayResult) UnmarshalJSON(data []byte) (err error) {
+	*r = PipelineResponseResultExtractArrayResult{}
+	err = apijson.UnmarshalRoot(data, &r.union)
+	if err != nil {
+		return err
+	}
+	return apijson.Port(r.union, &r)
+}
+
+// AsUnion returns a [PipelineResponseResultExtractArrayResultUnion] interface
+// which you can cast to the specific types for more type safety.
+//
+// Possible runtime types of the union are [ExtractResponse], [reducto.V3Extract].
+func (r PipelineResponseResultExtractArrayResult) AsUnion() PipelineResponseResultExtractArrayResultUnion {
+	return r.union
+}
+
 // Union satisfied by [ExtractResponse] or [reducto.V3Extract].
 type PipelineResponseResultExtractArrayResultUnion interface {
-	ImplementsPipelineResponseResultExtractArrayResultUnion()
+	ImplementsPipelineResponseResultExtractArrayResult()
 }
 
 func init() {
@@ -1085,6 +1491,37 @@ func init() {
 			Type:       reflect.TypeOf(reducto.V3Extract{}),
 		},
 	)
+}
+
+// Optional document-level deep extract confidence label.
+type PipelineResponseResultExtractArrayResultConfidence string
+
+const (
+	PipelineResponseResultExtractArrayResultConfidenceHigh PipelineResponseResultExtractArrayResultConfidence = "high"
+	PipelineResponseResultExtractArrayResultConfidenceLow  PipelineResponseResultExtractArrayResultConfidence = "low"
+)
+
+func (r PipelineResponseResultExtractArrayResultConfidence) IsKnown() bool {
+	switch r {
+	case PipelineResponseResultExtractArrayResultConfidenceHigh, PipelineResponseResultExtractArrayResultConfidenceLow:
+		return true
+	}
+	return false
+}
+
+type PipelineResponseResultExtractArrayResultResponseType string
+
+const (
+	PipelineResponseResultExtractArrayResultResponseTypeExtract   PipelineResponseResultExtractArrayResultResponseType = "extract"
+	PipelineResponseResultExtractArrayResultResponseTypeV3Extract PipelineResponseResultExtractArrayResultResponseType = "v3_extract"
+)
+
+func (r PipelineResponseResultExtractArrayResultResponseType) IsKnown() bool {
+	switch r {
+	case PipelineResponseResultExtractArrayResultResponseTypeExtract, PipelineResponseResultExtractArrayResultResponseTypeV3Extract:
+		return true
+	}
+	return false
 }
 
 // Union satisfied by [ParseResponse] or [PipelineResponseResultParseArray].
@@ -1187,6 +1624,10 @@ func (r *SplitResponse) UnmarshalJSON(data []byte) (err error) {
 func (r splitResponseJSON) RawJSON() string {
 	return r.raw
 }
+
+func (r SplitResponse) ImplementsJobGetResponseAsyncJobResponseResult() {}
+
+func (r SplitResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {}
 
 // The split result. If force_url_result is True, this is returned as a URL result.
 type SplitResponseResult struct {
