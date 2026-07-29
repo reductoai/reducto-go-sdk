@@ -137,6 +137,53 @@ const EditResponseResponseTypeEdit = shared.EditResponseResponseTypeEdit
 // This is an alias to an internal type.
 type ExtractResponse = shared.ExtractResponse
 
+// The citations corresponding to the extracted response. If force_url_result is
+// True and citations are present, this is returned as a URL result.
+//
+// This is an alias to an internal type.
+type ExtractResponseCitationsUnion = shared.ExtractResponseCitationsUnion
+
+// This is an alias to an internal type.
+type ExtractResponseCitationsArray = shared.ExtractResponseCitationsArray
+
+// This is an alias to an internal type.
+type ExtractResponseCitationsURLResult = shared.ExtractResponseCitationsURLResult
+
+// type = 'url'
+//
+// This is an alias to an internal type.
+type ExtractResponseCitationsURLResultType = shared.ExtractResponseCitationsURLResultType
+
+// This is an alias to an internal value.
+const ExtractResponseCitationsURLResultTypeURL = shared.ExtractResponseCitationsURLResultTypeURL
+
+// The extracted response in your provided schema. This is a list of dictionaries.
+// If disable_chunking is True (default), then it will be a list of length one. If
+// force_url_result is True, this is returned as a URL result.
+//
+// This is an alias to an internal type.
+type ExtractResponseResultUnion = shared.ExtractResponseResultUnion
+
+// This is an alias to an internal type.
+type ExtractResponseResultArray = shared.ExtractResponseResultArray
+
+// This is an alias to an internal type.
+type ExtractResponseResultURLResult = shared.ExtractResponseResultURLResult
+
+// type = 'url'
+//
+// This is an alias to an internal type.
+type ExtractResponseResultURLResultType = shared.ExtractResponseResultURLResultType
+
+// This is an alias to an internal value.
+const ExtractResponseResultURLResultTypeURL = shared.ExtractResponseResultURLResultTypeURL
+
+// This is an alias to an internal type.
+type ExtractResponseResponseType = shared.ExtractResponseResponseType
+
+// This is an alias to an internal value.
+const ExtractResponseResponseTypeExtract = shared.ExtractResponseResponseTypeExtract
+
 // This is an alias to an internal type.
 type FigureAgenticParam = shared.FigureAgenticParam
 
@@ -166,6 +213,60 @@ type ParseResponseResultFullResult = shared.ParseResponseResultFullResult
 
 // This is an alias to an internal type.
 type ParseResponseResultFullResultChunk = shared.ParseResponseResultFullResultChunk
+
+// This is an alias to an internal type.
+type ParseResponseResultFullResultChunksBlock = shared.ParseResponseResultFullResultChunksBlock
+
+// The type of block extracted from the document.
+//
+// This is an alias to an internal type.
+type ParseResponseResultFullResultChunksBlocksType = shared.ParseResponseResultFullResultChunksBlocksType
+
+// This is an alias to an internal value.
+const ParseResponseResultFullResultChunksBlocksTypeHeader = shared.ParseResponseResultFullResultChunksBlocksTypeHeader
+
+// This is an alias to an internal value.
+const ParseResponseResultFullResultChunksBlocksTypeFooter = shared.ParseResponseResultFullResultChunksBlocksTypeFooter
+
+// This is an alias to an internal value.
+const ParseResponseResultFullResultChunksBlocksTypeTitle = shared.ParseResponseResultFullResultChunksBlocksTypeTitle
+
+// This is an alias to an internal value.
+const ParseResponseResultFullResultChunksBlocksTypeSectionHeader = shared.ParseResponseResultFullResultChunksBlocksTypeSectionHeader
+
+// This is an alias to an internal value.
+const ParseResponseResultFullResultChunksBlocksTypePageNumber = shared.ParseResponseResultFullResultChunksBlocksTypePageNumber
+
+// This is an alias to an internal value.
+const ParseResponseResultFullResultChunksBlocksTypeListItem = shared.ParseResponseResultFullResultChunksBlocksTypeListItem
+
+// This is an alias to an internal value.
+const ParseResponseResultFullResultChunksBlocksTypeFigure = shared.ParseResponseResultFullResultChunksBlocksTypeFigure
+
+// This is an alias to an internal value.
+const ParseResponseResultFullResultChunksBlocksTypeTable = shared.ParseResponseResultFullResultChunksBlocksTypeTable
+
+// This is an alias to an internal value.
+const ParseResponseResultFullResultChunksBlocksTypeKeyValue = shared.ParseResponseResultFullResultChunksBlocksTypeKeyValue
+
+// This is an alias to an internal value.
+const ParseResponseResultFullResultChunksBlocksTypeText = shared.ParseResponseResultFullResultChunksBlocksTypeText
+
+// This is an alias to an internal value.
+const ParseResponseResultFullResultChunksBlocksTypeComment = shared.ParseResponseResultFullResultChunksBlocksTypeComment
+
+// This is an alias to an internal value.
+const ParseResponseResultFullResultChunksBlocksTypeSignature = shared.ParseResponseResultFullResultChunksBlocksTypeSignature
+
+// Granular confidence scores for the block. It is a dictionary of confidence
+// scores for the block. The confidence scores will not be None if the user has
+// enabled numeric confidence scores.
+//
+// This is an alias to an internal type.
+type ParseResponseResultFullResultChunksBlocksGranularConfidence = shared.ParseResponseResultFullResultChunksBlocksGranularConfidence
+
+// This is an alias to an internal type.
+type ParseResponseResultFullResultChunksBlocksMergedTable = shared.ParseResponseResultFullResultChunksBlocksMergedTable
 
 // type = 'full'
 //
@@ -230,7 +331,27 @@ type PipelineResponseResultExtractArray = shared.PipelineResponseResultExtractAr
 type PipelineResponseResultExtractArrayItem = shared.PipelineResponseResultExtractArrayItem
 
 // This is an alias to an internal type.
-type PipelineResponseResultExtractArrayResultUnion = shared.PipelineResponseResultExtractArrayResultUnion
+type PipelineResponseResultExtractArrayResult = shared.PipelineResponseResultExtractArrayResult
+
+// Optional document-level deep extract confidence label.
+//
+// This is an alias to an internal type.
+type PipelineResponseResultExtractArrayResultConfidence = shared.PipelineResponseResultExtractArrayResultConfidence
+
+// This is an alias to an internal value.
+const PipelineResponseResultExtractArrayResultConfidenceHigh = shared.PipelineResponseResultExtractArrayResultConfidenceHigh
+
+// This is an alias to an internal value.
+const PipelineResponseResultExtractArrayResultConfidenceLow = shared.PipelineResponseResultExtractArrayResultConfidenceLow
+
+// This is an alias to an internal type.
+type PipelineResponseResultExtractArrayResultResponseType = shared.PipelineResponseResultExtractArrayResultResponseType
+
+// This is an alias to an internal value.
+const PipelineResponseResultExtractArrayResultResponseTypeExtract = shared.PipelineResponseResultExtractArrayResultResponseTypeExtract
+
+// This is an alias to an internal value.
+const PipelineResponseResultExtractArrayResultResponseTypeV3Extract = shared.PipelineResponseResultExtractArrayResultResponseTypeV3Extract
 
 // This is an alias to an internal type.
 type PipelineResponseResultParseUnion = shared.PipelineResponseResultParseUnion
