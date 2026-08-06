@@ -185,7 +185,10 @@ func (r EnhanceParam) MarshalJSON() (data []byte, err error) {
 
 type EnhanceAgenticParam struct {
 	Scope param.Field[EnhanceAgenticScope] `json:"scope" api:"required"`
-	// If True, use the advanced chart agent. Defaults to False.
+	// If True, run advanced chart extraction on figures classified as charts: an
+	// agentic extractor that returns full structured series data (chart_data) plus a
+	// reconstruction image re-drawn from that data (extra.chart_reconstruction).
+	// Higher latency. Defaults to False.
 	AdvancedChartAgent param.Field[bool] `json:"advanced_chart_agent"`
 	// Mode for table agentic: 'default' selectively applies enrichment only to tables
 	// likely to benefit, and 'max' runs enrichment on all tables.
