@@ -753,7 +753,10 @@ func (r ExtractResponseResponseType) IsKnown() bool {
 
 type FigureAgenticParam struct {
 	Scope param.Field[FigureAgenticScope] `json:"scope" api:"required"`
-	// If True, use the advanced chart agent. Defaults to False.
+	// If True, run advanced chart extraction on figures classified as charts: an
+	// agentic extractor that returns full structured series data (chart_data) plus a
+	// reconstruction image re-drawn from that data (extra.chart_reconstruction).
+	// Higher latency. Defaults to False.
 	AdvancedChartAgent param.Field[bool] `json:"advanced_chart_agent"`
 	// Custom prompt for figure agentic.
 	Prompt param.Field[string] `json:"prompt"`
