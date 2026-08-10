@@ -307,6 +307,11 @@ const ParseResponseResultTypeFull = shared.ParseResponseResultTypeFull
 // This is an alias to an internal value.
 const ParseResponseResultTypeURL = shared.ParseResponseResultTypeURL
 
+// Embedded properties read from the customer's original document.
+//
+// This is an alias to an internal type.
+type ParseResponseDocumentProperties = shared.ParseResponseDocumentProperties
+
 // This is an alias to an internal type.
 type ParseResponseResponseType = shared.ParseResponseResponseType
 

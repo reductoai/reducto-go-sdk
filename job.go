@@ -312,6 +312,9 @@ type JobGetResponseAsyncJobResponseResult struct {
 	Confidence JobGetResponseAsyncJobResponseResultConfidence `json:"confidence" api:"nullable"`
 	// Optional explanation for the document-level confidence label.
 	ConfidenceReason string `json:"confidence_reason" api:"nullable"`
+	// This field can have the runtime type of
+	// [shared.ParseResponseDocumentProperties].
+	DocumentProperties interface{} `json:"document_properties"`
 	// Presigned URL to download the edited document.
 	DocumentURL string `json:"document_url"`
 	// The duration of the parse request in seconds.
@@ -345,6 +348,7 @@ type jobGetResponseAsyncJobResponseResultJSON struct {
 	Citations          apijson.Field
 	Confidence         apijson.Field
 	ConfidenceReason   apijson.Field
+	DocumentProperties apijson.Field
 	DocumentURL        apijson.Field
 	Duration           apijson.Field
 	FormSchema         apijson.Field
@@ -637,6 +641,9 @@ type JobGetResponseEnhancedAsyncJobResponseResult struct {
 	Confidence JobGetResponseEnhancedAsyncJobResponseResultConfidence `json:"confidence" api:"nullable"`
 	// Optional explanation for the document-level confidence label.
 	ConfidenceReason string `json:"confidence_reason" api:"nullable"`
+	// This field can have the runtime type of
+	// [shared.ParseResponseDocumentProperties].
+	DocumentProperties interface{} `json:"document_properties"`
 	// Presigned URL to download the edited document.
 	DocumentURL string `json:"document_url"`
 	// The duration of the parse request in seconds.
@@ -670,6 +677,7 @@ type jobGetResponseEnhancedAsyncJobResponseResultJSON struct {
 	Citations          apijson.Field
 	Confidence         apijson.Field
 	ConfidenceReason   apijson.Field
+	DocumentProperties apijson.Field
 	DocumentURL        apijson.Field
 	Duration           apijson.Field
 	FormSchema         apijson.Field

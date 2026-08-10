@@ -813,6 +813,8 @@ type ParseResponse struct {
 	// application.
 	Result ParseResponseResult `json:"result" api:"required"`
 	Usage  reducto.ParseUsage  `json:"usage" api:"required"`
+	// Embedded properties read from the customer's original document.
+	DocumentProperties ParseResponseDocumentProperties `json:"document_properties" api:"nullable"`
 	// The storage URL of the converted PDF file.
 	PdfURL       string                    `json:"pdf_url" api:"nullable"`
 	ResponseType ParseResponseResponseType `json:"response_type"`
@@ -823,15 +825,16 @@ type ParseResponse struct {
 
 // parseResponseJSON contains the JSON metadata for the struct [ParseResponse]
 type parseResponseJSON struct {
-	Duration     apijson.Field
-	JobID        apijson.Field
-	Result       apijson.Field
-	Usage        apijson.Field
-	PdfURL       apijson.Field
-	ResponseType apijson.Field
-	StudioLink   apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
+	Duration           apijson.Field
+	JobID              apijson.Field
+	Result             apijson.Field
+	Usage              apijson.Field
+	DocumentProperties apijson.Field
+	PdfURL             apijson.Field
+	ResponseType       apijson.Field
+	StudioLink         apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
 }
 
 func (r *ParseResponse) UnmarshalJSON(data []byte) (err error) {
@@ -1287,6 +1290,55 @@ func (r ParseResponseResultType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+// Embedded properties read from the customer's original document.
+type ParseResponseDocumentProperties struct {
+	// The document author.
+	Author string `json:"author" api:"nullable"`
+	// The document creation time as a timezone-aware datetime. Dates without an offset
+	// are interpreted as UTC.
+	CreatedAt string `json:"created_at" api:"nullable"`
+	// The application or tool that authored the document.
+	Creator string `json:"creator" api:"nullable"`
+	// Keywords embedded in the document.
+	Keywords string `json:"keywords" api:"nullable"`
+	// The user who last modified the document.
+	LastModifiedBy string `json:"last_modified_by" api:"nullable"`
+	// The document modification time as a timezone-aware datetime. Dates without an
+	// offset are interpreted as UTC.
+	ModifiedAt string `json:"modified_at" api:"nullable"`
+	// The application or library that produced the document.
+	Producer string `json:"producer" api:"nullable"`
+	// The document subject.
+	Subject string `json:"subject" api:"nullable"`
+	// The document title.
+	Title string                              `json:"title" api:"nullable"`
+	JSON  parseResponseDocumentPropertiesJSON `json:"-"`
+}
+
+// parseResponseDocumentPropertiesJSON contains the JSON metadata for the struct
+// [ParseResponseDocumentProperties]
+type parseResponseDocumentPropertiesJSON struct {
+	Author         apijson.Field
+	CreatedAt      apijson.Field
+	Creator        apijson.Field
+	Keywords       apijson.Field
+	LastModifiedBy apijson.Field
+	ModifiedAt     apijson.Field
+	Producer       apijson.Field
+	Subject        apijson.Field
+	Title          apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *ParseResponseDocumentProperties) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r parseResponseDocumentPropertiesJSON) RawJSON() string {
+	return r.raw
 }
 
 type ParseResponseResponseType string

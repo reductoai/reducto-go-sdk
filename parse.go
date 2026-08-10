@@ -353,6 +353,8 @@ type SettingsParam struct {
 	// past 200%. Defaults to 100 (good for on-screen viewing); raise toward the source
 	// scan DPI for crisper output. Min 50, max 250.
 	EmbedPdfMetadataDpi param.Field[int64] `json:"embed_pdf_metadata_dpi"`
+	// If True, return properties embedded in the original document. Defaults to False.
+	ExtractDocumentProperties param.Field[bool] `json:"extract_document_properties"`
 	// The mode to use for text extraction from PDFs. OCR mode uses optical character
 	// recognition only. Hybrid mode combines OCR with embedded PDF text for best
 	// accuracy (default).
@@ -554,6 +556,9 @@ func (r SpreadsheetInclude) IsKnown() bool {
 
 type ParseRunResponse struct {
 	JobID string `json:"job_id" api:"required"`
+	// This field can have the runtime type of
+	// [shared.ParseResponseDocumentProperties].
+	DocumentProperties interface{} `json:"document_properties"`
 	// The duration of the parse request in seconds.
 	Duration float64 `json:"duration"`
 	// The storage URL of the converted PDF file.
@@ -571,15 +576,16 @@ type ParseRunResponse struct {
 // parseRunResponseJSON contains the JSON metadata for the struct
 // [ParseRunResponse]
 type parseRunResponseJSON struct {
-	JobID        apijson.Field
-	Duration     apijson.Field
-	PdfURL       apijson.Field
-	ResponseType apijson.Field
-	Result       apijson.Field
-	StudioLink   apijson.Field
-	Usage        apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
+	JobID              apijson.Field
+	DocumentProperties apijson.Field
+	Duration           apijson.Field
+	PdfURL             apijson.Field
+	ResponseType       apijson.Field
+	Result             apijson.Field
+	StudioLink         apijson.Field
+	Usage              apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
 }
 
 func (r parseRunResponseJSON) RawJSON() string {
