@@ -54,9 +54,9 @@ func (r *ParseService) RunJob(ctx context.Context, body ParseRunJobParams, opts 
 type AsyncConfigV3Param struct {
 	// JSON metadata included in webhook request body. Defaults to None.
 	Metadata param.Field[interface{}] `json:"metadata"`
-	// If True, attempts to process the job with priority if the user has priority
-	// processing budget available; by default, sync jobs are prioritized above async
-	// jobs.
+	// Workers poll the priority queue ahead of the standard queue, so priority jobs
+	// start sooner when there is queued work; sync jobs are prioritized above async
+	// jobs by default.
 	Priority param.Field[bool] `json:"priority"`
 	// The webhook configuration for the asynchronous processing.
 	Webhook param.Field[AsyncConfigV3WebhookUnionParam] `json:"webhook"`
