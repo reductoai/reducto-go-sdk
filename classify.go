@@ -56,8 +56,8 @@ type ClassifyRunParams struct {
 	// Force the endpoint result to be returned in URL form.
 	ForceURLResult param.Field[bool] `json:"force_url_result"`
 	// The page range to process (1-indexed). By default, the first 5 pages are used.
-	// If more than 25 pages are selected, only the first 25 (after sorting) are used.
-	// Only applies to PDFs; ignored for other document types.
+	// At most 10 pages can be selected. Only applies to PDFs; ignored for other
+	// document types.
 	PageRange param.Field[ClassifyRunParamsPageRangeUnion] `json:"page_range"`
 }
 
@@ -98,8 +98,8 @@ func (r ClassifyRunParamsClassificationSchema) MarshalJSON() (data []byte, err e
 }
 
 // The page range to process (1-indexed). By default, the first 5 pages are used.
-// If more than 25 pages are selected, only the first 25 (after sorting) are used.
-// Only applies to PDFs; ignored for other document types.
+// At most 10 pages can be selected. Only applies to PDFs; ignored for other
+// document types.
 //
 // Satisfied by [shared.PageRangeParam], [ClassifyRunParamsPageRangeArray],
 // [ClassifyRunParamsPageRangeArray].
