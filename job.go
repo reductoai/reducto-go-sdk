@@ -334,12 +334,14 @@ type JobGetResponseAsyncJobResponseResult struct {
 	// This field can have the runtime type of [shared.ParseResponseResult],
 	// [shared.ExtractResponseResultUnion], [shared.SplitResponseResult],
 	// [shared.PipelineResponseResult], [[]interface{}],
-	// [shared.ClassifyResponseResult].
+	// [shared.ClassifyResponseResult],
+	// [JobGetResponseAsyncJobResponseResultChartResponseResult].
 	Result interface{} `json:"result"`
 	// The link to the studio pipeline for the document.
 	StudioLink string `json:"studio_link" api:"nullable"`
 	// This field can have the runtime type of [ParseUsage], [ExtractUsage],
-	// [shared.ClassifyResponseUsage].
+	// [shared.ClassifyResponseUsage],
+	// [JobGetResponseAsyncJobResponseResultChartResponseUsage].
 	Usage interface{}                              `json:"usage"`
 	JSON  jobGetResponseAsyncJobResponseResultJSON `json:"-"`
 	union JobGetResponseAsyncJobResponseResultUnion
@@ -384,7 +386,8 @@ func (r *JobGetResponseAsyncJobResponseResult) UnmarshalJSON(data []byte) (err e
 //
 // Possible runtime types of the union are [shared.ParseResponse],
 // [shared.ExtractResponse], [shared.SplitResponse], [shared.EditResponse],
-// [shared.PipelineResponse], [V3Extract], [shared.ClassifyResponse].
+// [shared.PipelineResponse], [V3Extract], [shared.ClassifyResponse],
+// [JobGetResponseAsyncJobResponseResultChartResponse].
 func (r JobGetResponseAsyncJobResponseResult) AsUnion() JobGetResponseAsyncJobResponseResultUnion {
 	return r.union
 }
@@ -393,7 +396,8 @@ func (r JobGetResponseAsyncJobResponseResult) AsUnion() JobGetResponseAsyncJobRe
 //
 // Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
 // [shared.SplitResponse], [shared.EditResponse], [shared.PipelineResponse],
-// [V3Extract] or [shared.ClassifyResponse].
+// [V3Extract], [shared.ClassifyResponse] or
+// [JobGetResponseAsyncJobResponseResultChartResponse].
 type JobGetResponseAsyncJobResponseResultUnion interface {
 	ImplementsJobGetResponseAsyncJobResponseResult()
 }
@@ -437,7 +441,124 @@ func init() {
 			Type:               reflect.TypeOf(shared.ClassifyResponse{}),
 			DiscriminatorValue: "classify",
 		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(JobGetResponseAsyncJobResponseResultChartResponse{}),
+			DiscriminatorValue: "chart",
+		},
 	)
+}
+
+// Response from synchronous and persisted chart extraction jobs.
+type JobGetResponseAsyncJobResponseResultChartResponse struct {
+	JobID        string                                                        `json:"job_id" api:"required"`
+	Result       JobGetResponseAsyncJobResponseResultChartResponseResult       `json:"result" api:"required"`
+	Duration     float64                                                       `json:"duration" api:"nullable"`
+	ResponseType JobGetResponseAsyncJobResponseResultChartResponseResponseType `json:"response_type"`
+	Usage        JobGetResponseAsyncJobResponseResultChartResponseUsage        `json:"usage"`
+	JSON         jobGetResponseAsyncJobResponseResultChartResponseJSON         `json:"-"`
+}
+
+// jobGetResponseAsyncJobResponseResultChartResponseJSON contains the JSON metadata
+// for the struct [JobGetResponseAsyncJobResponseResultChartResponse]
+type jobGetResponseAsyncJobResponseResultChartResponseJSON struct {
+	JobID        apijson.Field
+	Result       apijson.Field
+	Duration     apijson.Field
+	ResponseType apijson.Field
+	Usage        apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
+}
+
+func (r *JobGetResponseAsyncJobResponseResultChartResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseAsyncJobResponseResultChartResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r JobGetResponseAsyncJobResponseResultChartResponse) ImplementsJobGetResponseAsyncJobResponseResult() {
+}
+
+type JobGetResponseAsyncJobResponseResultChartResponseResult struct {
+	ChartData         map[string]interface{}                                      `json:"chart_data" api:"required"`
+	ReconstructionURL string                                                      `json:"reconstruction_url" api:"required"`
+	Summary           string                                                      `json:"summary" api:"required"`
+	Verified          bool                                                        `json:"verified" api:"required"`
+	JSON              jobGetResponseAsyncJobResponseResultChartResponseResultJSON `json:"-"`
+}
+
+// jobGetResponseAsyncJobResponseResultChartResponseResultJSON contains the JSON
+// metadata for the struct
+// [JobGetResponseAsyncJobResponseResultChartResponseResult]
+type jobGetResponseAsyncJobResponseResultChartResponseResultJSON struct {
+	ChartData         apijson.Field
+	ReconstructionURL apijson.Field
+	Summary           apijson.Field
+	Verified          apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
+}
+
+func (r *JobGetResponseAsyncJobResponseResultChartResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseAsyncJobResponseResultChartResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+type JobGetResponseAsyncJobResponseResultChartResponseResponseType string
+
+const (
+	JobGetResponseAsyncJobResponseResultChartResponseResponseTypeChart JobGetResponseAsyncJobResponseResultChartResponseResponseType = "chart"
+)
+
+func (r JobGetResponseAsyncJobResponseResultChartResponseResponseType) IsKnown() bool {
+	switch r {
+	case JobGetResponseAsyncJobResponseResultChartResponseResponseTypeChart:
+		return true
+	}
+	return false
+}
+
+type JobGetResponseAsyncJobResponseResultChartResponseUsage struct {
+	Credits   float64                                                         `json:"credits"`
+	NumCharts JobGetResponseAsyncJobResponseResultChartResponseUsageNumCharts `json:"num_charts"`
+	JSON      jobGetResponseAsyncJobResponseResultChartResponseUsageJSON      `json:"-"`
+}
+
+// jobGetResponseAsyncJobResponseResultChartResponseUsageJSON contains the JSON
+// metadata for the struct [JobGetResponseAsyncJobResponseResultChartResponseUsage]
+type jobGetResponseAsyncJobResponseResultChartResponseUsageJSON struct {
+	Credits     apijson.Field
+	NumCharts   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseAsyncJobResponseResultChartResponseUsage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseAsyncJobResponseResultChartResponseUsageJSON) RawJSON() string {
+	return r.raw
+}
+
+type JobGetResponseAsyncJobResponseResultChartResponseUsageNumCharts int64
+
+const (
+	JobGetResponseAsyncJobResponseResultChartResponseUsageNumCharts1 JobGetResponseAsyncJobResponseResultChartResponseUsageNumCharts = 1
+)
+
+func (r JobGetResponseAsyncJobResponseResultChartResponseUsageNumCharts) IsKnown() bool {
+	switch r {
+	case JobGetResponseAsyncJobResponseResultChartResponseUsageNumCharts1:
+		return true
+	}
+	return false
 }
 
 // Optional document-level deep extract confidence label.
@@ -466,11 +587,12 @@ const (
 	JobGetResponseAsyncJobResponseResultResponseTypePipeline  JobGetResponseAsyncJobResponseResultResponseType = "pipeline"
 	JobGetResponseAsyncJobResponseResultResponseTypeV3Extract JobGetResponseAsyncJobResponseResultResponseType = "v3_extract"
 	JobGetResponseAsyncJobResponseResultResponseTypeClassify  JobGetResponseAsyncJobResponseResultResponseType = "classify"
+	JobGetResponseAsyncJobResponseResultResponseTypeChart     JobGetResponseAsyncJobResponseResultResponseType = "chart"
 )
 
 func (r JobGetResponseAsyncJobResponseResultResponseType) IsKnown() bool {
 	switch r {
-	case JobGetResponseAsyncJobResponseResultResponseTypeParse, JobGetResponseAsyncJobResponseResultResponseTypeExtract, JobGetResponseAsyncJobResponseResultResponseTypeSplit, JobGetResponseAsyncJobResponseResultResponseTypeEdit, JobGetResponseAsyncJobResponseResultResponseTypePipeline, JobGetResponseAsyncJobResponseResultResponseTypeV3Extract, JobGetResponseAsyncJobResponseResultResponseTypeClassify:
+	case JobGetResponseAsyncJobResponseResultResponseTypeParse, JobGetResponseAsyncJobResponseResultResponseTypeExtract, JobGetResponseAsyncJobResponseResultResponseTypeSplit, JobGetResponseAsyncJobResponseResultResponseTypeEdit, JobGetResponseAsyncJobResponseResultResponseTypePipeline, JobGetResponseAsyncJobResponseResultResponseTypeV3Extract, JobGetResponseAsyncJobResponseResultResponseTypeClassify, JobGetResponseAsyncJobResponseResultResponseTypeChart:
 		return true
 	}
 	return false
@@ -666,12 +788,14 @@ type JobGetResponseEnhancedAsyncJobResponseResult struct {
 	// This field can have the runtime type of [shared.ParseResponseResult],
 	// [shared.ExtractResponseResultUnion], [shared.SplitResponseResult],
 	// [shared.PipelineResponseResult], [[]interface{}],
-	// [shared.ClassifyResponseResult].
+	// [shared.ClassifyResponseResult],
+	// [JobGetResponseEnhancedAsyncJobResponseResultChartResponseResult].
 	Result interface{} `json:"result"`
 	// The link to the studio pipeline for the document.
 	StudioLink string `json:"studio_link" api:"nullable"`
 	// This field can have the runtime type of [ParseUsage], [ExtractUsage],
-	// [shared.ClassifyResponseUsage].
+	// [shared.ClassifyResponseUsage],
+	// [JobGetResponseEnhancedAsyncJobResponseResultChartResponseUsage].
 	Usage interface{}                                      `json:"usage"`
 	JSON  jobGetResponseEnhancedAsyncJobResponseResultJSON `json:"-"`
 	union JobGetResponseEnhancedAsyncJobResponseResultUnion
@@ -716,7 +840,8 @@ func (r *JobGetResponseEnhancedAsyncJobResponseResult) UnmarshalJSON(data []byte
 //
 // Possible runtime types of the union are [shared.ParseResponse],
 // [shared.ExtractResponse], [shared.SplitResponse], [shared.EditResponse],
-// [shared.PipelineResponse], [V3Extract], [shared.ClassifyResponse].
+// [shared.PipelineResponse], [V3Extract], [shared.ClassifyResponse],
+// [JobGetResponseEnhancedAsyncJobResponseResultChartResponse].
 func (r JobGetResponseEnhancedAsyncJobResponseResult) AsUnion() JobGetResponseEnhancedAsyncJobResponseResultUnion {
 	return r.union
 }
@@ -725,7 +850,8 @@ func (r JobGetResponseEnhancedAsyncJobResponseResult) AsUnion() JobGetResponseEn
 //
 // Union satisfied by [shared.ParseResponse], [shared.ExtractResponse],
 // [shared.SplitResponse], [shared.EditResponse], [shared.PipelineResponse],
-// [V3Extract] or [shared.ClassifyResponse].
+// [V3Extract], [shared.ClassifyResponse] or
+// [JobGetResponseEnhancedAsyncJobResponseResultChartResponse].
 type JobGetResponseEnhancedAsyncJobResponseResultUnion interface {
 	ImplementsJobGetResponseEnhancedAsyncJobResponseResult()
 }
@@ -769,7 +895,126 @@ func init() {
 			Type:               reflect.TypeOf(shared.ClassifyResponse{}),
 			DiscriminatorValue: "classify",
 		},
+		apijson.UnionVariant{
+			TypeFilter:         gjson.JSON,
+			Type:               reflect.TypeOf(JobGetResponseEnhancedAsyncJobResponseResultChartResponse{}),
+			DiscriminatorValue: "chart",
+		},
 	)
+}
+
+// Response from synchronous and persisted chart extraction jobs.
+type JobGetResponseEnhancedAsyncJobResponseResultChartResponse struct {
+	JobID        string                                                                `json:"job_id" api:"required"`
+	Result       JobGetResponseEnhancedAsyncJobResponseResultChartResponseResult       `json:"result" api:"required"`
+	Duration     float64                                                               `json:"duration" api:"nullable"`
+	ResponseType JobGetResponseEnhancedAsyncJobResponseResultChartResponseResponseType `json:"response_type"`
+	Usage        JobGetResponseEnhancedAsyncJobResponseResultChartResponseUsage        `json:"usage"`
+	JSON         jobGetResponseEnhancedAsyncJobResponseResultChartResponseJSON         `json:"-"`
+}
+
+// jobGetResponseEnhancedAsyncJobResponseResultChartResponseJSON contains the JSON
+// metadata for the struct
+// [JobGetResponseEnhancedAsyncJobResponseResultChartResponse]
+type jobGetResponseEnhancedAsyncJobResponseResultChartResponseJSON struct {
+	JobID        apijson.Field
+	Result       apijson.Field
+	Duration     apijson.Field
+	ResponseType apijson.Field
+	Usage        apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
+}
+
+func (r *JobGetResponseEnhancedAsyncJobResponseResultChartResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseEnhancedAsyncJobResponseResultChartResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r JobGetResponseEnhancedAsyncJobResponseResultChartResponse) ImplementsJobGetResponseEnhancedAsyncJobResponseResult() {
+}
+
+type JobGetResponseEnhancedAsyncJobResponseResultChartResponseResult struct {
+	ChartData         map[string]interface{}                                              `json:"chart_data" api:"required"`
+	ReconstructionURL string                                                              `json:"reconstruction_url" api:"required"`
+	Summary           string                                                              `json:"summary" api:"required"`
+	Verified          bool                                                                `json:"verified" api:"required"`
+	JSON              jobGetResponseEnhancedAsyncJobResponseResultChartResponseResultJSON `json:"-"`
+}
+
+// jobGetResponseEnhancedAsyncJobResponseResultChartResponseResultJSON contains the
+// JSON metadata for the struct
+// [JobGetResponseEnhancedAsyncJobResponseResultChartResponseResult]
+type jobGetResponseEnhancedAsyncJobResponseResultChartResponseResultJSON struct {
+	ChartData         apijson.Field
+	ReconstructionURL apijson.Field
+	Summary           apijson.Field
+	Verified          apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
+}
+
+func (r *JobGetResponseEnhancedAsyncJobResponseResultChartResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseEnhancedAsyncJobResponseResultChartResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+type JobGetResponseEnhancedAsyncJobResponseResultChartResponseResponseType string
+
+const (
+	JobGetResponseEnhancedAsyncJobResponseResultChartResponseResponseTypeChart JobGetResponseEnhancedAsyncJobResponseResultChartResponseResponseType = "chart"
+)
+
+func (r JobGetResponseEnhancedAsyncJobResponseResultChartResponseResponseType) IsKnown() bool {
+	switch r {
+	case JobGetResponseEnhancedAsyncJobResponseResultChartResponseResponseTypeChart:
+		return true
+	}
+	return false
+}
+
+type JobGetResponseEnhancedAsyncJobResponseResultChartResponseUsage struct {
+	Credits   float64                                                                 `json:"credits"`
+	NumCharts JobGetResponseEnhancedAsyncJobResponseResultChartResponseUsageNumCharts `json:"num_charts"`
+	JSON      jobGetResponseEnhancedAsyncJobResponseResultChartResponseUsageJSON      `json:"-"`
+}
+
+// jobGetResponseEnhancedAsyncJobResponseResultChartResponseUsageJSON contains the
+// JSON metadata for the struct
+// [JobGetResponseEnhancedAsyncJobResponseResultChartResponseUsage]
+type jobGetResponseEnhancedAsyncJobResponseResultChartResponseUsageJSON struct {
+	Credits     apijson.Field
+	NumCharts   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *JobGetResponseEnhancedAsyncJobResponseResultChartResponseUsage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r jobGetResponseEnhancedAsyncJobResponseResultChartResponseUsageJSON) RawJSON() string {
+	return r.raw
+}
+
+type JobGetResponseEnhancedAsyncJobResponseResultChartResponseUsageNumCharts int64
+
+const (
+	JobGetResponseEnhancedAsyncJobResponseResultChartResponseUsageNumCharts1 JobGetResponseEnhancedAsyncJobResponseResultChartResponseUsageNumCharts = 1
+)
+
+func (r JobGetResponseEnhancedAsyncJobResponseResultChartResponseUsageNumCharts) IsKnown() bool {
+	switch r {
+	case JobGetResponseEnhancedAsyncJobResponseResultChartResponseUsageNumCharts1:
+		return true
+	}
+	return false
 }
 
 // Optional document-level deep extract confidence label.
@@ -798,11 +1043,12 @@ const (
 	JobGetResponseEnhancedAsyncJobResponseResultResponseTypePipeline  JobGetResponseEnhancedAsyncJobResponseResultResponseType = "pipeline"
 	JobGetResponseEnhancedAsyncJobResponseResultResponseTypeV3Extract JobGetResponseEnhancedAsyncJobResponseResultResponseType = "v3_extract"
 	JobGetResponseEnhancedAsyncJobResponseResultResponseTypeClassify  JobGetResponseEnhancedAsyncJobResponseResultResponseType = "classify"
+	JobGetResponseEnhancedAsyncJobResponseResultResponseTypeChart     JobGetResponseEnhancedAsyncJobResponseResultResponseType = "chart"
 )
 
 func (r JobGetResponseEnhancedAsyncJobResponseResultResponseType) IsKnown() bool {
 	switch r {
-	case JobGetResponseEnhancedAsyncJobResponseResultResponseTypeParse, JobGetResponseEnhancedAsyncJobResponseResultResponseTypeExtract, JobGetResponseEnhancedAsyncJobResponseResultResponseTypeSplit, JobGetResponseEnhancedAsyncJobResponseResultResponseTypeEdit, JobGetResponseEnhancedAsyncJobResponseResultResponseTypePipeline, JobGetResponseEnhancedAsyncJobResponseResultResponseTypeV3Extract, JobGetResponseEnhancedAsyncJobResponseResultResponseTypeClassify:
+	case JobGetResponseEnhancedAsyncJobResponseResultResponseTypeParse, JobGetResponseEnhancedAsyncJobResponseResultResponseTypeExtract, JobGetResponseEnhancedAsyncJobResponseResultResponseTypeSplit, JobGetResponseEnhancedAsyncJobResponseResultResponseTypeEdit, JobGetResponseEnhancedAsyncJobResponseResultResponseTypePipeline, JobGetResponseEnhancedAsyncJobResponseResultResponseTypeV3Extract, JobGetResponseEnhancedAsyncJobResponseResultResponseTypeClassify, JobGetResponseEnhancedAsyncJobResponseResultResponseTypeChart:
 		return true
 	}
 	return false
@@ -817,11 +1063,12 @@ const (
 	JobGetResponseEnhancedAsyncJobResponseTypeEdit     JobGetResponseEnhancedAsyncJobResponseType = "Edit"
 	JobGetResponseEnhancedAsyncJobResponseTypePipeline JobGetResponseEnhancedAsyncJobResponseType = "Pipeline"
 	JobGetResponseEnhancedAsyncJobResponseTypeClassify JobGetResponseEnhancedAsyncJobResponseType = "Classify"
+	JobGetResponseEnhancedAsyncJobResponseTypeChart    JobGetResponseEnhancedAsyncJobResponseType = "Chart"
 )
 
 func (r JobGetResponseEnhancedAsyncJobResponseType) IsKnown() bool {
 	switch r {
-	case JobGetResponseEnhancedAsyncJobResponseTypeParse, JobGetResponseEnhancedAsyncJobResponseTypeExtract, JobGetResponseEnhancedAsyncJobResponseTypeSplit, JobGetResponseEnhancedAsyncJobResponseTypeEdit, JobGetResponseEnhancedAsyncJobResponseTypePipeline, JobGetResponseEnhancedAsyncJobResponseTypeClassify:
+	case JobGetResponseEnhancedAsyncJobResponseTypeParse, JobGetResponseEnhancedAsyncJobResponseTypeExtract, JobGetResponseEnhancedAsyncJobResponseTypeSplit, JobGetResponseEnhancedAsyncJobResponseTypeEdit, JobGetResponseEnhancedAsyncJobResponseTypePipeline, JobGetResponseEnhancedAsyncJobResponseTypeClassify, JobGetResponseEnhancedAsyncJobResponseTypeChart:
 		return true
 	}
 	return false
@@ -853,11 +1100,12 @@ const (
 	JobGetResponseTypeEdit     JobGetResponseType = "Edit"
 	JobGetResponseTypePipeline JobGetResponseType = "Pipeline"
 	JobGetResponseTypeClassify JobGetResponseType = "Classify"
+	JobGetResponseTypeChart    JobGetResponseType = "Chart"
 )
 
 func (r JobGetResponseType) IsKnown() bool {
 	switch r {
-	case JobGetResponseTypeParse, JobGetResponseTypeExtract, JobGetResponseTypeSplit, JobGetResponseTypeEdit, JobGetResponseTypePipeline, JobGetResponseTypeClassify:
+	case JobGetResponseTypeParse, JobGetResponseTypeExtract, JobGetResponseTypeSplit, JobGetResponseTypeEdit, JobGetResponseTypePipeline, JobGetResponseTypeClassify, JobGetResponseTypeChart:
 		return true
 	}
 	return false
@@ -957,11 +1205,12 @@ const (
 	JobGetAllResponseJobsTypeEdit     JobGetAllResponseJobsType = "Edit"
 	JobGetAllResponseJobsTypePipeline JobGetAllResponseJobsType = "Pipeline"
 	JobGetAllResponseJobsTypeClassify JobGetAllResponseJobsType = "Classify"
+	JobGetAllResponseJobsTypeChart    JobGetAllResponseJobsType = "Chart"
 )
 
 func (r JobGetAllResponseJobsType) IsKnown() bool {
 	switch r {
-	case JobGetAllResponseJobsTypeParse, JobGetAllResponseJobsTypeExtract, JobGetAllResponseJobsTypeSplit, JobGetAllResponseJobsTypeEdit, JobGetAllResponseJobsTypePipeline, JobGetAllResponseJobsTypeClassify:
+	case JobGetAllResponseJobsTypeParse, JobGetAllResponseJobsTypeExtract, JobGetAllResponseJobsTypeSplit, JobGetAllResponseJobsTypeEdit, JobGetAllResponseJobsTypePipeline, JobGetAllResponseJobsTypeClassify, JobGetAllResponseJobsTypeChart:
 		return true
 	}
 	return false
