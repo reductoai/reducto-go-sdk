@@ -502,7 +502,9 @@ type EditResponse struct {
 	DocumentURL string `json:"document_url" api:"required"`
 	// Form schema for PDF forms. List of widgets with their types, descriptions, and
 	// bounding boxes.
-	FormSchema   []reducto.EditWidget     `json:"form_schema" api:"nullable"`
+	FormSchema []reducto.EditWidget `json:"form_schema" api:"nullable"`
+	// The unique identifier for the edit job.
+	JobID        string                   `json:"job_id" api:"nullable"`
 	ResponseType EditResponseResponseType `json:"response_type"`
 	// Usage information for the edit operation, including number of pages and credits
 	// charged.
@@ -514,6 +516,7 @@ type EditResponse struct {
 type editResponseJSON struct {
 	DocumentURL  apijson.Field
 	FormSchema   apijson.Field
+	JobID        apijson.Field
 	ResponseType apijson.Field
 	Usage        apijson.Field
 	raw          string
@@ -1657,8 +1660,10 @@ func (r SplitLargeTablesSizeSplitLargeTableSizesParam) ImplementsSplitLargeTable
 
 type SplitResponse struct {
 	// The split result. If force_url_result is True, this is returned as a URL result.
-	Result       SplitResponseResult       `json:"result" api:"required"`
-	Usage        reducto.ParseUsage        `json:"usage" api:"required"`
+	Result SplitResponseResult `json:"result" api:"required"`
+	Usage  reducto.ParseUsage  `json:"usage" api:"required"`
+	// The unique identifier for the split job.
+	JobID        string                    `json:"job_id" api:"nullable"`
 	ResponseType SplitResponseResponseType `json:"response_type"`
 	JSON         splitResponseJSON         `json:"-"`
 }
@@ -1667,6 +1672,7 @@ type SplitResponse struct {
 type splitResponseJSON struct {
 	Result       apijson.Field
 	Usage        apijson.Field
+	JobID        apijson.Field
 	ResponseType apijson.Field
 	raw          string
 	ExtraFields  map[string]apijson.Field
