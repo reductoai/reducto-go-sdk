@@ -168,6 +168,11 @@ func (r AsyncParseConfigQueuePriority) IsKnown() bool {
 }
 
 type EnhanceParam struct {
+	// If True, run advanced chart extraction on figures classified as charts, without
+	// requiring a figure-scoped agentic entry. Returns full structured series data
+	// (chart_data) plus a reconstruction image re-drawn from that data. Higher
+	// latency. Defaults to False.
+	AdvancedChartAgent param.Field[bool] `json:"advanced_chart_agent"`
 	// Agentic uses vision language models to enhance the accuracy of the output of
 	// different types of extraction. This will incur a cost and latency increase.
 	Agentic param.Field[[]EnhanceAgenticUnionParam] `json:"agentic"`

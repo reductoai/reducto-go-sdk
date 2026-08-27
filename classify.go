@@ -59,6 +59,10 @@ type ClassifyRunParams struct {
 	// At most 10 pages can be selected. Only applies to PDFs; ignored for other
 	// document types.
 	PageRange param.Field[ClassifyRunParamsPageRangeUnion] `json:"page_range"`
+	// Workers poll the priority queue ahead of the standard queue, so priority jobs
+	// start sooner when there is queued work; sync jobs are prioritized above async
+	// jobs by default.
+	Priority param.Field[bool] `json:"priority"`
 }
 
 func (r ClassifyRunParams) MarshalJSON() (data []byte, err error) {

@@ -31,6 +31,7 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 		Body: reducto.ParseRunParamsBodySyncParseConfig{
 			Input: reducto.F[reducto.ParseRunParamsBodySyncParseConfigInputUnion](shared.UnionString("string")),
 			Enhance: reducto.F(reducto.EnhanceParam{
+				AdvancedChartAgent: reducto.F(true),
 				Agentic: reducto.F([]reducto.EnhanceAgenticUnionParam{shared.TableAgenticParam{
 					Scope:  reducto.F(shared.TableAgenticScopeTable),
 					Mode:   reducto.F(shared.TableAgenticModeDefault),
@@ -125,6 +126,7 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 				}),
 			}),
 			Enhance: reducto.F(reducto.EnhanceParam{
+				AdvancedChartAgent: reducto.F(true),
 				Agentic: reducto.F([]reducto.EnhanceAgenticUnionParam{shared.TableAgenticParam{
 					Scope:  reducto.F(shared.TableAgenticScopeTable),
 					Mode:   reducto.F(shared.TableAgenticModeDefault),
