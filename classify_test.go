@@ -39,6 +39,7 @@ func TestClassifyRunWithOptionalParams(t *testing.T) {
 			End:   reducto.F(int64(0)),
 			Start: reducto.F(int64(0)),
 		}),
+		Priority: reducto.F(true),
 	})
 	if err != nil {
 		var apierr *reducto.Error
