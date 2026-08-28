@@ -116,6 +116,23 @@ const ClassifyResponseResponseTypeClassify = shared.ClassifyResponseResponseType
 // This is an alias to an internal type.
 type ClassifyResponseUsage = shared.ClassifyResponseUsage
 
+// Raw classify quantities for accounts on the new pricing model.
+//
+// `classify_pages` is capped at 5, the same cap that the classify credit
+// computation uses.
+//
+// This is an alias to an internal type.
+type ClassifyResponseUsageUsageBreakdown = shared.ClassifyResponseUsageUsageBreakdown
+
+// This is an alias to an internal type.
+type ClassifyResponseUsageUsageBreakdownClassifyModel = shared.ClassifyResponseUsageUsageBreakdownClassifyModel
+
+// This is an alias to an internal value.
+const ClassifyResponseUsageUsageBreakdownClassifyModelClassify = shared.ClassifyResponseUsageUsageBreakdownClassifyModelClassify
+
+// This is an alias to an internal value.
+const ClassifyResponseUsageUsageBreakdownClassifyModelDeepClassify = shared.ClassifyResponseUsageUsageBreakdownClassifyModelDeepClassify
+
 // This is an alias to an internal type.
 type DirectWebhookConfigParam = shared.DirectWebhookConfigParam
 

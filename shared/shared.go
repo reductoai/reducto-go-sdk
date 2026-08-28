@@ -448,20 +448,26 @@ func (r ClassifyResponseResponseType) IsKnown() bool {
 }
 
 type ClassifyResponseUsage struct {
-	NumCategories int64                     `json:"num_categories" api:"required"`
-	NumPages      int64                     `json:"num_pages" api:"required"`
-	Credits       float64                   `json:"credits" api:"nullable"`
-	JSON          classifyResponseUsageJSON `json:"-"`
+	NumCategories int64   `json:"num_categories" api:"required"`
+	NumPages      int64   `json:"num_pages" api:"required"`
+	Credits       float64 `json:"credits" api:"nullable"`
+	// Raw classify quantities for accounts on the new pricing model.
+	//
+	// `classify_pages` is capped at 5, the same cap that the classify credit
+	// computation uses.
+	UsageBreakdown ClassifyResponseUsageUsageBreakdown `json:"usage_breakdown" api:"nullable"`
+	JSON           classifyResponseUsageJSON           `json:"-"`
 }
 
 // classifyResponseUsageJSON contains the JSON metadata for the struct
 // [ClassifyResponseUsage]
 type classifyResponseUsageJSON struct {
-	NumCategories apijson.Field
-	NumPages      apijson.Field
-	Credits       apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
+	NumCategories  apijson.Field
+	NumPages       apijson.Field
+	Credits        apijson.Field
+	UsageBreakdown apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
 }
 
 func (r *ClassifyResponseUsage) UnmarshalJSON(data []byte) (err error) {
@@ -470,6 +476,48 @@ func (r *ClassifyResponseUsage) UnmarshalJSON(data []byte) (err error) {
 
 func (r classifyResponseUsageJSON) RawJSON() string {
 	return r.raw
+}
+
+// Raw classify quantities for accounts on the new pricing model.
+//
+// `classify_pages` is capped at 5, the same cap that the classify credit
+// computation uses.
+type ClassifyResponseUsageUsageBreakdown struct {
+	ClassifyModel ClassifyResponseUsageUsageBreakdownClassifyModel `json:"classify_model" api:"required"`
+	ClassifyPages int64                                            `json:"classify_pages"`
+	JSON          classifyResponseUsageUsageBreakdownJSON          `json:"-"`
+}
+
+// classifyResponseUsageUsageBreakdownJSON contains the JSON metadata for the
+// struct [ClassifyResponseUsageUsageBreakdown]
+type classifyResponseUsageUsageBreakdownJSON struct {
+	ClassifyModel apijson.Field
+	ClassifyPages apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *ClassifyResponseUsageUsageBreakdown) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r classifyResponseUsageUsageBreakdownJSON) RawJSON() string {
+	return r.raw
+}
+
+type ClassifyResponseUsageUsageBreakdownClassifyModel string
+
+const (
+	ClassifyResponseUsageUsageBreakdownClassifyModelClassify     ClassifyResponseUsageUsageBreakdownClassifyModel = "Classify"
+	ClassifyResponseUsageUsageBreakdownClassifyModelDeepClassify ClassifyResponseUsageUsageBreakdownClassifyModel = "Deep Classify"
+)
+
+func (r ClassifyResponseUsageUsageBreakdownClassifyModel) IsKnown() bool {
+	switch r {
+	case ClassifyResponseUsageUsageBreakdownClassifyModelClassify, ClassifyResponseUsageUsageBreakdownClassifyModelDeepClassify:
+		return true
+	}
+	return false
 }
 
 type DirectWebhookConfigParam struct {

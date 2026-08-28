@@ -182,17 +182,25 @@ type ExtractUsage struct {
 	NumPages    int64                   `json:"num_pages" api:"required"`
 	Credits     float64                 `json:"credits" api:"nullable"`
 	ExtractMode ExtractUsageExtractMode `json:"extract_mode" api:"nullable"`
-	JSON        extractUsageJSON        `json:"-"`
+	// Raw extract quantities for accounts on the new pricing model.
+	//
+	// `extract_fields` is reported but not billed at launch. The add-on quantities
+	// (`ocr_pages`, `charts`, `prompted_blocks`) come from the parse bundled into the
+	// extract job; its page cost is covered by `extract_pages` but its add-ons are
+	// billed separately.
+	UsageBreakdown ExtractUsageUsageBreakdown `json:"usage_breakdown" api:"nullable"`
+	JSON           extractUsageJSON           `json:"-"`
 }
 
 // extractUsageJSON contains the JSON metadata for the struct [ExtractUsage]
 type extractUsageJSON struct {
-	NumFields   apijson.Field
-	NumPages    apijson.Field
-	Credits     apijson.Field
-	ExtractMode apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	NumFields      apijson.Field
+	NumPages       apijson.Field
+	Credits        apijson.Field
+	ExtractMode    apijson.Field
+	UsageBreakdown apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
 }
 
 func (r *ExtractUsage) UnmarshalJSON(data []byte) (err error) {
@@ -214,6 +222,58 @@ const (
 func (r ExtractUsageExtractMode) IsKnown() bool {
 	switch r {
 	case ExtractUsageExtractModeSuperAgent, ExtractUsageExtractModeExtract, ExtractUsageExtractModeSpreadsheetAgent:
+		return true
+	}
+	return false
+}
+
+// Raw extract quantities for accounts on the new pricing model.
+//
+// `extract_fields` is reported but not billed at launch. The add-on quantities
+// (`ocr_pages`, `charts`, `prompted_blocks`) come from the parse bundled into the
+// extract job; its page cost is covered by `extract_pages` but its add-ons are
+// billed separately.
+type ExtractUsageUsageBreakdown struct {
+	ExtractModel   ExtractUsageUsageBreakdownExtractModel `json:"extract_model" api:"required"`
+	Charts         int64                                  `json:"charts"`
+	ExtractFields  int64                                  `json:"extract_fields"`
+	ExtractPages   int64                                  `json:"extract_pages"`
+	OcrPages       int64                                  `json:"ocr_pages"`
+	PromptedBlocks int64                                  `json:"prompted_blocks"`
+	JSON           extractUsageUsageBreakdownJSON         `json:"-"`
+}
+
+// extractUsageUsageBreakdownJSON contains the JSON metadata for the struct
+// [ExtractUsageUsageBreakdown]
+type extractUsageUsageBreakdownJSON struct {
+	ExtractModel   apijson.Field
+	Charts         apijson.Field
+	ExtractFields  apijson.Field
+	ExtractPages   apijson.Field
+	OcrPages       apijson.Field
+	PromptedBlocks apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *ExtractUsageUsageBreakdown) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r extractUsageUsageBreakdownJSON) RawJSON() string {
+	return r.raw
+}
+
+type ExtractUsageUsageBreakdownExtractModel string
+
+const (
+	ExtractUsageUsageBreakdownExtractModelExtract     ExtractUsageUsageBreakdownExtractModel = "Extract"
+	ExtractUsageUsageBreakdownExtractModelDeepExtract ExtractUsageUsageBreakdownExtractModel = "Deep Extract"
+)
+
+func (r ExtractUsageUsageBreakdownExtractModel) IsKnown() bool {
+	switch r {
+	case ExtractUsageUsageBreakdownExtractModelExtract, ExtractUsageUsageBreakdownExtractModelDeepExtract:
 		return true
 	}
 	return false
