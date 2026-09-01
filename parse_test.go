@@ -66,6 +66,7 @@ func TestParseRunWithOptionalParams(t *testing.T) {
 				HybridVpc: reducto.F(reducto.SettingsHybridVpcParam{
 					Environment: reducto.F("environment"),
 				}),
+				Model:     reducto.F(reducto.SettingsModelR1),
 				OcrSystem: reducto.F(reducto.SettingsOcrSystemStandard),
 				PageRange: reducto.F[reducto.SettingsPageRangeUnionParam](shared.PageRangeParam{
 					End:   reducto.F(int64(0)),
@@ -162,6 +163,7 @@ func TestParseRunJobWithOptionalParams(t *testing.T) {
 				HybridVpc: reducto.F(reducto.SettingsHybridVpcParam{
 					Environment: reducto.F("environment"),
 				}),
+				Model:     reducto.F(reducto.SettingsModelR1),
 				OcrSystem: reducto.F(reducto.SettingsOcrSystemStandard),
 				PageRange: reducto.F[reducto.SettingsPageRangeUnionParam](shared.PageRangeParam{
 					End:   reducto.F(int64(0)),

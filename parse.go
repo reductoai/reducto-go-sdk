@@ -370,6 +370,10 @@ type SettingsParam struct {
 	ForceURLResult param.Field[bool] `json:"force_url_result"`
 	// Hybrid VPC request-scoped settings.
 	HybridVpc param.Field[SettingsHybridVpcParam] `json:"hybrid_vpc"`
+	// The parse model to use. 'r-1' is the R-1 full-page parse model, which parses
+	// each page in a single generation. 'legacy' is the previous parsing pipeline.
+	// Defaults to 'legacy'.
+	Model param.Field[SettingsModel] `json:"model"`
 	// Standard is our best multilingual OCR system. Legacy only supports germanic
 	// languages and is available for backwards compatibility.
 	OcrSystem param.Field[SettingsOcrSystem] `json:"ocr_system"`
@@ -422,6 +426,24 @@ type SettingsHybridVpcParam struct {
 
 func (r SettingsHybridVpcParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// The parse model to use. 'r-1' is the R-1 full-page parse model, which parses
+// each page in a single generation. 'legacy' is the previous parsing pipeline.
+// Defaults to 'legacy'.
+type SettingsModel string
+
+const (
+	SettingsModelR1     SettingsModel = "r-1"
+	SettingsModelLegacy SettingsModel = "legacy"
+)
+
+func (r SettingsModel) IsKnown() bool {
+	switch r {
+	case SettingsModelR1, SettingsModelLegacy:
+		return true
+	}
+	return false
 }
 
 // Standard is our best multilingual OCR system. Legacy only supports germanic
