@@ -34,6 +34,8 @@ func NewPipelineService(opts ...option.RequestOption) (r *PipelineService) {
 }
 
 // Pipeline
+//
+// Deprecated: deprecated
 func (r *PipelineService) Run(ctx context.Context, body PipelineRunParams, opts ...option.RequestOption) (res *shared.PipelineResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "pipeline"
@@ -42,6 +44,8 @@ func (r *PipelineService) Run(ctx context.Context, body PipelineRunParams, opts 
 }
 
 // Pipeline Async
+//
+// Deprecated: deprecated
 func (r *PipelineService) RunJob(ctx context.Context, body PipelineRunJobParams, opts ...option.RequestOption) (res *shared.AsyncPipelineResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "pipeline_async"
