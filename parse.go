@@ -173,14 +173,17 @@ type EnhanceParam struct {
 	// (chart_data) plus a reconstruction image re-drawn from that data. Higher
 	// latency. Defaults to False.
 	AdvancedChartAgent param.Field[bool] `json:"advanced_chart_agent"`
-	// Agentic uses vision language models to enhance the accuracy of the output of
-	// different types of extraction. This will incur a cost and latency increase.
+	// For legacy Parse, agentic processing uses vision language models to improve
+	// text, table, or figure extraction. With r-1, use agentic processing for custom
+	// prompts or advanced chart extraction. Agentic processing adds latency.
 	Agentic param.Field[[]EnhanceAgenticUnionParam] `json:"agentic"`
-	// If True, use an advanced vision language model to improve reading order
-	// accuracy, with a small increase in latency. Defaults to False.
+	// For legacy Parse, if True, use an advanced vision language model to improve
+	// reading order accuracy, with a small increase in latency. r-1 handles reading
+	// order natively and ignores this setting. Defaults to False.
 	IntelligentOrdering param.Field[bool] `json:"intelligent_ordering"`
-	// If True, summarize figures using a small vision language model. Defaults to
-	// True.
+	// For legacy Parse, if True, summarize figures using a separate vision language
+	// model. r-1 generates figure descriptions natively and ignores this setting.
+	// Defaults to True.
 	SummarizeFigures param.Field[bool] `json:"summarize_figures"`
 }
 
@@ -255,13 +258,15 @@ type FormattingParam struct {
 	// If True, add page markers to the output. Defaults to False. Useful for
 	// extracting data with page specific information.
 	AddPageMarkers param.Field[bool] `json:"add_page_markers"`
-	// A list of formatting to include in the output.
+	// For legacy Parse, the formatting details to include in the output. r-1 handles
+	// highlights, signatures, and watermarks natively and ignores those values. r-1
+	// does not support hyperlinks.
 	Include param.Field[[]FormattingInclude] `json:"include"`
 	// A flag to indicate if consecutive tables with the same number of columns should
 	// be merged. Defaults to False.
 	MergeTables param.Field[bool] `json:"merge_tables"`
-	// The mode to use for table output. Defaults to dynamic, which returns md for
-	// simpler tables and html for more complex tables.
+	// The table output format. Defaults to dynamic, which returns md for simpler
+	// tables and html for more complex tables. r-1 does not support jsonbbox.
 	TableOutputFormat param.Field[FormattingTableOutputFormat] `json:"table_output_format"`
 }
 
@@ -288,8 +293,8 @@ func (r FormattingInclude) IsKnown() bool {
 	return false
 }
 
-// The mode to use for table output. Defaults to dynamic, which returns md for
-// simpler tables and html for more complex tables.
+// The table output format. Defaults to dynamic, which returns md for simpler
+// tables and html for more complex tables. r-1 does not support jsonbbox.
 type FormattingTableOutputFormat string
 
 const (
@@ -360,9 +365,9 @@ type SettingsParam struct {
 	EmbedPdfMetadataDpi param.Field[int64] `json:"embed_pdf_metadata_dpi"`
 	// If True, return properties embedded in the original document. Defaults to False.
 	ExtractDocumentProperties param.Field[bool] `json:"extract_document_properties"`
-	// The mode to use for text extraction from PDFs. OCR mode uses optical character
-	// recognition only. Hybrid mode combines OCR with embedded PDF text for best
-	// accuracy (default).
+	// The text extraction method for legacy Parse. OCR uses optical character
+	// recognition only. Hybrid combines OCR with embedded PDF text. r-1 uses native
+	// full-page processing and ignores this setting. Defaults to hybrid.
 	ExtractionMode param.Field[SettingsExtractionMode] `json:"extraction_mode"`
 	// Force the URL to be downloaded as a specific file extension (e.g. `.png`).
 	ForceFileExtension param.Field[string] `json:"force_file_extension"`
@@ -374,8 +379,10 @@ type SettingsParam struct {
 	// each page in a single generation. 'legacy' is the previous parsing pipeline.
 	// Defaults to 'legacy'.
 	Model param.Field[SettingsModel] `json:"model"`
-	// Standard is our best multilingual OCR system. Legacy only supports germanic
-	// languages and is available for backwards compatibility.
+	// The OCR system for legacy Parse. Standard is the best multilingual OCR system.
+	// Legacy supports Germanic languages and remains available for backwards
+	// compatibility. r-1 uses native full-page processing and ignores this setting.
+	// Defaults to standard.
 	OcrSystem param.Field[SettingsOcrSystem] `json:"ocr_system"`
 	// The page range to process (1-indexed). By default, the entire document is
 	// processed. For spreadsheets, you can also provide a list of sheet names.
@@ -399,9 +406,9 @@ func (r SettingsParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The mode to use for text extraction from PDFs. OCR mode uses optical character
-// recognition only. Hybrid mode combines OCR with embedded PDF text for best
-// accuracy (default).
+// The text extraction method for legacy Parse. OCR uses optical character
+// recognition only. Hybrid combines OCR with embedded PDF text. r-1 uses native
+// full-page processing and ignores this setting. Defaults to hybrid.
 type SettingsExtractionMode string
 
 const (
@@ -446,8 +453,10 @@ func (r SettingsModel) IsKnown() bool {
 	return false
 }
 
-// Standard is our best multilingual OCR system. Legacy only supports germanic
-// languages and is available for backwards compatibility.
+// The OCR system for legacy Parse. Standard is the best multilingual OCR system.
+// Legacy supports Germanic languages and remains available for backwards
+// compatibility. r-1 uses native full-page processing and ignores this setting.
+// Defaults to standard.
 type SettingsOcrSystem string
 
 const (
