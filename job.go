@@ -322,6 +322,8 @@ type JobGetResponseAsyncJobResponseResult struct {
 	DocumentURL string `json:"document_url"`
 	// The duration of the parse request in seconds.
 	Duration float64 `json:"duration" api:"nullable"`
+	// This field can have the runtime type of [map[string]string].
+	ExtraMetadata interface{} `json:"extra_metadata"`
 	// This field can have the runtime type of [[]EditWidget].
 	FormSchema interface{} `json:"form_schema"`
 	JobID      string      `json:"job_id" api:"nullable"`
@@ -356,6 +358,7 @@ type jobGetResponseAsyncJobResponseResultJSON struct {
 	DocumentProperties apijson.Field
 	DocumentURL        apijson.Field
 	Duration           apijson.Field
+	ExtraMetadata      apijson.Field
 	FormSchema         apijson.Field
 	JobID              apijson.Field
 	PdfURL             apijson.Field
@@ -776,6 +779,8 @@ type JobGetResponseEnhancedAsyncJobResponseResult struct {
 	DocumentURL string `json:"document_url"`
 	// The duration of the parse request in seconds.
 	Duration float64 `json:"duration" api:"nullable"`
+	// This field can have the runtime type of [map[string]string].
+	ExtraMetadata interface{} `json:"extra_metadata"`
 	// This field can have the runtime type of [[]EditWidget].
 	FormSchema interface{} `json:"form_schema"`
 	JobID      string      `json:"job_id" api:"nullable"`
@@ -810,6 +815,7 @@ type jobGetResponseEnhancedAsyncJobResponseResultJSON struct {
 	DocumentProperties apijson.Field
 	DocumentURL        apijson.Field
 	Duration           apijson.Field
+	ExtraMetadata      apijson.Field
 	FormSchema         apijson.Field
 	JobID              apijson.Field
 	PdfURL             apijson.Field

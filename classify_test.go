@@ -29,12 +29,16 @@ func TestClassifyRunWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Classify.Run(context.TODO(), reducto.ClassifyRunParams{
 		Input: reducto.F[reducto.ClassifyRunParamsInputUnion](shared.UnionString("string")),
+		CategoryGroups: reducto.F(map[string][]string{
+			"foo": {"string"},
+		}),
 		ClassificationSchema: reducto.F([]reducto.ClassifyRunParamsClassificationSchema{{
 			Category: reducto.F("category"),
 			Criteria: reducto.F([]string{"string"}),
 		}}),
 		DocumentMetadata: reducto.F("document_metadata"),
 		ForceURLResult:   reducto.F(true),
+		Model:            reducto.F(reducto.ClassifyRunParamsModelDefault),
 		PageRange: reducto.F[reducto.ClassifyRunParamsPageRangeUnion](shared.PageRangeParam{
 			End:   reducto.F(int64(0)),
 			Start: reducto.F(int64(0)),

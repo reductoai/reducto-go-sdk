@@ -49,12 +49,20 @@ type ClassifyRunParams struct {
 	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 	//     uploading a document
 	Input param.Field[ClassifyRunParamsInputUnion] `json:"input" api:"required"`
+	// A mapping of higher-level classify groups to the category labels that belong to
+	// each group. When provided, the response includes `extra_metadata.grouping` with
+	// the matched group name, or `ungrouped` if the selected category is not in any
+	// group.
+	CategoryGroups param.Field[map[string][]string] `json:"category_groups"`
 	// A list of classification categories and their matching criteria.
 	ClassificationSchema param.Field[[]ClassifyRunParamsClassificationSchema] `json:"classification_schema"`
 	// Optional document-level metadata to include in classification prompts.
 	DocumentMetadata param.Field[string] `json:"document_metadata"`
 	// Force the endpoint result to be returned in URL form.
 	ForceURLResult param.Field[bool] `json:"force_url_result"`
+	// The classification model to use. Set to "accurate" to run Deep Classify for
+	// higher accuracy on hard documents. Defaults to "default".
+	Model param.Field[ClassifyRunParamsModel] `json:"model"`
 	// The page range to process (1-indexed). By default, the first 5 pages are used.
 	// At most 10 pages can be selected. Only applies to PDFs; ignored for other
 	// document types.
@@ -99,6 +107,23 @@ type ClassifyRunParamsClassificationSchema struct {
 
 func (r ClassifyRunParamsClassificationSchema) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// The classification model to use. Set to "accurate" to run Deep Classify for
+// higher accuracy on hard documents. Defaults to "default".
+type ClassifyRunParamsModel string
+
+const (
+	ClassifyRunParamsModelDefault  ClassifyRunParamsModel = "default"
+	ClassifyRunParamsModelAccurate ClassifyRunParamsModel = "accurate"
+)
+
+func (r ClassifyRunParamsModel) IsKnown() bool {
+	switch r {
+	case ClassifyRunParamsModelDefault, ClassifyRunParamsModelAccurate:
+		return true
+	}
+	return false
 }
 
 // The page range to process (1-indexed). By default, the first 5 pages are used.
