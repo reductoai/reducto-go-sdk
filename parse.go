@@ -377,7 +377,8 @@ type SettingsParam struct {
 	HybridVpc param.Field[SettingsHybridVpcParam] `json:"hybrid_vpc"`
 	// The parse model to use. 'r-1' is the R-1 full-page parse model, which parses
 	// each page in a single generation. 'legacy' is the previous parsing pipeline.
-	// Defaults to 'legacy'.
+	// Defaults to 'legacy' unless your organization was created on the r-1 plan, in
+	// which case it defaults to 'r-1'.
 	Model param.Field[SettingsModel] `json:"model"`
 	// The OCR system for legacy Parse. Standard is the best multilingual OCR system.
 	// Legacy supports Germanic languages and remains available for backwards
@@ -437,7 +438,8 @@ func (r SettingsHybridVpcParam) MarshalJSON() (data []byte, err error) {
 
 // The parse model to use. 'r-1' is the R-1 full-page parse model, which parses
 // each page in a single generation. 'legacy' is the previous parsing pipeline.
-// Defaults to 'legacy'.
+// Defaults to 'legacy' unless your organization was created on the r-1 plan, in
+// which case it defaults to 'r-1'.
 type SettingsModel string
 
 const (
