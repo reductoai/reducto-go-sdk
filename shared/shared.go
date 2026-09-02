@@ -1710,6 +1710,8 @@ type SplitResponse struct {
 	// The split result. If force_url_result is True, this is returned as a URL result.
 	Result SplitResponseResult `json:"result" api:"required"`
 	Usage  reducto.ParseUsage  `json:"usage" api:"required"`
+	// The duration of the split request in seconds.
+	Duration float64 `json:"duration" api:"nullable"`
 	// The unique identifier for the split job.
 	JobID        string                    `json:"job_id" api:"nullable"`
 	ResponseType SplitResponseResponseType `json:"response_type"`
@@ -1720,6 +1722,7 @@ type SplitResponse struct {
 type splitResponseJSON struct {
 	Result       apijson.Field
 	Usage        apijson.Field
+	Duration     apijson.Field
 	JobID        apijson.Field
 	ResponseType apijson.Field
 	raw          string
