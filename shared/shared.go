@@ -167,6 +167,9 @@ type ClassifyResponse struct {
 	Result ClassifyResponseResult `json:"result" api:"required"`
 	// The duration of the classify request in seconds.
 	Duration float64 `json:"duration" api:"nullable"`
+	// Additional metadata for the classify response. Contains `grouping` when the
+	// request set `category_groups`. Omitted when empty.
+	ExtraMetadata map[string]string `json:"extra_metadata"`
 	// Overall confidence breakdown for classification response.
 	ResponseConfidence ClassifyResponseResponseConfidence `json:"response_confidence" api:"nullable"`
 	ResponseType       ClassifyResponseResponseType       `json:"response_type"`
@@ -180,6 +183,7 @@ type classifyResponseJSON struct {
 	JobID              apijson.Field
 	Result             apijson.Field
 	Duration           apijson.Field
+	ExtraMetadata      apijson.Field
 	ResponseConfidence apijson.Field
 	ResponseType       apijson.Field
 	Usage              apijson.Field
