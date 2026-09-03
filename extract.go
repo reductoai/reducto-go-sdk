@@ -68,6 +68,9 @@ type AsyncExtractConfigParam struct {
 	// The configuration options for parsing the document. If you are passing in a
 	// jobid:// URL for the file, then this configuration will be ignored.
 	Parsing param.Field[ParseOptionsParam] `json:"parsing"`
+	// Queue priority. 'batch' places the job in a lower-priority queue for non-urgent
+	// bulk work. 'auto' (alias: 'standard') uses the default queue.
+	QueuePriority param.Field[AsyncExtractConfigQueuePriority] `json:"queue_priority"`
 	// The settings to use for the extraction.
 	Settings param.Field[ExtractSettingsParam] `json:"settings"`
 }
@@ -96,6 +99,24 @@ type AsyncExtractConfigInputUnionParam interface {
 type AsyncExtractConfigInputArrayParam []string
 
 func (r AsyncExtractConfigInputArrayParam) ImplementsAsyncExtractConfigInputUnionParam() {}
+
+// Queue priority. 'batch' places the job in a lower-priority queue for non-urgent
+// bulk work. 'auto' (alias: 'standard') uses the default queue.
+type AsyncExtractConfigQueuePriority string
+
+const (
+	AsyncExtractConfigQueuePriorityAuto     AsyncExtractConfigQueuePriority = "auto"
+	AsyncExtractConfigQueuePriorityStandard AsyncExtractConfigQueuePriority = "standard"
+	AsyncExtractConfigQueuePriorityBatch    AsyncExtractConfigQueuePriority = "batch"
+)
+
+func (r AsyncExtractConfigQueuePriority) IsKnown() bool {
+	switch r {
+	case AsyncExtractConfigQueuePriorityAuto, AsyncExtractConfigQueuePriorityStandard, AsyncExtractConfigQueuePriorityBatch:
+		return true
+	}
+	return false
+}
 
 type ExtractSettingsParam struct {
 	// Deprecated: prefer deep_extract, which supersedes array extraction for complex
@@ -498,6 +519,9 @@ type ExtractRunParamsBody struct {
 	// The configuration options for parsing the document. If you are passing in a
 	// jobid:// URL for the file, then this configuration will be ignored.
 	Parsing param.Field[ParseOptionsParam] `json:"parsing"`
+	// Queue priority. 'batch' places the job in a lower-priority queue for non-urgent
+	// bulk work. 'auto' (alias: 'standard') uses the default queue.
+	QueuePriority param.Field[ExtractRunParamsBodyQueuePriority] `json:"queue_priority"`
 	// The settings to use for the extraction.
 	Settings param.Field[ExtractSettingsParam] `json:"settings"`
 }
@@ -557,6 +581,24 @@ type ExtractRunParamsBodySyncExtractConfigInputUnion interface {
 type ExtractRunParamsBodySyncExtractConfigInputArray []string
 
 func (r ExtractRunParamsBodySyncExtractConfigInputArray) ImplementsExtractRunParamsBodySyncExtractConfigInputUnion() {
+}
+
+// Queue priority. 'batch' places the job in a lower-priority queue for non-urgent
+// bulk work. 'auto' (alias: 'standard') uses the default queue.
+type ExtractRunParamsBodyQueuePriority string
+
+const (
+	ExtractRunParamsBodyQueuePriorityAuto     ExtractRunParamsBodyQueuePriority = "auto"
+	ExtractRunParamsBodyQueuePriorityStandard ExtractRunParamsBodyQueuePriority = "standard"
+	ExtractRunParamsBodyQueuePriorityBatch    ExtractRunParamsBodyQueuePriority = "batch"
+)
+
+func (r ExtractRunParamsBodyQueuePriority) IsKnown() bool {
+	switch r {
+	case ExtractRunParamsBodyQueuePriorityAuto, ExtractRunParamsBodyQueuePriorityStandard, ExtractRunParamsBodyQueuePriorityBatch:
+		return true
+	}
+	return false
 }
 
 type ExtractRunJobParams struct {

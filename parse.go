@@ -116,8 +116,8 @@ type AsyncParseConfigParam struct {
 	Async      param.Field[AsyncConfigV3Param] `json:"async"`
 	Enhance    param.Field[EnhanceParam]       `json:"enhance"`
 	Formatting param.Field[FormattingParam]    `json:"formatting"`
-	// Queue priority. 'batch' for non-urgent work that processes when spare GPU
-	// capacity is available. 'auto' (alias: 'standard') uses the default queue.
+	// Queue priority. 'batch' places the job in a lower-priority queue for non-urgent
+	// bulk work. 'auto' (alias: 'standard') uses the default queue.
 	QueuePriority param.Field[AsyncParseConfigQueuePriority] `json:"queue_priority"`
 	Retrieval     param.Field[RetrievalParam]                `json:"retrieval"`
 	Settings      param.Field[SettingsParam]                 `json:"settings"`
@@ -149,8 +149,8 @@ type AsyncParseConfigInputArrayParam []string
 
 func (r AsyncParseConfigInputArrayParam) ImplementsAsyncParseConfigInputUnionParam() {}
 
-// Queue priority. 'batch' for non-urgent work that processes when spare GPU
-// capacity is available. 'auto' (alias: 'standard') uses the default queue.
+// Queue priority. 'batch' places the job in a lower-priority queue for non-urgent
+// bulk work. 'auto' (alias: 'standard') uses the default queue.
 type AsyncParseConfigQueuePriority string
 
 const (
@@ -696,8 +696,8 @@ type ParseRunParamsBody struct {
 	Async      param.Field[AsyncConfigV3Param] `json:"async"`
 	Enhance    param.Field[EnhanceParam]       `json:"enhance"`
 	Formatting param.Field[FormattingParam]    `json:"formatting"`
-	// Queue priority. 'batch' for non-urgent work that processes when spare GPU
-	// capacity is available. 'auto' (alias: 'standard') uses the default queue.
+	// Queue priority. 'batch' places the job in a lower-priority queue for non-urgent
+	// bulk work. 'auto' (alias: 'standard') uses the default queue.
 	QueuePriority param.Field[ParseRunParamsBodyQueuePriority] `json:"queue_priority"`
 	Retrieval     param.Field[RetrievalParam]                  `json:"retrieval"`
 	Settings      param.Field[SettingsParam]                   `json:"settings"`
@@ -759,8 +759,8 @@ type ParseRunParamsBodySyncParseConfigInputArray []string
 func (r ParseRunParamsBodySyncParseConfigInputArray) ImplementsParseRunParamsBodySyncParseConfigInputUnion() {
 }
 
-// Queue priority. 'batch' for non-urgent work that processes when spare GPU
-// capacity is available. 'auto' (alias: 'standard') uses the default queue.
+// Queue priority. 'batch' places the job in a lower-priority queue for non-urgent
+// bulk work. 'auto' (alias: 'standard') uses the default queue.
 type ParseRunParamsBodyQueuePriority string
 
 const (
