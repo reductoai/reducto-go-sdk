@@ -215,6 +215,7 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 					}),
 				}),
 			}),
+			QueuePriority: reducto.F(reducto.AsyncExtractConfigQueuePriorityAuto),
 			Settings: reducto.F(reducto.ExtractSettingsParam{
 				ArrayExtract: reducto.F(true),
 				Citations: reducto.F(reducto.ExtractSettingsCitationsParam{
