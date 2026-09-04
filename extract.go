@@ -208,7 +208,8 @@ type ExtractUsage struct {
 	// `extract_fields` is reported but not billed at launch. The add-on quantities
 	// (`ocr_pages`, `charts`, `prompted_blocks`) come from the parse bundled into the
 	// extract job; its page cost is covered by `extract_pages` but its add-ons are
-	// billed separately.
+	// billed separately. `tier` is "Batch" when the job ran on the batch queue, which
+	// takes the batch discount on the rate card.
 	UsageBreakdown ExtractUsageUsageBreakdown `json:"usage_breakdown" api:"nullable"`
 	JSON           extractUsageJSON           `json:"-"`
 }
@@ -253,7 +254,8 @@ func (r ExtractUsageExtractMode) IsKnown() bool {
 // `extract_fields` is reported but not billed at launch. The add-on quantities
 // (`ocr_pages`, `charts`, `prompted_blocks`) come from the parse bundled into the
 // extract job; its page cost is covered by `extract_pages` but its add-ons are
-// billed separately.
+// billed separately. `tier` is "Batch" when the job ran on the batch queue, which
+// takes the batch discount on the rate card.
 type ExtractUsageUsageBreakdown struct {
 	ExtractModel   ExtractUsageUsageBreakdownExtractModel `json:"extract_model" api:"required"`
 	Charts         int64                                  `json:"charts"`
@@ -261,6 +263,7 @@ type ExtractUsageUsageBreakdown struct {
 	ExtractPages   int64                                  `json:"extract_pages"`
 	OcrPages       int64                                  `json:"ocr_pages"`
 	PromptedBlocks int64                                  `json:"prompted_blocks"`
+	Tier           ExtractUsageUsageBreakdownTier         `json:"tier"`
 	JSON           extractUsageUsageBreakdownJSON         `json:"-"`
 }
 
@@ -273,6 +276,7 @@ type extractUsageUsageBreakdownJSON struct {
 	ExtractPages   apijson.Field
 	OcrPages       apijson.Field
 	PromptedBlocks apijson.Field
+	Tier           apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -295,6 +299,21 @@ const (
 func (r ExtractUsageUsageBreakdownExtractModel) IsKnown() bool {
 	switch r {
 	case ExtractUsageUsageBreakdownExtractModelExtract, ExtractUsageUsageBreakdownExtractModelDeepExtract:
+		return true
+	}
+	return false
+}
+
+type ExtractUsageUsageBreakdownTier string
+
+const (
+	ExtractUsageUsageBreakdownTierDefault ExtractUsageUsageBreakdownTier = "Default"
+	ExtractUsageUsageBreakdownTierBatch   ExtractUsageUsageBreakdownTier = "Batch"
+)
+
+func (r ExtractUsageUsageBreakdownTier) IsKnown() bool {
+	switch r {
+	case ExtractUsageUsageBreakdownTierDefault, ExtractUsageUsageBreakdownTierBatch:
 		return true
 	}
 	return false
