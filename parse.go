@@ -259,8 +259,7 @@ type FormattingParam struct {
 	// extracting data with page specific information.
 	AddPageMarkers param.Field[bool] `json:"add_page_markers"`
 	// For legacy Parse, the formatting details to include in the output. r-1 handles
-	// highlights, signatures, and watermarks natively and ignores those values. r-1
-	// does not support hyperlinks.
+	// highlights, signatures, and watermarks natively and ignores those values.
 	Include param.Field[[]FormattingInclude] `json:"include"`
 	// A flag to indicate if consecutive tables with the same number of columns should
 	// be merged. Defaults to False.
