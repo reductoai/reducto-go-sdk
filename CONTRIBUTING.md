@@ -1,66 +1,50 @@
-## Setting up the environment
+# Contributing
 
-To set up the repository, run:
+## Setup
 
-```sh
-$ ./scripts/bootstrap
-$ ./scripts/build
-```
-
-This will install all the required dependencies and build the SDK.
-
-You can also [install go 1.18+ manually](https://go.dev/doc/install).
-
-## Modifying/Adding code
-
-Most of the SDK is generated code. Modifications to code will be persisted between generations, but may
-result in merge conflicts between manual patches and changes from the generator. The generator will never
-modify the contents of the `lib/` and `examples/` directories.
-
-## Adding and running examples
-
-All files in the `examples/` directory are not modified by the generator and can be freely edited or added to.
-
-```go
-# add an example to examples/<your-example>/main.go
-
-package main
-
-func main() {
-  // ...
-}
-```
+Install Go 1.23 or later. Then:
 
 ```sh
-$ go run ./examples/<your-example>
+go test ./...
 ```
 
-## Using the repository from source
+There are no other dependencies. The module uses only the standard library.
 
-To use a local version of this library from source in another project, edit the `go.mod` with a replace
-directive. This can be done through the CLI with the following:
+## Layout
+
+| File | Contents | Edit by hand? |
+| --- | --- | --- |
+| `types.go` | Request and response types, enums, unions | No |
+| `api.go` | One method per API endpoint | No |
+| `client.go` | Client, options, transport, retries | Yes |
+| `errors.go` | `APIError` and friends | Yes |
+| `upload.go` | `Upload`, `UploadFile` | Yes |
+| `jobs.go` | `WaitForJob`, `IterJobs` | Yes |
+| `extract.go` | `ExtractAs`, `ValidateExtract` | Yes |
+| `webhook.go` | `VerifyWebhook` | Yes |
+| `raw.go` | `Do`, the raw escape hatch | Yes |
+| `union.go`, `time.go` | JSON helpers | Yes |
+
+`types.go` and `api.go` are generated from Reducto's OpenAPI document. A hand edit is lost on
+the next regeneration. If a type or an endpoint is wrong or missing, open an issue.
+
+## Tests
+
+`go test ./...` runs offline against an in-process HTTP server.
+
+`smoke_test.go` calls the real API. It is skipped unless you set `REDUCTO_SMOKE=1`:
 
 ```sh
-$ go mod edit -replace github.com/reductoai/reducto-go-sdk=/path/to/reducto-go-sdk
+REDUCTO_SMOKE=1 REDUCTO_API_KEY=... go test -run TestSmoke -v -timeout 20m
 ```
 
-## Running tests
+## Style
 
-Most tests require you to [set up a mock server](https://github.com/stoplightio/prism) against the OpenAPI spec to run the tests.
+Run `gofmt` before you commit. CI fails on unformatted files. Prefer no comments; when a
+comment is needed, say why, not what.
 
-```sh
-# you will need npm installed
-$ npx prism mock path/to/your/openapi.yml
-```
+## Releases
 
-```sh
-$ ./scripts/test
-```
-
-## Formatting
-
-This library uses the standard gofmt code formatter:
-
-```sh
-$ ./scripts/format
-```
+A release is a git tag on `main`, for example `v0.2.0`. Update `Version` in `client.go` and
+add a section to `CHANGELOG.md` in the same commit. Never move or delete a tag: Go modules
+and the module proxy pin to it.

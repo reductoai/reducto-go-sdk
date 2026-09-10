@@ -1,198 +1,125 @@
-// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
-
-package reducto_test
+package reducto
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
-	"os"
+	"io"
+	"net/http"
+	"strings"
 	"testing"
-
-	"github.com/reductoai/reducto-go-sdk"
-	"github.com/reductoai/reducto-go-sdk/internal/testutil"
-	"github.com/reductoai/reducto-go-sdk/option"
-	"github.com/reductoai/reducto-go-sdk/shared"
 )
 
-func TestExtractRunWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := reducto.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Extract.Run(context.TODO(), reducto.ExtractRunParams{
-		ExtractConfig: reducto.ExtractConfigParam{
-			DocumentURL: reducto.F[reducto.ExtractConfigDocumentURLUnionParam](shared.UnionString("string")),
-			Schema:      reducto.F[any](map[string]interface{}{}),
-			AdvancedOptions: reducto.F(shared.AdvancedProcessingOptionsParam{
-				AddPageMarkers:     reducto.F(true),
-				ContinueHierarchy:  reducto.F(true),
-				DocumentPassword:   reducto.F("document_password"),
-				ForceFileExtension: reducto.F("force_file_extension"),
-				KeepLineBreaks:     reducto.F(true),
-				LargeTableChunking: reducto.F(shared.AdvancedProcessingOptionsLargeTableChunkingParam{
-					Enabled: reducto.F(true),
-					Size:    reducto.F(int64(0)),
-				}),
-				MergeTables: reducto.F(true),
-				OcrSystem:   reducto.F(shared.AdvancedProcessingOptionsOcrSystemHighres),
-				PageRange: reducto.F[shared.AdvancedProcessingOptionsPageRangeUnionParam](shared.PageRangeParam{
-					End:   reducto.F(int64(0)),
-					Start: reducto.F(int64(0)),
-				}),
-				RemoveTextFormatting:       reducto.F(true),
-				ReturnOcrData:              reducto.F(true),
-				SpreadsheetTableClustering: reducto.F(shared.AdvancedProcessingOptionsSpreadsheetTableClusteringDefault),
-				TableOutputFormat:          reducto.F(shared.AdvancedProcessingOptionsTableOutputFormatHTML),
-			}),
-			ArrayExtract: reducto.F(shared.ArrayExtractConfigParam{
-				Enabled:                     reducto.F(true),
-				Mode:                        reducto.F(shared.ArrayExtractConfigModeAuto),
-				PagesPerSegment:             reducto.F(int64(0)),
-				StreamingExtractItemDensity: reducto.F(int64(0)),
-			}),
-			ExperimentalOptions: reducto.F(shared.ExperimentalProcessingOptionsParam{
-				DangerFilterWideBoxes: reducto.F(true),
-				EnableCheckboxes:      reducto.F(true),
-				EnableEquations:       reducto.F(true),
-				EnableScripts:         reducto.F(true),
-				EnableUnderlines:      reducto.F(true),
-				Enrich: reducto.F(shared.ExperimentalProcessingOptionsEnrichParam{
-					Enabled: reducto.F(true),
-					Prompt:  reducto.F("prompt"),
-				}),
-				NativeOfficeConversion: reducto.F(true),
-				ReturnFigureImages:     reducto.F(true),
-				RotatePages:            reducto.F(true),
-			}),
-			GenerateCitations: reducto.F(true),
-			Options: reducto.F(shared.BaseProcessingOptionsParam{
-				Chunking: reducto.F(shared.BaseProcessingOptionsChunkingParam{
-					ChunkMode: reducto.F(shared.BaseProcessingOptionsChunkingChunkModeVariable),
-					ChunkSize: reducto.F(int64(0)),
-				}),
-				ExtractionMode: reducto.F(shared.BaseProcessingOptionsExtractionModeOcr),
-				FigureSummary: reducto.F(shared.BaseProcessingOptionsFigureSummaryParam{
-					Enabled:  reducto.F(true),
-					Override: reducto.F(true),
-					Prompt:   reducto.F("prompt"),
-				}),
-				FilterBlocks:   reducto.F([]shared.BaseProcessingOptionsFilterBlock{shared.BaseProcessingOptionsFilterBlockHeader}),
-				ForceURLResult: reducto.F(true),
-				TableSummary: reducto.F(shared.BaseProcessingOptionsTableSummaryParam{
-					Enabled: reducto.F(true),
-					Prompt:  reducto.F("prompt"),
-				}),
-			}),
-			SystemPrompt: reducto.F("system_prompt"),
-		},
+type invoice struct {
+	Title     string `json:"title"`
+	PageCount int    `json:"page_count"`
+}
+
+var invoiceSchema = map[string]any{
+	"type":       "object",
+	"properties": map[string]any{"title": map[string]any{"type": "string"}, "page_count": map[string]any{"type": "integer"}},
+	"required":   []string{"title"},
+}
+
+const extractBody = `{"response_type":"v3_extract","job_id":"j1","usage":{"num_pages":1,"num_fields":2},"result":%s}`
+
+const legacyExtractBody = `{"response_type":"extract","job_id":"j1","usage":{"num_pages":1,"num_fields":2},"result":%s}`
+
+func extractServer(t *testing.T, result string, gotBody *map[string]any) *Client {
+	return newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		if gotBody != nil {
+			_ = json.NewDecoder(r.Body).Decode(gotBody)
+		}
+		io.WriteString(w, strings.Replace(extractBody, "%s", result, 1))
+	})
+}
+
+func TestExtractAsSendsSchemaAndDecodes(t *testing.T) {
+	var gotBody map[string]any
+	c := extractServer(t, `[{"title":"Invoice","page_count":1}]`, &gotBody)
+	out, err := ExtractAs[invoice](context.Background(), c, invoiceSchema, &SyncExtractConfig{
+		Input:        DocumentInputFromString("https://x/y.pdf"),
+		Instructions: &Instructions{SystemPrompt: Ptr("Be terse")},
 	})
 	if err != nil {
-		var apierr *reducto.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
+		t.Fatal(err)
+	}
+	ins := gotBody["instructions"].(map[string]any)
+	if ins["system_prompt"] != "Be terse" || ins["schema"].(map[string]any)["type"] != "object" {
+		t.Errorf("instructions sent as %v", ins)
+	}
+	if len(out.Result) != 1 || out.Result[0] != (invoice{"Invoice", 1}) {
+		t.Errorf("result = %+v", out.Result)
+	}
+	if out.Usage().NumFields != 2 || out.V3ExtractResponse == nil || out.ExtractResponse != nil {
+		t.Errorf("response = %+v", out)
 	}
 }
 
-func TestExtractRunJobWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
+func TestExtractAsDecodeErrorKeepsResponse(t *testing.T) {
+	c := extractServer(t, `[{"title":"ok"},{"title":1}]`, nil)
+	_, err := ExtractAs[invoice](context.Background(), c, invoiceSchema, &SyncExtractConfig{Input: DocumentInputFromString("https://x/y.pdf")})
+	var te *TypedExtractError
+	if !errors.As(err, &te) {
+		t.Fatalf("err = %v", err)
 	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
+	if !strings.Contains(te.Reason, "item 1 does not match reducto.invoice") || te.Err == nil {
+		t.Errorf("reason = %q err = %v", te.Reason, te.Err)
 	}
-	client := reducto.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Extract.RunJob(context.TODO(), reducto.ExtractRunJobParams{
-		DocumentURL: reducto.F[reducto.ExtractRunJobParamsDocumentURLUnion](shared.UnionString("string")),
-		Schema:      reducto.F[any](map[string]interface{}{}),
-		AdvancedOptions: reducto.F(shared.AdvancedProcessingOptionsParam{
-			AddPageMarkers:     reducto.F(true),
-			ContinueHierarchy:  reducto.F(true),
-			DocumentPassword:   reducto.F("document_password"),
-			ForceFileExtension: reducto.F("force_file_extension"),
-			KeepLineBreaks:     reducto.F(true),
-			LargeTableChunking: reducto.F(shared.AdvancedProcessingOptionsLargeTableChunkingParam{
-				Enabled: reducto.F(true),
-				Size:    reducto.F(int64(0)),
-			}),
-			MergeTables: reducto.F(true),
-			OcrSystem:   reducto.F(shared.AdvancedProcessingOptionsOcrSystemHighres),
-			PageRange: reducto.F[shared.AdvancedProcessingOptionsPageRangeUnionParam](shared.PageRangeParam{
-				End:   reducto.F(int64(0)),
-				Start: reducto.F(int64(0)),
-			}),
-			RemoveTextFormatting:       reducto.F(true),
-			ReturnOcrData:              reducto.F(true),
-			SpreadsheetTableClustering: reducto.F(shared.AdvancedProcessingOptionsSpreadsheetTableClusteringDefault),
-			TableOutputFormat:          reducto.F(shared.AdvancedProcessingOptionsTableOutputFormatHTML),
-		}),
-		ArrayExtract: reducto.F(shared.ArrayExtractConfigParam{
-			Enabled:                     reducto.F(true),
-			Mode:                        reducto.F(shared.ArrayExtractConfigModeAuto),
-			PagesPerSegment:             reducto.F(int64(0)),
-			StreamingExtractItemDensity: reducto.F(int64(0)),
-		}),
-		ExperimentalOptions: reducto.F(shared.ExperimentalProcessingOptionsParam{
-			DangerFilterWideBoxes: reducto.F(true),
-			EnableCheckboxes:      reducto.F(true),
-			EnableEquations:       reducto.F(true),
-			EnableScripts:         reducto.F(true),
-			EnableUnderlines:      reducto.F(true),
-			Enrich: reducto.F(shared.ExperimentalProcessingOptionsEnrichParam{
-				Enabled: reducto.F(true),
-				Prompt:  reducto.F("prompt"),
-			}),
-			NativeOfficeConversion: reducto.F(true),
-			ReturnFigureImages:     reducto.F(true),
-			RotatePages:            reducto.F(true),
-		}),
-		GenerateCitations: reducto.F(true),
-		Options: reducto.F(shared.BaseProcessingOptionsParam{
-			Chunking: reducto.F(shared.BaseProcessingOptionsChunkingParam{
-				ChunkMode: reducto.F(shared.BaseProcessingOptionsChunkingChunkModeVariable),
-				ChunkSize: reducto.F(int64(0)),
-			}),
-			ExtractionMode: reducto.F(shared.BaseProcessingOptionsExtractionModeOcr),
-			FigureSummary: reducto.F(shared.BaseProcessingOptionsFigureSummaryParam{
-				Enabled:  reducto.F(true),
-				Override: reducto.F(true),
-				Prompt:   reducto.F("prompt"),
-			}),
-			FilterBlocks:   reducto.F([]shared.BaseProcessingOptionsFilterBlock{shared.BaseProcessingOptionsFilterBlockHeader}),
-			ForceURLResult: reducto.F(true),
-			TableSummary: reducto.F(shared.BaseProcessingOptionsTableSummaryParam{
-				Enabled: reducto.F(true),
-				Prompt:  reducto.F("prompt"),
-			}),
-		}),
-		Priority:     reducto.F(true),
-		SystemPrompt: reducto.F("system_prompt"),
-		Webhook: reducto.F(shared.WebhookConfigNewParam{
-			Channels: reducto.F([]string{"string"}),
-			Metadata: reducto.F[any](map[string]interface{}{}),
-			Mode:     reducto.F(shared.WebhookConfigNewModeDisabled),
-			URL:      reducto.F("url"),
-		}),
-	})
-	if err != nil {
-		var apierr *reducto.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
+	resp, ok := te.Response.(*ExtractOutput)
+	if !ok || resp.V3ExtractResponse == nil {
+		t.Fatalf("response = %#v", te.Response)
+	}
+	if items, _ := resp.V3ExtractResponse.Result.([]any); len(items) != 2 {
+		t.Errorf("result = %#v", resp.V3ExtractResponse.Result)
+	}
+}
+
+func TestExtractAsURLResultAndQueuedJob(t *testing.T) {
+	c := extractServer(t, `{"type":"url","url":"https://s3/x.json","result_id":"r1"}`, nil)
+	_, err := ExtractAs[invoice](context.Background(), c, invoiceSchema, &SyncExtractConfig{Input: DocumentInputFromString("https://x/y.pdf")})
+	if err == nil || !strings.Contains(err.Error(), "https://s3/x.json") {
+		t.Errorf("url result: %v", err)
+	}
+
+	c = newTestClient(t, func(w http.ResponseWriter, r *http.Request) { io.WriteString(w, `{"job_id":"j9"}`) })
+	_, err = ExtractAs[invoice](context.Background(), c, invoiceSchema, &SyncExtractConfig{Input: DocumentInputFromString("https://x/y.pdf")})
+	if err == nil || !strings.Contains(err.Error(), "queued as job j9") {
+		t.Errorf("queued: %v", err)
+	}
+}
+
+func TestValidateExtractInputs(t *testing.T) {
+	var job JobResult
+	if err := json.Unmarshal([]byte(strings.Replace(extractBody, "%s", `[{"title":"A"}]`, 1)), &job); err != nil {
+		t.Fatal(err)
+	}
+	out, err := ValidateExtract[invoice](&job)
+	if err != nil || out.Result[0].Title != "A" || out.V3ExtractResponse == nil {
+		t.Fatalf("job result: %v %+v", err, out)
+	}
+
+	var legacyJob JobResult
+	if err := json.Unmarshal([]byte(strings.Replace(legacyExtractBody, "%s", `[{"title":"B"}]`, 1)), &legacyJob); err != nil {
+		t.Fatal(err)
+	}
+	out, err = ValidateExtract[invoice](&legacyJob)
+	if err != nil || out.Result[0].Title != "B" || out.ExtractResponse == nil || out.Usage().NumFields != 2 {
+		t.Fatalf("legacy job result: %v %+v", err, out)
+	}
+
+	v3 := V3ExtractResponse{Result: map[string]any{"title": "One"}}
+	if out, err = ValidateExtract[invoice](v3); err != nil || len(out.Result) != 1 || out.Result[0].Title != "One" {
+		t.Errorf("v3 single object: %v %+v", err, out)
+	}
+
+	for name, in := range map[string]any{
+		"nil":   nil,
+		"parse": &JobResult{ParseResponse: &ParseResponse{}},
+		"other": "nope",
+	} {
+		if _, err := ValidateExtract[invoice](in); err == nil {
+			t.Errorf("%s: expected an error", name)
 		}
-		t.Fatalf("err should be nil: %s", err.Error())
 	}
 }

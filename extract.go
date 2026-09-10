@@ -1,128 +1,157 @@
-// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
-
 package reducto
 
 import (
 	"context"
-	"net/http"
-
-	"github.com/reductoai/reducto-go-sdk/internal/apijson"
-	"github.com/reductoai/reducto-go-sdk/internal/param"
-	"github.com/reductoai/reducto-go-sdk/internal/requestconfig"
-	"github.com/reductoai/reducto-go-sdk/option"
-	"github.com/reductoai/reducto-go-sdk/shared"
+	"encoding/json"
+	"fmt"
+	"strings"
 )
 
-// ExtractService contains methods and other services that help with interacting
-// with the reducto API.
+// TypedExtract is an extract response whose items were decoded into T.
+type TypedExtract[T any] struct {
+	Result []T
+	// V3ExtractResponse is the response as received from Extract or a finished job.
+	V3ExtractResponse *V3ExtractResponse
+	// ExtractResponse is the legacy response shape. Only finished jobs still return it.
+	ExtractResponse *ExtractResponse
+}
+
+// Usage returns the usage block of the underlying response.
+func (t *TypedExtract[T]) Usage() ExtractUsage {
+	if t.ExtractResponse != nil {
+		return t.ExtractResponse.Usage
+	}
+	return t.V3ExtractResponse.Usage
+}
+
+// TypedExtractError is returned by ExtractAs and ValidateExtract when the result cannot be
+// decoded into T. Response is the API response as received. Err holds the JSON decode error
+// when an item did not match.
+type TypedExtractError struct {
+	Reason   string
+	Response any
+	Err      error
+}
+
+func (e *TypedExtractError) Error() string { return "reducto: extract: " + e.Reason }
+
+func (e *TypedExtractError) Unwrap() error { return e.Err }
+
+// ExtractAs calls Extract with schema as instructions.schema and decodes the items into T.
+// schema is a JSON Schema for one item, as a map or any value that marshals to one. Any
+// Instructions.Schema already set on req is replaced; other fields are sent as given.
 //
-// Note, unlike clients, this service does not read variables from the environment
-// automatically. You should not instantiate this service directly, and instead use
-// the [NewExtractService] method instead.
-type ExtractService struct {
-	Options []option.RequestOption
-}
-
-// NewExtractService generates a new service that applies the given options to each
-// request. These options are applied after the parent client's options (if there
-// is one), and before any request-specific options.
-func NewExtractService(opts ...option.RequestOption) (r *ExtractService) {
-	r = &ExtractService{}
-	r.Options = opts
-	return
-}
-
-// Extract
-func (r *ExtractService) Run(ctx context.Context, body ExtractRunParams, opts ...option.RequestOption) (res *shared.ExtractResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	path := "extract"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
-// Extract Async
-func (r *ExtractService) RunJob(ctx context.Context, body ExtractRunJobParams, opts ...option.RequestOption) (res *ExtractRunJobResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	path := "extract_async"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
-type ExtractRunJobResponse struct {
-	JobID string                    `json:"job_id,required"`
-	JSON  extractRunJobResponseJSON `json:"-"`
-}
-
-// extractRunJobResponseJSON contains the JSON metadata for the struct
-// [ExtractRunJobResponse]
-type extractRunJobResponseJSON struct {
-	JobID       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ExtractRunJobResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r extractRunJobResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type ExtractRunParams struct {
-	ExtractConfig ExtractConfigParam `json:"extract_config,required"`
-}
-
-func (r ExtractRunParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.ExtractConfig)
-}
-
-type ExtractRunJobParams struct {
-	// The URL of the document to be processed. You can provide one of the following:
-	//
-	//  1. A publicly available URL
-	//  2. A presigned S3 URL
-	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-	//     uploading a document
-	//  4. A job_id (jobid://) or a list of job_ids (jobid://)
-	DocumentURL param.Field[ExtractRunJobParamsDocumentURLUnion] `json:"document_url,required"`
-	// The JSON schema to use for extraction.
-	Schema          param.Field[interface{}]                           `json:"schema,required"`
-	AdvancedOptions param.Field[shared.AdvancedProcessingOptionsParam] `json:"advanced_options"`
-	// The configuration options for array extract
-	ArrayExtract        param.Field[shared.ArrayExtractConfigParam]            `json:"array_extract"`
-	ExperimentalOptions param.Field[shared.ExperimentalProcessingOptionsParam] `json:"experimental_options"`
-	// If citations should be generated for the extracted content.
-	GenerateCitations param.Field[bool]                              `json:"generate_citations"`
-	Options           param.Field[shared.BaseProcessingOptionsParam] `json:"options"`
-	// If True, attempts to process the job with priority if the user has priority
-	// processing budget available; by default, sync jobs are prioritized above async
-	// jobs.
-	Priority param.Field[bool] `json:"priority"`
-	// A system prompt to use for the extraction. This is a general prompt that is
-	// applied to the entire document before any other prompts.
-	SystemPrompt param.Field[string]                       `json:"system_prompt"`
-	Webhook      param.Field[shared.WebhookConfigNewParam] `json:"webhook"`
-}
-
-func (r ExtractRunJobParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The URL of the document to be processed. You can provide one of the following:
+// It returns a *TypedExtractError when the document was queued as a job or the result came back
+// as a URL; see ValidateExtract for the follow-up in those cases.
 //
-//  1. A publicly available URL
-//  2. A presigned S3 URL
-//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
-//     uploading a document
-//  4. A job_id (jobid://) or a list of job_ids (jobid://)
-//
-// Satisfied by [shared.UnionString], [ExtractRunJobParamsDocumentURLArray],
-// [shared.UploadParam].
-type ExtractRunJobParamsDocumentURLUnion interface {
-	ImplementsExtractRunJobParamsDocumentURLUnion()
+//	type Invoice struct {
+//		Total float64 `json:"total"`
+//	}
+//	out, err := reducto.ExtractAs[Invoice](ctx, client, map[string]any{
+//		"type": "object", "properties": map[string]any{"total": map[string]any{"type": "number"}},
+//	}, &reducto.SyncExtractConfig{Input: reducto.DocumentInputFromString(url)})
+func ExtractAs[T any](ctx context.Context, c *Client, schema any, req *SyncExtractConfig, opts ...Option) (*TypedExtract[T], error) {
+	body := *req
+	var ins Instructions
+	if req.Instructions != nil {
+		ins = *req.Instructions
+	}
+	ins.Schema = schema
+	body.Instructions = &ins
+	out, err := c.Extract(ctx, &body, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return ValidateExtract[T](out)
 }
 
-type ExtractRunJobParamsDocumentURLArray []string
+// ValidateExtract decodes the items of an extract response into T.
+//
+// response may be an *ExtractOutput (from Extract), a *JobResult (from a finished job), or an
+// *ExtractResponse / *V3ExtractResponse directly; values are accepted too. A single object is
+// treated as a list of one. It returns a *TypedExtractError when the response is a queued job,
+// a URL result, not an extract response at all, or when an item does not decode into T.
+func ValidateExtract[T any](response any) (*TypedExtract[T], error) {
+	var (
+		legacy *ExtractResponse
+		v3     *V3ExtractResponse
+		queued *AsyncExtractResponse
+	)
+	switch r := response.(type) {
+	case *ExtractOutput:
+		if r == nil {
+			return nil, &TypedExtractError{Reason: "expected an extract response, got nil", Response: response}
+		}
+		v3, queued = r.V3ExtractResponse, r.AsyncExtractResponse
+	case ExtractOutput:
+		v3, queued = r.V3ExtractResponse, r.AsyncExtractResponse
+	case *JobResult:
+		if r == nil {
+			return nil, &TypedExtractError{Reason: "expected an extract response, got nil", Response: response}
+		}
+		legacy, v3 = r.ExtractResponse, r.V3ExtractResponse
+	case JobResult:
+		legacy, v3 = r.ExtractResponse, r.V3ExtractResponse
+	case *ExtractResponse:
+		legacy = r
+	case ExtractResponse:
+		legacy = &r
+	case *V3ExtractResponse:
+		v3 = r
+	case V3ExtractResponse:
+		v3 = &r
+	default:
+		return nil, &TypedExtractError{Reason: fmt.Sprintf("expected an extract response, got %T", response), Response: response}
+	}
 
-func (r ExtractRunJobParamsDocumentURLArray) ImplementsExtractRunJobParamsDocumentURLUnion() {}
+	if queued != nil {
+		return nil, &TypedExtractError{
+			Reason:   fmt.Sprintf("the document was queued as job %s; call WaitForJob, then ValidateExtract(job.Result)", queued.JobID),
+			Response: response,
+		}
+	}
+	var raw any
+	switch {
+	case legacy != nil:
+		if u := legacy.Result.UrlResult; u != nil {
+			return nil, urlResultError(u, response)
+		}
+		raw = legacy.Result.AnyArray
+	case v3 != nil:
+		raw = v3.Result
+		if m, ok := raw.(map[string]any); ok && m["type"] == "url" {
+			var u UrlResult
+			if b, err := json.Marshal(m); err == nil && json.Unmarshal(b, &u) == nil {
+				return nil, urlResultError(&u, response)
+			}
+		}
+	default:
+		return nil, &TypedExtractError{Reason: "expected an extract response, got an empty result", Response: response}
+	}
+
+	items, ok := raw.([]any)
+	if !ok {
+		items = []any{raw}
+	}
+	result := make([]T, 0, len(items))
+	for i, item := range items {
+		b, err := json.Marshal(item)
+		if err != nil {
+			return nil, &TypedExtractError{Reason: fmt.Sprintf("item %d: %v", i, err), Response: response, Err: err}
+		}
+		var v T
+		if err := json.Unmarshal(b, &v); err != nil {
+			reason := fmt.Sprintf("item %d does not match %T: %s", i, v, strings.TrimPrefix(err.Error(), "json: "))
+			return nil, &TypedExtractError{Reason: reason, Response: response, Err: err}
+		}
+		result = append(result, v)
+	}
+	return &TypedExtract[T]{Result: result, V3ExtractResponse: v3, ExtractResponse: legacy}, nil
+}
+
+func urlResultError(u *UrlResult, response any) *TypedExtractError {
+	return &TypedExtractError{
+		Reason:   fmt.Sprintf("the result was returned as a URL (%s); fetch it and decode the items yourself", u.URL),
+		Response: response,
+	}
+}

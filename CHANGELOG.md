@@ -1,5 +1,47 @@
 # Changelog
 
+## 0.1.0 (unreleased)
+
+Full rewrite. The SDK is now hand-written on top of generated types, with no dependencies
+outside the Go standard library. It requires Go 1.23.
+
+This release breaks every import from `0.1.0-alpha.1`. The alpha tag stays available.
+
+### Added
+
+- Endpoints: `Edit`, `EditAsync`, `Pipeline`, `PipelineAsync`, `Classify`, `DeleteJob`,
+  `ListJobs`, `DeleteUpload`.
+- `WaitForJob` with `WaitOptions`, `JobFailedError` and `JobTimeoutError`.
+- `IterJobs`: an iterator over every page of `ListJobs`.
+- `UploadFile` and streaming `Upload` with rewind on retry.
+- `ExtractAs[T]` and `ValidateExtract[T]` for typed extraction.
+- `VerifyWebhook` for Svix-signed deliveries.
+- `Do`: a raw request method that returns `json.RawMessage`.
+- `WithResponseInto` to capture status, headers and body.
+- `WithLogger` (`*slog.Logger`), `WithAppInfo`, `WithClientInfo`, `WithMaxUploadSize`.
+- Typed errors: `APIError`, `APIConnectionError`, `APITimeoutError`.
+- Union types decode unknown variants into `Unknown` instead of failing.
+
+### Changed
+
+- Flat client. `client.Parse.Run(ctx, body)` is now `client.Parse(ctx, req)`;
+  `client.Parse.RunJob` is `client.ParseAsync`; `client.Job.Get` is `client.GetJob`;
+  `client.Job.Cancel` is `client.CancelJob`; `client.Webhook.Run` is
+  `client.ConfigureWebhook`; `client.APIVersion` is `client.Version`.
+- Constructor is `reducto.New(apiKey, opts...)`. An empty key falls back to
+  `REDUCTO_API_KEY`.
+- Options live in the root package. Optional fields are plain pointers; use `reducto.Ptr`.
+- The `option` and `shared` packages are gone.
+- `/extract` returns `ExtractOutput`, which holds a `V3ExtractResponse` or an
+  `AsyncExtractResponse`. The legacy `ExtractResponse` shape only appears in job results.
+
+### Removed
+
+- `WithMiddleware`, `WithQuery*`, `WithJSONSet`, `WithJSONDel`, `WithRequestBody`,
+  `WithAPIKey`. Use `WithHeader`, `WithHeaders` or `Do` instead.
+- Stainless runtime (`internal/apijson`, `param.Field`, and so on).
+
+
 ## 0.1.0-alpha.1 (2025-02-28)
 
 Full Changelog: [v0.0.1-alpha.0...v0.1.0-alpha.1](https://github.com/reductoai/reducto-go-sdk/compare/v0.0.1-alpha.0...v0.1.0-alpha.1)

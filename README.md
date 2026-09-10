@@ -1,41 +1,12 @@
-# Reducto Go API Library
+# reducto (Go)
 
-<a href="https://pkg.go.dev/github.com/reductoai/reducto-go-sdk"><img src="https://pkg.go.dev/badge/github.com/reductoai/reducto-go-sdk.svg" alt="Go Reference"></a>
-
-The Reducto Go library provides convenient access to [the Reducto REST
-API](https://docs.reductoai.com) from applications written in Go. The full API of this library can be found in [api.md](api.md).
-
-It is generated with [Stainless](https://www.stainless.com/).
-
-## Installation
-
-<!-- x-release-please-start-version -->
-
-```go
-import (
-	"github.com/reductoai/reducto-go-sdk" // imported as reducto
-)
-```
-
-<!-- x-release-please-end -->
-
-Or to pin the version:
-
-<!-- x-release-please-start-version -->
+Go client for the [Reducto](https://reducto.ai) document processing API.
 
 ```sh
-go get -u 'github.com/reductoai/reducto-go-sdk@v0.1.0-alpha.1'
+go get github.com/reductoai/reducto-go-sdk
 ```
 
-<!-- x-release-please-end -->
-
-## Requirements
-
-This library requires Go 1.18+.
-
-## Usage
-
-The full API of this library can be found in [api.md](api.md).
+## Quick start
 
 ```go
 package main
@@ -43,363 +14,297 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 
-	"github.com/reductoai/reducto-go-sdk"
-	"github.com/reductoai/reducto-go-sdk/option"
-	"github.com/reductoai/reducto-go-sdk/shared"
+	reducto "github.com/reductoai/reducto-go-sdk"
 )
 
 func main() {
-	client := reducto.NewClient(
-		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("REDUCTO_API_KEY")
-	)
-	parseResponse, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
-		ParseConfig: reducto.ParseConfigParam{
-			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
+	ctx := context.Background()
+	client := reducto.New("") // falls back to $REDUCTO_API_KEY
+
+	out, err := client.Parse(ctx, &reducto.SyncParseConfig{
+		Input: reducto.DocumentInputFromString("https://example.com/report.pdf"),
+		Settings: &reducto.Settings{
+			OCRSystem: reducto.SettingsOCRSystemStandard,
+			PageRange: &reducto.PageSelection{PageRange: &reducto.PageRange{Start: reducto.Ptr[int64](1), End: reducto.Ptr[int64](5)}},
 		},
 	})
 	if err != nil {
-		panic(err.Error())
+		log.Fatal(err)
 	}
-	fmt.Printf("%+v\n", parseResponse.JobID)
-}
 
-```
-
-### Request fields
-
-All request parameters are wrapped in a generic `Field` type,
-which we use to distinguish zero values from null or omitted fields.
-
-This prevents accidentally sending a zero value if you forget a required parameter,
-and enables explicitly sending `null`, `false`, `''`, or `0` on optional parameters.
-Any field not specified is not sent.
-
-To construct fields with values, use the helpers `String()`, `Int()`, `Float()`, or most commonly, the generic `F[T]()`.
-To send a null, use `Null[T]()`, and to send a nonconforming value, use `Raw[T](any)`. For example:
-
-```go
-params := FooParams{
-	Name: reducto.F("hello"),
-
-	// Explicitly send `"description": null`
-	Description: reducto.Null[string](),
-
-	Point: reducto.F(reducto.Point{
-		X: reducto.Int(0),
-		Y: reducto.Int(1),
-
-		// In cases where the API specifies a given type,
-		// but you want to send something else, use `Raw`:
-		Z: reducto.Raw[int64](0.01), // sends a float
-	}),
-}
-```
-
-### Response objects
-
-All fields in response structs are value types (not pointers or wrappers).
-
-If a given field is `null`, not present, or invalid, the corresponding field
-will simply be its zero value.
-
-All response structs also include a special `JSON` field, containing more detailed
-information about each property, which you can use like so:
-
-```go
-if res.Name == "" {
-	// true if `"name"` is either not present or explicitly null
-	res.JSON.Name.IsNull()
-
-	// true if the `"name"` key was not present in the response JSON at all
-	res.JSON.Name.IsMissing()
-
-	// When the API returns data that cannot be coerced to the expected type:
-	if res.JSON.Name.IsInvalid() {
-		raw := res.JSON.Name.Raw()
-
-		legacyName := struct{
-			First string `json:"first"`
-			Last  string `json:"last"`
-		}{}
-		json.Unmarshal([]byte(raw), &legacyName)
-		name = legacyName.First + " " + legacyName.Last
+	// Sync endpoints can still answer with a job id when the document is large.
+	if out.AsyncParseResponse != nil {
+		log.Fatalf("queued as job %s; use WaitForJob", out.AsyncParseResponse.JobID)
+	}
+	res := out.ParseResponse.Result
+	if res.UrlResult != nil {
+		fmt.Println("result too large, download from", res.UrlResult.URL)
+		return
+	}
+	for _, chunk := range res.FullResult.Chunks {
+		fmt.Println(chunk.Content)
 	}
 }
 ```
 
-These `.JSON` structs also include an `Extras` map containing
-any properties in the json response that were not specified
-in the struct. This can be useful for API features not yet
-present in the SDK.
+## Upload a local file
 
 ```go
-body := res.JSON.ExtraFields["my_unexpected_field"].Raw()
+up, err := client.UploadFile(ctx, "invoice.pdf")
+if err != nil {
+	log.Fatal(err)
+}
+out, err := client.Extract(ctx, &reducto.SyncExtractConfig{
+	Input: up.Input(),
+	Instructions: &reducto.Instructions{
+		Schema: map[string]any{
+			"type": "object",
+			"properties": map[string]any{
+				"total": map[string]any{"type": "number"},
+			},
+		},
+	},
+})
 ```
 
-### RequestOptions
-
-This library uses the functional options pattern. Functions defined in the
-`option` package return a `RequestOption`, which is a closure that mutates a
-`RequestConfig`. These options can be supplied to the client or at individual
-requests. For example:
+## Async jobs
 
 ```go
-client := reducto.NewClient(
-	// Adds a header to every request made by the client
-	option.WithHeader("X-Some-Header", "custom_header_info"),
-)
-
-client.Parse.Run(context.TODO(), ...,
-	// Override the header
-	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
-	// Add an undocumented field to the request body, using sjson syntax
-	option.WithJSONSet("some.json.path", map[string]string{"my": "object"}),
-)
-```
-
-See the [full list of request options](https://pkg.go.dev/github.com/reductoai/reducto-go-sdk/option).
-
-### Pagination
-
-This library provides some conveniences for working with paginated list endpoints.
-
-You can use `.ListAutoPaging()` methods to iterate through items across all pages:
-
-Or you can use simple `.List()` methods to fetch a single page and receive a standard response object
-with additional helper methods like `.GetNextPage()`, e.g.:
-
-### Errors
-
-When the API returns a non-success status code, we return an error with type
-`*reducto.Error`. This contains the `StatusCode`, `*http.Request`, and
-`*http.Response` values of the request, as well as the JSON of the error body
-(much like other response objects in the SDK).
-
-To handle errors, we recommend that you use the `errors.As` pattern:
-
-```go
-_, err := client.Parse.Run(context.TODO(), reducto.ParseRunParams{
-	ParseConfig: reducto.ParseConfigParam{
-		DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
+job, err := client.ParseAsync(ctx, &reducto.AsyncParseConfig{
+	Input: reducto.DocumentInputFromString("https://example.com/big.pdf"),
+	Webhook: &reducto.WebhookConfig{
+		DirectWebhookConfig: &reducto.DirectWebhookConfig{URL: "https://my.app/hook"},
 	},
 })
 if err != nil {
-	var apierr *reducto.Error
-	if errors.As(err, &apierr) {
-		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
-		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
+	log.Fatal(err)
+}
+
+final, err := client.WaitForJob(ctx, job.JobID, &reducto.WaitOptions{Interval: 3 * time.Second, Timeout: 10 * time.Minute})
+var failed *reducto.JobFailedError
+if errors.As(err, &failed) {
+	log.Fatalf("job failed: %s", failed.Job.Error.Name)
+}
+var timedOut *reducto.JobTimeoutError
+if errors.As(err, &timedOut) {
+	log.Fatalf("still %s after %s", timedOut.Job.Status, timedOut.Timeout)
+}
+if final.Result.ParseResponse != nil {
+	// ...
+}
+```
+
+List every job without paging by hand:
+
+```go
+for job, err := range client.IterJobs(ctx, &reducto.ListJobsParams{Limit: reducto.Ptr[int64](200)}) {
+	if err != nil {
+		return err
 	}
-	panic(err.Error()) // GET "/parse": 400 Bad Request { ... }
+	fmt.Println(job.JobID, job.Status)
 }
 ```
 
-When other errors occur, they are returned unwrapped; for example,
-if HTTP transport fails, you might receive `*url.Error` wrapping `*net.OpError`.
+## Configuration
 
-### Timeouts
-
-Requests do not time out by default; use context to configure a timeout for a request lifecycle.
-
-Note that if a request is [retried](#retries), the context timeout does not start over.
-To set a per-retry timeout, use `option.WithRequestTimeout()`.
+Every option works on the client and on a single call. Pass it to `New` for the
+whole client, or as a trailing argument on any method:
 
 ```go
-// This sets the timeout for the request, including all the retries.
-ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
-defer cancel()
-client.Parse.Run(
-	ctx,
-	reducto.ParseRunParams{
-		ParseConfig: reducto.ParseConfigParam{
-			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
-		},
+client := reducto.New("",
+	reducto.WithBaseURL("https://vpc.example.com"),        // or $REDUCTO_BASE_URL
+	reducto.WithMaxRetries(3),
+	reducto.WithTimeout(2*time.Minute),                    // per attempt
+	reducto.WithHeaders(map[string]string{"X-Org": "acme"}),
+	reducto.WithLogger(slog.Default()),                    // or $REDUCTO_LOG=debug
+)
+
+out, err := client.Parse(ctx, req,
+	reducto.WithMaxRetries(0),
+	reducto.WithHeader("traceparent", tp),
+)
+```
+
+| Option | Purpose |
+| --- | --- |
+| `WithBaseURL` | Host. Also read from `REDUCTO_BASE_URL`. |
+| `WithMaxRetries` | Retry count. Default 2. |
+| `WithTimeout` | Per-attempt timeout, including the body read. Default 1h, as in the Python SDK. Zero disables. |
+| `WithHeaders`, `WithHeader` | Extra headers. They override built-in headers, including `Authorization`. |
+| `WithAppInfo` | Name and version of your application. Goes first in `User-Agent` and into `X-Reducto-Client`. |
+| `WithClientInfo` | Send the `X-Reducto-*` client headers (default on). |
+| `WithUserAgent` | Replace the whole `User-Agent` value. |
+| `WithHTTPClient` | Custom transport (proxies, connection pools). |
+| `WithLogger` | `*slog.Logger`. Requests and responses at debug, retries at info. |
+| `WithMaxUploadSize` | Reject uploads over N bytes before sending. |
+| `WithResponseInto` | Capture status, headers, request id and the raw body. |
+
+`WithOptions` still returns a configured copy when you want to reuse one set of overrides.
+
+## Client headers
+
+Every request carries `User-Agent: Reducto/Go <version>` and the same platform headers as
+the Python SDK:
+
+```
+X-Reducto-Lang: go                 X-Reducto-Runtime: go
+X-Reducto-Package-Version: 0.1.0   X-Reducto-Runtime-Version: 1.23.1
+X-Reducto-OS: MacOS                X-Reducto-Async: false
+X-Reducto-Arch: arm64              X-Reducto-Retry-Count: 0
+                                   X-Reducto-Read-Timeout: 300
+```
+
+They let Reducto tell client versions apart in its request logs. Nothing else is sent, and
+no request is made that you did not ask for. `WithClientInfo(false)` drops the
+`X-Reducto-*` headers. `WithAppInfo("my-app", "1.2")` puts your application in front of the
+SDK in `User-Agent` and adds `X-Reducto-Client` and `X-Reducto-Client-Version`.
+
+## Raw response
+
+```go
+var resp reducto.Response
+out, err := client.Parse(ctx, req, reducto.WithResponseInto(&resp))
+fmt.Println(resp.StatusCode, resp.RequestID, resp.Header.Get("Date"))
+json.Unmarshal(resp.Body, &extra) // a field the types do not have yet
+```
+
+`resp` is filled on success and on `*APIError` alike. `APIError` also carries `Header`
+and `RequestID`. The API does not send a request id header today; the field is populated
+when a proxy in front of it does.
+
+## Errors
+
+| Type | When |
+| --- | --- |
+| `*APIError` | Any non-2xx response. `StatusCode`, `Code()`, `Message`, `Validation`, `Header`, `RequestID`, `RetryAfter()`. |
+| `*APIConnectionError` | No response: DNS, refused, reset, malformed reply. `Unwrap` gives the transport error. |
+| `*APITimeoutError` | One attempt exceeded `WithTimeout`. Matches `errors.Is(err, context.DeadlineExceeded)`. |
+| `*JobFailedError` | `WaitForJob` saw `Failed`. |
+| `*JobTimeoutError` | `WaitForJob` hit `WaitOptions.Timeout`. Also matches `context.DeadlineExceeded`. |
+| `*WebhookVerificationError` | `VerifyWebhook` rejected a delivery. |
+| `*TypedExtractError` | `ExtractAs` or `ValidateExtract` could not decode the result. `Response` holds the raw response. |
+
+A deadline or cancellation on your own `ctx` is returned as the plain `ctx.Err()`.
+
+```go
+var apiErr *reducto.APIError
+if errors.As(err, &apiErr) {
+	fmt.Println(apiErr.StatusCode, apiErr.Code(), apiErr.Message, apiErr.RequestID)
+	for _, v := range apiErr.Validation { // 422 details
+		fmt.Println(v.Msg)
+	}
+}
+```
+
+## Typed extraction
+
+`ExtractAs[T]` sends the JSON schema you pass and decodes the items into `T`. Go has no
+runtime schema derivation, so the schema is written by hand or produced by a library of your
+choice (for example `invopop/jsonschema`).
+
+```go
+type Invoice struct {
+	Total  float64 `json:"total"`
+	Vendor string  `json:"vendor"`
+}
+
+schema := map[string]any{
+	"type": "object",
+	"properties": map[string]any{
+		"total":  map[string]any{"type": "number"},
+		"vendor": map[string]any{"type": "string"},
 	},
-	// This sets the per-retry timeout
-	option.WithRequestTimeout(20*time.Second),
-)
+	"required": []string{"total", "vendor"},
+}
+
+out, err := reducto.ExtractAs[Invoice](ctx, client, schema, &reducto.SyncExtractConfig{
+	Input: reducto.DocumentInputFromString("https://example.com/invoice.pdf"),
+})
+out.Result            // []Invoice
+out.Usage()           // ExtractUsage
+out.V3ExtractResponse // the response as received
 ```
 
-### File uploads
-
-Request parameters that correspond to file uploads in multipart requests are typed as
-`param.Field[io.Reader]`. The contents of the `io.Reader` will by default be sent as a multipart form
-part with the file name of "anonymous_file" and content-type of "application/octet-stream".
-
-The file name and content-type can be customized by implementing `Name() string` or `ContentType()
-string` on the run-time type of `io.Reader`. Note that `os.File` implements `Name() string`, so a
-file returned by `os.Open` will be sent with the file name on disk.
-
-We also provide a helper `reducto.FileParam(reader io.Reader, filename string, contentType string)`
-which can be used to wrap any `io.Reader` with the appropriate file name and content type.
+It returns a `*TypedExtractError` when the document was queued as a job, when the result came
+back as a URL (`ForceURLResult`), or when an item does not decode. For a queued job, wait for
+it and decode the result yourself:
 
 ```go
-// A file from the file system
-file, err := os.Open("/path/to/file")
-reducto.UploadParams{
-	File: reducto.F[io.Reader](file),
-}
-
-// A file from a string
-reducto.UploadParams{
-	File: reducto.F[io.Reader](strings.NewReader("my file contents")),
-}
-
-// With a custom filename and contentType
-reducto.UploadParams{
-	File: reducto.FileParam(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
-}
+job, err := client.WaitForJob(ctx, jobID, nil)
+out, err := reducto.ValidateExtract[Invoice](job.Result)
 ```
 
-### Retries
+## Retries
 
-Certain errors will be automatically retried 2 times by default, with a short exponential backoff.
-We retry by default all connection errors, 408 Request Timeout, 409 Conflict, 429 Rate Limit,
-and >=500 Internal errors.
+Default 2 retries with exponential backoff from 500ms, capped at 8s plus jitter.
+`Retry-After-Ms`, then `Retry-After` (seconds or HTTP-date), is honoured when it is 60s or
+less; larger values fall back to the normal backoff. An `x-should-retry: true|false` response
+header overrides the status-code rule below.
 
-You can use the `WithMaxRetries` option to configure or disable this:
+| Failure | GET / DELETE | POST |
+| --- | --- | --- |
+| 408, 429, 5xx | retry | retry |
+| Connection refused, DNS failure | retry | retry |
+| Timeout, reset, EOF after sending | retry | retry |
+
+POST connection errors are retried to match the published SDK. A retry can create a
+second job if the server accepted the first request. Set `WithMaxRetries(0)` to
+disable retries. Pass an `Idempotency-Key` with `WithHeader` if a proxy needs it.
+
+## Webhooks
+
+Configure Svix mode (`WebhookConfigNew{Mode: reducto.WebhookConfigNewModeSvix}`), then verify
+each delivery with the endpoint secret from the portal:
 
 ```go
-// Configure the default for all requests:
-client := reducto.NewClient(
-	option.WithMaxRetries(0), // default is 2
-)
-
-// Override per-request:
-client.Parse.Run(
-	context.TODO(),
-	reducto.ParseRunParams{
-		ParseConfig: reducto.ParseConfigParam{
-			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
-		},
-	},
-	option.WithMaxRetries(5),
-)
-```
-
-### Accessing raw response data (e.g. response headers)
-
-You can access the raw HTTP response data by using the `option.WithResponseInto()` request option. This is useful when
-you need to examine response headers, status codes, or other details.
-
-```go
-// Create a variable to store the HTTP response
-var response *http.Response
-parseResponse, err := client.Parse.Run(
-	context.TODO(),
-	reducto.ParseRunParams{
-		ParseConfig: reducto.ParseConfigParam{
-			DocumentURL: reducto.F[reducto.ParseConfigDocumentURLUnionParam](shared.UnionString("string")),
-		},
-	},
-	option.WithResponseInto(&response),
-)
-if err != nil {
-	// handle error
-}
-fmt.Printf("%+v\n", parseResponse)
-
-fmt.Printf("Status Code: %d\n", response.StatusCode)
-fmt.Printf("Headers: %+#v\n", response.Header)
-```
-
-### Making custom/undocumented requests
-
-This library is typed for convenient access to the documented API. If you need to access undocumented
-endpoints, params, or response properties, the library can still be used.
-
-#### Undocumented endpoints
-
-To make requests to undocumented endpoints, you can use `client.Get`, `client.Post`, and other HTTP verbs.
-`RequestOptions` on the client, such as retries, will be respected when making these requests.
-
-```go
-var (
-    // params can be an io.Reader, a []byte, an encoding/json serializable object,
-    // or a "…Params" struct defined in this library.
-    params map[string]interface{}
-
-    // result can be an []byte, *http.Response, a encoding/json deserializable object,
-    // or a model defined in this library.
-    result *http.Response
-)
-err := client.Post(context.Background(), "/unspecified", params, &result)
-if err != nil {
-    …
+func handler(w http.ResponseWriter, r *http.Request) {
+	body, _ := io.ReadAll(r.Body)
+	if err := reducto.VerifyWebhook(os.Getenv("SVIX_SECRET"), body, r.Header); err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	// body is trusted
 }
 ```
 
-#### Undocumented request params
+Both `svix-*` and `webhook-*` header names are accepted. Deliveries in `direct` mode are
+unsigned and cannot be verified.
 
-To make requests using undocumented parameters, you may use either the `option.WithQuerySet()`
-or the `option.WithJSONSet()` methods.
+## Uploads
 
-```go
-params := FooNewParams{
-    ID:   reducto.F("id_xxxx"),
-    Data: reducto.F(FooNewParamsData{
-        FirstName: reducto.F("John"),
-    }),
-}
-client.Foo.New(context.Background(), params, option.WithJSONSet("data.last_name", "Doe"))
+`Upload` streams an `io.ReadSeeker` (such as `*os.File`) with a known `Content-Length` and
+rewinds it on retry. Any other reader is buffered in memory. Empty files fail with
+`ErrEmptyUpload`; `WithMaxUploadSize` adds an upper bound (`ErrUploadTooLarge`).
+
+## Conventions
+
+- Optional scalar fields are pointers (`*bool`, `*int64`, `*string`). Use
+  `reducto.Ptr(v)`. This lets you send an explicit `false` or `0` and
+  overrides the server default. A nil field is omitted and the server default applies.
+- `anyOf`/`oneOf` schemas become union structs with one pointer per variant
+  (`DocumentInput`, `ParseResult`, `JobResult`, ...). Exactly one field is
+  set. Build them with the `<Union>From<Variant>` helpers. When the server sends a
+  shape no variant matches (a new `type`, say), decoding does not fail: the raw JSON
+  lands in `Unknown` and round-trips on marshal.
+- Fields with a fixed value in the spec (`response_type`, `scope`, `mode`)
+  are set for you on marshal.
+- Enums are typed strings with constants: `reducto.ChunkingChunkModePage`.
+- `client.Do(ctx, method, path, query, body)` is the raw escape hatch. It returns `json.RawMessage`.
+
+`types.go` and `api.go` are generated from Reducto's OpenAPI document. Do not edit them by hand;
+the next regeneration would drop the change. Everything else is hand-written.
+
+## Development
+
+```sh
+go test ./...
 ```
 
-#### Undocumented response properties
+`smoke_test.go` runs every endpoint against the real API. It is skipped unless
+`REDUCTO_SMOKE=1` is set:
 
-To access undocumented response properties, you may either access the raw JSON of the response as a string
-with `result.JSON.RawJSON()`, or get the raw JSON of a particular field on the result with
-`result.JSON.Foo.Raw()`.
-
-Any fields that are not present on the response struct will be saved and can be accessed by `result.JSON.ExtraFields()` which returns the extra fields as a `map[string]Field`.
-
-### Middleware
-
-We provide `option.WithMiddleware` which applies the given
-middleware to requests.
-
-```go
-func Logger(req *http.Request, next option.MiddlewareNext) (res *http.Response, err error) {
-	// Before the request
-	start := time.Now()
-	LogReq(req)
-
-	// Forward the request to the next handler
-	res, err = next(req)
-
-	// Handle stuff after the request
-	end := time.Now()
-	LogRes(res, err, start - end)
-
-    return res, err
-}
-
-client := reducto.NewClient(
-	option.WithMiddleware(Logger),
-)
+```sh
+REDUCTO_SMOKE=1 REDUCTO_API_KEY=... go test -run TestSmoke -v -timeout 20m
 ```
-
-When multiple middlewares are provided as variadic arguments, the middlewares
-are applied left to right. If `option.WithMiddleware` is given
-multiple times, for example first in the client then the method, the
-middleware in the client will run first and the middleware given in the method
-will run next.
-
-You may also replace the default `http.Client` with
-`option.WithHTTPClient(client)`. Only one http client is
-accepted (this overwrites any previous client) and receives requests after any
-middleware has been applied.
-
-## Semantic versioning
-
-This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) conventions, though certain backwards-incompatible changes may be released as minor versions:
-
-1. Changes to library internals which are technically public but not intended or documented for external use. _(Please open a GitHub issue to let us know if you are relying on such internals.)_
-2. Changes that we do not expect to impact the vast majority of users in practice.
-
-We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
-
-We are keen for your feedback; please open an [issue](https://www.github.com/reductoai/reducto-go-sdk/issues) with questions, bugs, or suggestions.
-
-## Contributing
-
-See [the contributing documentation](./CONTRIBUTING.md).

@@ -4,30 +4,11 @@ on:
     branches:
       - main
   pull_request:
-    branches:
-      - main
-      - next
 
 jobs:
-  lint:
-    name: lint
-    runs-on: ubuntu-latest
-    
-
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Setup go
-        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
-        with:
-          go-version-file: ./go.mod
-
-      - name: Run lints
-        run: ./scripts/lint
   test:
     name: test
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
@@ -36,9 +17,11 @@ jobs:
         with:
           go-version-file: ./go.mod
 
-      - name: Bootstrap
-        run: ./scripts/bootstrap
+      - name: gofmt
+        run: test -z "$(gofmt -l .)" || (gofmt -d . && exit 1)
 
-      - name: Run tests
-        run: ./scripts/test
+      - name: go vet
+        run: go vet ./...
 
+      - name: go test
+        run: go test -race ./...
