@@ -308,12 +308,9 @@ the URL yourself, then use `up.Input()` as usual.
 - Enums are typed strings with constants: `reducto.ChunkingChunkModePage`.
 - `client.Do(ctx, method, path, query, body)` is the raw escape hatch. It returns `json.RawMessage`.
 
-`types.go` and `api.go` are generated from Reducto's OpenAPI document. Do not edit them by hand;
-the next regeneration would drop the change. Everything else is hand-written.
-
-The committed spec snapshot differs from the live document in one place: `/extract` also
-lists `ExtractResponse`. The live spec dropped it, but the server still sends that shape
-when citations are off. Keep the variant until the API stops sending it.
+The types follow Reducto's OpenAPI document. `go run ./internal/specdrift` checks them against
+the snapshot in `spec/openapi.json` on every pull request; intentional differences are listed
+with a reason in `spec/drift-allowlist.json`. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Development
 

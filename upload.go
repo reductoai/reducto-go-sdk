@@ -22,7 +22,7 @@ var ErrUploadTooLarge = errors.New("reducto: upload: file exceeds the size limit
 // UploadOptions tune Client.Upload.
 type UploadOptions struct {
 	// Extension overrides the file extension the server uses to detect the document type, e.g. "pdf".
-	Extension string
+	Extension string `json:"extension,omitempty"`
 }
 
 // Upload sends a document to Reducto and returns a reducto:// handle to use as DocumentInput.

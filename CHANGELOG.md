@@ -2,8 +2,10 @@
 
 ## 0.1.0 (unreleased)
 
-Full rewrite. The SDK is now hand-written on top of generated types, with no dependencies
-outside the Go standard library. It requires Go 1.23.
+Full rewrite. The SDK is now hand-written, with no dependencies outside the Go standard
+library. It requires Go 1.23. `spec/openapi.json` and `internal/specdrift` keep the types
+honest against the API: CI fails when they drift, and `spec/drift-allowlist.json` records
+the few intentional differences.
 
 This release breaks every import from `0.1.0-alpha.1`. The alpha tag stays available.
 
