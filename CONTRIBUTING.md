@@ -18,7 +18,7 @@ There are no other dependencies. The module uses only the standard library.
 | `api.go` | One method per API endpoint | No |
 | `client.go` | Client, options, transport, retries | Yes |
 | `errors.go` | `APIError` and friends | Yes |
-| `upload.go` | `Upload`, `UploadFile` | Yes |
+| `upload.go` | `Upload`, `UploadFile`, `PresignUpload` | Yes |
 | `jobs.go` | `WaitForJob`, `IterJobs` | Yes |
 | `extract.go` | `ExtractAs`, `ValidateExtract` | Yes |
 | `webhook.go` | `VerifyWebhook` | Yes |
@@ -32,10 +32,12 @@ the next regeneration. If a type or an endpoint is wrong or missing, open an iss
 
 `go test ./...` runs offline against an in-process HTTP server.
 
-`smoke_test.go` calls the real API. It is skipped unless you set `REDUCTO_SMOKE=1`:
+End-to-end tests in `e2e_test.go` call the live Reducto API. They are behind the `e2e` build
+tag, so `go test ./...` does not compile them. They need `REDUCTO_API_KEY`. The top-level
+tests run in parallel, one per endpoint group:
 
 ```sh
-REDUCTO_SMOKE=1 REDUCTO_API_KEY=... go test -run TestSmoke -v -timeout 20m
+REDUCTO_API_KEY=... go test -tags e2e -run TestE2E -v -timeout 20m ./...
 ```
 
 ## Style

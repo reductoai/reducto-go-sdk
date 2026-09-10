@@ -290,6 +290,9 @@ unsigned and cannot be verified.
 rewinds it on retry. Any other reader is buffered in memory. Empty files fail with
 `ErrEmptyUpload`; `WithMaxUploadSize` adds an upper bound (`ErrUploadTooLarge`).
 
+`PresignUpload` returns a handle and a presigned URL without sending the bytes. PUT the file to
+the URL yourself, then use `up.Input()` as usual.
+
 ## Conventions
 
 - Optional scalar fields are pointers (`*bool`, `*int64`, `*string`). Use
@@ -314,9 +317,9 @@ the next regeneration would drop the change. Everything else is hand-written.
 go test ./...
 ```
 
-`smoke_test.go` runs every endpoint against the real API. It is skipped unless
-`REDUCTO_SMOKE=1` is set:
+`e2e_test.go` runs every endpoint against the real API. It is behind the `e2e` build tag and
+needs `REDUCTO_API_KEY`:
 
 ```sh
-REDUCTO_SMOKE=1 REDUCTO_API_KEY=... go test -run TestSmoke -v -timeout 20m
+REDUCTO_API_KEY=... go test -tags e2e -run TestE2E -v -timeout 20m ./...
 ```

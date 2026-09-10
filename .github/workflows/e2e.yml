@@ -18,8 +18,7 @@ jobs:
         with:
           go-version-file: ./go.mod
 
-      - name: Run smoke tests
+      - name: Run E2E tests
         env:
-          REDUCTO_SMOKE: "1"
           REDUCTO_API_KEY: ${{ secrets.REDUCTO_API_KEY }}
-        run: go test -run TestSmoke -v -timeout 20m ./...
+        run: go test -tags e2e -run 'TestE2E' -v -timeout 20m ./...

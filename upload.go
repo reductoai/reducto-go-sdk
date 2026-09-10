@@ -106,6 +106,22 @@ func multipartFrame(filename string) (head, tail []byte, contentType string, err
 	return head, tail, w.FormDataContentType(), nil
 }
 
+// PresignUpload asks for a reducto:// handle without sending the bytes. PUT the file to
+// PresignedURL, then use the handle as DocumentInput.
+//
+// POST /upload
+func (c *Client) PresignUpload(ctx context.Context, uo *UploadOptions, opts ...Option) (*UploadResponse, error) {
+	q := url.Values{}
+	if uo != nil && uo.Extension != "" {
+		q.Set("extension", strings.TrimPrefix(uo.Extension, "."))
+	}
+	var out UploadResponse
+	if err := c.do(ctx, "POST", "/upload", q, nil, &out, opts); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 // UploadFile opens path and uploads it. The extension is taken from the file name.
 func (c *Client) UploadFile(ctx context.Context, path string, opts ...Option) (*UploadResponse, error) {
 	f, err := os.Open(path)

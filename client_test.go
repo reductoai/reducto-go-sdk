@@ -258,6 +258,25 @@ func TestUploadMultipart(t *testing.T) {
 	}
 }
 
+func TestPresignUpload(t *testing.T) {
+	c := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" || r.URL.Path != "/upload" || r.URL.Query().Get("extension") != "pdf" {
+			t.Errorf("request = %s %s", r.Method, r.URL)
+		}
+		if r.ContentLength != 0 || r.Header.Get("Content-Type") != "" {
+			t.Errorf("unexpected body: length=%d type=%q", r.ContentLength, r.Header.Get("Content-Type"))
+		}
+		io.WriteString(w, `{"file_id": "reducto://abc.pdf", "presigned_url": "https://s3/put"}`)
+	})
+	up, err := c.PresignUpload(context.Background(), &UploadOptions{Extension: "pdf"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if up.FileID != "reducto://abc.pdf" || up.PresignedURL == nil || *up.PresignedURL != "https://s3/put" {
+		t.Fatalf("up = %+v", up)
+	}
+}
+
 func TestWaitForJob(t *testing.T) {
 	var calls atomic.Int32
 	c := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {

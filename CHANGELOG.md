@@ -13,7 +13,8 @@ This release breaks every import from `0.1.0-alpha.1`. The alpha tag stays avail
   `ListJobs`, `DeleteUpload`.
 - `WaitForJob` with `WaitOptions`, `JobFailedError` and `JobTimeoutError`.
 - `IterJobs`: an iterator over every page of `ListJobs`.
-- `UploadFile` and streaming `Upload` with rewind on retry.
+- `UploadFile` and streaming `Upload` with rewind on retry. `PresignUpload` for an upload
+  handle without a body.
 - `ExtractAs[T]` and `ValidateExtract[T]` for typed extraction.
 - `VerifyWebhook` for Svix-signed deliveries.
 - `Do`: a raw request method that returns `json.RawMessage`.
