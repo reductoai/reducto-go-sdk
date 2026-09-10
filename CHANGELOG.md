@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (unreleased)
+## 0.1.0 (2026-09-10)
 
 Full rewrite. The SDK is now hand-written, with no dependencies outside the Go standard
 library. It requires Go 1.23. `spec/openapi.json` and `internal/specdrift` keep the types
