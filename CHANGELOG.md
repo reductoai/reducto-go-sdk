@@ -19,6 +19,7 @@ This release breaks every import from `0.1.0-alpha.1`. The alpha tag stays avail
 - `Do`: a raw request method that returns `json.RawMessage`.
 - `WithResponseInto` to capture status, headers and body.
 - `WithLogger` (`*slog.Logger`), `WithAppInfo`, `WithClientInfo`, `WithMaxUploadSize`.
+- `BaseURLEU` and `BaseURLAU` for regional deployments, via `WithBaseURL`.
 - Typed errors: `APIError`, `APIConnectionError`, `APITimeoutError`.
 - Union types decode unknown variants into `Unknown` instead of failing.
 

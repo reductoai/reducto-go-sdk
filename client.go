@@ -21,7 +21,10 @@ import (
 )
 
 const (
-	DefaultBaseURL        = "https://platform.reducto.ai"
+	BaseURLProduction     = "https://platform.reducto.ai"
+	BaseURLEU             = "https://eu.platform.reducto.ai"
+	BaseURLAU             = "https://au.platform.reducto.ai"
+	DefaultBaseURL        = BaseURLProduction
 	DefaultMaxRetries     = 2
 	DefaultTimeout        = time.Hour
 	DefaultConnectTimeout = 5 * time.Second
@@ -58,8 +61,8 @@ type Client struct {
 //	c.Parse(ctx, req, reducto.WithMaxRetries(0), reducto.WithHeader("traceparent", tp))
 type Option func(*Client)
 
-// WithBaseURL points the client at a different host, e.g. a regional or VPC deployment.
-// New also reads REDUCTO_BASE_URL.
+// WithBaseURL points the client at a different host: a region (BaseURLEU, BaseURLAU) or a VPC
+// deployment. New also reads REDUCTO_BASE_URL.
 func WithBaseURL(u string) Option {
 	return func(c *Client) { c.baseURL = strings.TrimRight(u, "/") }
 }

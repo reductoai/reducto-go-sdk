@@ -1,6 +1,18 @@
-# reducto (Go)
+# Reducto Go API library
 
-Go client for the [Reducto](https://reducto.ai) document processing API.
+[![Go Reference](https://pkg.go.dev/badge/github.com/reductoai/reducto-go-sdk.svg)](https://pkg.go.dev/github.com/reductoai/reducto-go-sdk)
+
+The Reducto Go library provides convenient access to the Reducto REST API from any Go 1.23+
+application. It covers every endpoint, includes types for all request and response fields,
+and depends only on the standard library.
+
+## Documentation
+
+The REST API documentation can be found on [docs.reductoai.com](https://docs.reductoai.com).
+The full API of this library can be found on
+[pkg.go.dev](https://pkg.go.dev/github.com/reductoai/reducto-go-sdk).
+
+## Installation
 
 ```sh
 go get github.com/reductoai/reducto-go-sdk
@@ -129,7 +141,7 @@ out, err := client.Parse(ctx, req,
 
 | Option | Purpose |
 | --- | --- |
-| `WithBaseURL` | Host. Also read from `REDUCTO_BASE_URL`. |
+| `WithBaseURL` | Host. `reducto.BaseURLEU` and `reducto.BaseURLAU` select a region. Also read from `REDUCTO_BASE_URL`. |
 | `WithMaxRetries` | Retry count. Default 2. |
 | `WithTimeout` | Per-attempt timeout, including the body read. Default 1h, as in the Python SDK. Zero disables. |
 | `WithHeaders`, `WithHeader` | Extra headers. They override built-in headers, including `Authorization`. |

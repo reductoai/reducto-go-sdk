@@ -1,16 +1,18 @@
 # Security Policy
 
-## Reporting a vulnerability
+## Reporting Security Issues
 
-Do not open a public issue for a security problem. Email security@reducto.ai with:
+Reducto takes security seriously. Please report any security vulnerability promptly so that appropriate action can be taken.
 
-- what you found
-- how to reproduce it
-- the SDK version and Go version
+To report a security issue, please contact dev-feedback@reductoai.com. Do not open a public GitHub issue.
 
-We will confirm receipt and keep you informed while we fix the issue.
+## Responsible Disclosure
 
-## Scope
+We appreciate the efforts of security researchers and individuals who help us maintain the security of
+this SDK. If you believe you have found a security vulnerability, please adhere to responsible
+disclosure practices by allowing us a reasonable amount of time to investigate and address the issue
+before making any information public.
 
-This policy covers the code in this repository. Issues in the Reducto API itself go to the
-same address.
+---
+
+Thank you for helping us keep the SDK and the systems it interacts with secure.
