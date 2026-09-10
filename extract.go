@@ -10,9 +10,10 @@ import (
 // TypedExtract is an extract response whose items were decoded into T.
 type TypedExtract[T any] struct {
 	Result []T
-	// V3ExtractResponse is the response as received from Extract or a finished job.
+	// V3ExtractResponse is set when the API answered in the v3 shape.
 	V3ExtractResponse *V3ExtractResponse
-	// ExtractResponse is the legacy response shape. Only finished jobs still return it.
+	// ExtractResponse is set when the API answered in the legacy shape. Which shape you get
+	// depends on the account and on settings such as citations.
 	ExtractResponse *ExtractResponse
 }
 
@@ -82,9 +83,9 @@ func ValidateExtract[T any](response any) (*TypedExtract[T], error) {
 		if r == nil {
 			return nil, &TypedExtractError{Reason: "expected an extract response, got nil", Response: response}
 		}
-		v3, queued = r.V3ExtractResponse, r.AsyncExtractResponse
+		legacy, v3, queued = r.ExtractResponse, r.V3ExtractResponse, r.AsyncExtractResponse
 	case ExtractOutput:
-		v3, queued = r.V3ExtractResponse, r.AsyncExtractResponse
+		legacy, v3, queued = r.ExtractResponse, r.V3ExtractResponse, r.AsyncExtractResponse
 	case *JobResult:
 		if r == nil {
 			return nil, &TypedExtractError{Reason: "expected an extract response, got nil", Response: response}

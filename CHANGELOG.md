@@ -34,8 +34,10 @@ This release breaks every import from `0.1.0-alpha.1`. The alpha tag stays avail
   `REDUCTO_API_KEY`.
 - Options live in the root package. Optional fields are plain pointers; use `reducto.Ptr`.
 - The `option` and `shared` packages are gone.
-- `/extract` returns `ExtractOutput`, which holds a `V3ExtractResponse` or an
-  `AsyncExtractResponse`. The legacy `ExtractResponse` shape only appears in job results.
+- `/extract` returns `ExtractOutput`, which holds an `ExtractResponse`, a `V3ExtractResponse`
+  or an `AsyncExtractResponse`. Which sync shape you get depends on the account and settings.
+- Union decoding: an object with an unknown discriminator value lands in `Unknown` instead of
+  being forced into the untagged variant.
 
 ### Removed
 

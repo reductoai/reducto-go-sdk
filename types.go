@@ -2064,6 +2064,10 @@ func (u *ClassifyResponseResult) UnmarshalJSON(b []byte) error {
 			u.UrlResult = &v
 			return nil
 		}
+		if jsonDiscriminator(b, "type") != "" {
+			u.Unknown = append(json.RawMessage(nil), b...)
+			return nil
+		}
 		var v ClassifyResponseCategory
 		if err := json.Unmarshal(b, &v); err != nil {
 			return err
@@ -2147,12 +2151,18 @@ func (u *DocumentInput) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-// ExtractOutput holds exactly one of: V3ExtractResponse, AsyncExtractResponse.
+// ExtractOutput holds exactly one of: ExtractResponse, V3ExtractResponse, AsyncExtractResponse.
 // Unknown holds the raw JSON when the server sent a shape none of them matched.
 type ExtractOutput struct {
+	ExtractResponse      *ExtractResponse
 	V3ExtractResponse    *V3ExtractResponse
 	AsyncExtractResponse *AsyncExtractResponse
 	Unknown              json.RawMessage
+}
+
+// ExtractOutputFromExtractResponse wraps a ExtractResponse.
+func ExtractOutputFromExtractResponse(v ExtractResponse) ExtractOutput {
+	return ExtractOutput{ExtractResponse: &v}
 }
 
 // ExtractOutputFromV3ExtractResponse wraps a V3ExtractResponse.
@@ -2167,6 +2177,8 @@ func ExtractOutputFromAsyncExtractResponse(v AsyncExtractResponse) ExtractOutput
 
 func (u ExtractOutput) MarshalJSON() ([]byte, error) {
 	switch {
+	case u.ExtractResponse != nil:
+		return json.Marshal(u.ExtractResponse)
 	case u.V3ExtractResponse != nil:
 		return json.Marshal(u.V3ExtractResponse)
 	case u.AsyncExtractResponse != nil:
@@ -2184,12 +2196,23 @@ func (u *ExtractOutput) UnmarshalJSON(b []byte) error {
 		return nil
 	case 'o':
 		switch jsonDiscriminator(b, "response_type") {
+		case "extract":
+			var v ExtractResponse
+			if err := json.Unmarshal(b, &v); err != nil {
+				return err
+			}
+			u.ExtractResponse = &v
+			return nil
 		case "v3_extract":
 			var v V3ExtractResponse
 			if err := json.Unmarshal(b, &v); err != nil {
 				return err
 			}
 			u.V3ExtractResponse = &v
+			return nil
+		}
+		if jsonDiscriminator(b, "response_type") != "" {
+			u.Unknown = append(json.RawMessage(nil), b...)
 			return nil
 		}
 		var v AsyncExtractResponse
@@ -2591,6 +2614,10 @@ func (u *ParseOutput) UnmarshalJSON(b []byte) error {
 				return err
 			}
 			u.ParseResponse = &v
+			return nil
+		}
+		if jsonDiscriminator(b, "response_type") != "" {
+			u.Unknown = append(json.RawMessage(nil), b...)
 			return nil
 		}
 		var v AsyncParseResponse
@@ -3018,6 +3045,10 @@ func (u *SplitResponseResult) UnmarshalJSON(b []byte) error {
 				return err
 			}
 			u.UrlResult = &v
+			return nil
+		}
+		if jsonDiscriminator(b, "type") != "" {
+			u.Unknown = append(json.RawMessage(nil), b...)
 			return nil
 		}
 		if v, ok := strictUnmarshal[SplitResult](b); jsonHasKeys(b, "section_mapping", "splits") && ok {

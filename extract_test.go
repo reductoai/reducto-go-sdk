@@ -56,6 +56,39 @@ func TestExtractAsSendsSchemaAndDecodes(t *testing.T) {
 	}
 }
 
+func TestExtractAsDecodesLegacySyncShape(t *testing.T) {
+	c := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		io.WriteString(w, strings.Replace(legacyExtractBody, "%s", `[{"title":"Legacy","page_count":3}]`, 1))
+	})
+	out, err := ExtractAs[invoice](context.Background(), c, invoiceSchema, &SyncExtractConfig{Input: DocumentInputFromString("https://x/y.pdf")})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(out.Result) != 1 || out.Result[0] != (invoice{"Legacy", 3}) || out.ExtractResponse == nil || out.V3ExtractResponse != nil {
+		t.Errorf("out = %+v", out)
+	}
+}
+
+func TestExtractOutputUnknownResponseTypeIsNotAsync(t *testing.T) {
+	var out ExtractOutput
+	if err := json.Unmarshal([]byte(`{"response_type":"v4_extract","job_id":"j1","result":[]}`), &out); err != nil {
+		t.Fatal(err)
+	}
+	if out.AsyncExtractResponse != nil || out.Unknown == nil {
+		t.Fatalf("out = %+v", out)
+	}
+	if err := json.Unmarshal([]byte(`{"job_id":"j1"}`), &out); err != nil {
+		t.Fatal(err)
+	}
+	if out.AsyncExtractResponse == nil || out.AsyncExtractResponse.JobID != "j1" {
+		t.Fatalf("out = %+v", out)
+	}
+	_, err := ValidateExtract[invoice](&ExtractOutput{Unknown: json.RawMessage(`{}`)})
+	if err == nil {
+		t.Error("expected an error for an unknown shape")
+	}
+}
+
 func TestExtractAsDecodeErrorKeepsResponse(t *testing.T) {
 	c := extractServer(t, `[{"title":"ok"},{"title":1}]`, nil)
 	_, err := ExtractAs[invoice](context.Background(), c, invoiceSchema, &SyncExtractConfig{Input: DocumentInputFromString("https://x/y.pdf")})

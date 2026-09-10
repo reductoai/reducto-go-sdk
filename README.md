@@ -311,6 +311,10 @@ the URL yourself, then use `up.Input()` as usual.
 `types.go` and `api.go` are generated from Reducto's OpenAPI document. Do not edit them by hand;
 the next regeneration would drop the change. Everything else is hand-written.
 
+The committed spec snapshot differs from the live document in one place: `/extract` also
+lists `ExtractResponse`. The live spec dropped it, but the server still sends that shape
+when citations are off. Keep the variant until the API stops sending it.
+
 ## Development
 
 ```sh

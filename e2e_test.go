@@ -79,20 +79,36 @@ func e2eParse(t *testing.T, c *Client, ctx context.Context, req *SyncParseConfig
 	return out.ParseResponse
 }
 
-func e2eExtract(t *testing.T, c *Client, ctx context.Context, req *SyncExtractConfig) *V3ExtractResponse {
+// The API returns ExtractResponse or V3ExtractResponse from /extract depending on the account
+// and on settings such as citations.
+func e2eExtract(t *testing.T, c *Client, ctx context.Context, req *SyncExtractConfig) *ExtractOutput {
 	t.Helper()
 	out, err := c.Extract(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if out.V3ExtractResponse == nil {
-		t.Fatalf("expected a V3ExtractResponse, got %+v", out)
+	if out.ExtractResponse == nil && out.V3ExtractResponse == nil {
+		t.Fatalf("expected a sync extract response, got %+v", out)
 	}
-	return out.V3ExtractResponse
+	return out
 }
 
-func e2eSyncURL(v any) string {
-	if m, ok := v.(map[string]any); ok && m["type"] == "url" {
+func e2eExtractItems(out *ExtractOutput) []any {
+	if out.ExtractResponse != nil {
+		return out.ExtractResponse.Result.AnyArray
+	}
+	items, _ := out.V3ExtractResponse.Result.([]any)
+	return items
+}
+
+func e2eExtractURL(out *ExtractOutput) string {
+	if out.ExtractResponse != nil {
+		if u := out.ExtractResponse.Result.UrlResult; u != nil {
+			return u.URL
+		}
+		return ""
+	}
+	if m, ok := out.V3ExtractResponse.Result.(map[string]any); ok && m["type"] == "url" {
 		u, _ := m["url"].(string)
 		return u
 	}
@@ -220,26 +236,31 @@ func TestE2EExtract(t *testing.T) {
 			Input:        DocumentInputFromString(documentURL),
 			Instructions: &Instructions{Schema: trivialSchema},
 		})
-		items, ok := r.Result.([]any)
-		if !ok || len(items) == 0 {
-			t.Errorf("result = %#v", r.Result)
+		if len(e2eExtractItems(r)) == 0 {
+			t.Errorf("result = %+v", r)
 		}
 	})
-	t.Run("response_type", func(t *testing.T) {
-		if full.ResponseType != "v3_extract" {
-			t.Errorf("response_type = %q", full.ResponseType)
+	t.Run("response_type_matches_variant", func(t *testing.T) {
+		switch {
+		case full.ExtractResponse != nil && full.ExtractResponse.ResponseType != "extract":
+			t.Errorf("response_type = %q", full.ExtractResponse.ResponseType)
+		case full.V3ExtractResponse != nil && full.V3ExtractResponse.ResponseType != "v3_extract":
+			t.Errorf("response_type = %q", full.V3ExtractResponse.ResponseType)
 		}
 	})
 	t.Run("force_url_result", func(t *testing.T) {
-		if u := e2eSyncURL(full.Result); !strings.HasPrefix(u, "https://") {
-			t.Errorf("result = %#v", full.Result)
+		if u := e2eExtractURL(full); !strings.HasPrefix(u, "https://") {
+			t.Errorf("result = %+v", full)
 		}
 	})
 	t.Run("confidence_fields_present", func(t *testing.T) {
-		switch full.Confidence {
+		if full.V3ExtractResponse == nil {
+			return
+		}
+		switch full.V3ExtractResponse.Confidence {
 		case "", "high", "low":
 		default:
-			t.Errorf("confidence = %q", full.Confidence)
+			t.Errorf("confidence = %q", full.V3ExtractResponse.Confidence)
 		}
 	})
 	t.Run("extract_as", func(t *testing.T) {
