@@ -1,13 +1,14 @@
-name: CI
+name: E2E Tests
 on:
-  push:
+  pull_request:
     branches:
       - main
-  pull_request:
+      - next
 
 jobs:
-  test:
-    name: test
+  e2e:
+    timeout-minutes: 25
+    name: e2e
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -17,11 +18,7 @@ jobs:
         with:
           go-version-file: ./go.mod
 
-      - name: gofmt
-        run: test -z "$(gofmt -l .)" || (gofmt -d . && exit 1)
-
-      - name: go vet
-        run: go vet ./...
-
-      - name: go test
-        run: go test -race ./...
+      - name: Run E2E tests
+        env:
+          REDUCTO_API_KEY: ${{ secrets.REDUCTO_API_KEY }}
+        run: go test -tags e2e -run 'TestE2E' -v -timeout 20m ./...

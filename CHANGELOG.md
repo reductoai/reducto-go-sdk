@@ -1,5 +1,53 @@
 # Changelog
 
+## 0.1.0 (unreleased)
+
+Full rewrite. The SDK is now hand-written, with no dependencies outside the Go standard
+library. It requires Go 1.23. `spec/openapi.json` and `internal/specdrift` keep the types
+honest against the API: CI fails when they drift, and `spec/drift-allowlist.json` records
+the few intentional differences.
+
+This release breaks every import from `0.1.0-alpha.1`. The alpha tag stays available.
+
+### Added
+
+- Endpoints: `Edit`, `EditAsync`, `Pipeline`, `PipelineAsync`, `Classify`, `DeleteJob`,
+  `ListJobs`, `DeleteUpload`.
+- `WaitForJob` with `WaitOptions`, `JobFailedError` and `JobTimeoutError`.
+- `IterJobs`: an iterator over every page of `ListJobs`.
+- `UploadFile` and streaming `Upload` with rewind on retry. `PresignUpload` for an upload
+  handle without a body.
+- `ExtractAs[T]` and `ValidateExtract[T]` for typed extraction.
+- `VerifyWebhook` for Svix-signed deliveries.
+- `Do`: a raw request method that returns `json.RawMessage`.
+- `WithResponseInto` to capture status, headers and body.
+- `WithLogger` (`*slog.Logger`), `WithAppInfo`, `WithClientInfo`, `WithMaxUploadSize`.
+- `BaseURLEU` and `BaseURLAU` for regional deployments, via `WithBaseURL`.
+- Typed errors: `APIError`, `APIConnectionError`, `APITimeoutError`.
+- Union types decode unknown variants into `Unknown` instead of failing.
+
+### Changed
+
+- Flat client. `client.Parse.Run(ctx, body)` is now `client.Parse(ctx, req)`;
+  `client.Parse.RunJob` is `client.ParseAsync`; `client.Job.Get` is `client.GetJob`;
+  `client.Job.Cancel` is `client.CancelJob`; `client.Webhook.Run` is
+  `client.ConfigureWebhook`; `client.APIVersion` is `client.Version`.
+- Constructor is `reducto.New(apiKey, opts...)`. An empty key falls back to
+  `REDUCTO_API_KEY`.
+- Options live in the root package. Optional fields are plain pointers; use `reducto.Ptr`.
+- The `option` and `shared` packages are gone.
+- `/extract` returns `ExtractOutput`, which holds an `ExtractResponse`, a `V3ExtractResponse`
+  or an `AsyncExtractResponse`. Which sync shape you get depends on the account and settings.
+- Union decoding: an object with an unknown discriminator value lands in `Unknown` instead of
+  being forced into the untagged variant.
+
+### Removed
+
+- `WithMiddleware`, `WithQuery*`, `WithJSONSet`, `WithJSONDel`, `WithRequestBody`,
+  `WithAPIKey`. Use `WithHeader`, `WithHeaders` or `Do` instead.
+- Stainless runtime (`internal/apijson`, `param.Field`, and so on).
+
+
 ## 0.1.0-alpha.1 (2025-02-28)
 
 Full Changelog: [v0.0.1-alpha.0...v0.1.0-alpha.1](https://github.com/reductoai/reducto-go-sdk/compare/v0.0.1-alpha.0...v0.1.0-alpha.1)

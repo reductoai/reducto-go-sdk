@@ -1,66 +1,74 @@
-## Setting up the environment
+# Contributing
 
-To set up the repository, run:
+## Setup
 
-```sh
-$ ./scripts/bootstrap
-$ ./scripts/build
-```
-
-This will install all the required dependencies and build the SDK.
-
-You can also [install go 1.18+ manually](https://go.dev/doc/install).
-
-## Modifying/Adding code
-
-Most of the SDK is generated code. Modifications to code will be persisted between generations, but may
-result in merge conflicts between manual patches and changes from the generator. The generator will never
-modify the contents of the `lib/` and `examples/` directories.
-
-## Adding and running examples
-
-All files in the `examples/` directory are not modified by the generator and can be freely edited or added to.
-
-```go
-# add an example to examples/<your-example>/main.go
-
-package main
-
-func main() {
-  // ...
-}
-```
+Install Go 1.23 or later. Then:
 
 ```sh
-$ go run ./examples/<your-example>
+go test ./...
 ```
 
-## Using the repository from source
+There are no other dependencies. The module uses only the standard library.
 
-To use a local version of this library from source in another project, edit the `go.mod` with a replace
-directive. This can be done through the CLI with the following:
+## Layout
+
+| File | Contents | Edit by hand? |
+| --- | --- | --- |
+| `types.go` | Request and response types, enums, unions | No |
+| `api.go` | One method per API endpoint | No |
+| `client.go` | Client, options, transport, retries | Yes |
+| `errors.go` | `APIError` and friends | Yes |
+| `upload.go` | `Upload`, `UploadFile`, `PresignUpload` | Yes |
+| `jobs.go` | `WaitForJob`, `IterJobs` | Yes |
+| `extract.go` | `ExtractAs`, `ValidateExtract` | Yes |
+| `webhook.go` | `VerifyWebhook` | Yes |
+| `raw.go` | `Do`, the raw escape hatch | Yes |
+| `union.go`, `time.go` | JSON helpers | Yes |
+
+`types.go` holds the request and response types; `api.go` holds one method per endpoint. Both
+follow Reducto's OpenAPI document by hand. Keep the conventions you see: `json` tags with
+`omitempty` on optional fields, pointers for optional scalars, typed strings with constants
+for enums, and union structs with one pointer per variant plus `Unknown`.
+
+## Spec drift
+
+`spec/openapi.json` is a snapshot of the public OpenAPI document. `go run ./internal/specdrift`
+anchors each `Client` method to an endpoint through its `c.do` call, then compares the Go types
+against the spec: field names, types, enum values and required-ness. CI runs it on every pull
+request and fails on drift.
 
 ```sh
-$ go mod edit -replace github.com/reductoai/reducto-go-sdk=/path/to/reducto-go-sdk
+go run ./internal/specdrift                    # check against the snapshot
+go run ./internal/specdrift -live              # check against https://reducto.ai/openapi.json
+go run ./internal/specdrift -update-snapshot   # refresh the snapshot, then check
 ```
 
-## Running tests
+Refreshing the snapshot is a manual step. Commit it together with the SDK change it calls for.
 
-Most tests require you to [set up a mock server](https://github.com/stoplightio/prism) against the OpenAPI spec to run the tests.
+When the SDK must differ from the spec on purpose, add an entry to `spec/drift-allowlist.json`
+with the `endpoint`, `location` and `kind` the tool printed, an optional `detail` to pin one
+item, and a `reason` that says when to remove it. The tool reports allowed items and flags
+entries that no longer match anything.
+
+## Tests
+
+`go test ./...` runs offline against an in-process HTTP server.
+
+End-to-end tests in `e2e_test.go` call the live Reducto API. They are behind the `e2e` build
+tag, so `go test ./...` does not compile them. They need `REDUCTO_API_KEY`. The top-level
+tests run in parallel, one per endpoint group:
 
 ```sh
-# you will need npm installed
-$ npx prism mock path/to/your/openapi.yml
+REDUCTO_API_KEY=... go test -tags e2e -run TestE2E -v -timeout 20m ./...
 ```
 
-```sh
-$ ./scripts/test
-```
+## Style
 
-## Formatting
+Run `gofmt` before you commit. CI fails on unformatted files. Prefer no comments; when a
+comment is needed, say why, not what.
 
-This library uses the standard gofmt code formatter:
+## Releases
 
-```sh
-$ ./scripts/format
-```
+A release is a git tag on `main`, for example `v0.2.0`. Update `Version` in `client.go` and
+add a section to `CHANGELOG.md` in the same commit. Never move or delete a tag: Go modules
+and the module proxy pin to it.

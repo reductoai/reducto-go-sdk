@@ -1,0 +1,35 @@
+[
+  {
+    "endpoint": "POST /extract",
+    "location": "response",
+    "kind": "extra",
+    "detail": "sdk union member object(7 fields) has no spec counterpart",
+    "reason": "The API returns ExtractResponse (response_type 'extract') for accounts not on V3 extract, or when citations are off. The spec lists only V3ExtractResponse and AsyncExtractResponse for this endpoint. ExtractOutput includes ExtractResponse so those responses decode. Remove once the spec adds ExtractResponse to POST /extract."
+  },
+  {
+    "endpoint": "POST /extract",
+    "location": "request",
+    "kind": "missing",
+    "reason": "The spec accepts SyncExtractConfig or AsyncExtractConfig on one endpoint. The SDK splits them: Extract takes *SyncExtractConfig and ExtractAsync takes *AsyncExtractConfig, so the async member is covered by POST /extract_async."
+  },
+  {
+    "endpoint": "POST /parse",
+    "location": "request",
+    "kind": "missing",
+    "reason": "The spec accepts SyncParseConfig or AsyncParseConfig on one endpoint. The SDK splits them: Parse takes *SyncParseConfig and ParseAsync takes *AsyncParseConfig, so the async member is covered by POST /parse_async."
+  },
+  {
+    "endpoint": "GET /job/{job_id}",
+    "location": "response",
+    "kind": "missing",
+    "detail": "spec union member object{error, progress, reason, result, status} has no sdk counterpart",
+    "reason": "The spec returns AsyncJobResponse or EnhancedAsyncJobResponse. GetJob decodes into EnhancedAsyncJobResponse, a superset whose extra fields are all optional, so both shapes decode into one type."
+  },
+  {
+    "endpoint": "POST /upload",
+    "location": "request.file",
+    "kind": "missing",
+    "detail": "spec union member string has no sdk counterpart",
+    "reason": "The spec lets 'file' be a binary stream or a string. Upload streams bytes only; PresignUpload sends no body. A URL or reducto:// handle goes through DocumentInput instead."
+  }
+]
