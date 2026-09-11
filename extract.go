@@ -350,9 +350,11 @@ type V3Extract struct {
 	// Optional document-level deep extract confidence label.
 	Confidence V3ExtractConfidence `json:"confidence" api:"nullable"`
 	// Optional explanation for the document-level confidence label.
-	ConfidenceReason string                `json:"confidence_reason" api:"nullable"`
-	JobID            string                `json:"job_id" api:"nullable"`
-	ResponseType     V3ExtractResponseType `json:"response_type"`
+	ConfidenceReason string `json:"confidence_reason" api:"nullable"`
+	// The duration of the extract request in seconds.
+	Duration     float64               `json:"duration" api:"nullable"`
+	JobID        string                `json:"job_id" api:"nullable"`
+	ResponseType V3ExtractResponseType `json:"response_type"`
 	// The link to the studio pipeline for the document.
 	StudioLink string        `json:"studio_link" api:"nullable"`
 	JSON       v3ExtractJSON `json:"-"`
@@ -364,6 +366,7 @@ type v3ExtractJSON struct {
 	Usage            apijson.Field
 	Confidence       apijson.Field
 	ConfidenceReason apijson.Field
+	Duration         apijson.Field
 	JobID            apijson.Field
 	ResponseType     apijson.Field
 	StudioLink       apijson.Field
@@ -423,9 +426,11 @@ type ExtractRunResponse struct {
 	// Optional document-level deep extract confidence label.
 	Confidence ExtractRunResponseConfidence `json:"confidence" api:"nullable"`
 	// Optional explanation for the document-level confidence label.
-	ConfidenceReason string                         `json:"confidence_reason" api:"nullable"`
-	JobID            string                         `json:"job_id" api:"nullable"`
-	ResponseType     ExtractRunResponseResponseType `json:"response_type"`
+	ConfidenceReason string `json:"confidence_reason" api:"nullable"`
+	// The duration of the extract request in seconds.
+	Duration     float64                        `json:"duration" api:"nullable"`
+	JobID        string                         `json:"job_id" api:"nullable"`
+	ResponseType ExtractRunResponseResponseType `json:"response_type"`
 	// This field can have the runtime type of [[]interface{}].
 	Result interface{} `json:"result"`
 	// The link to the studio pipeline for the document.
@@ -440,6 +445,7 @@ type ExtractRunResponse struct {
 type extractRunResponseJSON struct {
 	Confidence       apijson.Field
 	ConfidenceReason apijson.Field
+	Duration         apijson.Field
 	JobID            apijson.Field
 	ResponseType     apijson.Field
 	Result           apijson.Field
