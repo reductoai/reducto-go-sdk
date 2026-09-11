@@ -610,7 +610,9 @@ type ExtractResponse struct {
 	// force_url_result is True, this is returned as a URL result.
 	Result ExtractResponseResultUnion `json:"result" api:"required"`
 	Usage  reducto.ExtractUsage       `json:"usage" api:"required"`
-	JobID  string                     `json:"job_id" api:"nullable"`
+	// The duration of the extract request in seconds.
+	Duration float64 `json:"duration" api:"nullable"`
+	JobID    string  `json:"job_id" api:"nullable"`
 	// Optional deep extract confidence metadata containing document-level confidence
 	// plus a mirrored leaf-level confidence tree.
 	ResponseConfidence map[string]interface{}      `json:"response_confidence" api:"nullable"`
@@ -625,6 +627,7 @@ type extractResponseJSON struct {
 	Citations          apijson.Field
 	Result             apijson.Field
 	Usage              apijson.Field
+	Duration           apijson.Field
 	JobID              apijson.Field
 	ResponseConfidence apijson.Field
 	ResponseType       apijson.Field
@@ -1536,7 +1539,9 @@ type PipelineResponseResultExtractArrayResult struct {
 	Confidence PipelineResponseResultExtractArrayResultConfidence `json:"confidence" api:"nullable"`
 	// Optional explanation for the document-level confidence label.
 	ConfidenceReason string `json:"confidence_reason" api:"nullable"`
-	JobID            string `json:"job_id" api:"nullable"`
+	// The duration of the extract request in seconds.
+	Duration float64 `json:"duration" api:"nullable"`
+	JobID    string  `json:"job_id" api:"nullable"`
 	// This field can have the runtime type of [map[string]interface{}].
 	ResponseConfidence interface{}                                          `json:"response_confidence"`
 	ResponseType       PipelineResponseResultExtractArrayResultResponseType `json:"response_type"`
@@ -1554,6 +1559,7 @@ type pipelineResponseResultExtractArrayResultJSON struct {
 	Citations          apijson.Field
 	Confidence         apijson.Field
 	ConfidenceReason   apijson.Field
+	Duration           apijson.Field
 	JobID              apijson.Field
 	ResponseConfidence apijson.Field
 	ResponseType       apijson.Field
