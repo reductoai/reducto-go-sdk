@@ -71,9 +71,6 @@ func TestExtractRunWithOptionalParams(t *testing.T) {
 					HybridVpc: reducto.F(reducto.SettingsHybridVpcParam{
 						Environment: reducto.F("environment"),
 					}),
-					LlmTags: reducto.F(map[string]string{
-						"foo": "string",
-					}),
 					Model:     reducto.F(reducto.SettingsModelR1),
 					OcrSystem: reducto.F(reducto.SettingsOcrSystemStandard),
 					PageRange: reducto.F[reducto.SettingsPageRangeUnionParam](shared.PageRangeParam{
@@ -191,9 +188,6 @@ func TestExtractRunJobWithOptionalParams(t *testing.T) {
 					ForceURLResult:            reducto.F(true),
 					HybridVpc: reducto.F(reducto.SettingsHybridVpcParam{
 						Environment: reducto.F("environment"),
-					}),
-					LlmTags: reducto.F(map[string]string{
-						"foo": "string",
 					}),
 					Model:     reducto.F(reducto.SettingsModelR1),
 					OcrSystem: reducto.F(reducto.SettingsOcrSystemStandard),
