@@ -49,6 +49,8 @@ type ClassifyRunParams struct {
 	//  3. A reducto:// prefixed URL obtained from the /upload endpoint after directly
 	//     uploading a document
 	Input param.Field[ClassifyRunParamsInputUnion] `json:"input" api:"required"`
+	// The configuration options for asynchronous processing. Used by /classify_async.
+	Async param.Field[AsyncConfigV3Param] `json:"async"`
 	// A mapping of higher-level classify groups to the category labels that belong to
 	// each group. When provided, the response includes `extra_metadata.grouping` with
 	// the matched group name, or `ungrouped` if the selected category is not in any

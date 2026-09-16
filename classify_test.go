@@ -29,6 +29,14 @@ func TestClassifyRunWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Classify.Run(context.TODO(), reducto.ClassifyRunParams{
 		Input: reducto.F[reducto.ClassifyRunParamsInputUnion](shared.UnionString("string")),
+		Async: reducto.F(reducto.AsyncConfigV3Param{
+			Metadata: reducto.F[any](map[string]interface{}{}),
+			Priority: reducto.F(true),
+			Webhook: reducto.F[reducto.AsyncConfigV3WebhookUnionParam](shared.SvixWebhookConfigParam{
+				Channels: reducto.F([]string{"string"}),
+				Mode:     reducto.F(shared.SvixWebhookConfigModeSvix),
+			}),
+		}),
 		CategoryGroups: reducto.F(map[string][]string{
 			"foo": {"string"},
 		}),
