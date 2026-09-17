@@ -168,7 +168,8 @@ type ClassifyResponse struct {
 	// The duration of the classify request in seconds.
 	Duration float64 `json:"duration" api:"nullable"`
 	// Additional metadata for the classify response. Contains `grouping` when the
-	// request set `category_groups`. Omitted when empty.
+	// request set `category_groups` and `reasoning` when an accurate classify request
+	// set `reasoning=True`. Omitted when empty.
 	ExtraMetadata map[string]string `json:"extra_metadata"`
 	// Overall confidence breakdown for classification response.
 	ResponseConfidence ClassifyResponseResponseConfidence `json:"response_confidence" api:"nullable"`
