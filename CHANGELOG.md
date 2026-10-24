@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.2.0 (2026-10-24)
+
+### Added
+
+- `ClassifyAsync` for `POST /classify_async`. It returns `AsyncClassifyResponse`; collect the
+  result with `WaitForJob` or `GetJob`. `ClassifyConfig.Async` sets the webhook, metadata and
+  priority.
+- `Settings.ReturnCitations` for per-word and per-cell citation boxes in `Block.Extra`. Requires
+  `Settings.Model` set to `SettingsModelR1`.
+- `Duration` on `ExtractResponse` and `V3ExtractResponse`.
+
+### Removed
+
+- `FigureAgentic.ReturnOverlays`. The API no longer lists it.
+
 ## 0.1.0 (2026-09-10)
 
 Full rewrite. The SDK is now hand-written, with no dependencies outside the Go standard

@@ -162,7 +162,7 @@ the Python SDK:
 
 ```
 X-Reducto-Lang: go                 X-Reducto-Runtime: go
-X-Reducto-Package-Version: 0.1.0   X-Reducto-Runtime-Version: 1.23.1
+X-Reducto-Package-Version: 0.2.0   X-Reducto-Runtime-Version: 1.23.1
 X-Reducto-OS: MacOS                X-Reducto-Async: false
 X-Reducto-Arch: arm64              X-Reducto-Retry-Count: 0
                                    X-Reducto-Read-Timeout: 300
