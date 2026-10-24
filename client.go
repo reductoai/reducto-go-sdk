@@ -29,7 +29,7 @@ const (
 	DefaultTimeout        = time.Hour
 	DefaultConnectTimeout = 5 * time.Second
 	DefaultMaxIdleConns   = 20
-	Version               = "0.1.0"
+	Version               = "0.2.0"
 
 	maxBackoff    = 8 * time.Second
 	maxRetryAfter = 60 * time.Second
