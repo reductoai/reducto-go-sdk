@@ -30,6 +30,12 @@ type AsyncEditConfig struct {
 	Webhook *WebhookConfigNew `json:"webhook,omitempty"`
 }
 
+// AsyncClassifyResponse: Acknowledgement of a classify job. Poll the job ID for the result.
+type AsyncClassifyResponse struct {
+	// JobID: ID of the job.
+	JobID string `json:"job_id"`
+}
+
 // AsyncEditResponse: Acknowledgement of an edit job. Poll the job ID for the result.
 type AsyncEditResponse struct {
 	// JobID: ID of the job.
@@ -272,6 +278,8 @@ type ClassifyConfig struct {
 	PageRange *ClassifyConfigPageRange `json:"page_range,omitempty"`
 	// DocumentMetadata: Optional document-level metadata to include in classification prompts.
 	DocumentMetadata *string `json:"document_metadata,omitempty"`
+	// Async: The configuration options for asynchronous processing. Used by ClassifyAsync.
+	Async *AsyncConfig `json:"async,omitempty"`
 }
 
 // ClassifyResponse: Result of a classify call.
@@ -591,6 +599,8 @@ type ExtractResponse struct {
 	// ResponseConfidence: Optional deep extract confidence metadata containing document-level
 	// confidence plus a mirrored leaf-level confidence tree.
 	ResponseConfidence map[string]any `json:"response_confidence,omitempty"`
+	// Duration: The duration of the extract request in seconds.
+	Duration *float64 `json:"duration,omitempty"`
 }
 
 func (v ExtractResponse) MarshalJSON() ([]byte, error) {
@@ -679,9 +689,6 @@ type FigureAgentic struct {
 	// image re-drawn from that data (extra.chart_reconstruction). Higher latency. Defaults to False.
 	// Default: false.
 	AdvancedChartAgent *bool `json:"advanced_chart_agent,omitempty"`
-	// ReturnOverlays: If True, return overlays for the figure. This is so you can use the overlays to
-	// double check the quality of the extraction. Default: false.
-	ReturnOverlays *bool `json:"return_overlays,omitempty"`
 }
 
 func (v FigureAgentic) MarshalJSON() ([]byte, error) {
@@ -1021,6 +1028,12 @@ type Settings struct {
 	ForceFileExtension *string `json:"force_file_extension,omitempty"`
 	// ReturnOCRData: If True, return OCR data in the result. Defaults to False. Default: false.
 	ReturnOCRData *bool `json:"return_ocr_data,omitempty"`
+	// ReturnCitations: If True, return per-word citation boxes for each text block in
+	// Extra["word_citations"]: the word's text, its char_start/char_end span in the block's content,
+	// and a bbox (nil when the word cannot be located). Table blocks also get Extra["cell_citations"]
+	// with text, row_idx, col_idx and bbox per non-empty cell. Requires the r-1 model. Not supported
+	// with formatting.merge_tables. Default: false.
+	ReturnCitations *bool `json:"return_citations,omitempty"`
 	// ReturnImages: Whether to return images for the specified block types. 'page' returns full page
 	// images. By default, no images are returned.
 	ReturnImages []SettingsReturnImagesItem `json:"return_images,omitempty"`
@@ -1398,6 +1411,8 @@ type V3ExtractResponse struct {
 	// Result: The extracted response in your provided schema. This is a list of dictionaries. If
 	// disable_chunking is True (default), then it will be a list of length one.
 	Result any `json:"result"`
+	// Duration: The duration of the extract request in seconds.
+	Duration *float64 `json:"duration,omitempty"`
 }
 
 func (v V3ExtractResponse) MarshalJSON() ([]byte, error) {

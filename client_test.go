@@ -379,6 +379,27 @@ func TestRetryCountHeader(t *testing.T) {
 	}
 }
 
+func TestClassifyAsyncSendsAsyncConfig(t *testing.T) {
+	var gotBody map[string]any
+	c := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" || r.URL.Path != "/classify_async" {
+			t.Errorf("request = %s %s", r.Method, r.URL.Path)
+		}
+		_ = json.NewDecoder(r.Body).Decode(&gotBody)
+		io.WriteString(w, `{"job_id": "j1"}`)
+	})
+	out, err := c.ClassifyAsync(context.Background(), &ClassifyConfig{
+		Input: DocumentInputFromString("x"),
+		Async: &AsyncConfig{Priority: Ptr(true)},
+	})
+	if err != nil || out.JobID != "j1" {
+		t.Fatal(err, out)
+	}
+	if async, _ := gotBody["async"].(map[string]any); async["priority"] != true {
+		t.Errorf("async sent as %v", gotBody["async"])
+	}
+}
+
 func TestResponseIntoCarriesBody(t *testing.T) {
 	c := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, `{"job_id": "j1", "brand_new_field": 7}`)

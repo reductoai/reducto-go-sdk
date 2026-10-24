@@ -42,6 +42,18 @@ func (c *Client) Classify(ctx context.Context, req *ClassifyConfig, opts ...Opti
 	return &out, nil
 }
 
+// ClassifyAsync: Start a classify job and return at once with a job ID. Collect the result with
+// the job lookup, or set a webhook in the async option to be notified when the job is done.
+//
+// POST /classify_async
+func (c *Client) ClassifyAsync(ctx context.Context, req *ClassifyConfig, opts ...Option) (*AsyncClassifyResponse, error) {
+	var out AsyncClassifyResponse
+	if err := c.do(ctx, "POST", "/classify_async", nil, req, &out, opts); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 // ConfigureWebhook: Create a URL of the Svix webhook portal for your organization. Open the URL in
 // a browser to add and manage webhook endpoints.
 //

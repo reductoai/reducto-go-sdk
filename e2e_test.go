@@ -168,6 +168,35 @@ func TestE2EParse(t *testing.T) {
 			t.Error("pdf_url missing")
 		}
 	})
+	t.Run("return_citations", func(t *testing.T) {
+		r := e2eParse(t, c, ctx, &SyncParseConfig{
+			Input: DocumentInputFromString(documentURL),
+			Settings: &Settings{
+				Model:           SettingsModelR1,
+				ReturnCitations: Ptr(true),
+				PageRange:       &PageSelection{PageRange: &PageRange{Start: Ptr[int64](1), End: Ptr[int64](1)}},
+			},
+		})
+		if r.Result.FullResult == nil {
+			t.Fatalf("result = %+v", r.Result)
+		}
+		var first map[string]any
+		for _, ch := range r.Result.FullResult.Chunks {
+			for _, b := range ch.Blocks {
+				if wc, _ := b.Extra["word_citations"].([]any); len(wc) > 0 && first == nil {
+					first, _ = wc[0].(map[string]any)
+				}
+			}
+		}
+		if first == nil {
+			t.Fatal("no word_citations")
+		}
+		for _, k := range []string{"text", "char_start", "char_end", "bbox"} {
+			if _, ok := first[k]; !ok {
+				t.Errorf("word citation missing %q: %v", k, first)
+			}
+		}
+	})
 	t.Run("usage_page_billing_breakdown", func(t *testing.T) {
 		kinds, ok := full.Usage.PageBillingBreakdown["1"]
 		if !ok {
@@ -251,6 +280,17 @@ func TestE2EExtract(t *testing.T) {
 	t.Run("force_url_result", func(t *testing.T) {
 		if u := e2eExtractURL(full); !strings.HasPrefix(u, "https://") {
 			t.Errorf("result = %+v", full)
+		}
+	})
+	t.Run("duration", func(t *testing.T) {
+		var d *float64
+		if full.ExtractResponse != nil {
+			d = full.ExtractResponse.Duration
+		} else {
+			d = full.V3ExtractResponse.Duration
+		}
+		if d == nil || *d < 0 {
+			t.Errorf("duration = %v", deref(d))
 		}
 	})
 	t.Run("confidence_fields_present", func(t *testing.T) {
@@ -398,6 +438,30 @@ func TestE2EClassify(t *testing.T) {
 			t.Errorf("result = %+v", r.Result)
 		}
 	})
+}
+
+func TestE2EClassifyAsync(t *testing.T) {
+	t.Parallel()
+	c, ctx := e2eClient(t)
+
+	r, err := c.ClassifyAsync(ctx, &ClassifyConfig{
+		Input:                DocumentInputFromString(documentURL),
+		ClassificationSchema: classificationSchema,
+		Async:                &AsyncConfig{Priority: Ptr(false), Metadata: map[string]any{"source": "sdk-e2e"}},
+	})
+	if err != nil || r.JobID == "" {
+		t.Fatalf("err=%v r=%+v", err, r)
+	}
+	job := e2eWait(t, c, ctx, r.JobID)
+	if job.Status == JobStatusFailed {
+		t.Fatalf("classify async job failed: %v", deref(job.Reason))
+	}
+	if job.Result == nil || job.Result.ClassifyResponse == nil || job.Result.ClassifyResponse.Result.ClassifyResponseCategory == nil {
+		t.Fatalf("result = %+v", job.Result)
+	}
+	if cat := job.Result.ClassifyResponse.Result.ClassifyResponseCategory.Category; cat != "invoice" && cat != "report" {
+		t.Errorf("category = %q", cat)
+	}
 }
 
 func TestE2EUpload(t *testing.T) {
