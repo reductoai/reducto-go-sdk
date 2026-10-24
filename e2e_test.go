@@ -198,6 +198,9 @@ func TestE2EParse(t *testing.T) {
 		}
 	})
 	t.Run("usage_page_billing_breakdown", func(t *testing.T) {
+		if len(full.Usage.PageBillingBreakdown) == 0 {
+			t.Skip("API returned an empty page_billing_breakdown for this account")
+		}
 		kinds, ok := full.Usage.PageBillingBreakdown["1"]
 		if !ok {
 			t.Fatalf("page_billing_breakdown = %+v", full.Usage.PageBillingBreakdown)
