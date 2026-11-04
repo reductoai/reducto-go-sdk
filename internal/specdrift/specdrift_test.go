@@ -181,3 +181,14 @@ func TestSnake(t *testing.T) {
 		}
 	}
 }
+
+func TestUnionMergesSplitEnums(t *testing.T) {
+	u := union([]*shape{enum("Model", "r-1", "r-1-mini"), enum("", "legacy"), prim("null")})
+	if u.kind != "union" || len(u.members) != 2 {
+		t.Fatalf("union = %s, want enum + null", describe(u))
+	}
+	e := u.members[0]
+	if e.kind != "enum" || e.label != "Model" || len(e.values) != 3 || !e.values["legacy"] {
+		t.Errorf("merged enum = %s (label %q)", describe(e), e.label)
+	}
+}

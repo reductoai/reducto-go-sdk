@@ -49,7 +49,7 @@ func union(members []*shape) *shape {
 		}
 	}
 	var dedup []*shape
-	for _, m := range flat {
+	for _, m := range mergeEnums(flat) {
 		dup := false
 		for _, d := range dedup {
 			if sameSignature(m, d) {
@@ -65,6 +65,31 @@ func union(members []*shape) *shape {
 		return dedup[0]
 	}
 	return &shape{kind: "union", members: dedup}
+}
+
+// mergeEnums folds every enum member into one, as the spec can split one literal set (enum + const).
+func mergeEnums(flat []*shape) []*shape {
+	var merged *shape
+	var rest []*shape
+	for _, m := range flat {
+		if m.kind != "enum" {
+			rest = append(rest, m)
+			continue
+		}
+		if merged == nil {
+			merged = enum(m.label)
+		}
+		if merged.label == "" {
+			merged.label = m.label
+		}
+		for v := range m.values {
+			merged.values[v] = true
+		}
+	}
+	if merged == nil {
+		return rest
+	}
+	return append([]*shape{merged}, rest...)
 }
 
 func sameSignature(a, b *shape) bool {

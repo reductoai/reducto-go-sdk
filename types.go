@@ -936,9 +936,10 @@ type ParseUsage struct {
 }
 
 // ParseUsageBreakdown: Raw parse quantities for accounts on the new (Q3 2026) pricing model.
-// “parse_model“ is "R-1" for the new parse model and "Legacy" for the legacy parse pipeline. A
-// legacy-pipeline parse carries its cost in “legacy_parse_credits“; add-on quantities
-// (“ocr_pages“, “charts“, “prompted_blocks“) apply to the new parse model only.
+// “parse_model“ is "R-1" for the new parse model, "R-1 Mini" for a job that bills as R1 Mini (its
+// pages are in “parse_pages“), and "Legacy" for the legacy parse pipeline. A legacy-pipeline
+// parse carries its cost in “legacy_parse_credits“; add-on quantities (“ocr_pages“, “charts“,
+// “prompted_blocks“) apply to the new parse model only.
 type ParseUsageBreakdown struct {
 	ParseModel ParseUsageBreakdownParseModel `json:"parse_model"`
 	Tier       ExtractUsageBreakdownTier     `json:"tier"`
@@ -1045,9 +1046,9 @@ type Settings struct {
 	ExtractDocumentProperties *bool `json:"extract_document_properties,omitempty"`
 	// EmbedPDFMetadataDPI: Render DPI used when rasterizing the source PDF before embedding the OCR
 	// text layer (only applies when ``embed_pdf_metadata`` is True). Lower values produce dramatically
-	// smaller output PDFs; higher values preserve more detail when zoomed past 200%. Defaults to 100
+	// smaller output PDFs; higher values preserve more detail when zoomed past 200%. Defaults to 200
 	// (good for on-screen viewing); raise toward the source scan DPI for crisper output. Min 50, max
-	// 250. Default: 100.
+	// 250. Default: 200.
 	EmbedPDFMetadataDPI *int64 `json:"embed_pdf_metadata_dpi,omitempty"`
 	// PersistResults: If True, persist the results indefinitely. Defaults to False. Default: false.
 	PersistResults *bool `json:"persist_results,omitempty"`
@@ -1065,8 +1066,11 @@ type Settings struct {
 	// HybridVPC: Hybrid VPC request-scoped settings.
 	HybridVPC *HybridVpcSettings `json:"hybrid_vpc,omitempty"`
 	// Model: The parse model to use. 'r-1' is the R-1 full-page parse model, which parses each page in
-	// a single generation. 'legacy' is the previous parsing pipeline. Defaults to 'legacy' unless your
-	// organization was created on the r-1 plan, in which case it defaults to 'r-1'.
+	// a single generation. 'r-1-mini' is a smaller, faster R-1 model, billed at the R-1 Mini rate.
+	// Outside the AU region, a page that 'r-1-mini' cannot parse is parsed again with 'r-1'.
+	// 'r-1-mini' does not accept spreadsheets, and is not available on-prem. 'legacy' is the previous
+	// parsing pipeline. Defaults to 'legacy' unless your organization was created on the r-1 plan, in
+	// which case it defaults to 'r-1'.
 	Model SettingsModel `json:"model,omitempty"`
 }
 
@@ -1744,6 +1748,7 @@ type ParseUsageBreakdownParseModel string
 
 const (
 	ParseUsageBreakdownParseModelR1     ParseUsageBreakdownParseModel = "R-1"
+	ParseUsageBreakdownParseModelR1Mini ParseUsageBreakdownParseModel = "R-1 Mini"
 	ParseUsageBreakdownParseModelLegacy ParseUsageBreakdownParseModel = "Legacy"
 )
 
@@ -1800,6 +1805,7 @@ type SettingsModel string
 
 const (
 	SettingsModelR1     SettingsModel = "r-1"
+	SettingsModelR1Mini SettingsModel = "r-1-mini"
 	SettingsModelLegacy SettingsModel = "legacy"
 )
 
