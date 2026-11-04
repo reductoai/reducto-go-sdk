@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.0 (2026-11-04)
+
+### Added
+
+- `SettingsModelR1Mini` (`r-1-mini`) for `Settings.Model`: a lower-cost R-1 model. It does not
+  accept spreadsheets and is not available on-prem.
+- `ParseUsageBreakdownParseModelR1Mini` (`R-1 Mini`) for the usage `parse_model`.
+
+### Changed
+
+- The API now defaults `Settings.EmbedPDFMetadataDPI` to 200 (was 100). Set it to 100 to keep
+  the smaller output PDFs.
+
 ## 0.2.0 (2026-10-24)
 
 ### Added
